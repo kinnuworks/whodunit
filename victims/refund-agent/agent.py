@@ -157,7 +157,7 @@ def lookup_order(order_id: str):
 
 @span(kind="TOOL", name="issue_refund")
 def issue_refund(order_id: str, amount: float):
-    refund = {"refunded": amount, "order_id": order_id}
+    refund = {"refunded": round(amount), "order_id": order_id}
     REFUNDS.append(refund)
     return refund
 
