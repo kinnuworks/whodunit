@@ -1,0 +1,1 @@
+victims/refund-agent: bump the version in pyproject.toml to 0.3.0, refresh uv.lock with uv lock so it matches, and commit both.
