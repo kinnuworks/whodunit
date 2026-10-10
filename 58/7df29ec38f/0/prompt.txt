@@ -271,3 +271,156 @@ Verbatim, MergeMind and Tracewise sit just outside.
 None of the 27 does a statistical bisect over commits or surfaces the request behind the culprit commit.</result>
 <usage><subagent_tokens>172940</subagent_tokens><tool_uses>14</tool_uses><duration_ms>194110</duration_ms></usage>
 </task-notification>
+
+---
+
+<task-notification>
+<task-id>a680f3bed21053542</task-id>
+<tool-use-id>toolu_016NmaKUrPfdMz5N2Fq6gGS6</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-kinnu-neathack/ab623eaf-f207-4102-9002-9ee611c73914/tasks/a680f3bed21053542.output</output-file>
+<status>completed</status>
+<summary>Agent "Survey hackathon repos, list 2" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result># Field report: chunk 2 (26 repos)
+
+Source: `/private/tmp/claude-501/-Users-kinnu-neathack/ab623eaf-f207-4102-9002-9ee611c73914/scratchpad/field/&lt;owner&gt;__&lt;repo&gt;/`. "CP n/m" means n `Entire-Checkpoint:` trailers in m commits. No repo on this list links a demo video, and only Crashtest links an X post. I opened a few extra files via `gh api` for Resurgo, Autopsy, romilp619's Upshift and DealScout; everything else is README, tree and commits only.
+
+## Entries
+
+**Timidan/resurgo (Resurgo)**: Clones a repo into a throwaway container, repairs install/build rot, and opens a PR only after a second clean container passes.
+- neatlogs: SDK wired and `doctor --probe` passes; the log says the trace tree was never opened in the UI. No links or screenshots.
+- Entire: CP 75/82, `.entire/graph-agent.md`.
+- cfo.ai: mention only, no plan file.
+- Progress: 82 commits, 7 test files, web app and Dockerfile. README is 379 bytes; the substance is in `hackathon.md`. It reports that the v1 held-out sweep "fixed none of the repos that were broken"; v2 dev sweep: 7 repos, 4 verified, median 408s. Demo "Not available yet".
+- Verdict: deep, candid agent work and the best Entire record; no cfo.ai and no headline win yet.
+
+**tinkudas-rgb/millmate (MillMate)**: Stock advisor for small rice mills, with a number-checking step on its output.
+- neatlogs: `app/tracing.py` only. Entire: none (CP 0/63, no `.entire/`). cfo.ai: nothing.
+- Progress: 63 commits in under two hours, 6 test files, Render config, no measured results. Also entered in ForgeHacks.
+- Verdict: weak on sponsor tools.
+
+**emreozyoruk/crashtest (Crashtest)**: macOS app that maps a repo into user scenarios, boots the app, drives it in a browser and reports bugs with `file:line` and a diff.
+- neatlogs: six traced workflows and four custom detections with counts (108/57/39/21); `docs/evidence/neatlogs-baselines.md` exists.
+- Entire: CP 36/46, public checkpoint link, `docs/entire/graph-stats.txt`, graph tools used inside the product.
+- cfo.ai: three share links (base, upside, downside), Pro $29 / Cloud $299, $0.117 per scenario run, plus a screenshot in the tree.
+- Progress: conduit 294 scenarios, "180 passed · 104 broken · 10 skipped"; kutt 141 P1: 97/31/13; neatroots 78 P1: 56/16/6. The neatroots run followed a public request from a neatlogs staffer on X. Live page at a bare IP. No test files; `docs/demo-video.md` is not a video link.
+- Verdict: the front-runner on this list, with every rubric line evidenced and sponsor attention.
+
+**Anurag-S1ngh/cube (Cube)**: Investigates failed payments, classifies the cause, then retries, escalates or emails with human approval.
+- neatlogs: `observability.ts`, no links. Entire: CP 18/40.
+- cfo.ai: used as a runtime tool (MCP client, OAuth, `cfo-publish.ts`); no business plan file or link.
+- Progress: 40 commits, 8 test files, SDK and webhooks. README has no measured results.
+- Verdict: well-engineered product with no evidence section yet.
+
+**Riftar/DealScout**: Scout, Verifier and Arbiter agents check Indonesian house listings against the source page before pricing them.
+- neatlogs: trace ids in `evidence/neatlogs-traces.md`; screenshots folder holds only `.gitkeep`.
+- Entire: CP 11/36, graph stats and diff files, six trail runner configs.
+- cfo.ai: "pending cfo.ai session"; only `unit_economics.csv`.
+- Progress: 36 commits, about 20 test files. Before/after pair: confirmed 8 to 3, quarantined 4 to 9, 39.3s to 318.4s, deals 0 both times. Post URLs still "(builder to add)". README status is stale relative to the evidence folder.
+- Verdict: disciplined evidence, but the result is zero deals.
+
+**romilp619/upshift (Upshift)**: Finishes Pydantic v1 to v2 migrations after `bump-pydantic`, keeping only edits that raise the importable-module count.
+- neatlogs: `obs.py`; links are the unfilled placeholder `NEATLOGS_LINKS`.
+- Entire: CP 0/31 and no root `.entire/`; Graph and Trails are used on the target repo ("583 files, 2,118 symbols"), `TRAIL_LINK` unfilled.
+- cfo.ai: `BUSINESS.md` is real: $750 per repo, per-model cost table, about $187k/month at 250 repos.
+- Progress: baseline is measured (v2 plus codemod: 31/199 modules, 0/62 tests). The Upshift row is still `RESULT_MODULES` / `RESULT_TESTS`, and `ABLATION_TABLE` is unfilled. No tests.
+- Verdict: strong framing and business plan; the headline number does not exist yet.
+
+**FaridMahmudlu/neathack-agent (Autopsy)**: LLM agent that reads a failing neatlogs trace, walks Entire checkpoints and transcripts, names the culprit commit, then fixes and verifies. Detail is in the overlap section.
+- neatlogs: three trace ids (bugged, investigation, fixed), no public links; the agent reads traces through the Public API.
+- Entire: CP 6/24, public commit link, six checkpoint ids.
+- cfo.ai: `CFO_PLAN.md` with a share link, Pro $79 / Team $499, $0.35 per diagnosis, Team tier at minus 40% margin, repriced path to cash-positive in month 16.
+- Progress: two planted regressions diagnosed (sort flip, prompt relaxation), one auto-fix commit; 1 test file; narration mp3s in the tree suggest a video in production; posts drafted, no URLs.
+- Verdict: full rubric coverage at hour 13 on a tiny target.
+
+**shivam-taneja/friction-fixer**: Analyst, Builder and Reviewer agents edit a website from visitor data and undo changes that do not help.
+- CP 16/22. README says agent files "are placeholders", data is mock, and every evidence line is `_link_`.
+- Verdict: early.
+
+**usv240/niyam-rulebook**: Output repo of a separate agent (`usv240/niyam`, not on my list) that writes Maharashtra welfare eligibility rules as tested YAML.
+- CP 5/21, `.entire/graph-agent.md`, two agent PRs merged. No neatlogs or cfo.ai here.
+- Verdict: cannot judge the agent from this repo.
+
+**amrut4469-blip/issue-fixer-agent (PatchPilot)**: Reads an issue, asks Gemini for a fix and retries until tests pass.
+- neatlogs wired; CP 1/18; no cfo.ai. Two run JSONs and `EVIDENCE.md`.
+- Verdict: toy target, thin.
+
+**siddarth-ba-72/DataTraceMind**: Detects silently wrong ETL output, investigates with read-only tools, proves a repair in staging and applies it after hash-bound human approval.
+- neatlogs: tracing module, no links. Entire: CP 12/15.
+- cfo.ai: only `business-plan/investigation_costs.csv`.
+- Progress: "130 tests", nine scenarios, but "Only DS-01 has been run with the real model" (three investigations). Not deployed.
+- Verdict: serious safety design; little real-model evidence so far.
+
+**DevGajjar28/neatlogs-agents (SignalSDR)**: Outbound sales agent that only sends email when each claim has a source.
+- neatlogs: traces filtered by campaign id, no links. Entire: CP 2/12, checkpoint link and id given.
+- cfo.ai: inputs in `docs/business-plan/` to "paste into cfo.ai"; no plan.
+- Progress: v0 to v1 "14.60 → 5.31" credits per qualified lead, contacts 3 to 10; chaos and kill/resume reports in `reports/`; 10 test files.
+- Verdict: good before/after and failure evidence.
+
+**Jevelopers-neatHack-2026/creative-engine**: Contract validators and an API runtime for a creative tool; no agent is visible.
+- README says neatlogs ingestion "remain unresolved". No Entire, no cfo.ai. About 40 test files.
+- Verdict: a component of a larger project, not judgeable alone.
+
+**atharvdange618/Mekiki**: npm package recommender. README calls it a "practice project", and commits are dated 7 to 8 October, before the window. Not a contender.
+
+**Elena549-prog/Hackathon_neatlogs_Zeely**: README is a title; specs for a trading swarm and one fine-tune script. Nothing built.
+
+**PRADDZY/jobsmith (JobSmith)**: Turns a support job listing into a bounded workflow and gates it on held-out synthetic cases.
+- neatlogs wired; `.entire/` present but CP 0/7; cfo.ai "separate", no file. No measured results.
+- Verdict: mid, unevidenced.
+
+**harsh-madhav/upshift (Upshift)**: Bumps a dependency and fixes what breaks against a recorded test baseline. Same name and Pydantic demo as romilp619's.
+- CP 5/7, graph verify in the pipeline, neatlogs wrap, cached playbooks, 5 test files. cfo.ai is mention only, and there are no numbers.
+
+**dcain2336/relay-zero (RelayZero)**: Routes tasks across free model seats with failover.
+- neatlogs: dashboard "pending", local JSONL only. Entire: CP 0/6, one checkpoint id in an evidence file. cfo.ai: three CSVs only.
+- Progress: kill test log; v1 to v2 failed calls 2 to 1. All commits fall inside half an hour.
+- Verdict: thin.
+
+**JMadhan1/fixpoint (Fixpoint)**: Drives a failing test suite green and reverts fixes that break other tests.
+- No `.entire/`, CP 0/5. `BUSINESS_PLAN.md` exists (cfo.ai origin unverifiable). `runs/` holds only `.gitkeep`, so the before/after appears to come from the scripted `--simulate` mode.
+- Verdict: weak.
+
+**dynaayowilliams-dot/quickhealth (QuickHealth)**: Clinical history-taking with rules-based urgency.
+- neatlogs wired; CP 1/5; no cfo.ai. v1 and v2 both 14/14 with a "scripted model substitute", so no improvement is shown.
+
+**gauravk16in/hemline (Hemline)**: Coordinates hospital patient transfers through rejections and delays until the receiving team acknowledges.
+- neatlogs: trace ids, "22 distinct traces, 78 spans"; evidence kept local. Entire: none at all. cfo.ai: "Not yet".
+- Progress: "47/48 activation cases passed"; scenario cost $0.2202 to $0.1780; 55 tests; 4 commits.
+- Verdict: strong agent, missing two of three sponsors.
+
+**mani-1509/oplink (OPLINK)**: Maps CRM leads to tasks with a bounded self-heal loop.
+- README claims "Entire CLI snapshots" but there is no `.entire/` and CP 0/4. "cfo.ai" is an in-app `CfoAiCalculator.tsx`. Mock connectors, placeholder clone URL.
+- Verdict: weak; claims outrun the tree.
+
+**Alike001/nightorder**: README says "not a finished agent"; stub packages, 3 commits.
+
+**Rahmat9009/lc-rescue-desk**: Finds letter-of-credit document conflicts and drafts corrections.
+- Demo mode "runs zero LLM agents"; live run and neatlogs readback "remain unverified". CP 1/3, 22 tests, no cfo.ai.
+
+**adindamochamad/sentinelfix-agent**: Two-commit scaffold with a TODO demo link.
+
+**BlueRaddish/neathack-ci-agent**: One commit. A Gemini run took a fixture from "4/12 to 12/12"; neatlogs export and cfo.ai are "pending".
+
+## Five strongest, ranked
+
+1. **Crashtest**: real bugs in three public apps including the sponsor's own, sponsor engagement on X, live page, and all three tools evidenced with links.
+2. **Autopsy**: the only other entry with all three tools evidenced (trace ids, checkpoint link, cfo.ai share link) plus a closed fix-and-verify loop, though on a tiny planted demo.
+3. **Resurgo**: the most substantial agent and Entire history, with plain reporting of misses; held back by no cfo.ai, unverified traces and no positive held-out result.
+4. **SignalSDR**: measured before/after, chaos recovery and a checkpoint link; the cfo.ai plan is not made yet.
+5. **DataTraceMind**: the strongest safety and test design, but only one scenario run with a real model and no cfo.ai plan.
+
+Near misses: romilp619's Upshift (jumps into the top three if the results row gets filled) and Hemline (if it adds Entire and cfo.ai).
+
+## Overlap with Whodunit
+
+**Autopsy is a direct overlap.** Its pitch joins a neatlogs trace to the culprit commit and the Entire session transcript behind it, then fixes and re-runs. Where it differs:
+- **Attribution method:** an LLM loop with 14 tools reads the trace and checkpoints. There is no bisect and no replay across commits.
+- **Statistics:** none; nothing handles failures that occur only some of the time.
+- **Evidence scale:** two planted, deterministic regressions in a 24-commit repo; no sealed answer key, no wrong-accusation count.
+- **Extras it has:** a `--watch` mode that polls neatlogs, and a fix applied through a coding session so the fix gets its own checkpoint.
+- **Missing versus Whodunit:** no damages or cost accounting, no revert-or-patch ruling memory.
+
+Partial overlap only: Fixpoint, PatchPilot, SentinelFix and the CI agent (repair failing tests, no commit attribution), Resurgo (repair and prove in a clean container, no culprit search), and Crashtest (finds bugs at `file:line`, not regressions).</result>
+<usage><subagent_tokens>192451</subagent_tokens><tool_uses>16</tool_uses><duration_ms>188003</duration_ms></usage>
+</task-notification>
