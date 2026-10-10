@@ -3,7 +3,7 @@
   "checkpoint_id": "aa53eb8980b9",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 1,
+  "checkpoints_count": 2,
   "files_touched": [
     "victims/refund-agent/uv.lock"
   ],
@@ -14,13 +14,20 @@
       "compact_transcript": "/aa/53eb8980b9/0/transcript.jsonl",
       "content_hash": "/aa/53eb8980b9/0/content_hash.txt",
       "prompt": "/aa/53eb8980b9/0/prompt.txt"
+    },
+    {
+      "metadata": "/aa/53eb8980b9/1/metadata.json",
+      "transcript": "/aa/53eb8980b9/1/full.jsonl",
+      "compact_transcript": "/aa/53eb8980b9/1/transcript.jsonl",
+      "content_hash": "/aa/53eb8980b9/1/content_hash.txt",
+      "prompt": ""
     }
   ],
   "token_usage": {
-    "input_tokens": 78,
-    "cache_creation_tokens": 88703,
-    "cache_read_tokens": 2966538,
-    "output_tokens": 13097,
-    "api_call_count": 39
+    "input_tokens": 84,
+    "cache_creation_tokens": 89776,
+    "cache_read_tokens": 3184482,
+    "output_tokens": 13710,
+    "api_call_count": 42
   }
 }
