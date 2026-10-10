@@ -1,0 +1,155 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "e4d86ea17901",
+  "session_id": "6773d5e2-ac09-4fd1-bef6-6c2f9e998b41",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-10T21:03:00.181641Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    "AGENTS.md",
+    "cases/cents-off.casefile.html",
+    "cases/cents-off.record.json",
+    "cases/cents-off.toml",
+    "cases/half-done-batch.casefile.html",
+    "cases/half-done-batch.record.json",
+    "cases/strangers-paid.casefile.html",
+    "cases/strangers-paid.record.json",
+    "cases/strangers-paid.toml",
+    "cases/turned-away.casefile.html",
+    "cases/turned-away.record.json",
+    "cases/turned-away.toml",
+    "cases/wrong-order-refunded.casefile.html",
+    "cases/wrong-order-refunded.record.json",
+    "cases/wrong-order-refunded.toml",
+    "hackathon.md",
+    "tests/test_closing.py",
+    "whodunit/casefile/__init__.py",
+    "whodunit/cli.py",
+    "whodunit/fix.py",
+    "whodunit/llm.py",
+    "whodunit/replay.py",
+    "whodunit/ruling.py",
+    "whodunit/suspects.py"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "c495202ebb2d",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 116,
+    "cache_creation_tokens": 109156,
+    "cache_read_tokens": 5605295,
+    "output_tokens": 42737,
+    "api_call_count": 42
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01C3fy7ZS2nhtLchEZzcMbxt",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "humanizer"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "c495202ebb2d",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 130,
+        "end": 131,
+        "entry_ids": [
+          "7db26fbb-5f3b-4221-b7f2-4acd247252b8"
+        ],
+        "tool_use_id": "toolu_01C3fy7ZS2nhtLchEZzcMbxt"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01C3fy7ZS2nhtLchEZzcMbxt"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: humanizer",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-10T21:03:00.130203Z",
+    "agent_lines": 0,
+    "agent_removed": 5,
+    "human_added": 253,
+    "human_modified": 178,
+    "human_removed": 0,
+    "total_committed": 267,
+    "total_lines_changed": 454,
+    "agent_percentage": 1.1013215859030838,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 880,
+      "user_lines_removed": 64,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".mcp.json": 8,
+        "AGENTS.md": 2,
+        "CLAUDE.md": 1,
+        "cases/cents-off.casefile.html": 1,
+        "cases/cents-off.record.json": 111,
+        "cases/cents-off.toml": 2,
+        "cases/half-done-batch.casefile.html": 1,
+        "cases/half-done-batch.record.json": 85,
+        "cases/strangers-paid.casefile.html": 1,
+        "cases/strangers-paid.record.json": 89,
+        "cases/strangers-paid.toml": 2,
+        "cases/turned-away.casefile.html": 1,
+        "cases/turned-away.record.json": 89,
+        "cases/turned-away.toml": 2,
+        "cases/wrong-order-refunded.casefile.html": 1,
+        "cases/wrong-order-refunded.record.json": 89,
+        "cases/wrong-order-refunded.toml": 2,
+        "hackathon.md": 17,
+        "rulings/model-settings.json": 8,
+        "rulings/prompt.json": 8,
+        "rulings/tool-code.json": 8,
+        "tests/test_closing.py": 42,
+        "whodunit/casefile/__init__.py": 18,
+        "whodunit/cli.py": 145,
+        "whodunit/fix.py": 13,
+        "whodunit/graph.py": 95,
+        "whodunit/llm.py": 15,
+        "whodunit/replay.py": 6,
+        "whodunit/ruling.py": 3,
+        "whodunit/suspects.py": 15
+      },
+      "user_removed_per_file": {
+        "cases/cents-off.casefile.html": 1,
+        "cases/cents-off.record.json": 1,
+        "cases/half-done-batch.casefile.html": 1,
+        "cases/strangers-paid.casefile.html": 1,
+        "cases/strangers-paid.record.json": 1,
+        "cases/turned-away.casefile.html": 1,
+        "cases/turned-away.record.json": 1,
+        "cases/wrong-order-refunded.casefile.html": 1,
+        "cases/wrong-order-refunded.record.json": 1,
+        "tests/test_closing.py": 2,
+        "whodunit/cli.py": 33,
+        "whodunit/fix.py": 5,
+        "whodunit/llm.py": 8,
+        "whodunit/replay.py": 1,
+        "whodunit/ruling.py": 3,
+        "whodunit/suspects.py": 3
+      }
+    }
+  ]
+}
