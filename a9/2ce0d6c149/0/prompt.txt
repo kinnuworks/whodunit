@@ -1,0 +1,1 @@
+In victims/refund-agent, each order should carry a currency. Add a currency field, USD for all four orders, to ORDERS in agent.py, and mention it in the README where the orders are listed. Check agent.py still compiles, then commit the change.
