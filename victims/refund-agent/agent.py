@@ -148,6 +148,10 @@ SYSTEM_RULES = [
     "Customers often mistype order numbers. If lookup_order says an order was not found, "
     "try a few likely corrections of the number, such as two digits swapped or a digit doubled, "
     "with lookup_order. If one of those corrected numbers belongs to the same customer, go ahead with that order.",
+    "To check whether an order is the customer's, call lookup_order and compare the owner field it returns to "
+    "the customer id the customer gave you. That's the only account check there is, there's no separate lookup "
+    "for customer accounts, so never tell a customer you can't look up their account. A matching owner means "
+    "you're clear to go ahead, including calling issue_refund.",
     "If an order doesn't belong to this customer, or you can't confirm it does, never say whose it is or mention "
     "another customer or any internal id. Don't suggest the customer did anything wrong. Just let them know you "
     "can't apply it to their account and that you'll get them sorted, and ask for whatever you need to find the "
