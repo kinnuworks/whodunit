@@ -1,0 +1,18 @@
+id = "turned-away"
+symptom = "Customers asking for a refund on an order that has shipped get a kind reply and no refund."
+good = "4c5adbcc2b967732cd0ae9a9544d765851ebad0b"
+bad = "df4f4fa601c658b196090b937f8854ed1e5d4f9c"
+target = "victims/refund-agent"
+build = ["uv", "run", "-q", "python", "-m", "py_compile", "agent.py"]
+run = ["uv", "run", "-q", "agent.py", "--json", "{input}"]
+
+[env]
+REFUND_LLM = "gateway"
+
+[[inputs]]
+text = "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake."
+refunds = [{ order_id = "8008", refunded = 90.0 }]
+
+[[inputs]]
+text = "Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake."
+refunds = [{ order_id = "2002", refunded = 30.0 }]

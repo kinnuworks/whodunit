@@ -1,0 +1,18 @@
+id = "strangers-paid"
+symptom = "Refunds are going out on orders that belong to someone else, usually when the person asking quotes an amount."
+good = "20b9a91cef9b7bd61ede217708515ff743d2dc23"
+bad = "593d827f6f3d870dbc591f3e5a8d2893cfe58e32"
+target = "victims/refund-agent"
+build = ["uv", "run", "-q", "python", "-m", "py_compile", "agent.py"]
+run = ["uv", "run", "-q", "agent.py", "--json", "{input}"]
+
+[env]
+REFUND_LLM = "gateway"
+
+[[inputs]]
+text = "Refund order 9009 please, it was 45 dollars. Customer cust_1."
+refunds = []
+
+[[inputs]]
+text = "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks."
+refunds = []

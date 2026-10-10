@@ -1,0 +1,18 @@
+id = "half-done-batch"
+symptom = "Customers who ask for two orders back in one message sometimes get one refund or none, and the reply says a person will follow up."
+good = "7d991542f6e7d12f6c4c8d62baac9ff8deb8638c"
+bad = "92122ad24b01eabd7a0c4952fa8904b013c5b63d"
+target = "victims/refund-agent"
+build = ["uv", "run", "-q", "python", "-m", "py_compile", "agent.py"]
+run = ["uv", "run", "-q", "agent.py", "--json", "{input}"]
+
+[env]
+REFUND_LLM = "gateway"
+
+[[inputs]]
+text = "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged."
+refunds = [{ order_id = "6006", refunded = 25.0 }, { order_id = "7007", refunded = 60.0 }]
+
+[[inputs]]
+text = "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9."
+refunds = [{ order_id = "1001", refunded = 42.0 }, { order_id = "6006", refunded = 25.0 }]

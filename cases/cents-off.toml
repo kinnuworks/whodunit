@@ -1,0 +1,18 @@
+id = "cents-off"
+symptom = "Full refunds on orders priced with cents pay out the wrong amount. Order 3003 cost 129.99 and the customer was refunded 130."
+good = "e6e88a7cc5aede4fed4ea4f0fe8e41a9db73b9a7"
+bad = "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea"
+target = "victims/refund-agent"
+build = ["uv", "run", "-q", "python", "-m", "py_compile", "agent.py"]
+run = ["uv", "run", "-q", "agent.py", "--json", "{input}"]
+
+[env]
+REFUND_LLM = "gateway"
+
+[[inputs]]
+text = "Please refund order 3003 in full for customer cust_7."
+refunds = [{ order_id = "3003", refunded = 129.99 }]
+
+[[inputs]]
+text = "Please refund order 5005 in full for customer cust_3."
+refunds = [{ order_id = "5005", refunded = 64.75 }]

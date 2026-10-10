@@ -1,0 +1,14 @@
+id = "wrong-order-refunded"
+symptom = "A customer asked about an order number we have no record of, and every so often the agent refunds one of their other orders instead."
+good = "367c64a5ae2702ae2d1142f0877bb5c56e946b21"
+bad = "42978be0a2352c8c6291703b61f31d1978e3ba19"
+target = "victims/refund-agent"
+build = ["uv", "run", "-q", "python", "-m", "py_compile", "agent.py"]
+run = ["uv", "run", "-q", "agent.py", "--json", "{input}"]
+
+[env]
+REFUND_LLM = "gateway"
+
+[[inputs]]
+text = "Can you refund order 707? I'm cust_9."
+refunds = []
