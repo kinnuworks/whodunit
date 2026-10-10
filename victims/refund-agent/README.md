@@ -17,6 +17,8 @@ Open http://localhost:4100 to see the run. Add `--json` to get the reply and the
 
 The orders it knows about are 1001, 1002, 6006 and 7007 (customer `cust_9`), 2002 (`cust_4`), 3003 (`cust_7`), 4004 (`cust_2`, EUR) and 5005 (`cust_3`). Each order has an id, owner, amount, currency, status, and placed_on date. Any other order id comes back as a 404 from the lookup tool.
 
+Status is `delivered` or `shipped`. Today the agent treats both the same: if the order exists and belongs to the customer, it refunds regardless of status.
+
 ## Choosing the model
 
 `REFUND_LLM` picks where the model calls go.
