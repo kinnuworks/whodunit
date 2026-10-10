@@ -1,0 +1,1 @@
+In victims/refund-agent, update the README now that the orders live in orders.json: say where they are and how to add one. Keep it short. Commit when done.
