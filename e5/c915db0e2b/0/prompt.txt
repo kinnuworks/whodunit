@@ -1,0 +1,1 @@
+In victims/refund-agent, the run() loop gives up with 'Stopped after too many steps.' Make that message a bit clearer for a customer, something like saying we couldn't finish and a person will follow up. Check agent.py still compiles, then commit.
