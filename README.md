@@ -44,7 +44,7 @@ You need Python 3.12, [uv](https://docs.astral.sh/uv/), git and a running neatro
 
 ```bash
 uv sync
-uv run pytest -m "not slow"                    # 85 tests, no model and no keys
+uv run pytest -m "not slow"                    # the fast tests, no model and no keys
 
 # A throwaway repo with 20 commits, the refund agent and a planted bug:
 uv run python tests/planted.py /tmp/planted
