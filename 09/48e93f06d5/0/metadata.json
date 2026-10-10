@@ -1,0 +1,156 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "0948e93f06d5",
+  "session_id": "d1722531-fd19-41ec-9e89-c3cbe406e10c",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-10T20:40:10.98895Z",
+  "branch": "whodunit/cents-off",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "victims/refund-agent/agent.py"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "8e0112562601",
+  "checkpoint_transcript_start": 1624,
+  "transcript_lines_at_start": 1624,
+  "compact_transcript_start": 272,
+  "token_usage": {
+    "input_tokens": 2,
+    "cache_creation_tokens": 923,
+    "cache_read_tokens": 602419,
+    "output_tokens": 458,
+    "api_call_count": 1
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_018Qm4kKricuddnfpEDqLYrr",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "neatroots-instrument-agent"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "2ede71b9f85a",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 59,
+        "end": 60,
+        "entry_ids": [
+          "7405c011-ac34-45bb-9eab-bb95fdcd1047"
+        ],
+        "tool_use_id": "toolu_018Qm4kKricuddnfpEDqLYrr"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_018Qm4kKricuddnfpEDqLYrr"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: neatroots-instrument-agent",
+        "default_collapsed": true
+      }
+    },
+    {
+      "id": "claude-skill-toolu_01DU3BU8hUEJGXDtcwmK2qR2",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "dataviz"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "a0c1a1c38787",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 398,
+        "end": 399,
+        "entry_ids": [
+          "1079c495-783d-4e73-a10d-f4285b28c51c"
+        ],
+        "tool_use_id": "toolu_01DU3BU8hUEJGXDtcwmK2qR2"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01DU3BU8hUEJGXDtcwmK2qR2"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: dataviz",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 11
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-10T20:40:10.86212Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 20,
+    "human_removed": 101,
+    "total_committed": 0,
+    "total_lines_changed": 121,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 776,
+      "user_lines_removed": 39,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".mcp.json": 8,
+        "AGENTS.md": 2,
+        "CLAUDE.md": 1,
+        "cases/cents-off.casefile.html": 1,
+        "cases/cents-off.record.json": 102,
+        "cases/cents-off.toml": 2,
+        "cases/half-done-batch.casefile.html": 1,
+        "cases/half-done-batch.record.json": 85,
+        "cases/strangers-paid.casefile.html": 1,
+        "cases/strangers-paid.record.json": 80,
+        "cases/strangers-paid.toml": 2,
+        "cases/turned-away.casefile.html": 1,
+        "cases/turned-away.record.json": 80,
+        "cases/turned-away.toml": 2,
+        "cases/wrong-order-refunded.casefile.html": 1,
+        "cases/wrong-order-refunded.record.json": 80,
+        "cases/wrong-order-refunded.toml": 2,
+        "hackathon.md": 11,
+        "rulings/model-settings.json": 8,
+        "rulings/prompt.json": 8,
+        "rulings/tool-code.json": 8,
+        "tests/test_closing.py": 41,
+        "whodunit/casefile/__init__.py": 14,
+        "whodunit/cli.py": 128,
+        "whodunit/fix.py": 3,
+        "whodunit/graph.py": 95,
+        "whodunit/replay.py": 6,
+        "whodunit/ruling.py": 3
+      },
+      "user_removed_per_file": {
+        "cases/cents-off.casefile.html": 1,
+        "cases/half-done-batch.casefile.html": 1,
+        "cases/strangers-paid.casefile.html": 1,
+        "cases/turned-away.casefile.html": 1,
+        "cases/wrong-order-refunded.casefile.html": 1,
+        "tests/test_closing.py": 1,
+        "whodunit/cli.py": 28,
+        "whodunit/fix.py": 1,
+        "whodunit/replay.py": 1,
+        "whodunit/ruling.py": 3
+      }
+    }
+  ]
+}
