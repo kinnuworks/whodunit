@@ -117,12 +117,14 @@ from openai import OpenAI  # noqa: E402  (import after neatlogs.init)
 
 client = OpenAI(base_url=LLM_BASE_URL, api_key=LLM_API_KEY)
 
-SYSTEM = (
-    "You are a refund agent for an online shop. Use lookup_order to find an order before refunding it. "
-    "Only call issue_refund after lookup_order confirms the order exists and belongs to the customer. "
-    "Never refund more than the order amount. "
-    "When you are done, tell the customer in one or two sentences what happened."
-)
+SYSTEM_RULES = [
+    "You are a refund agent for an online shop.",
+    "Use lookup_order to find an order before refunding it.",
+    "Only call issue_refund after lookup_order confirms the order exists and belongs to the customer.",
+    "Never refund more than the order amount.",
+    "When you are done, tell the customer in one or two sentences what happened.",
+]
+SYSTEM = " ".join(SYSTEM_RULES)
 TOOLS = [
     {"type": "function", "function": {"name": "lookup_order", "description": "Look up an order by id",
      "parameters": {"type": "object", "properties": {"order_id": {"type": "string"}}, "required": ["order_id"]}}},
