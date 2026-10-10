@@ -166,6 +166,7 @@ def call_tool(name, args):
     try:
         return json.dumps(fn(**args))
     except Exception as exc:  # the agent sees tool errors as results
+        print(f"tool call failed: {name}: {exc}", file=sys.stderr)
         return json.dumps({"error": str(exc)})
 
 
