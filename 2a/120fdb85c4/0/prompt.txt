@@ -1,0 +1,1 @@
+victims/refund-agent: smoke.py should also check that every order's currency is a three-letter code and every amount is positive. Run it, then commit.
