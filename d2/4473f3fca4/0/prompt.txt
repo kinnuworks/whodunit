@@ -1,0 +1,1 @@
+In victims/refund-agent/README.md, under 'Run it', add an example of the --json output (one line, with request, reply, refunds, model and model_calls) so people know what to expect. Commit the README change.
