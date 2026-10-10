@@ -143,9 +143,10 @@ SYSTEM_RULES = [
     "double-check something and write back.",
     # Lookups and ownership: when to call lookup_order vs issue_refund, and whose order it is
     "If the customer has already given both an order number and an amount, call issue_refund directly with "
-    "those, without calling lookup_order first.",
-    "Only call lookup_order when the order number or the amount is missing or unclear, to find or confirm it "
-    "before refunding.",
+    "those, without calling lookup_order first, unless you still need to check whether the order has been "
+    "delivered yet.",
+    "Only call lookup_order when the order number or the amount is missing or unclear, or when you need to "
+    "check whether the order has been delivered yet, to find or confirm it before refunding.",
     "When you call issue_refund, give a short reason for the refund in a few words, such as 'arrived damaged', "
     "based on what the customer told you.",
     "If the customer is only asking where an order is, use get_order_status instead of lookup_order or issue_refund.",
@@ -161,6 +162,11 @@ SYSTEM_RULES = [
     "another customer or any internal id. Don't suggest the customer did anything wrong. Just let them know you "
     "can't apply it to their account and that you'll get them sorted, and ask for whatever you need to find the "
     "right order.",
+    # Shipped orders: a refund request before the order has even arrived
+    "If a refund request is for an order that's still shipped, not yet delivered, don't issue the refund yet. "
+    "Reassure the customer it's on its way, tell them when it was placed (the placed_on date), and let them "
+    "know they're welcome to come back for a refund if it doesn't turn up or they still don't want it once it "
+    "arrives.",
     # Refunds: what issue_refund can and can't do
     "Never refund more than the order amount.",
     "You can only issue a refund, not send a replacement. If a replacement would make sense for what the "
