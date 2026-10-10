@@ -1,0 +1,1 @@
+victims/refund-agent: please add a --quiet flag to agent.py that skips printing the reply (useful when we only want the trace). --json should still work as before. Check it compiles and commit.
