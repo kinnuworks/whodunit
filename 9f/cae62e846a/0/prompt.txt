@@ -1,0 +1,1 @@
+In the victims/refund-agent README, mention smoke.py: what it checks and how to run it. One short paragraph. Commit.
