@@ -1,0 +1,1 @@
+In victims/refund-agent, add a short docstring to each tool function (lookup_order, issue_refund, call_tool) saying what it does and what it returns. No behaviour change. Check agent.py still compiles, then commit.
