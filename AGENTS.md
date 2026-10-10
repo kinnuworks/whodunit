@@ -137,5 +137,6 @@ These cover UI copy, the README, the pitch, scripts, commit messages and code co
 
 - Commits carry no co-author trailer.
 - These need the owner's yes each time: the first push to GitHub, any post on X, a PR or comment on someone else's repo, any write to cfo.ai, and launching anything on AWS.
+- The repo stays private until just before submission (the owner's ruling on 10 October). Sessions are still written as if public, because the checkpoints go up with it.
 - The owner does browser signups and enters any card or password personally.
 - Report failures as plainly as successes. The eval is only worth something if the misses are in it.

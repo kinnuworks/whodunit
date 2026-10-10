@@ -7,3 +7,5 @@ __pycache__/
 node_modules/
 .DS_Store
 requests.jsonl
+.whodunit/
+.pytest_cache/

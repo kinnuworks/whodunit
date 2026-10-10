@@ -48,3 +48,23 @@ The hooks do fire for sessions run in the desktop app, which was the open questi
 - The transcript does carry things that are not secrets and are still personal: the home folder path, the names of every connector installed in the coding agent, and the titles of the private notes index. The owner should read that list before the first push and decide.
 
 Nothing has been pushed.
+
+### 7:31 PM, plain bisect finds a planted bug across 20 commits
+
+The owner ruled that the repo stays private until just before submission, so nothing is pushed yet.
+
+Milestone 2 is in: `whodunit lineup <case file>` checks each suspect commit out into its own git worktree, replays the case inputs there, and bisects.
+
+The run that counts used the real refund agent with the scripted model, on a throwaway history of 20 commits built by `tests/planted.py`. Suspect 14 adds a 10% top-up to every refund, suspect 6 has a syntax error, and four commits never touch the agent.
+
+- It named suspect 14, `Add a 10% goodwill top-up to refunds`, after testing 7 commits with 11 replays in 50 seconds. A scan from the oldest suspect would have tested 14 commits.
+- The failing replays paid 46.20 on order 1001, where the case expects 42.00.
+- All 11 replays reached neatroots tagged with the case id and their commit, across 7 distinct commits.
+- A commit that will not compile is skipped, as `git bisect skip` does. If skipped commits sit right before the culprit, the report lists the suspects that remain and names nobody.
+
+52 fast tests pass in about 11 seconds. They cover every culprit position for 1 to 41 suspects. The end to end test on the real agent passes too, and takes 2 minutes 38 seconds.
+
+Found out along the way:
+
+- A replay costs about 4.5 seconds here, counting the first `uv run` in a fresh worktree, which builds that worktree's environment from the uv cache.
+- The planted history has no Entire checkpoints, because nobody asked a coding agent for those commits. The motive step needs the real history from the second session.
