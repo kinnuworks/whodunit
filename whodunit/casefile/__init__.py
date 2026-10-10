@@ -71,7 +71,8 @@ def lineup_svg(record: dict) -> str:
         odds = suspect.get("probability", 1.0 if suspect["sha"] == culprit else 0.0)
         tall = max(2.0, odds * bar_h)
         seen = replays.get(suspect["sha"], [])
-        kind = "culprit" if suspect["sha"] == culprit else "elsewhere" if not suspect.get("touches_target", True) else "suspect"
+        excuse = suspect.get("alibi") or ("" if suspect.get("touches_target", True) else "never touched the agent's folder")
+        kind = "culprit" if suspect["sha"] == culprit else "elsewhere" if excuse else "suspect"
         told = f'{n + 1}. {suspect["subject"]} ({_short(suspect["sha"])})'
         if has_odds:
             told += f', {_pct(odds)}'
@@ -80,7 +81,7 @@ def lineup_svg(record: dict) -> str:
         if "skip" in seen:
             told += ", would not build"
         if kind == "elsewhere":
-            told += ". Alibi: never touched the agent"
+            told += f". Alibi: {excuse}"
         out.append(f'<g><title>{escape(told)}</title>'
                    f'<rect class="hit" x="{x - step / 2:.1f}" y="{top}" width="{step}" height="{height - top}"/>'
                    f'<rect class="bar {kind}" x="{x - (step - 6) / 2:.1f}" y="{top + bar_h - tall:.1f}" width="{step - 6}" height="{tall:.1f}"/>'
@@ -118,11 +119,18 @@ def render(record: dict) -> str:
         if "failure_rate_from" in lineup and culprit:
             rates = f' From this commit on it fails about {lineup["failure_rate_from"]:.0%} of the time. Before it, about {lineup["failure_rate_before"]:.0%}.'
         scan = f' A scan from the oldest suspect would have tested {lineup["linear_scan_commits"]} commits.' if "linear_scan_commits" in lineup else ""
+        if lineup.get("traffic_runs"):
+            named += (f'<p class="small">Before any replay, {lineup["traffic_runs"]} ordinary runs had already asked this, '
+                      f'and {lineup["traffic_failures"]} of them went wrong. They were used as evidence at no cost.</p>')
         named += (f'<p class="small">{lineup.get("replays", 0)} replays across {lineup.get("commits_tested", 0)} commits, '
                   f'{lineup.get("seconds", 0) / 60:.1f} minutes of replay time.{rates}{scan}</p>')
         named += f'<div class="scroll">{lineup_svg(record)}</div>'
         named += ('<p class="key"><span class="swatch culprit"></span>culprit <span class="swatch suspect"></span>suspect '
-                  '<span class="swatch elsewhere"></span>never touched the agent <span class="dot fail"></span>failed replay <span class="dot pass"></span>passed replay</p>')
+                  '<span class="swatch elsewhere"></span>has an alibi <span class="dot fail"></span>failed replay <span class="dot pass"></span>passed replay</p>')
+        excused = [s for s in suspects if s.get("alibi") and s["sha"] != culprit]
+        if excused:
+            rows = "".join(f'<li><span class="sha">{escape(_short(s["sha"]))}</span> {escape(s["subject"])}: {escape(s["alibi"])}.</li>' for s in excused)
+            named += f'<details><summary>Alibis: {len(excused)} of {len(suspects)} suspects started with less suspicion</summary><ul class="steps">{rows}</ul></details>'
         if not culprit and lineup.get("remaining"):
             rows = "".join(f'<tr><td class="num">{_pct(r.get("probability", 0))}</td><td class="sha">{escape(_short(r["sha"]))}</td><td>{escape(r["subject"])}</td></tr>' for r in lineup["remaining"][:8])
             named += f'<table class="remaining"><caption>Still in the lineup</caption>{rows}</table>'
@@ -187,7 +195,26 @@ def render(record: dict) -> str:
         if check:
             state = "Proven" if check["fixed"] else "Not proven"
             body += (f'<p><strong>{state}.</strong> {check["failures"]} failures in {check["replays"]} replays of the fix. '
-                     f'Probability it is fixed: {_pct(check["probability"])}.{" " + escape(check["note"]) + "." if check.get("note") else ""}</p>')
+                     f'Probability the failure rate is back to where it was before the culprit: {_pct(check["probability"])}.'
+                     f'{" " + escape(check["note"]).capitalize() + "." if check.get("note") else ""}</p>')
+        tries = record.get("attempts") or []
+        if len(tries) > 1:
+            rows = ""
+            for n, attempt in enumerate(tries, 1):
+                seen = attempt.get("verification") or {}
+                if attempt.get("commit") is None:
+                    how = f'no change was made. {escape(attempt.get("note", ""))}'
+                else:
+                    how = (f'<span class="sha">{escape(_short(attempt["commit"]))}</span>, {seen.get("failures", 0)} failures in {seen.get("replays", 0)} replays, '
+                           f'{"proven" if seen.get("fixed") else "not proven"} at {_pct(seen.get("probability", 0))}')
+                rows += f'<li>Try {n}, a {escape(attempt["kind"])}: {how}.</li>'
+            body += f'<details open><summary>What it took</summary><ul class="steps">{rows}</ul></details>'
+        if fix.get("note"):
+            body += f'<p class="small">{escape(fix["note"])}</p>'
+        again = [c for c in record.get("checks", []) if c["ref"] == fix["commit"]]
+        if again:
+            runs, failed = sum(c["runs"] for c in again), sum(c["failures"] for c in again)
+            body += f'<p>Replayed again as a regression test: {failed} failures in {runs} replays.</p>'
         if fix.get("regression_case"):
             body += f'<p class="small">Kept as a regression test: <code>{escape(Path(fix["regression_case"]).name)}</code></p>'
     elif fix:
@@ -203,6 +230,9 @@ def render(record: dict) -> str:
                     f'They cost about ${damages["wasted_usd"]:.2f} of the ${damages["cost_usd"]:.2f} spent.</p>')
         else:
             body = '<p>No ordinary runs are recorded on the culprit or the commits after it, so there is no damage to count.</p>'
+        if damages.get("case_runs"):
+            body += (f'<p>{damages["case_bad"]} of the {damages["case_runs"]} ordinary runs that asked what this case asks paid out wrongly. '
+                     f'{damages["wrongly_paid"]:.2f} was refunded that should not have been, and {damages["withheld"]:.2f} was owed and not refunded.</p>')
         body += (f'<p class="small">The investigation used {damages["replay_runs"]} replays, about ${damages["replay_usd"]:.2f}. {escape(damages["note"])}</p>')
     else:
         body = '<p class="empty">Not counted yet.</p>'

@@ -5,6 +5,7 @@ counts and a price per million tokens, and are labelled as estimates wherever th
 Writing them to cfo.ai is a separate step that needs the owner's yes.
 """
 
+import json
 from dataclasses import asdict, dataclass
 
 from .neat import Mcp
@@ -27,6 +28,10 @@ class Damages:
     wasted_usd: float  # of the bad runs
     replay_runs: int = 0  # runs Whodunit itself made while investigating
     replay_usd: float = 0.0
+    case_runs: int = 0  # ordinary runs on the culprit or later whose request is one of the case's inputs
+    case_bad: int = 0  # of those, the ones that paid out something other than what the case expects
+    wrongly_paid: float = 0.0  # money refunded that should not have been, in the orders' currency
+    withheld: float = 0.0  # money that should have been refunded and was not
     note: str = "Dollar figures are estimates from token counts."
 
     def to_dict(self) -> dict:
@@ -81,4 +86,44 @@ def count(mcp: Mcp, workflow: str, commits: list[str] | None = None, since_ms: f
         mine = REPLAY.format(like=f"%case:{case_id}%".replace("'", "''"))
         damages.replay_runs = mcp.call("query_sql", sql=f"select count(*) as runs from runs r where {mine}")["rows"][0]["runs"]
         damages.replay_usd = round(_spend(mcp, mine, prices)[0], 4)
+    return damages
+
+
+def count_case(mcp: Mcp, damages: Damages, workflow: str, commits: list[str], inputs: list[tuple[str, list[dict]]]) -> Damages:
+    """Judge the ordinary runs that asked exactly what the case asks, and add up the money.
+
+    `inputs` are (request text, refunds a correct run pays). What a run paid is read from its
+    issue_refund tool spans. This is the part of the damage that is in the shop's currency and
+    not in tokens: refunds that went out wrongly, and refunds that should have and did not.
+    """
+    expected = {text: {str(r["order_id"]): float(r["refunded"]) for r in refunds} for text, refunds in inputs}
+    safe = workflow.replace("'", "''")
+    on_bad = " or ".join(f"i.attributes like '%commit:{sha}%'" for sha in commits if sha.isalnum()) or "0"
+    asked = ", ".join("'" + text.replace("'", "''") + "'" for text in expected) or "''"
+    runs = mcp.call("query_sql", sql=(
+        "select r.trace_id, r.input_preview from runs r where "
+        f"r.workflow = '{safe}' and r.doctor = 0 and r.input_preview in ({asked}) and not " + REPLAY.format(like="%case:%") +
+        f" and exists (select 1 from spans i where i.trace_id = r.trace_id and i.name = 'run_info' and ({on_bad})) limit 200"
+    ))["rows"]
+    if not runs:
+        return damages
+    ids = ", ".join("'" + r["trace_id"] + "'" for r in runs)
+    paid: dict[str, dict[str, float]] = {r["trace_id"]: {} for r in runs}
+    for span in mcp.call("query_sql", sql=f"select trace_id, output_preview from spans where name = 'issue_refund' and status_code != 2 and trace_id in ({ids}) limit 200")["rows"]:
+        try:
+            out = json.loads(span["output_preview"] or "{}")
+            order, amount = str(out["order_id"]), float(out["refunded"])
+        except (json.JSONDecodeError, KeyError, TypeError, ValueError):
+            continue
+        paid[span["trace_id"]][order] = paid[span["trace_id"]].get(order, 0.0) + amount
+    for run in runs:
+        want, got = expected[run["input_preview"]], paid[run["trace_id"]]
+        over = sum(max(0.0, got.get(o, 0.0) - want.get(o, 0.0)) for o in set(got) | set(want))
+        under = sum(max(0.0, want.get(o, 0.0) - got.get(o, 0.0)) for o in set(got) | set(want))
+        damages.case_runs += 1
+        if over > 0.005 or under > 0.005:
+            damages.case_bad += 1
+            damages.wrongly_paid += over
+            damages.withheld += under
+    damages.wrongly_paid, damages.withheld = round(damages.wrongly_paid, 2), round(damages.withheld, 2)
     return damages

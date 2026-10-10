@@ -15,6 +15,7 @@ import json
 import os
 import shlex
 import subprocess
+import time
 import urllib.error
 import urllib.request
 
@@ -67,11 +68,17 @@ def ask(system: str, prompt: str, max_tokens: int = 1500, timeout: float = 180.0
         base.rstrip("/") + "/chat/completions", json.dumps(body).encode(),
         {"Content-Type": "application/json", "Authorization": f"Bearer {key}"},
     )
-    try:
-        with urllib.request.urlopen(request, timeout=timeout) as response:
-            reply = json.loads(response.read().decode())
-    except urllib.error.HTTPError as exc:
-        raise LlmError(f"the model endpoint answered {exc.code}") from None
-    except OSError as exc:
-        raise LlmError(f"the model endpoint is not reachable: {exc}") from None
-    return reply["choices"][0]["message"]["content"] or ""
+    problem = ""
+    for wait in (0, 5, 20):  # a gateway hiccup should not cost a whole fix attempt
+        time.sleep(wait)
+        try:
+            with urllib.request.urlopen(request, timeout=timeout) as response:
+                reply = json.loads(response.read().decode())
+            return reply["choices"][0]["message"]["content"] or ""
+        except urllib.error.HTTPError as exc:
+            problem = f"the model endpoint answered {exc.code}"
+            if exc.code not in (408, 429, 500, 502, 503, 504, 529):
+                break
+        except OSError as exc:
+            problem = f"the model endpoint is not reachable: {exc}"
+    raise LlmError(problem)

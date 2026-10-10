@@ -83,6 +83,8 @@ CLI 0.11.4. It captures a checkpoint when a commit follows agent work, stores it
 
 The MCP endpoint is `https://api.cfo.ai/mcp` and uses OAuth, which the owner has to authorise. Tools include `edit_table_blocks`, `edit_scenarios` and `edit_pages`. The plan should be a multi-page model with stated assumptions, upside and downside scenarios, and a simulator. Every write to cfo.ai needs the owner's yes.
 
+The owner passed on a notice on 11 October: cfo.ai credits are unlimited for the length of the hackathon, and the dashboard does not show it. So credit use is no reason to keep the model small.
+
 ## Models and spend
 
 - Replays of the refund agent use the small Haiku model on the hackathon gateway (OpenAI-compatible, `LITELLM_BASE_URL` and `LITELLM_API_KEY` in `.env`, $20 budget). Three parallel calls on 10 October each returned in about 1.4 seconds with no throttling. The owner's own API key is the fallback and should be a one-setting switch.

@@ -1,3 +1,5 @@
+# Closed by Whodunit. Replay with `whodunit check cases/cents-off.toml`.
+fixed = "36542e62bce4b22357b1550e28feb5eb9e0908cf"
 id = "cents-off"
 symptom = "Full refunds on orders priced with cents pay out the wrong amount. Order 3003 cost 129.99 and the customer was refunded 130."
 good = "e6e88a7cc5aede4fed4ea4f0fe8e41a9db73b9a7"

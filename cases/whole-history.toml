@@ -1,0 +1,14 @@
+id = "whole-history"
+symptom = "Refunds are going out on orders that belong to someone else, when the person asking quotes an amount"
+good = "e5542b7f40b7e37b5eea8d66ea754230cf4411c0"
+bad = "df4f4fa601c658b196090b937f8854ed1e5d4f9c"
+target = "victims/refund-agent"
+build = ["uv", "run", "-q", "python", "-m", "py_compile", "agent.py"]
+run = ["uv", "run", "-q", "agent.py", "--json", "{input}"]
+
+[env]
+REFUND_LLM = "gateway"
+
+[[inputs]]
+text = "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks."
+refunds = []

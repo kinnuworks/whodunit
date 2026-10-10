@@ -118,3 +118,47 @@ def cloud_trend(detection: str = "Execution Failed") -> dict:
     points = trend.get("data_points", [])
     first = next((p["date"] for p in points if p.get("count", 0) > 0), None)
     return {"detection": trend.get("detection_name", detection), "first_seen": first, "total": trend.get("total_occurrences", 0), "points": points}
+
+
+def witness(mcp: Mcp, workflow: str, positions: dict[str, int], inputs: list[tuple[str, list[dict]]]) -> list[tuple[int, bool]]:
+    """What ordinary traffic already says about a case, as (position, failed) pairs for the lineup.
+
+    `positions` maps a commit to its place in the lineup (-1 for the good ref). A run counts when
+    it asked exactly what one of the case's inputs asks, and it failed if what it refunded is not
+    what the case expects. These runs were already paid for, so they cost the lineup nothing.
+    """
+    expected = {text: {str(r["order_id"]): float(r["refunded"]) for r in refunds} for text, refunds in inputs}
+    safe = workflow.replace("'", "''")
+    asked = ", ".join("'" + text.replace("'", "''") + "'" for text in expected) or "''"
+    rows = mcp.call("query_sql", sql=(
+        "select r.trace_id, r.input_preview, s.output_preview as info from runs r "
+        "join spans s on s.trace_id = r.trace_id and s.name = 'run_info' "
+        f"where r.workflow = '{safe}' and r.doctor = 0 and r.input_preview in ({asked}) and s.attributes not like '%case:%' "
+        "order by r.started_ms desc limit 200"
+    ))["rows"]
+    runs = []
+    for row in rows:
+        try:
+            tags = json.loads(row["info"] or "{}").get("tags", [])
+        except (json.JSONDecodeError, AttributeError):
+            continue
+        commit = next((t.split(":", 1)[1] for t in tags if t.startswith("commit:")), None)
+        if commit in positions:
+            runs.append((row["trace_id"], row["input_preview"], positions[commit]))
+    if not runs:
+        return []
+    ids = ", ".join("'" + trace + "'" for trace, _, _ in runs)
+    paid: dict[str, dict[str, float]] = {trace: {} for trace, _, _ in runs}
+    for span in mcp.call("query_sql", sql=f"select trace_id, output_preview from spans where name = 'issue_refund' and status_code != 2 and trace_id in ({ids}) limit 200")["rows"]:
+        try:
+            out = json.loads(span["output_preview"] or "{}")
+            order, amount = str(out["order_id"]), float(out["refunded"])
+        except (json.JSONDecodeError, KeyError, TypeError, ValueError):
+            continue
+        paid[span["trace_id"]][order] = paid[span["trace_id"]].get(order, 0.0) + amount
+    evidence = []
+    for trace, text, position in runs:
+        want, got = expected[text], paid[trace]
+        wrong = any(abs(got.get(o, 0.0) - want.get(o, 0.0)) > 0.005 for o in set(got) | set(want))
+        evidence.append((position, wrong))
+    return evidence

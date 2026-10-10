@@ -103,12 +103,29 @@ def test_probability_fixed_moves_the_right_way():
 
 
 def test_verify_stops_when_sure():
-    passing = fixes.verify(lambda: "pass", (0, 40), (20, 40), budget=60)
-    assert passing.fixed and passing.replays < 20
-    failing = fixes.verify(lambda: "fail", (0, 40), (20, 40), budget=60)
-    assert not failing.fixed and failing.replays <= 3
+    passing = fixes.verify(lambda: "pass", (0, 40), (20, 40), budget=90)
+    assert passing.fixed and 20 <= passing.replays <= 45  # about 30 clean replays to be sure of a clean baseline
+    failing = fixes.verify(lambda: "fail", (0, 40), (20, 40), budget=90)
+    assert not failing.fixed and failing.replays == 12 and "still fails more often" in failing.note
     broken = fixes.verify(lambda: "skip", (0, 40), (20, 40))
     assert not broken.fixed and "will not build" in broken.note
+
+
+def test_a_partial_fix_is_not_called_proven():
+    # The bug failed 9 runs in 10. The patch gets it down to 1 in 10, and before the culprit it was 0 in 40.
+    import itertools
+    one_in_ten = itertools.cycle(["pass"] * 9 + ["fail"])
+    checked = fixes.verify(lambda: next(one_in_ten), (0, 40), (36, 4), budget=90)
+    assert not checked.fixed
+    assert checked.better > 0.95  # it is better than broken, which is recorded and is not the bar
+
+
+def test_edits_are_applied_only_when_they_match_once(tmp_path):
+    (tmp_path / "a.py").write_text("x = 1\ny = 2\nx = 1\n")
+    answer = "=== a.py\n<<<<<<< SEARCH\ny = 2\n=======\ny = 3\n>>>>>>> REPLACE\n<<<<<<< SEARCH\nx = 1\n=======\nx = 9\n>>>>>>> REPLACE\n=== end\n=== b.py\nwhatever\n=== end"
+    changed, problems = fixes.apply_edits(answer, tmp_path, ["a.py"])
+    assert changed == ["a.py"] and (tmp_path / "a.py").read_text() == "x = 1\ny = 3\nx = 1\n"
+    assert "matched 2 places" in problems and "b.py is not one of the files" in problems
 
 
 def test_revert_fixes_the_stub_and_the_whole_pipeline_runs(tmp_path, monkeypatch, capsys):
@@ -119,7 +136,7 @@ def test_revert_fixes_the_stub_and_the_whole_pipeline_runs(tmp_path, monkeypatch
     assert main(["lineup", case, "--repo", str(made["repo"]), "--budget", "60"]) == 0
     assert main(["brief", case, "--no-runs"]) == 0
     assert main(["ruling", case, "--answer", "revert"]) == 0
-    assert main(["fix", case, "--budget", "30"]) == 0
+    assert main(["fix", case, "--fix-budget", "45"]) == 0
     assert main(["open-case", case, "--no-open"]) == 0
     record = json.loads(made["case"].with_name("case.record.json").read_text())
     assert record["lineup"]["culprit"]["sha"] == made["culprit"]
@@ -143,3 +160,43 @@ def test_case_file_renders_an_open_case_without_a_culprit():
                             "lineup": {"culprit": None, "replays": 30, "commits_tested": 3, "seconds": 90,
                                        "remaining": [{"sha": "b" * 40, "subject": "x", "probability": 0.6}]}, "replays": []})
     assert "Refunds &lt;vanish&gt;" in page and "Nobody named yet." in page and "Still in the lineup" in page
+
+
+def test_investigate_runs_the_whole_case_and_waits_for_the_ruling(tmp_path, monkeypatch, capsys):
+    monkeypatch.setenv("WHODUNIT_LLM", "none")
+    monkeypatch.chdir(tmp_path)
+    made = stub_history(tmp_path / "repo", suspects=10, culprit=4)
+    case = str(made["case"])
+    assert main(["investigate", case, "--repo", str(made["repo"]), "--budget", "60"]) == 3  # no ruling yet
+    record = json.loads(made["case"].with_name("case.record.json").read_text())
+    assert record["lineup"]["culprit"]["sha"] == made["culprit"] and "fix" not in record
+    assert record["log"][-1]["step"] == "ruling" and "Waiting for the owner" in record["log"][-1]["outcome"]
+    assert main(["investigate", case, "--repo", str(made["repo"]), "--answer", "revert"]) == 0
+    record = json.loads(made["case"].with_name("case.record.json").read_text())
+    assert record["fix"]["verification"]["fixed"] and len(record["attempts"]) == 1
+    assert [e["step"] for e in record["log"]][-3:] == ["lineup", "ruling", "fix"]
+
+
+def test_a_patch_that_is_not_proven_is_tried_again_and_then_reverted(tmp_path, monkeypatch, capsys):
+    monkeypatch.setenv("WHODUNIT_LLM", "gateway")
+    monkeypatch.chdir(tmp_path)
+    made = stub_history(tmp_path / "repo", suspects=8, culprit=3)
+    case = str(made["case"])
+    seen = []
+
+    def useless_patch(system, prompt, **kw):
+        seen.append(prompt)
+        if system.startswith("You write the root-cause brief"):
+            raise llm.LlmError("no brief model in this test")
+        # A patch that changes the file and leaves the bug in.
+        still_broken = git(made["repo"], "show", f"{made['shas'][-1]}:agent/agent.py")
+        return f"=== agent/agent.py\n{still_broken}\n# attempt {len(seen)}\n=== end"
+    monkeypatch.setattr(llm, "ask", useless_patch)
+    assert main(["investigate", case, "--repo", str(made["repo"]), "--budget", "60", "--answer", "patch", "--fix-budget", "45"]) == 0
+    record = json.loads(made["case"].with_name("case.record.json").read_text())
+    kinds = [(a["kind"], bool((a.get("verification") or {}).get("fixed"))) for a in record["attempts"]]
+    assert kinds == [("patch", False), ("patch", False), ("revert", True)]
+    assert record["fix"]["kind"] == "revert" and "fallback" in record["fix"]["note"]
+    assert "An earlier patch was tried" in seen[-1] and "refunds were" in seen[-1]
+    page = made["case"].with_name("case.casefile.html").read_text()
+    assert "What it took" in page

@@ -42,7 +42,7 @@ def classify(diff: str, files: list[str]) -> str:
     if re.search(r"\b(SYSTEM|PROMPT|INSTRUCTIONS)[A-Z_]*\b|system_prompt|\"role\": \"system\"", text) or "prompt" in names:
         return "prompt"
     # A reworded prompt often changes only the string lines inside it, and the name sits in the context.
-    only_strings = bool(changed) and all(line.strip()[:1] in "\"'" or line.strip()[:2] in ('f"', "f'") for line in changed if line.strip())
+    only_strings = bool(changed) and all(line.strip()[:1] in "\"'#" or line.strip()[:2] in ('f"', "f'") for line in changed if line.strip())
     if only_strings and re.search(r"\b(SYSTEM|PROMPT|INSTRUCTIONS)[A-Z_]*\b|system_prompt", diff):
         return "prompt"
     if re.search(r"\b(MODEL|temperature|max_tokens|top_p)\b", text):
@@ -73,13 +73,13 @@ def question(kind: str, subject: str, request: str | None) -> str:
 
 
 def decide(repo: str | Path, kind: str, case_id: str, culprit: str, subject: str, request: str | None = None,
-           answer: str | None = None, ask=input) -> tuple[Ruling, bool]:
+           answer: str | None = None, ask=None) -> tuple[Ruling, bool]:
     """Return (ruling, asked). Asks only when there is no ruling for this kind yet."""
     known = recall(repo, kind)
     if known:
         return known, False
     if answer is None:
-        answer = ask(question(kind, subject, request))
+        answer = (ask or input)(question(kind, subject, request))
     answer = answer.strip().lower()
     if answer not in (REVERT, PATCH):
         raise ValueError(f"the ruling has to be revert or patch, and was {answer!r}")

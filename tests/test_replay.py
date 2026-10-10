@@ -114,12 +114,14 @@ def test_real_refund_agent_across_20_commits(tmp_path):
     import sys
     import time
 
-    from tests.planted import VICTIM
+    from tests.planted import VICTIM, VICTIM_BASE
 
     with socket.socket() as s:
         s.bind(("127.0.0.1", 0))
         port = s.getsockname()[1]
-    fake = subprocess.Popen([sys.executable, str(VICTIM / "fake_llm.py"), str(port), str(tmp_path / "requests.jsonl")])
+    fake_llm = tmp_path / "fake_llm.py"
+    fake_llm.write_text(subprocess.run(["git", "-C", str(VICTIM), "show", f"{VICTIM_BASE}:victims/refund-agent/fake_llm.py"], capture_output=True, text=True, check=True).stdout)
+    fake = subprocess.Popen([sys.executable, str(fake_llm), str(port), str(tmp_path / "requests.jsonl")])
     try:
         time.sleep(0.5)
         made = refund_agent_history(tmp_path / "repo", fake_llm_port=port)

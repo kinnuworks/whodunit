@@ -1,0 +1,8 @@
+{
+ "kind": "tool-code",
+ "ruling": "patch",
+ "decided_on": "2026-10-11",
+ "first_case": "cents-off",
+ "culprit": "367c64a5ae2702ae2d1142f0877bb5c56e946b21",
+ "note": "Given on 11 October 2026. The owner was asked revert or patch for prompt, tool-code and model-settings changes, with patch suggested for all three, and said to go ahead."
+}

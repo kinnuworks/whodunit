@@ -43,6 +43,8 @@ def main() -> int:
     parser.add_argument("--llm", default="fake", choices=("fake", "mock", "gateway", "own"))
     parser.add_argument("--trace-to", default="neatroots", choices=("neatroots", "neatlogs"))
     parser.add_argument("--seed", type=int, default=7)
+    parser.add_argument("--cases", help="a folder of case files whose inputs join the mix, as the requests customers were sending when things went wrong")
+    parser.add_argument("--only-cases", action="store_true", help="send only the requests from --cases")
     args = parser.parse_args()
     repo = Path(args.repo).resolve()
     rng = random.Random(args.seed)
@@ -52,11 +54,18 @@ def main() -> int:
         run=("uv", "run", "-q", "agent.py", "--json", "{input}"),
         env={"REFUND_LLM": args.llm, "TRACE_TO": args.trace_to},
     )
+    requests = [] if args.only_cases else list(REQUESTS)
+    if args.cases:
+        import tomllib
+
+        for path in sorted(Path(args.cases).glob("*.toml")):
+            requests += [i["text"] for i in tomllib.loads(path.read_text()).get("inputs", [])]
+    requests = list(dict.fromkeys(requests))
     commits = [resolve(repo, args.good)] + [s.sha for s in list_suspects(repo, args.good, args.bad, args.target)]
     sent = skipped = 0
     with Runner(repo, case) as runner:
         for sha in commits:
-            for request in rng.sample(REQUESTS, k=min(args.runs, len(REQUESTS))):
+            for request in rng.sample(requests, k=min(args.runs, len(requests))):
                 result = runner.replay(sha, CaseInput(request))  # with no expectation the verdict means nothing here
                 if result.verdict == "skip":
                     skipped += 1

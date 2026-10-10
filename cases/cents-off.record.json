@@ -538,5 +538,95 @@
   ],
   "dropped": [],
   "model": "claude-sonnet-4.6"
- }
+ },
+ "log": [
+  {
+   "at": "2026-10-11 01:21:15",
+   "step": "lineup",
+   "outcome": "Already named: 367c64a5ae27."
+  },
+  {
+   "at": "2026-10-11 01:21:15",
+   "step": "ruling",
+   "outcome": "patch for a tool-code change"
+  },
+  {
+   "at": "2026-10-11 01:22:18",
+   "step": "fix",
+   "outcome": "Proven with a patch after 2 tries."
+  }
+ ],
+ "ruling": {
+  "kind": "tool-code",
+  "ruling": "patch",
+  "decided_on": "2026-10-11",
+  "first_case": "cents-off",
+  "culprit": "367c64a5ae2702ae2d1142f0877bb5c56e946b21",
+  "note": "",
+  "asked_now": true
+ },
+ "fix": {
+  "branch": "whodunit/cents-off",
+  "kind": "patch",
+  "commit": "36542e62bce4b22357b1550e28feb5eb9e0908cf",
+  "note": "",
+  "files": [
+   "victims/refund-agent/agent.py"
+  ],
+  "failed_replays": [],
+  "verification": {
+   "fixed": true,
+   "probability": 0.95375,
+   "replays": 30,
+   "failures": 0,
+   "note": "",
+   "better": 0.9999999999555478
+  },
+  "diff": "diff --git a/victims/refund-agent/agent.py b/victims/refund-agent/agent.py\nindex dcf81cf..89da329 100644\n--- a/victims/refund-agent/agent.py\n+++ b/victims/refund-agent/agent.py\n@@ -149,8 +149,7 @@ def lookup_order(order_id: str):\n \n @span(kind=\"TOOL\", name=\"issue_refund\")\n def issue_refund(order_id: str, amount: float):\n-    \"\"\"Record a refund for an order. Returns a dict with the rounded amount refunded and the order_id.\"\"\"\n-    refund = {\"refunded\": round(amount), \"order_id\": order_id}\n+    refund = {\"refunded\": amount, \"order_id\": order_id}\n     REFUNDS.append(refund)\n     return refund\n \n",
+  "regression_case": "cases/cents-off.toml"
+ },
+ "attempts": [
+  {
+   "branch": "whodunit/cents-off",
+   "kind": "patch",
+   "commit": "36542e62bce4b22357b1550e28feb5eb9e0908cf",
+   "note": "",
+   "files": [
+    "victims/refund-agent/agent.py"
+   ],
+   "failed_replays": [],
+   "verification": {
+    "fixed": true,
+    "probability": 0.95375,
+    "replays": 30,
+    "failures": 0,
+    "note": "",
+    "better": 0.9999999999555478
+   },
+   "diff": "diff --git a/victims/refund-agent/agent.py b/victims/refund-agent/agent.py\nindex dcf81cf..89da329 100644\n--- a/victims/refund-agent/agent.py\n+++ b/victims/refund-agent/agent.py\n@@ -149,8 +149,7 @@ def lookup_order(order_id: str):\n \n @span(kind=\"TOOL\", name=\"issue_refund\")\n def issue_refund(order_id: str, amount: float):\n-    \"\"\"Record a refund for an order. Returns a dict with the rounded amount refunded and the order_id.\"\"\"\n-    refund = {\"refunded\": round(amount), \"order_id\": order_id}\n+    refund = {\"refunded\": amount, \"order_id\": order_id}\n     REFUNDS.append(refund)\n     return refund\n \n",
+   "regression_case": "cases/cents-off.toml"
+  }
+ ],
+ "damages": {
+  "workflow": "refund-agent",
+  "since_ms": null,
+  "runs": 28,
+  "bad_runs": 2,
+  "bad_share": 0.0714,
+  "tokens": 76132,
+  "bad_tokens": 3510,
+  "cost_usd": 0.1,
+  "wasted_usd": 0.0044,
+  "replay_runs": 27,
+  "replay_usd": 0.1037,
+  "note": "Dollar figures are estimates from token counts."
+ },
+ "checks": [
+  {
+   "at": "2026-10-11 01:33",
+   "ref": "fdf975cba0b71287a74581d23ff3642b448f959f",
+   "runs": 8,
+   "failures": 0
+  }
+ ]
 }

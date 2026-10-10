@@ -157,22 +157,36 @@ def find_motive(repo: str | Path, sha: str) -> Motive:
         motive.note = f"The commit names Entire checkpoint {motive.checkpoint}, and Entire cannot find it, so the request behind this commit is not on record."
         return motive
     sessions = json.loads(meta).get("sessions") or [{}]
-    motive.session, motive.agent, motive.model = (sessions[0].get(k) for k in ("session_id", "agent", "model"))
-    raw = entire(repo, "checkpoint", "explain", "--checkpoint", motive.checkpoint, "--raw-transcript")
-    if not raw:
-        motive.note = "The checkpoint has no transcript."
-        return motive
-    entries = []
-    for line in raw.splitlines():
-        try:
-            entries.append(json.loads(line))
-        except json.JSONDecodeError:
-            continue
     files = {f for f in git(repo, "diff-tree", "--no-commit-id", "--name-only", "-r", full).split("\n") if f}
-    found = read_transcript(entries, datetime.fromisoformat(stamp).astimezone(timezone.utc), files)
-    if found["request"] is None:
-        motive.note = "The transcript has no prompt from before this commit."
+    made_at = datetime.fromisoformat(stamp).astimezone(timezone.utc)
+    # A checkpoint takes in every session that was open in the folder when the commit was made,
+    # including ones that had nothing to do with it. The session wanted is the one that edited
+    # the commit's files.
+    best, best_score, chosen = None, -1.0, 0
+    for index in range(len(sessions)):
+        raw = entire(repo, "checkpoint", "explain", "--checkpoint", motive.checkpoint, "--session-index", str(index), "--raw-transcript")
+        if not raw:
+            continue
+        entries = []
+        for line in raw.splitlines():
+            try:
+                entries.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+        candidate = read_transcript(entries, made_at, files)
+        if candidate["request"] is None:
+            continue
+        score = sum(1.0 for step in candidate["steps"] if step.kind == "edited") + (0.5 if any(step.kind == "ran" and "ommit" in step.text for step in candidate["steps"]) else 0.0)
+        if score > best_score:
+            best, best_score, chosen = candidate, score, index
+    if best is None:
+        motive.note = "The checkpoint has no transcript with a prompt from before this commit."
         return motive
+    found = best
+    motive.session, motive.agent, motive.model = (sessions[chosen].get(k) for k in ("session_id", "agent", "model"))
+    if len(sessions) > 1:
+        motive.note = (f"This checkpoint holds {len(sessions)} sessions. " + (
+            "The one that edited the commit's files was used." if best_score >= 1 else "None of them edited the commit's files, so the request shown may not be the cause of this commit."))
     for key, value in found.items():
         setattr(motive, key, value)
     # A session transcript is full of absolute paths. The case file is public, so they go.

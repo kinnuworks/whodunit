@@ -1582,5 +1582,112 @@
   ],
   "dropped": [],
   "model": "claude-sonnet-4.6"
+ },
+ "log": [
+  {
+   "at": "2026-10-11 01:22:18",
+   "step": "lineup",
+   "outcome": "Already named: c54575368397."
+  },
+  {
+   "at": "2026-10-11 01:22:18",
+   "step": "ruling",
+   "outcome": "patch for a model-settings change"
+  },
+  {
+   "at": "2026-10-11 01:30:37",
+   "step": "fix",
+   "outcome": "Not proven after 3 tries."
+  }
+ ],
+ "ruling": {
+  "kind": "model-settings",
+  "ruling": "patch",
+  "decided_on": "2026-10-11",
+  "first_case": "half-done-batch",
+  "culprit": "c54575368397e58f98e19f28d555fe081677b964",
+  "note": "",
+  "asked_now": true
+ },
+ "fix": {
+  "branch": "whodunit/half-done-batch",
+  "kind": "revert",
+  "commit": null,
+  "note": "The revert does not apply cleanly on top of the later commits. CONFLICT (content): Merge conflict in victims/refund-agent/README.md This is a fallback: the ruling was to patch, and two patches were not proven.",
+  "files": []
+ },
+ "attempts": [
+  {
+   "branch": "whodunit/half-done-batch",
+   "kind": "patch",
+   "commit": "53173df999fd7f711aee1e6fbc3b206092746705",
+   "note": "",
+   "files": [
+    "victims/refund-agent/agent.py",
+    "victims/refund-agent/README.md"
+   ],
+   "failed_replays": [
+    "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged. -> refunds were [], expected [{\"order_id\": \"6006\", \"refunded\": 25.0}, {\"order_id\": \"7007\", \"refunded\": 60.0}]",
+    "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged. -> refunds were [], expected [{\"order_id\": \"6006\", \"refunded\": 25.0}, {\"order_id\": \"7007\", \"refunded\": 60.0}]",
+    "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged. -> refunds were [], expected [{\"order_id\": \"6006\", \"refunded\": 25.0}, {\"order_id\": \"7007\", \"refunded\": 60.0}]",
+    "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged. -> refunds were [], expected [{\"order_id\": \"6006\", \"refunded\": 25.0}, {\"order_id\": \"7007\", \"refunded\": 60.0}]"
+   ],
+   "verification": {
+    "fixed": false,
+    "probability": 0.4728,
+    "replays": 90,
+    "failures": 5,
+    "note": "the replay budget ran out before the answer was clear",
+    "better": 0.19742240196644206
+   },
+   "diff": "diff --git a/victims/refund-agent/README.md b/victims/refund-agent/README.md\nindex 77e3af1..3f123ce 100644\n--- a/victims/refund-agent/README.md\n+++ b/victims/refund-agent/README.md\n@@ -73,7 +73,7 @@ During a replay neatroots sets `NEATROOTS_REPLAY_INPUT`, and the agent uses it i\n - The refunds a run paid out are kept in memory for checks to read.\n - `issue_refund` requires a short reason (such as `arrived damaged`), which is stored with the refund.\n - A `get_order_status` tool answers \"where is my order?\" questions with the status and placed_on date, without refunding anything.\n-- Each run makes at most 3 model calls, each capped at 150 tokens, to save on gateway spend.\n+- Each run makes at most 8 model calls, each capped at 300 tokens.\n - The OpenAI client carries a 30-second timeout and 2 retries, where the original had neither.\n - The system prompt is warmer: it acknowledges what went wrong before saying what was done, gives the customer the benefit of the doubt on a mistyped order number, tries digit-swap and digit-double corrections on a failed lookup, and offers a replacement alongside a refund where that fits.\n - If an order doesn't belong to the customer, the agent never names whose it is or mentions another customer.\ndiff --git a/victims/refund-agent/agent.py b/victims/refund-agent/agent.py\nindex 7c4a00a..ed17bc2 100644\n--- a/victims/refund-agent/agent.py\n+++ b/victims/refund-agent/agent.py\n@@ -225,12 +225,12 @@ MODEL_CALLS = 0\n \n \n @span(kind=\"WORKFLOW\", name=\"refund\")\n-def run(request: str, max_steps: int = 3):\n+def run(request: str, max_steps: int = 8):\n     global MODEL_CALLS\n     run_info()\n     messages = [{\"role\": \"system\", \"content\": SYSTEM}, {\"role\": \"user\", \"content\": request}]\n     for _ in range(max_steps):\n-        r = client.chat.completions.create(model=MODEL, messages=messages, tools=TOOLS, max_tokens=150)\n+        r = client.chat.completions.create(model=MODEL, messages=messages, tools=TOOLS, max_tokens=300)\n         MODEL_CALLS += 1\n         m = r.choices[0].message\n         if not m.tool_calls:\n"
+  },
+  {
+   "branch": "whodunit/half-done-batch",
+   "kind": "patch",
+   "commit": "e8848f1801d802328762d33d759eb1d94184c668",
+   "note": "",
+   "files": [
+    "victims/refund-agent/fake_llm.py",
+    "victims/refund-agent/agent.py",
+    "victims/refund-agent/README.md"
+   ],
+   "failed_replays": [
+    "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged. -> refunds were [], expected [{\"order_id\": \"6006\", \"refunded\": 25.0}, {\"order_id\": \"7007\", \"refunded\": 60.0}]",
+    "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged. -> refunds were [], expected [{\"order_id\": \"6006\", \"refunded\": 25.0}, {\"order_id\": \"7007\", \"refunded\": 60.0}]",
+    "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged. -> refunds were [], expected [{\"order_id\": \"6006\", \"refunded\": 25.0}, {\"order_id\": \"7007\", \"refunded\": 60.0}]",
+    "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged. -> refunds were [], expected [{\"order_id\": \"6006\", \"refunded\": 25.0}, {\"order_id\": \"7007\", \"refunded\": 60.0}]"
+   ],
+   "verification": {
+    "fixed": false,
+    "probability": 0.4728,
+    "replays": 90,
+    "failures": 5,
+    "note": "the replay budget ran out before the answer was clear",
+    "better": 0.19742240196644206
+   },
+   "diff": "diff --git a/victims/refund-agent/README.md b/victims/refund-agent/README.md\nindex 77e3af1..3f123ce 100644\n--- a/victims/refund-agent/README.md\n+++ b/victims/refund-agent/README.md\n@@ -73,7 +73,7 @@ During a replay neatroots sets `NEATROOTS_REPLAY_INPUT`, and the agent uses it i\n - The refunds a run paid out are kept in memory for checks to read.\n - `issue_refund` requires a short reason (such as `arrived damaged`), which is stored with the refund.\n - A `get_order_status` tool answers \"where is my order?\" questions with the status and placed_on date, without refunding anything.\n-- Each run makes at most 3 model calls, each capped at 150 tokens, to save on gateway spend.\n+- Each run makes at most 8 model calls, each capped at 300 tokens.\n - The OpenAI client carries a 30-second timeout and 2 retries, where the original had neither.\n - The system prompt is warmer: it acknowledges what went wrong before saying what was done, gives the customer the benefit of the doubt on a mistyped order number, tries digit-swap and digit-double corrections on a failed lookup, and offers a replacement alongside a refund where that fits.\n - If an order doesn't belong to the customer, the agent never names whose it is or mentions another customer.\ndiff --git a/victims/refund-agent/agent.py b/victims/refund-agent/agent.py\nindex 7c4a00a..ed17bc2 100644\n--- a/victims/refund-agent/agent.py\n+++ b/victims/refund-agent/agent.py\n@@ -225,12 +225,12 @@ MODEL_CALLS = 0\n \n \n @span(kind=\"WORKFLOW\", name=\"refund\")\n-def run(request: str, max_steps: int = 3):\n+def run(request: str, max_steps: int = 8):\n     global MODEL_CALLS\n     run_info()\n     messages = [{\"role\": \"system\", \"content\": SYSTEM}, {\"role\": \"user\", \"content\": request}]\n     for _ in range(max_steps):\n-        r = client.chat.completions.create(model=MODEL, messages=messages, tools=TOOLS, max_tokens=150)\n+        r = client.chat.completions.create(model=MODEL, messages=messages, tools=TOOLS, max_tokens=300)\n         MODEL_CALLS += 1\n         m = r.choices[0].message\n         if not m.tool_calls:\ndiff --git a/victims/refund-agent/fake_llm.py b/victims/refund-agent/fake_llm.py\nindex 6f7923a..452ed53 100644\n--- a/victims/refund-agent/fake_llm.py\n+++ b/victims/refund-agent/fake_llm.py\n@@ -29,22 +29,70 @@ def say(text: str) -> tuple[dict, str]:\n \n def next_message(messages: list[dict]) -> tuple[dict, str]:\n     request = next((m.get(\"content\") or \"\" for m in messages if m.get(\"role\") == \"user\"), \"\")\n-    order = re.search(r\"order\\s+#?(\\d+)\", request, re.I)\n+    orders = re.findall(r\"order\\s+#?(\\d+)\", request, re.I)\n     customer = re.search(r\"cust_\\w+\", request)\n-    results = [json.loads(m.get(\"content\") or \"{}\") for m in messages if m.get(\"role\") == \"tool\"]\n-    if order is None:\n+\n+    if not orders:\n         return say(\"Which order would you like refunded? Please send the order id.\")\n-    order_id = order.group(1)\n-    if not results:\n-        return tool_call(0, \"lookup_order\", {\"order_id\": order_id})\n-    found = results[0]\n-    if \"error\" in found:\n-        return say(f\"I could not find order {order_id}. Please check the order id.\")\n-    if customer and found.get(\"owner\") != customer.group(0):\n-        return say(f\"Order {order_id} belongs to a different customer, so I cannot refund it.\")\n-    if len(results) == 1:\n-        return tool_call(1, \"issue_refund\", {\"order_id\": order_id, \"amount\": found[\"amount\"], \"reason\": \"customer request\"})\n-    return say(f\"Order {order_id} has been refunded in full: {found['amount']:.2f}.\")\n+\n+    # Build a map of tool call id -> result, and track which tool calls were lookups vs refunds\n+    tool_results: dict[str, dict] = {}\n+    for m in messages:\n+        if m.get(\"role\") == \"tool\":\n+            tool_results[m.get(\"tool_call_id\", \"\")] = json.loads(m.get(\"content\") or \"{}\")\n+\n+    # Track which order ids have been looked up and which have been refunded\n+    looked_up: dict[str, dict] = {}   # order_id -> lookup result\n+    refunded: set[str] = set()        # ord"
+  },
+  {
+   "branch": "whodunit/half-done-batch",
+   "kind": "revert",
+   "commit": null,
+   "note": "The revert does not apply cleanly on top of the later commits. CONFLICT (content): Merge conflict in victims/refund-agent/README.md This is a fallback: the ruling was to patch, and two patches were not proven.",
+   "files": []
+  }
+ ],
+ "damages": {
+  "workflow": "refund-agent",
+  "since_ms": null,
+  "runs": 24,
+  "bad_runs": 2,
+  "bad_share": 0.0833,
+  "tokens": 72063,
+  "bad_tokens": 7517,
+  "cost_usd": 0.09,
+  "wasted_usd": 0.0095,
+  "replay_runs": 228,
+  "replay_usd": 1.4238,
+  "note": "Dollar figures are estimates from token counts."
  }
 }

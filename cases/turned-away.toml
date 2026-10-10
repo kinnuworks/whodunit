@@ -1,3 +1,5 @@
+# Closed by Whodunit. Replay with `whodunit check cases/turned-away.toml`.
+fixed = "0c65edc56b85619cc3d2671440043d057404cbfb"
 id = "turned-away"
 symptom = "Customers asking for a refund on an order that has shipped get a kind reply and no refund."
 good = "4c5adbcc2b967732cd0ae9a9544d765851ebad0b"

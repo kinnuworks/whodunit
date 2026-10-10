@@ -1,0 +1,8 @@
+{
+ "kind": "prompt",
+ "ruling": "patch",
+ "decided_on": "2026-10-11",
+ "first_case": "turned-away",
+ "culprit": "ca0a2d6288aad40896ccd6d015ef5bd43c4e56fd",
+ "note": "Given on 11 October 2026. The owner was asked revert or patch for prompt, tool-code and model-settings changes, with patch suggested for all three, and said to go ahead."
+}

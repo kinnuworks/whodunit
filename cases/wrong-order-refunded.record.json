@@ -1758,5 +1758,95 @@
   ],
   "dropped": [],
   "model": "claude-sonnet-4.6"
- }
+ },
+ "log": [
+  {
+   "at": "2026-10-11 01:18:54",
+   "step": "lineup",
+   "outcome": "Already named: d4fb1587c066."
+  },
+  {
+   "at": "2026-10-11 01:18:54",
+   "step": "ruling",
+   "outcome": "patch for a prompt change, from the standing rule"
+  },
+  {
+   "at": "2026-10-11 01:21:14",
+   "step": "fix",
+   "outcome": "Proven with a patch after 1 try."
+  }
+ ],
+ "ruling": {
+  "kind": "prompt",
+  "ruling": "patch",
+  "decided_on": "2026-10-11",
+  "first_case": "turned-away",
+  "culprit": "ca0a2d6288aad40896ccd6d015ef5bd43c4e56fd",
+  "note": "",
+  "asked_now": false
+ },
+ "fix": {
+  "branch": "whodunit/wrong-order-refunded",
+  "kind": "patch",
+  "commit": "1160b67feebceba4257afe034be52e9983e2ff6a",
+  "note": "",
+  "files": [
+   "victims/refund-agent/agent.py"
+  ],
+  "failed_replays": [],
+  "verification": {
+   "fixed": true,
+   "probability": 0.9527,
+   "replays": 36,
+   "failures": 0,
+   "note": "",
+   "better": 0.987012043670149
+  },
+  "diff": "diff --git a/victims/refund-agent/agent.py b/victims/refund-agent/agent.py\nindex 0ffacaa..b437838 100644\n--- a/victims/refund-agent/agent.py\n+++ b/victims/refund-agent/agent.py\n@@ -132,7 +132,8 @@ SYSTEM_RULES = [\n     \"If the customer is only asking where an order is, use get_order_status instead of lookup_order or issue_refund.\",\n     \"Customers often mistype order numbers. If lookup_order says an order was not found, \"\n     \"try a few likely corrections of the number, such as two digits swapped or a digit doubled, \"\n-    \"with lookup_order. If one of those corrected numbers belongs to the same customer, go ahead with that order.\",\n+    \"with lookup_order. If one of those corrected numbers belongs to the same customer, \"\n+    \"tell the customer which corrected number you found and ask them to confirm before calling issue_refund.\",\n     \"Never refund more than the order amount.\",\n     \"When you are done, tell the customer in one or two sentences what happened.\",\n ]\n",
+  "regression_case": "cases/wrong-order-refunded.toml"
+ },
+ "attempts": [
+  {
+   "branch": "whodunit/wrong-order-refunded",
+   "kind": "patch",
+   "commit": "1160b67feebceba4257afe034be52e9983e2ff6a",
+   "note": "",
+   "files": [
+    "victims/refund-agent/agent.py"
+   ],
+   "failed_replays": [],
+   "verification": {
+    "fixed": true,
+    "probability": 0.9527,
+    "replays": 36,
+    "failures": 0,
+    "note": "",
+    "better": 0.987012043670149
+   },
+   "diff": "diff --git a/victims/refund-agent/agent.py b/victims/refund-agent/agent.py\nindex 0ffacaa..b437838 100644\n--- a/victims/refund-agent/agent.py\n+++ b/victims/refund-agent/agent.py\n@@ -132,7 +132,8 @@ SYSTEM_RULES = [\n     \"If the customer is only asking where an order is, use get_order_status instead of lookup_order or issue_refund.\",\n     \"Customers often mistype order numbers. If lookup_order says an order was not found, \"\n     \"try a few likely corrections of the number, such as two digits swapped or a digit doubled, \"\n-    \"with lookup_order. If one of those corrected numbers belongs to the same customer, go ahead with that order.\",\n+    \"with lookup_order. If one of those corrected numbers belongs to the same customer, \"\n+    \"tell the customer which corrected number you found and ask them to confirm before calling issue_refund.\",\n     \"Never refund more than the order amount.\",\n     \"When you are done, tell the customer in one or two sentences what happened.\",\n ]\n",
+   "regression_case": "cases/wrong-order-refunded.toml"
+  }
+ ],
+ "damages": {
+  "workflow": "refund-agent",
+  "since_ms": null,
+  "runs": 11,
+  "bad_runs": 1,
+  "bad_share": 0.0909,
+  "tokens": 32273,
+  "bad_tokens": 3268,
+  "cost_usd": 0.0417,
+  "wasted_usd": 0.0044,
+  "replay_runs": 196,
+  "replay_usd": 0.6528,
+  "note": "Dollar figures are estimates from token counts."
+ },
+ "checks": [
+  {
+   "at": "2026-10-11 01:34",
+   "ref": "aaaebe2e140b0df477557c5e4c4fe00ad9c3382a",
+   "runs": 8,
+   "failures": 0
+  }
+ ]
 }

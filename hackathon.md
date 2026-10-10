@@ -186,3 +186,20 @@ Things that went wrong, and what was done:
 - Session transcripts are full of absolute paths, and those were landing in the case records. The motive step now strips them.
 
 Not done: no ruling has been given for any of the five, because that is the owner's question to answer. The culprits fall into three kinds: prompt (`strangers-paid`, `wrong-order-refunded`), tool code (`cents-off`), and model settings (`half-done-batch`). `turned-away` is classed as agent code and reads like a prompt change, which is one more thing the classifier gets wrong.
+
+### 1:21 AM, a look at the rest of the field
+
+About 120 public repos mention the hackathon on GitHub, 13 hours in. Roughly 80 have real work in them and 25 are a README or less. X search needs a sign-in, so posts were only found through links in READMEs.
+
+- Three other entries ask the same question as Whodunit. AgentBisect has a worktree replay runner and no bisect yet, and it sorts a commit into good or bad by pass-rate thresholds. Autopsy and Rootline name the culprit by having a model read traces, diffs and checkpoints, with no replay across commits. All three use planted bugs that fail every time.
+- A larger group repairs a failing agent from its neatlogs traces and keeps the patch only if a re-run improves (Mend, Pitstop, Medic, Suture). None of them asks which commit caused it.
+- Entire has its own page for the event, `hack.entire.io/neathacks-2026`, with a prize for best use of Checkpoints, Graph or Brain. Its first suggested idea is "a debugger for agent mistakes". The suggested checklist asks for an accessible checkpoint link and its id, and notes that reviewers need access to the repo.
+- The furthest-along entries already show things this repo lacks: a public cfo.ai model link, neatlogs cloud screenshots with detections, a demo video, #neatHack posts and a live page.
+
+One test fails at the moment, `tests/test_replay.py::test_real_refund_agent_across_20_commits`, with other work uncommitted in the tree.
+
+### 1:40 AM, a checkpoint takes in every session that is open
+
+Two sessions were open in this folder at once. One ran `whodunit fix`, which committed patches on `whodunit/turned-away` and `whodunit/cents-off`. The other was reading up on the field and touched neither branch. Entire attached both sessions to those two commits, as checkpoints `b7aa968e95c5` and `587df29ec38f`.
+
+So a commit's checkpoint can hold a session that had nothing to do with it. The motive step reads checkpoints to find the request behind a culprit, and it needs to pick the session that touched the commit's files. Until it does, work that is unrelated to a change should be done from another folder.

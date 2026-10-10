@@ -53,7 +53,8 @@ class Runner:
         self.repo = Path(repo).resolve()
         self.case = case
         self.keep = keep
-        self.root = self.repo / ".whodunit" / "worktrees"
+        # One folder per runner, so two runs in the same repo never remove each other's worktrees.
+        self.root = self.repo / ".whodunit" / "worktrees" / str(os.getpid())
         self.built: dict[str, str | None] = {}  # sha -> None if the build worked, else why it did not
         self.replays: list[Replay] = []
         self._locks: dict[str, threading.Lock] = defaultdict(threading.Lock)  # one build at a time per commit
@@ -82,6 +83,10 @@ class Runner:
             if path.exists():
                 subprocess.run(["git", "-C", str(self.repo), "worktree", "remove", "--force", str(path)], capture_output=True)
         self.built.clear()
+        try:
+            self.root.rmdir()
+        except OSError:
+            pass
 
     def _env(self, sha: str, tag: str = "") -> dict:
         env = {k: v for k, v in os.environ.items() if k != "VIRTUAL_ENV"}

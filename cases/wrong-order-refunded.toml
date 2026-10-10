@@ -1,3 +1,5 @@
+# Closed by Whodunit. Replay with `whodunit check cases/wrong-order-refunded.toml`.
+fixed = "1160b67feebceba4257afe034be52e9983e2ff6a"
 id = "wrong-order-refunded"
 symptom = "A customer asked about an order number we have no record of, and every so often the agent refunds one of their other orders instead."
 good = "367c64a5ae2702ae2d1142f0877bb5c56e946b21"

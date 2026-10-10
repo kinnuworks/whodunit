@@ -12,6 +12,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 VICTIM = REPO_ROOT / "victims" / "refund-agent"
+VICTIM_BASE = "e5542b7f40b7e37b5eea8d66ea754230cf4411c0"  # the last commit before the second session started growing the agent
 
 
 def git(repo: Path, *args: str) -> str:
@@ -132,7 +133,8 @@ def refund_agent_history(repo: Path, suspects: int = 20, culprit: int = 14, brok
     target = repo / "victims" / "refund-agent"
     target.mkdir(parents=True)
     for name in ("agent.py", "fake_llm.py", "pyproject.toml", "uv.lock", "README.md"):
-        shutil.copy(VICTIM / name, target / name)
+        # The planted bugs are edits to the agent as it was before its real history grew.
+        (target / name).write_text(git(REPO_ROOT, "show", f"{VICTIM_BASE}:victims/refund-agent/{name}") + "\n")
     (repo / ".gitignore").write_text(".venv/\n__pycache__/\n.whodunit/\nrequests.jsonl\ncase.toml\n")
     agent = target / "agent.py"
     shas = [commit(repo, "Import the refund agent")]

@@ -1,3 +1,5 @@
+# Closed by Whodunit. Replay with `whodunit check cases/strangers-paid.toml`.
+fixed = "3e19d88dac154acb69eaddbbec891676eb33aa84"
 id = "strangers-paid"
 symptom = "Refunds are going out on orders that belong to someone else, usually when the person asking quotes an amount."
 good = "20b9a91cef9b7bd61ede217708515ff743d2dc23"

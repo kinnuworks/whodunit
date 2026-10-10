@@ -16,7 +16,7 @@ from . import fix as fixes
 from . import ruling as rulings
 from .motive import find_motive
 from .neat import NeatError, neatroots
-from .onset import cloud_trend, find_onset, traffic
+from .onset import cloud_trend, find_onset, traffic, witness
 from .lineup import linear_scan_cost, plain_bisect, statistical_bisect
 from .replay import FAIL, PASS, Replay, Runner
 from .suspects import git, list_suspects, resolve
@@ -80,6 +80,20 @@ def _statistical(args, case, suspects, runner, say):
         runner.replays.extend(Replay(**r) for r in load_record(record_path(args)).get("replays", []) if r["sha"] in position)
         evidence = [(position[r.sha], r.verdict == FAIL) for r in runner.replays if r.verdict != "skip"]
         say(f"Resuming with {len(evidence)} replays already on record.")
+    if getattr(args, "from_traffic", None):
+        # Ordinary runs that asked what this case asks are evidence that is already paid for.
+        position = {s.sha: n for n, s in enumerate(suspects)}
+        position[resolve(runner.repo, case.good)] = -1
+        try:
+            seen = witness(neatroots(), args.from_traffic, position, [(i.text, i.expect.get("refunds", [])) for i in case.inputs])
+        except NeatError as exc:
+            seen = []
+            say(f"neatroots could not be asked for traffic: {exc}")
+        evidence += seen
+        runner.witnessed = seen
+        if seen:
+            at = sorted({p for p, _ in seen})
+            say(f"Traffic: {len(seen)} ordinary runs across {len(at)} of these commits had already asked this, and {sum(f for _, f in seen)} of them went wrong.")
     say(f"Statistical bisect, at most {args.budget} replays, {args.parallel} at a time. F is a failed replay, a dot is a pass.")
     return statistical_bisect(
         len(suspects), trial, args.budget, priors=priors, confidence=args.confidence, parallel=args.parallel, on_round=on_round,
@@ -90,13 +104,16 @@ def _statistical(args, case, suspects, runner, say):
 def lineup(args) -> int:
     case = Case.load(args.case)
     repo = Path(args.repo).resolve()
-    suspects = list_suspects(repo, case.good, case.bad, case.target)
+    suspects = list_suspects(repo, case.good, case.bad, case.target, graph=not getattr(args, "no_graph", False))
     if not suspects:
         print(f"No commits between {case.good} and {case.bad}. Nothing to investigate.")
         return 2
     say = print if not args.json else (lambda *a, **k: print(*a, **k, file=sys.stderr))
     say(f"Case {case.id}: {case.symptom}")
     say(f"Suspects: {len(suspects)}, of which {sum(s.touches_target for s in suspects)} touched {case.target}.")
+    with_alibi = [s for s in suspects if s.alibi]
+    if with_alibi:
+        say(f"Alibis: {len(with_alibi)} of them start with less suspicion, for example {with_alibi[0].short} ({with_alibi[0].alibi}).")
 
     with Runner(repo, case, keep=args.keep) as runner:
         found = _plain(args, case, repo, suspects, runner, say) if args.method == "plain" else _statistical(args, case, suspects, runner, say)
@@ -104,6 +121,7 @@ def lineup(args) -> int:
         seconds = sum(r.seconds for r in runner.replays)
         commits = len({r.sha for r in runner.replays})
         every_replay = [asdict(r) for r in runner.replays]
+        witnessed = getattr(runner, "witnessed", [])
     if found is None:
         return 2
 
@@ -146,10 +164,13 @@ def lineup(args) -> int:
     record = load_record(record_path(args))
     record["case"] = {"id": case.id, "symptom": case.symptom, "good": resolve(repo, case.good), "bad": resolve(repo, case.bad), "target": case.target, "file": os.path.relpath(Path(args.case).resolve()), "repo": os.path.relpath(repo)}
     record["suspects"] = [
-        {"sha": s.sha, "subject": s.subject, "checkpoint": s.checkpoint, "touches_target": s.touches_target,
+        {"sha": s.sha, "subject": s.subject, "checkpoint": s.checkpoint, "touches_target": s.touches_target, "alibi": s.alibi,
          **({"probability": round(found.posterior[i], 5)} if found.posterior else {})}
         for i, s in enumerate(suspects)
     ]
+    if witnessed:
+        report["traffic_runs"] = len(witnessed)
+        report["traffic_failures"] = sum(failed for _, failed in witnessed)
     record["lineup"] = report
     record["replays"] = every_replay
     save_record(record_path(args), record)
@@ -255,9 +276,15 @@ def ruling(args) -> int:
     diff = git(repo, "show", "--format=", culprit["sha"], "--", case.target)
     kind = rulings.classify(diff, culprit.get("files", []))
     request = (record.get("motive") or {}).get("request")
+    if args.answer is None and rulings.recall(Path.cwd(), kind) is None and not sys.stdin.isatty():
+        # Nobody is at the keyboard. Put the question on the page and stop.
+        print(rulings.question(kind, culprit["subject"], request))
+        record["ruling_question"] = {"kind": kind, "question": rulings.question(kind, culprit["subject"], request)}
+        save_record(path, record)
+        return 2
     try:
         decided, asked = rulings.decide(Path.cwd(), kind, case.id, culprit["sha"], culprit["subject"], request, answer=args.answer)
-    except (ValueError, EOFError) as exc:
+    except (ValueError, EOFError, OSError) as exc:
         print(f"No ruling recorded: {exc}")
         return 2
     record["ruling"] = {**asdict(decided), "asked_now": asked}
@@ -278,8 +305,39 @@ def _sides(record: dict) -> tuple[tuple[int, int], tuple[int, int]]:
     return tuple(good), tuple(bad)
 
 
+def _attempt(kind: str, case, repo: Path, record: dict, args, feedback: str = "") -> dict:
+    """Make one fix and replay it. Returns what was tried and how it went."""
+    culprit = record["lineup"]["culprit"]["sha"]
+    if kind == rulings.REVERT:
+        made = fixes.revert(repo, culprit, record["case"]["bad"], case.id)
+    else:
+        made = fixes.patch(repo, culprit, record["case"]["bad"], case.id, case.target, (record.get("motive") or {}).get("request"), record.get("brief"), feedback)
+    attempt = asdict(made)
+    if made.commit is None:
+        print(f"  {kind}: no fix was made. {made.note}")
+        return attempt
+    print(f"  {kind}: committed as {made.commit[:12]} on branch {made.branch}. Replaying to check it.")
+    good, bad = _sides(record)
+    with Runner(repo, case, keep=getattr(args, "keep", False)) as runner:
+        checked = fixes.verify(lambda: runner.trial(made.commit), good, bad, budget=args.fix_budget, parallel=args.parallel)
+        attempt["failed_replays"] = [f"{r.input} -> {r.reason}" for r in runner.replays if r.verdict == FAIL][:4]
+    attempt["verification"] = asdict(checked)
+    attempt["diff"] = git(repo, "show", "--format=", made.commit)[:4000]
+    print(f"  {kind}: {checked.failures} failures in {checked.replays} replays. Probability the failure rate is back to where it was: {checked.probability:.1%}." + (f" Not proven: {checked.note}." if checked.note else ""))
+    return attempt
+
+
+def _proven(attempt: dict) -> bool:
+    return bool((attempt.get("verification") or {}).get("fixed"))
+
+
 def fix(args) -> int:
-    """Apply the ruling on a branch, replay until the evidence says fixed, and keep the case as a regression test."""
+    """Apply the ruling on a branch and replay until the evidence says fixed. If it is not, try again.
+
+    A patch that is not proven gets one more try, with the first patch and its failing replays
+    in front of the model. If that is not proven either, the culprit is reverted, which is the
+    safe answer and loses what the commit was for. Every try is kept in the record.
+    """
     loaded = _need_culprit(args)
     if loaded is None:
         return 2
@@ -287,46 +345,108 @@ def fix(args) -> int:
     if not record.get("ruling"):
         print(f"No ruling yet. Run `whodunit ruling {args.case}` first.")
         return 2
-    culprit = record["lineup"]["culprit"]["sha"]
-    if record["ruling"]["ruling"] == rulings.REVERT:
-        made = fixes.revert(repo, culprit, record["case"]["bad"], case.id)
-    else:
-        made = fixes.patch(repo, culprit, record["case"]["bad"], case.id, case.target, (record.get("motive") or {}).get("request"), record.get("brief"))
-    record["fix"] = asdict(made)
-    if made.commit is None:
-        save_record(path, record)
-        print(f"No fix was made. {made.note}")
-        return 1
-    print(f"{made.kind.capitalize()} committed as {made.commit[:12]} on branch {made.branch}. Replaying to check it.")
-    good, bad = _sides(record)
-    with Runner(repo, case, keep=args.keep) as runner:
-        checked = fixes.verify(lambda: runner.trial(made.commit), good, bad, budget=args.budget, parallel=args.parallel)
-    record["fix"]["verification"] = asdict(checked)
-    if checked.fixed:
+    wanted = record["ruling"]["ruling"]
+    attempts = [_attempt(wanted, case, repo, record, args)]
+    if wanted == rulings.PATCH and not _proven(attempts[-1]):
+        first = attempts[-1]
+        feedback = (first.get("note") or "") + "\nThe first patch:\n" + first.get("diff", "none was made") + "\nReplays of it that still failed:\n" + "\n".join(first.get("failed_replays", []) or ["none recorded"])
+        print("  The patch is not proven. Trying once more, with the first patch and its failures in view.")
+        attempts.append(_attempt(rulings.PATCH, case, repo, record, args, feedback))
+    if wanted == rulings.PATCH and not _proven(attempts[-1]):
+        print("  Still not proven. Falling back to a revert, which loses what the commit was for.")
+        attempts.append(_attempt(rulings.REVERT, case, repo, record, args))
+        attempts[-1]["note"] = ((attempts[-1].get("note") or "") + " This is a fallback: the ruling was to patch, and two patches were not proven.").strip()
+    final = next((a for a in reversed(attempts) if _proven(a)), attempts[-1])
+    record["fix"] = final
+    record["attempts"] = attempts
+    if _proven(final):
         kept = Path.cwd() / "cases" / f"{case.id}.toml"
         kept.parent.mkdir(exist_ok=True)
         text = Path(args.case).read_text().rstrip("\n")
-        if "\nfixed = " not in text:
-            # Top-level keys have to come before the first table in TOML, so the line goes at the top.
-            text = f'# Closed by Whodunit. Replay with `whodunit check cases/{case.id}.toml`.\nfixed = "{made.commit}"\n' + text
+        if "\nfixed = " in "\n" + text:
+            text = "\n".join(line for line in text.splitlines() if not line.startswith(("fixed = ", "# Closed by Whodunit")))
+        # Top-level keys have to come before the first table in TOML, so the line goes at the top.
+        text = f'# Closed by Whodunit. Replay with `whodunit check cases/{case.id}.toml`.\nfixed = "{final["commit"]}"\n' + text
         kept.write_text(text + "\n")
-        record["fix"]["regression_case"] = str(kept)
+        record["fix"]["regression_case"] = os.path.relpath(kept)
     save_record(path, record)
-    print(f"{checked.failures} failures in {checked.replays} replays of the fix. Probability it is fixed: {checked.probability:.1%}." + (f" {checked.note}." if checked.note else ""))
-    if checked.fixed:
-        print(f"Kept as a regression test: {record['fix']['regression_case']}")
-        print(f"The branch {made.branch} is local. Pushing it and opening a pull request is the owner's call.")
-    return 0 if checked.fixed else 1
+    if _proven(final):
+        print(f"Fixed by {final['kind']} {final['commit'][:12]} after {len(attempts)} {'try' if len(attempts) == 1 else 'tries'}. Kept as a regression test: {record['fix']['regression_case']}")
+        print(f"The branch {final['branch']} is local. Pushing it and opening a pull request is the owner's call.")
+    else:
+        print(f"Not fixed after {len(attempts)} {'try' if len(attempts) == 1 else 'tries'}. The record has each one.")
+    return 0 if _proven(final) else 1
+
+
+def investigate(args) -> int:
+    """Run a whole case: lineup, motive and brief, ruling, fix, damages, case file. Stops only for the owner's ruling."""
+    import time
+
+    path = record_path(args)
+
+    def note(step: str, outcome: str) -> None:
+        record = load_record(path)
+        record.setdefault("log", []).append({"at": time.strftime("%Y-%m-%d %H:%M:%S"), "step": step, "outcome": outcome})
+        save_record(path, record)
+        print(f"[{step}] {outcome}")
+
+    def finish(code: int) -> int:
+        open_case(argparse.Namespace(case=args.case, record=args.record, no_open=True))
+        return code
+
+    record = load_record(path)
+    args.method, args.confidence, args.no_priors, args.keep, args.json = "statistical", 0.95, False, False, False
+    args.no_runs, args.since_ms = False, None
+    if not (record.get("lineup") or {}).get("culprit"):
+        args.resume = bool(record.get("replays"))
+        code = lineup(args)
+        if code == 1:
+            note("lineup", f"Nobody could be named inside {args.budget} replays. Carrying on from those replays with {args.budget} more.")
+            args.resume = True
+            code = lineup(args)
+        if code != 0:
+            note("lineup", "No culprit named. The case file lists the suspects that remain." if code == 1 else "The case could not be run: its good ref fails or its bad ref passes.")
+            return finish(1)
+        found = load_record(path)["lineup"]
+        note("lineup", f"Named {found['culprit']['sha'][:12]} ({found['culprit']['subject']}) after {found['replays']} replays across {found['commits_tested']} commits.")
+    else:
+        note("lineup", f"Already named: {record['lineup']['culprit']['sha'][:12]}.")
+    if not load_record(path).get("brief") or args.redo_brief:
+        brief(args)
+        written = load_record(path)
+        note("brief", f"Written by {written['brief']['model']}. Motive: {'on record' if written['motive'].get('request') else written['motive'].get('note') or 'none'}")
+    code = ruling(args)
+    if code != 0:
+        note("ruling", "Waiting for the owner. Give it with `whodunit ruling <case> --answer revert` or `--answer patch`, then run investigate again.")
+        return finish(3)
+    decided = load_record(path)["ruling"]
+    note("ruling", f"{decided['ruling']} for a {decided['kind']} change" + ("" if decided.get("asked_now") else ", from the standing rule"))
+    code = fix(args)
+    done = load_record(path)
+    tries = done.get("attempts", [])
+    note("fix", (f"Proven with a {done['fix']['kind']} after {len(tries)} {'try' if len(tries) == 1 else 'tries'}." if code == 0 else f"Not proven after {len(tries)} tries."))
+    damages(args)
+    return finish(code)
 
 
 def check(args) -> int:
     """Replay a kept case against a ref. This is the regression test."""
+    import time
+
     case = Case.load(args.case)
     repo = Path(args.repo).resolve()
+    ref = args.ref or case.fixed or "HEAD"
     with Runner(repo, case) as runner:
-        verdicts = [runner.trial(args.ref) for _ in range(args.runs)]
-    failures = verdicts.count("fail")
-    print(f"{case.id} at {resolve(repo, args.ref)[:12]}: {failures} failures in {len(verdicts)} replays.")
+        with ThreadPoolExecutor(max_workers=max(1, args.parallel)) as pool:
+            verdicts = list(pool.map(lambda _: runner.trial(ref), range(args.runs)))
+    failures = verdicts.count(FAIL)
+    sha = resolve(repo, ref)
+    print(f"{case.id} at {sha[:12]}: {failures} failures in {len(verdicts)} replays.")
+    path = record_path(args)
+    record = load_record(path)
+    if record:
+        record.setdefault("checks", []).append({"at": time.strftime("%Y-%m-%d %H:%M"), "ref": sha, "runs": len(verdicts), "failures": failures})
+        save_record(path, record)
     return 0 if failures == 0 and "skip" not in verdicts else 1
 
 
@@ -339,6 +459,7 @@ def damages(args) -> int:
         order = [s["sha"] for s in record["suspects"]]
         since_culprit = order[order.index(record["lineup"]["culprit"]["sha"]):]
         counted = damage.count(neatroots(), args.workflow, commits=since_culprit, since_ms=args.since_ms, case_id=case.id)
+        counted = damage.count_case(neatroots(), counted, args.workflow, since_culprit, [(i.text, i.expect.get("refunds", [])) for i in case.inputs])
     except NeatError as exc:
         print(f"neatroots could not be asked: {exc}")
         return 1
@@ -348,6 +469,9 @@ def damages(args) -> int:
         print(f"{counted.bad_runs} of {counted.runs} {args.workflow} runs on the culprit or later went bad ({counted.bad_share:.0%}), about ${counted.wasted_usd:.4f} of ${counted.cost_usd:.4f} spent.")
     else:
         print("No ordinary runs are recorded on the culprit or the commits after it, so there is no damage to count.")
+    if counted.case_runs:
+        print(f"Of {counted.case_runs} ordinary runs that asked what this case asks, {counted.case_bad} paid out wrongly: "
+              f"{counted.wrongly_paid:.2f} refunded that should not have been, and {counted.withheld:.2f} owed and not refunded.")
     print(f"The investigation itself used {counted.replay_runs} replays, about ${counted.replay_usd:.4f}. {counted.note}")
     return 0
 
@@ -411,6 +535,8 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--confidence", type=float, default=0.95, help="posterior needed to name a culprit (default 0.95)")
     p.add_argument("--parallel", type=int, default=1, help="replays to run at once")
     p.add_argument("--resume", action="store_true", help="start from the replays already in the case record; --budget is then how many more to spend")
+    p.add_argument("--from-traffic", metavar="WORKFLOW", help="start from ordinary runs of this workflow that already asked what the case asks")
+    p.add_argument("--no-graph", action="store_true", help="do not ask entire-graph which commits could reach the agent")
     p.add_argument("--no-priors", action="store_true", help="suspect every commit equally, even ones that never touched the agent")
     p.add_argument("--record", help="where to write the case record (default: next to the case file)")
     p.add_argument("--keep", action="store_true", help="leave the worktrees in .whodunit/worktrees")
@@ -431,12 +557,25 @@ def main(argv: list[str] | None = None) -> int:
         if name == "ruling":
             p.add_argument("--answer", choices=("revert", "patch"), help="give the ruling here instead of being asked")
         if name == "fix":
-            p.add_argument("--budget", type=int, default=60)
+            p.add_argument("--fix-budget", type=int, default=90, help="most replays to spend checking one fix")
             p.add_argument("--parallel", type=int, default=1)
             p.add_argument("--keep", action="store_true")
         if name == "damages":
             p.add_argument("--workflow", default="refund-agent")
             p.add_argument("--since-ms", type=float, help="count runs from this time, in ms since the epoch")
+    p = commands.add_parser("investigate", help="run a whole case from lineup to case file, stopping only for the owner's ruling")
+    p.add_argument("case", help="path to the case file")
+    p.add_argument("--repo", default=".")
+    p.add_argument("--record")
+    p.add_argument("--budget", type=int, default=120, help="replays the lineup may spend before it stops to think again")
+    p.add_argument("--fix-budget", type=int, default=90, help="most replays to spend checking one fix")
+    p.add_argument("--parallel", type=int, default=3)
+    p.add_argument("--answer", choices=("revert", "patch"), help="the owner's ruling, if there is no standing rule yet")
+    p.add_argument("--workflow", default="refund-agent")
+    p.add_argument("--redo-brief", action="store_true")
+    p.add_argument("--from-traffic", metavar="WORKFLOW", help="start the lineup from ordinary runs of this workflow")
+    p.add_argument("--no-graph", action="store_true")
+    p.set_defaults(func=investigate)
     p = commands.add_parser("onset", help="find when the failures began and between which commits, from ordinary runs")
     p.add_argument("--workflow", default="refund-agent")
     p.add_argument("--cloud", metavar="DETECTION", help="also ask neatlogs cloud when this detection started firing")
@@ -450,8 +589,10 @@ def main(argv: list[str] | None = None) -> int:
     p = commands.add_parser("check", help="replay a kept case against a ref, as a regression test")
     p.add_argument("case")
     p.add_argument("--repo", default=".")
-    p.add_argument("--ref", default="HEAD")
-    p.add_argument("--runs", type=int, default=5)
+    p.add_argument("--ref", help="the commit to replay against (default: the case's fix, or HEAD if it has none)")
+    p.add_argument("--runs", type=int, default=6)
+    p.add_argument("--parallel", type=int, default=3)
+    p.add_argument("--record")
     p.set_defaults(func=check)
     p = commands.add_parser("motive", help="show what a commit was asked to do, from its Entire checkpoint")
     p.add_argument("commit", help="commit SHA or ref")
