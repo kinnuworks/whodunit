@@ -1,0 +1,1 @@
+In victims/refund-agent the stderr line for failed tool calls is a bit bare. Prefix it with the time (HH:MM:SS) and make the format consistent, like '[12:01:33] tool lookup_order failed: ...'. Check agent.py still compiles, then commit.
