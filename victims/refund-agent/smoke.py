@@ -1,7 +1,8 @@
 """A pytest-free smoke check for the refund agent.
 
 Imports agent.py's lookup_order and get_order_status (never issue_refund, never the
-model) and checks that orders.json loads and every order has the six expected fields.
+model) and checks that orders.json loads, every order has the six expected fields, every
+currency is a three-letter code and every amount is positive.
 
     uv run python smoke.py
 """
@@ -30,6 +31,12 @@ def main() -> int:
         status = get_order_status(order_id)
         if status["order_id"] != order["order_id"] or status["status"] != order["status"]:
             failures.append(f"order {order_id}: get_order_status disagrees with orders.json")
+        currency = order["currency"]
+        if not (isinstance(currency, str) and len(currency) == 3 and currency.isalpha()):
+            failures.append(f"order {order_id}: currency {currency!r} is not a three-letter code")
+        amount = order["amount"]
+        if not amount > 0:
+            failures.append(f"order {order_id}: amount {amount!r} is not positive")
 
     if failures:
         for failure in failures:
