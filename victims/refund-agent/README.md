@@ -15,7 +15,7 @@ uv run agent.py "Please refund order 1001 for customer cust_9."
 
 Open http://localhost:4100 to see the run. Add `--json` to get the reply and the refunds paid out as one line of JSON.
 
-The orders it knows about are 1001 and 1002 (customer `cust_9`), 2002 (`cust_4`) and 3003 (`cust_7`), all in USD. Any other order id comes back as a 404 from the lookup tool.
+The orders it knows about are 1001 and 1002 (customer `cust_9`), 2002 (`cust_4`) and 3003 (`cust_7`), all in USD. Each order has an id, owner, amount, currency, status, and placed_on date. Any other order id comes back as a 404 from the lookup tool.
 
 ## Choosing the model
 

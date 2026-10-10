@@ -130,10 +130,10 @@ TOOLS = [
      "parameters": {"type": "object", "properties": {"order_id": {"type": "string"}, "amount": {"type": "number"}}, "required": ["order_id", "amount"]}}},
 ]
 ORDERS = {
-    "1001": {"order_id": "1001", "owner": "cust_9", "amount": 42.0, "currency": "USD", "status": "delivered"},
-    "1002": {"order_id": "1002", "owner": "cust_9", "amount": 18.5, "currency": "USD", "status": "delivered"},
-    "2002": {"order_id": "2002", "owner": "cust_4", "amount": 30.0, "currency": "USD", "status": "shipped"},
-    "3003": {"order_id": "3003", "owner": "cust_7", "amount": 129.99, "currency": "USD", "status": "delivered"},
+    "1001": {"order_id": "1001", "owner": "cust_9", "amount": 42.0, "currency": "USD", "status": "delivered", "placed_on": "2026-09-01"},
+    "1002": {"order_id": "1002", "owner": "cust_9", "amount": 18.5, "currency": "USD", "status": "delivered", "placed_on": "2026-09-02"},
+    "2002": {"order_id": "2002", "owner": "cust_4", "amount": 30.0, "currency": "USD", "status": "shipped", "placed_on": "2026-09-15"},
+    "3003": {"order_id": "3003", "owner": "cust_7", "amount": 129.99, "currency": "USD", "status": "delivered", "placed_on": "2026-09-28"},
 }
 REFUNDS: list[dict] = []  # what this run paid out, for the checks to read
 
