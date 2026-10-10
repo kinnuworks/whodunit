@@ -80,7 +80,7 @@ What the simulator found, with 40 suspects and 500 cases per point:
 - Plain bisect with one replay per commit is right 10% of the time on the 30% bug.
 - The statistical bisect's wrong accusations run from 0% to 7% of cases. The bar is 95%, so 7% is over.
 
-Two changes from the brief, both made because of the simulator. The prior on the good side's failure rate went from uniform to about 5%, which took the 30% bug from 59% solved to 93% at 300 replays. And the next replay is picked by expected information gain. I first believed the picker was the big win, then re-measured with the new prior and found the two pickers within a couple of cases of each other, so the write-up says the prior did the work.
+Two changes from the brief, both made because of the simulator. The prior on the good side's failure rate went from uniform to about 5%, which took the 30% bug from 59% solved to 93% at 300 replays. And the next replay is picked by expected information gain. The picker looked like the big win at first. Measured again with the new prior, the two pickers came within a couple of cases of each other, so the write-up says the prior did the work.
 
 ### 8:51 PM, a real run got tangled up with the machine
 
@@ -107,3 +107,23 @@ All in as commands that read and write one case record: `whodunit motive`, `brie
 85 fast tests pass. They take about 4 and a half minutes on this machine today because of the load.
 
 Still open: the session transcript also carries `ownerAccountUuid` and `ownerOrganizationUuid` fields in its `bridge-session` entries. That goes on the list for the owner to read before anything is pushed.
+
+### 9:06 PM, the statistical bisect finds a bug that fails about a third of the time
+
+This is milestone 3 on the real refund agent with the scripted model. `tests/planted.py` built 40 commits with a lookup bug at suspect 27: a `raise` sits inside a loop over a set of strings, and a set iterates in a different order in each Python process, so the lookup gives up on about one run in three.
+
+- `whodunit lineup` named suspect 27, `Accept order ids written with a # or leading zeros`, at 95.2% after 48 replays across 11 of the 40 commits.
+- It put the failure rate at 39% from that commit on and 1% before it. The true rate is about 33%.
+- A scan from the oldest suspect would have had to work through 27 commits, each replayed often enough to catch a one in three failure.
+- Replay time was 35 minutes, about 44 seconds per replay, on a machine with a load average near 70. The same replay takes 3 to 5 seconds on a quiet machine.
+
+Then the rest of the pipeline on the same case:
+
+- The brief took three tries to get right, and the first two are the interesting part. Both named the right commit and the right symptom and cited real spans, and both got the mechanism wrong: one blamed `lstrip`, the other said the `raise` was outside the loop, which would make it fail every time. Every sentence passed the citation check. So the check keeps a brief tied to the evidence and does nothing to stop a wrong reading of the diff. What fixed it was giving the model the changed code as it reads after the commit, with line numbers and indentation, and the measured failure rates with an instruction to explain why the failure is intermittent. The third brief has the loop, the set order and the 39%.
+- Ruling: revert, given on the command line for this throwaway repo. No ruling has been recorded in this repo, because that is the owner's to give.
+- Fix: the revert was committed on a local branch and replayed 8 times with no failures, which puts it at 95.8% fixed. The case was kept as a regression test.
+- The case file page rendered from the record. A screenshot and the record are in `evidence/`.
+
+Also added: `whodunit onset`, which reads the agent's ordinary runs from neatroots and brackets the failure between a good and a bad ref using the same change-point model, and `eval/score.py`, which scores cases against an answer key and refuses to run if the key's SHA-256 does not match the one committed beforehand.
+
+A real-model case is running now. Dropping the ownership rule from the system prompt in the name of friendlier replies made the gateway's small model refund another customer's order in 3 runs of 8, so that prompt change is planted at suspect 31 of 40 and the statistical bisect is looking for it.

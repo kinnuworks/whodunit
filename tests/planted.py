@@ -102,11 +102,31 @@ FLAKY_LOOKUP = (
 )
 
 
-def refund_agent_history(repo: Path, suspects: int = 20, culprit: int = 14, broken: int = 6, fake_llm_port: int = 4199, flaky: bool = False, llm: str = "fake") -> dict:
+# Needs a real model. The careful prompt names the ownership rule and this one drops it, so the
+# model refunds another customer's order some of the time. On the gateway's small model that was
+# 3 runs in 8 when it was first measured.
+FRIENDLY_PROMPT = (
+    '''SYSTEM = (
+    "You are a refund agent for an online shop. Use lookup_order to find an order before refunding it. "
+    "Only call issue_refund after lookup_order confirms the order exists and belongs to the customer. "
+    "Never refund more than the order amount. "
+''',
+    '''SYSTEM = (
+    "You are a friendly refund agent for an online shop. Customers who write in are often upset, so be warm, "
+    "take their side and sort the refund out quickly. Use lookup_order to find the order and issue_refund to refund it. "
+    "Never refund more than the order amount. "
+''',
+    "Make the agent's replies friendlier",
+)
+BUGS = {"top-up": TOP_UP, "flaky-lookup": FLAKY_LOOKUP, "friendly-prompt": FRIENDLY_PROMPT}
+
+
+def refund_agent_history(repo: Path, suspects: int = 20, culprit: int = 14, broken: int = 6, fake_llm_port: int = 4199, flaky: bool = False, llm: str = "fake", bug: str | None = None) -> dict:
     """The real refund agent with ordinary-looking commits, a planted bug and one commit that will not build.
 
     The bug is an overpayment on every refund, or with `flaky` a lookup that fails about a third of the time.
     """
+    bug = bug or ("flaky-lookup" if flaky else "top-up")
     repo.mkdir(parents=True, exist_ok=True)
     git(repo, "init", "-q", "-b", "main")
     target = repo / "victims" / "refund-agent"
@@ -120,7 +140,7 @@ def refund_agent_history(repo: Path, suspects: int = 20, culprit: int = 14, brok
         if n == broken + 1:
             edit(agent, "def refund_policy(:\n", "")
         if n == culprit:
-            old, new, message = FLAKY_LOOKUP if flaky else TOP_UP
+            old, new, message = BUGS[bug]
             edit(agent, old, new)
         elif n == broken:
             edit(agent, "REFUNDS: list[dict] = []", "def refund_policy(:\nREFUNDS: list[dict] = []")
@@ -140,9 +160,23 @@ def refund_agent_history(repo: Path, suspects: int = 20, culprit: int = 14, brok
             message = f"Note a manual check in the README ({n})"
         shas.append(commit(repo, message))
     case = repo / "case.toml"
-    second = '{ order_id = "1002", refunded = 18.5 }' if flaky else ""
-    case.write_text(f'''id = "{"planted-flaky-lookup" if flaky else "planted-top-up"}"
-symptom = "{"Some refunds are refused with an order not found error" if flaky else "Refunds pay out more than the order amount"}"
+    symptom, inputs = {
+        "top-up": ("Refunds pay out more than the order amount", [
+            ("Please refund order 1001 for customer cust_9.", '{ order_id = "1001", refunded = 42.0 }'),
+            ("Please refund order 2002 for customer cust_9.", ""),
+        ]),
+        "flaky-lookup": ("Some refunds are refused with an order not found error", [
+            ("Please refund order 1001 for customer cust_9.", '{ order_id = "1001", refunded = 42.0 }'),
+            ("Please refund order 1002 for customer cust_9.", '{ order_id = "1002", refunded = 18.5 }'),
+        ]),
+        "friendly-prompt": ("Some refunds go out on orders that belong to another customer", [
+            ("Please refund order 2002 for customer cust_9.", ""),
+            ("Please refund order 3003 for customer cust_9.", ""),
+        ]),
+    }[bug]
+    blocks = "\n\n".join(f'[[inputs]]\ntext = "{text}"\nrefunds = [{refunds}]' for text, refunds in inputs)
+    case.write_text(f'''id = "planted-{bug}"
+symptom = "{symptom}"
 good = "{shas[0]}"
 bad = "{shas[-1]}"
 target = "victims/refund-agent"
@@ -153,23 +187,17 @@ run = ["uv", "run", "-q", "agent.py", "--json", "{{input}}"]
 REFUND_LLM = "{llm}"
 FAKE_LLM_URL = "http://127.0.0.1:{fake_llm_port}/v1"
 
-[[inputs]]
-text = "Please refund order 1001 for customer cust_9."
-refunds = [{{ order_id = "1001", refunded = 42.0 }}]
-
-[[inputs]]
-text = "Please refund order {"1002" if flaky else "2002"} for customer cust_9."
-refunds = [{second}]
+{blocks}
 ''')
     return {"repo": repo, "case": case, "shas": shas, "culprit": shas[culprit], "broken": shas[broken]}
 
 
 if __name__ == "__main__":
-    # python tests/planted.py <folder> [flaky] [suspects] [culprit] [llm]
+    # python tests/planted.py <folder> [top-up|flaky-lookup|friendly-prompt] [suspects] [culprit] [fake|gateway|own]
     extra = sys.argv[2:]
-    flaky = bool(extra) and extra[0] == "flaky"
+    bug = next((a for a in extra if a in BUGS), "flaky-lookup" if "flaky" in extra else "top-up")
     numbers = [int(a) for a in extra if a.isdigit()]
     llm = next((a for a in extra if a in ("fake", "mock", "gateway", "own")), "fake")
-    made = refund_agent_history(Path(sys.argv[1]), *numbers[:2], flaky=flaky, llm=llm)
+    made = refund_agent_history(Path(sys.argv[1]), *numbers[:2], bug=bug, llm=llm)
     print(made["case"])
     print("culprit", made["culprit"])

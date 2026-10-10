@@ -37,14 +37,14 @@ def classify(diff: str, files: list[str]) -> str:
     changed = [line[1:] for line in diff.splitlines() if line[:1] in "+-" and not line.startswith(("+++", "---"))]
     text = "\n".join(changed)
     names = " ".join(files).lower()
-    hunks = "\n".join(line for line in diff.splitlines() if line.startswith("@@"))
     if re.search(r"(pyproject\.toml|uv\.lock|requirements[\w.-]*\.txt|package(-lock)?\.json)", names) and not re.search(r"\.py\b", names):
         return "dependency"
     if re.search(r"\b(SYSTEM|PROMPT|INSTRUCTIONS)\b|system_prompt|\"role\": \"system\"", text) or "prompt" in names:
         return "prompt"
     if re.search(r"\b(MODEL|temperature|max_tokens|top_p)\b", text):
         return "model-settings"
-    if re.search(r"kind=\"TOOL\"|\bTOOLS\b|def (lookup|issue|call_tool)\w*", text + hunks):
+    # A tool's own lines are often context around the change, so this one reads the whole diff.
+    if re.search(r"kind=\"TOOL\"|\bTOOLS\b|def call_tool\b", diff):
         return "tool-code"
     if re.search(r"\.py\b", names):
         return "agent-code"

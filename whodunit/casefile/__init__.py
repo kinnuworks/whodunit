@@ -42,7 +42,7 @@ def lineup_svg(record: dict) -> str:
     has_odds = any("probability" in s for s in suspects)
     count = len(suspects)
     step = max(14, min(26, 760 // (count + 1)))
-    bar_h, top, left = 120, 18, step + 20
+    bar_h, top, left = 120, 18, step + 52
     most = max(max(len(v) for v in replays.values()) if replays else 0, 1)
     rows = min(most, 14)
     dot = 7
@@ -53,7 +53,7 @@ def lineup_svg(record: dict) -> str:
         y = top + bar_h - share * bar_h
         out.append(f'<line class="rule" x1="{left - 6}" y1="{y:.1f}" x2="{width - 8}" y2="{y:.1f}"/>')
         if has_odds:
-            out.append(f'<text class="tick" x="{left - 10}" y="{y + 4:.1f}" text-anchor="end">{share:.0%}</text>')
+            out.append(f'<text class="tick" x="{left - step - 12}" y="{y + 4:.1f}" text-anchor="end">{share:.0%}</text>')
 
     def marks(x: float, verdicts: list[str]) -> str:
         made = []
@@ -63,7 +63,7 @@ def lineup_svg(record: dict) -> str:
             made.append(f'<circle class="{"fail" if verdict == "fail" else "skip" if verdict == "skip" else "pass"}" cx="{cx:.1f}" cy="{cy:.1f}" r="2.4"/>')
         return "".join(made)
 
-    gx = left - step + step / 2 - 14
+    gx = left - step / 2 - 4
     out.append(f'<g><title>Last good commit: {good.count("fail")} failures in {len(good)} replays</title>'
                f'<line class="good" x1="{gx:.1f}" y1="{top + bar_h - 6}" x2="{gx:.1f}" y2="{top + bar_h}"/>{marks(gx, good)}</g>')
     for n, suspect in enumerate(suspects):
@@ -173,7 +173,8 @@ def render(record: dict) -> str:
     if ruling:
         again = "" if ruling.get("asked_now") else f' Nobody was asked this time. The rule was set on {escape(ruling["decided_on"])} in case {escape(ruling["first_case"])}.'
         what = "Revert it." if ruling["ruling"] == "revert" else "Keep what it was for, and patch the bug."
-        body = f'<p class="verdict small-verdict">{what}</p><p>This is the owner\'s standing rule for a {escape(ruling["kind"])} change.{again}</p>'
+        article = "an" if ruling["kind"][:1] in "aeiou" else "a"
+        body = f'<p class="verdict small-verdict">{what}</p><p>This is the owner\'s standing rule for {article} {escape(ruling["kind"])} change.{again}</p>'
     else:
         body = '<p class="empty">The owner has not been asked yet.</p>'
     parts.append(_field("Ruling", body))

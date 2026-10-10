@@ -24,12 +24,14 @@ class Evidence:
     parent: str
     subject: str
     diff: str
+    after: str = ""  # the changed code as it reads after the commit, with line numbers
     checkpoint: str | None = None
     request: str | None = None
     steps: list[dict] = field(default_factory=list)
     failing_run: dict | None = None  # {"trace_id", "commit", "input", "outline"}
     passing_run: dict | None = None
     comparison: str | None = None
+    measured: str = ""  # what the lineup measured, in words
     notes: list[str] = field(default_factory=list)
 
     def citable(self) -> set[str]:
@@ -64,12 +66,10 @@ def gather(repo: str | Path, case_id: str, culprit: str, target: str, replays: l
     diff = git(repo, "show", "--format=", "--unified=3", full, "--", target)
     if len(diff) > MAX_DIFF:
         diff = diff[:MAX_DIFF] + "\n[diff cut here]\n"
-    evidence = Evidence(culprit=full, parent=parent, subject=subject, diff=diff)
+    evidence = Evidence(culprit=full, parent=parent, subject=subject, diff=diff, after=code_after(repo, full, target))
     if motive:
         evidence.checkpoint, evidence.request = motive.checkpoint, motive.request
         evidence.steps = [asdict(s) for s in motive.steps]
-        if motive.note:
-            evidence.notes.append(motive.note)
     if mcp is None:
         evidence.notes.append("neatroots was not asked for runs.")
         return evidence
@@ -106,12 +106,32 @@ def gather(repo: str | Path, case_id: str, culprit: str, target: str, replays: l
     return evidence
 
 
+def code_after(repo: str | Path, sha: str, target: str, around: int = 10, limit: int = 4000) -> str:
+    """The lines each hunk touched, as they read after the commit, numbered and with their indentation intact.
+
+    A diff's leading + and - columns make indentation easy to misread, and indentation is often the bug.
+    """
+    out = []
+    names = [f for f in git(repo, "diff-tree", "--no-commit-id", "--name-only", "-r", sha, "--", target).split("\n") if f]
+    for name in names:
+        try:
+            lines = git(repo, "show", f"{sha}:{name}").split("\n")
+        except RuntimeError:
+            continue  # the commit deleted this file
+        for start, count in re.findall(r"^@@ -\d+(?:,\d+)? \+(\d+)(?:,(\d+))? @@", git(repo, "show", "--format=", "--unified=0", sha, "--", name), flags=re.M):
+            first = max(1, int(start) - around)
+            last = min(len(lines), int(start) + int(count or 1) + around)
+            out.append(f"{name}, lines {first} to {last} after the commit:\n" + "\n".join(f"{n:>4}  {lines[n - 1]}" for n in range(first, last + 1)))
+    return "\n\n".join(out)[:limit]
+
+
 SYSTEM = """You write the root-cause brief for a regression in an AI agent. You are given the commit that a bisect \
 named as the culprit, what the coding agent was asked to do in that commit, and a failing run next to a passing run.
 
 Rules:
 - Say which commit did it and why first. Then say how the failure shows up in the failing run.
 - Use only what the evidence shows. If the evidence does not show something, do not say it.
+- Read the diff line by line before describing it, including its indentation. If the bug fails only some of the time, say what in the code or the run makes it intermittent, or say that the evidence does not show why.
 - Every sentence must cite at least one id from the list of citable ids: a span id, a commit, a checkpoint or a session step.
 - Plain words, short sentences, no hype. Six sentences at most.
 
@@ -123,11 +143,13 @@ def prompt_for(evidence: Evidence, symptom: str) -> str:
     parts = [
         f"Symptom: {symptom}",
         f"Culprit commit: {evidence.culprit[:12]} \"{evidence.subject}\" (parent {evidence.parent[:12]})",
+        f"What the bisect measured: {evidence.measured or 'not recorded'}",
         f"Entire checkpoint: {evidence.checkpoint or 'none'}",
         f"What the coding agent was asked: {evidence.request or 'not recorded'}",
         "Session steps between that request and the commit:\n" + ("\n".join(
             f"[{s['id']}] {s['kind']}{' ' + s['file'] if s.get('file') else ''}: {s['text'][:400]}" for s in evidence.steps[-25:]) or "none recorded"),
         "Diff of the culprit commit:\n" + evidence.diff,
+        "The changed code as it reads after the commit:\n" + (evidence.after or "not available"),
     ]
     for label, run in (("Failing run", evidence.failing_run), ("Passing run", evidence.passing_run)):
         if run:

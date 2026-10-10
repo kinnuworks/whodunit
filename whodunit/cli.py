@@ -14,6 +14,7 @@ from . import fix as fixes
 from . import ruling as rulings
 from .motive import find_motive
 from .neat import NeatError, neatroots
+from .onset import find_onset, traffic
 from .lineup import linear_scan_cost, plain_bisect, statistical_bisect
 from .replay import FAIL, PASS, Runner
 from .suspects import git, list_suspects, resolve
@@ -197,6 +198,12 @@ def brief(args) -> int:
         repo, case.id, culprit, case.target, record.get("replays", []), found,
         None if args.no_runs else neatroots(), order=[s["sha"] for s in record["suspects"]],
     )
+    lineup_report = record["lineup"]
+    if "failure_rate_from" in lineup_report:
+        evidence.measured = (
+            f"{lineup_report['replays']} replays across {lineup_report['commits_tested']} commits. Replays fail about "
+            f"{lineup_report['failure_rate_from']:.0%} of the time from the culprit on and {lineup_report['failure_rate_before']:.0%} before it."
+        )
     written = briefs.write_brief(evidence, case.symptom)
     record["motive"] = found.to_dict()
     record["evidence"] = asdict(evidence)
@@ -314,6 +321,33 @@ def damages(args) -> int:
     return 0
 
 
+def onset(args) -> int:
+    """Where the failures begin, from the agent's ordinary runs in neatroots."""
+    try:
+        runs = traffic(neatroots(), args.workflow)
+    except NeatError as exc:
+        print(f"neatroots could not be asked: {exc}")
+        return 1
+    found = find_onset(args.workflow, runs)
+    if args.json:
+        print(json.dumps(found.to_dict(), indent=2))
+        return 0 if found.good else 1
+    print(f"{found.bad_runs} of {found.runs} {args.workflow} runs went bad, across {len(found.commits)} commits.")
+    if found.note:
+        print(found.note)
+        return 1
+    from datetime import datetime, timezone
+
+    when = datetime.fromtimestamp(found.first_failure_ms / 1000, timezone.utc).strftime("%d %B %H:%M UTC") if found.first_failure_ms else "unknown"
+    between = [c["sha"] for c in found.commits]
+    print(f"The failures begin around {when}.")
+    print(f"Last good ref: {found.good[:12]}. First bad ref: {found.bad[:12]}. That leaves {len(between) - 1 - between.index(found.good)} suspects seen in traffic.")
+    print(f"From traffic alone the likeliest culprit is {found.likeliest[:12]}, at {found.probability:.0%}.")
+    for text in found.failing_inputs:
+        print(f"  failing input: {text}")
+    return 0
+
+
 def open_case(args) -> int:
     path = record_path(args)
     record = load_record(path)
@@ -365,6 +399,10 @@ def main(argv: list[str] | None = None) -> int:
         if name == "damages":
             p.add_argument("--workflow", default="refund-agent")
             p.add_argument("--since-ms", type=float, help="count runs from this time, in ms since the epoch")
+    p = commands.add_parser("onset", help="find when the failures began and between which commits, from ordinary runs")
+    p.add_argument("--workflow", default="refund-agent")
+    p.add_argument("--json", action="store_true")
+    p.set_defaults(func=onset)
     p = commands.add_parser("open-case", help="write the case file page and open it")
     p.add_argument("case")
     p.add_argument("--record")

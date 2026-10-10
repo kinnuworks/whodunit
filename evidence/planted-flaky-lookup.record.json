@@ -1,0 +1,836 @@
+{
+ "case": {
+  "id": "planted-flaky-lookup",
+  "symptom": "Some refunds are refused with an order not found error",
+  "good": "9db56da8d6c98d0dcb4c66a500ae6e72ece7cf6c",
+  "bad": "d479ac03d03336e23c89746d0e176f1ee647e220",
+  "target": "victims/refund-agent",
+  "file": "<planted repo>/case.toml",
+  "repo": "<planted repo>"
+ },
+ "suspects": [
+  {
+   "sha": "d73c9918bcf3c64a66d467b893f555fbbc4b743a",
+   "subject": "Note a manual check in the README (1)",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00095
+  },
+  {
+   "sha": "96dccd8f52da060b81f73ca071a980cfe089708a",
+   "subject": "Note a manual check in the README (2)",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00095
+  },
+  {
+   "sha": "4de215bb1a241bc2a0c799d47d26acbe58348bde",
+   "subject": "Add order 5003 to the test orders",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00095
+  },
+  {
+   "sha": "6c932e96fb29292ad60526a48e6a5a4004a635f0",
+   "subject": "Note a manual check in the README (4)",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00095
+  },
+  {
+   "sha": "50844cca51cc98c703fb7fcd48bd85ee9db0b9a0",
+   "subject": "Add support note 5",
+   "checkpoint": null,
+   "touches_target": false,
+   "probability": 5e-05
+  },
+  {
+   "sha": "e136c009a2dcd49b3e74ef043760b0da31e258c9",
+   "subject": "Start a refund policy helper",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00095
+  },
+  {
+   "sha": "6d132ea3c363b8b1e48e7c354b144e3d82dc8c9d",
+   "subject": "Drop the unfinished refund policy helper",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00095
+  },
+  {
+   "sha": "68df7cfc86a47739308ef62a2611d9f34d68c412",
+   "subject": "Note a manual check in the README (8)",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00095
+  },
+  {
+   "sha": "e8137710cc802190c3681cf1a7fba8b292b2e7b6",
+   "subject": "Add order 5009 to the test orders",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00095
+  },
+  {
+   "sha": "968f81190eea6fdd14b99e3008878b456faf61a3",
+   "subject": "Add support note 10",
+   "checkpoint": null,
+   "touches_target": false,
+   "probability": 5e-05
+  },
+  {
+   "sha": "1f471c00db1d2ce2ad1677b9181fd9b23c92968e",
+   "subject": "Note a manual check in the README (11)",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00095
+  },
+  {
+   "sha": "dea75f9de9e25052c91803785f524aa716087c34",
+   "subject": "Add order 5012 to the test orders",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00095
+  },
+  {
+   "sha": "4068fd17e37edde3e6030b05f047823dbbc850b9",
+   "subject": "Note a manual check in the README (13)",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00095
+  },
+  {
+   "sha": "02ed622e65b50c8178b2d772b33447ec77b64d98",
+   "subject": "Note a manual check in the README (14)",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00095
+  },
+  {
+   "sha": "5d9113971919be91f71371a62ae7743fcc0a253e",
+   "subject": "Add support note 15",
+   "checkpoint": null,
+   "touches_target": false,
+   "probability": 5e-05
+  },
+  {
+   "sha": "9b3cfc163b5a170694111f2f17fd48ed3e751f66",
+   "subject": "Note a manual check in the README (16)",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00095
+  },
+  {
+   "sha": "c0deee2563f7add8839b8054858d9f39ab98cfcc",
+   "subject": "Note a manual check in the README (17)",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00095
+  },
+  {
+   "sha": "f25fad697d558d05250f95f80851a1c514c2c769",
+   "subject": "Add order 5018 to the test orders",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00127
+  },
+  {
+   "sha": "5af283c7b577548c49ce36877519cbd411373781",
+   "subject": "Note a manual check in the README (19)",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00127
+  },
+  {
+   "sha": "7592e201cd88e01ca6eeeac847a9c23d290c41fd",
+   "subject": "Add support note 20",
+   "checkpoint": null,
+   "touches_target": false,
+   "probability": 9e-05
+  },
+  {
+   "sha": "303c6eb5aacbf29d83fe639329f5f91b5f3cd11c",
+   "subject": "Add order 5021 to the test orders",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00176
+  },
+  {
+   "sha": "ce5c29885477c7ef314a42188993e20e25b483e0",
+   "subject": "Note a manual check in the README (22)",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00176
+  },
+  {
+   "sha": "dd2e29cdf79ed109b228d8a5d8b278f297efa8c5",
+   "subject": "Note a manual check in the README (23)",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00251
+  },
+  {
+   "sha": "ffa0e076ace7a1e5d60a8484ea956cf0d7dc5599",
+   "subject": "Add order 5024 to the test orders",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00367
+  },
+  {
+   "sha": "c8294560f3c3095e35869466ac3beee381207d30",
+   "subject": "Add support note 25",
+   "checkpoint": null,
+   "touches_target": false,
+   "probability": 0.00028
+  },
+  {
+   "sha": "5b382e78d33561f5a7d560fa18083d808cacab6e",
+   "subject": "Note a manual check in the README (26)",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00554
+  },
+  {
+   "sha": "fcf3261e135d362be9b246166a969d72a186c980",
+   "subject": "Accept order ids written with a # or leading zeros",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.95222
+  },
+  {
+   "sha": "748f024bd011c3b25bd41bb0a76eaa52fdb303c0",
+   "subject": "Note a manual check in the README (28)",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00183
+  },
+  {
+   "sha": "2ed608c696090466b7c5531486605e107b429d42",
+   "subject": "Note a manual check in the README (29)",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00412
+  },
+  {
+   "sha": "4f51fcd6e60b4de972d18c37c17aaeefb2cb386e",
+   "subject": "Add support note 30",
+   "checkpoint": null,
+   "touches_target": false,
+   "probability": 0.00021
+  },
+  {
+   "sha": "7ec069b0531967169097cf940639b6e705775146",
+   "subject": "Note a manual check in the README (31)",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00412
+  },
+  {
+   "sha": "8d70f9a115dcdbbd4759abcea2f169620d61e5a2",
+   "subject": "Note a manual check in the README (32)",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00412
+  },
+  {
+   "sha": "53b83033bbe68836687858dc08962cedd3b728e6",
+   "subject": "Add order 5033 to the test orders",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00031
+  },
+  {
+   "sha": "8f068975a810934017cc32e73c830f68f410377d",
+   "subject": "Note a manual check in the README (34)",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00031
+  },
+  {
+   "sha": "c530c969d5cee6341f7df8bbc297ab37a3f8febb",
+   "subject": "Add support note 35",
+   "checkpoint": null,
+   "touches_target": false,
+   "probability": 2e-05
+  },
+  {
+   "sha": "74afc0188e0ecf8d40d2b17dbb98636ad16ab8de",
+   "subject": "Add order 5036 to the test orders",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00031
+  },
+  {
+   "sha": "3b95dca2b6c09b8331a47ad737ab978e9b6bb5e7",
+   "subject": "Note a manual check in the README (37)",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00031
+  },
+  {
+   "sha": "5b27ec9475a10f07eebd5f281ecbaa3ac26238fd",
+   "subject": "Note a manual check in the README (38)",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00031
+  },
+  {
+   "sha": "9bdb2223110c7905fcd8f88215ce137acda29d7f",
+   "subject": "Add order 5039 to the test orders",
+   "checkpoint": null,
+   "touches_target": true,
+   "probability": 0.00031
+  },
+  {
+   "sha": "d479ac03d03336e23c89746d0e176f1ee647e220",
+   "subject": "Add support note 40",
+   "checkpoint": null,
+   "touches_target": false,
+   "probability": 2e-05
+  }
+ ],
+ "lineup": {
+  "case": "planted-flaky-lookup",
+  "method": "statistical",
+  "suspects": 40,
+  "commits_tested": 11,
+  "replays": 48,
+  "seconds": 2111.7,
+  "culprit": {
+   "sha": "fcf3261e135d362be9b246166a969d72a186c980",
+   "subject": "Accept order ids written with a # or leading zeros",
+   "checkpoint": null,
+   "files": [
+    "victims/refund-agent/agent.py"
+   ],
+   "probability": 0.9522
+  },
+  "remaining": [
+   {
+    "sha": "fcf3261e135d362be9b246166a969d72a186c980",
+    "subject": "Accept order ids written with a # or leading zeros",
+    "probability": 0.9522
+   }
+  ],
+  "failure_rate_before": 0.012,
+  "failure_rate_from": 0.389,
+  "linear_scan_commits": 27
+ },
+ "replays": [
+  {
+   "sha": "9db56da8d6c98d0dcb4c66a500ae6e72ece7cf6c",
+   "input": "Please refund order 1001 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42.0, \"order_id\": \"1001\"}]",
+   "seconds": 37.08252983298735,
+   "started": 1791644977.32036
+  },
+  {
+   "sha": "d479ac03d03336e23c89746d0e176f1ee647e220",
+   "input": "Please refund order 1001 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42.0, \"order_id\": \"1001\"}]",
+   "seconds": 42.014563750009984,
+   "started": 1791644977.3227541
+  },
+  {
+   "sha": "9db56da8d6c98d0dcb4c66a500ae6e72ece7cf6c",
+   "input": "Please refund order 1002 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 18.5, \"order_id\": \"1002\"}]",
+   "seconds": 32.03755008400185,
+   "started": 1791645014.615206
+  },
+  {
+   "sha": "d479ac03d03336e23c89746d0e176f1ee647e220",
+   "input": "Please refund order 1002 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 18.5, \"order_id\": \"1002\"}]",
+   "seconds": 30.795889333996456,
+   "started": 1791645019.8247921
+  },
+  {
+   "sha": "9db56da8d6c98d0dcb4c66a500ae6e72ece7cf6c",
+   "input": "Please refund order 1001 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42.0, \"order_id\": \"1001\"}]",
+   "seconds": 34.036893208976835,
+   "started": 1791645046.863693
+  },
+  {
+   "sha": "d479ac03d03336e23c89746d0e176f1ee647e220",
+   "input": "Please refund order 1001 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42.0, \"order_id\": \"1001\"}]",
+   "seconds": 34.97886266699061,
+   "started": 1791645050.74228
+  },
+  {
+   "sha": "9db56da8d6c98d0dcb4c66a500ae6e72ece7cf6c",
+   "input": "Please refund order 1002 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 18.5, \"order_id\": \"1002\"}]",
+   "seconds": 20.271115166979143,
+   "started": 1791645081.010616
+  },
+  {
+   "sha": "d479ac03d03336e23c89746d0e176f1ee647e220",
+   "input": "Please refund order 1002 for customer cust_9.",
+   "verdict": "fail",
+   "reason": "refunds were [], expected [{\"order_id\": \"1002\", \"refunded\": 18.5}]",
+   "seconds": 15.95421462500235,
+   "started": 1791645085.921327
+  },
+  {
+   "sha": "9db56da8d6c98d0dcb4c66a500ae6e72ece7cf6c",
+   "input": "Please refund order 1001 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42.0, \"order_id\": \"1001\"}]",
+   "seconds": 7.493498791998718,
+   "started": 1791645101.3384829
+  },
+  {
+   "sha": "d479ac03d03336e23c89746d0e176f1ee647e220",
+   "input": "Please refund order 1001 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42.0, \"order_id\": \"1001\"}]",
+   "seconds": 7.497033583000302,
+   "started": 1791645101.945172
+  },
+  {
+   "sha": "9db56da8d6c98d0dcb4c66a500ae6e72ece7cf6c",
+   "input": "Please refund order 1002 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 18.5, \"order_id\": \"1002\"}]",
+   "seconds": 8.890447666984983,
+   "started": 1791645108.903012
+  },
+  {
+   "sha": "d479ac03d03336e23c89746d0e176f1ee647e220",
+   "input": "Please refund order 1002 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 18.5, \"order_id\": \"1002\"}]",
+   "seconds": 9.446368332981365,
+   "started": 1791645109.5039868
+  },
+  {
+   "sha": "c0deee2563f7add8839b8054858d9f39ab98cfcc",
+   "input": "Please refund order 1002 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 18.5, \"order_id\": \"1002\"}]",
+   "seconds": 9.164426625007764,
+   "started": 1791645119.053984
+  },
+  {
+   "sha": "c0deee2563f7add8839b8054858d9f39ab98cfcc",
+   "input": "Please refund order 1001 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42.0, \"order_id\": \"1001\"}]",
+   "seconds": 9.163601792010013,
+   "started": 1791645119.056072
+  },
+  {
+   "sha": "dd2e29cdf79ed109b228d8a5d8b278f297efa8c5",
+   "input": "Please refund order 1001 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42.0, \"order_id\": \"1001\"}]",
+   "seconds": 4.3273368749942165,
+   "started": 1791645128.276542
+  },
+  {
+   "sha": "dd2e29cdf79ed109b228d8a5d8b278f297efa8c5",
+   "input": "Please refund order 1002 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 18.5, \"order_id\": \"1002\"}]",
+   "seconds": 4.330994459014619,
+   "started": 1791645128.2739258
+  },
+  {
+   "sha": "fcf3261e135d362be9b246166a969d72a186c980",
+   "input": "Please refund order 1002 for customer cust_9.",
+   "verdict": "fail",
+   "reason": "refunds were [], expected [{\"order_id\": \"1002\", \"refunded\": 18.5}]",
+   "seconds": 6.7659586670051794,
+   "started": 1791645132.646055
+  },
+  {
+   "sha": "fcf3261e135d362be9b246166a969d72a186c980",
+   "input": "Please refund order 1001 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42.0, \"order_id\": \"1001\"}]",
+   "seconds": 6.769234499981394,
+   "started": 1791645132.64571
+  },
+  {
+   "sha": "5af283c7b577548c49ce36877519cbd411373781",
+   "input": "Please refund order 1001 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42.0, \"order_id\": \"1001\"}]",
+   "seconds": 21.800079042004654,
+   "started": 1791645139.463386
+  },
+  {
+   "sha": "5af283c7b577548c49ce36877519cbd411373781",
+   "input": "Please refund order 1002 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 18.5, \"order_id\": \"1002\"}]",
+   "seconds": 22.393605917022796,
+   "started": 1791645139.4636748
+  },
+  {
+   "sha": "ce5c29885477c7ef314a42188993e20e25b483e0",
+   "input": "Please refund order 1001 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42.0, \"order_id\": \"1001\"}]",
+   "seconds": 66.32083920901641,
+   "started": 1791645162.320471
+  },
+  {
+   "sha": "ce5c29885477c7ef314a42188993e20e25b483e0",
+   "input": "Please refund order 1002 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 18.5, \"order_id\": \"1002\"}]",
+   "seconds": 66.41765633301111,
+   "started": 1791645162.257758
+  },
+  {
+   "sha": "ffa0e076ace7a1e5d60a8484ea956cf0d7dc5599",
+   "input": "Please refund order 1001 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42.0, \"order_id\": \"1001\"}]",
+   "seconds": 80.62271745799808,
+   "started": 1791645228.972703
+  },
+  {
+   "sha": "ffa0e076ace7a1e5d60a8484ea956cf0d7dc5599",
+   "input": "Please refund order 1002 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 18.5, \"order_id\": \"1002\"}]",
+   "seconds": 83.34981504100142,
+   "started": 1791645228.980219
+  },
+  {
+   "sha": "5b382e78d33561f5a7d560fa18083d808cacab6e",
+   "input": "Please refund order 1001 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42.0, \"order_id\": \"1001\"}]",
+   "seconds": 78.36729133297922,
+   "started": 1791645313.333172
+  },
+  {
+   "sha": "5b382e78d33561f5a7d560fa18083d808cacab6e",
+   "input": "Please refund order 1002 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 18.5, \"order_id\": \"1002\"}]",
+   "seconds": 83.43066158299916,
+   "started": 1791645313.379651
+  },
+  {
+   "sha": "5b382e78d33561f5a7d560fa18083d808cacab6e",
+   "input": "Please refund order 1001 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42.0, \"order_id\": \"1001\"}]",
+   "seconds": 61.50438662499073,
+   "started": 1791645396.94907
+  },
+  {
+   "sha": "5b382e78d33561f5a7d560fa18083d808cacab6e",
+   "input": "Please refund order 1002 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 18.5, \"order_id\": \"1002\"}]",
+   "seconds": 61.95264820900047,
+   "started": 1791645396.94782
+  },
+  {
+   "sha": "fcf3261e135d362be9b246166a969d72a186c980",
+   "input": "Please refund order 1002 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 18.5, \"order_id\": \"1002\"}]",
+   "seconds": 53.42511329098488,
+   "started": 1791645459.800936
+  },
+  {
+   "sha": "fcf3261e135d362be9b246166a969d72a186c980",
+   "input": "Please refund order 1001 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42.0, \"order_id\": \"1001\"}]",
+   "seconds": 59.9761472500104,
+   "started": 1791645459.8233879
+  },
+  {
+   "sha": "748f024bd011c3b25bd41bb0a76eaa52fdb303c0",
+   "input": "Please refund order 1001 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42.0, \"order_id\": \"1001\"}]",
+   "seconds": 65.64464699997916,
+   "started": 1791645519.960636
+  },
+  {
+   "sha": "748f024bd011c3b25bd41bb0a76eaa52fdb303c0",
+   "input": "Please refund order 1002 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 18.5, \"order_id\": \"1002\"}]",
+   "seconds": 65.77321612500236,
+   "started": 1791645521.830226
+  },
+  {
+   "sha": "8d70f9a115dcdbbd4759abcea2f169620d61e5a2",
+   "input": "Please refund order 1001 for customer cust_9.",
+   "verdict": "fail",
+   "reason": "refunds were [], expected [{\"order_id\": \"1001\", \"refunded\": 42.0}]",
+   "seconds": 67.86162962499657,
+   "started": 1791645587.98654
+  },
+  {
+   "sha": "8d70f9a115dcdbbd4759abcea2f169620d61e5a2",
+   "input": "Please refund order 1002 for customer cust_9.",
+   "verdict": "fail",
+   "reason": "refunds were [], expected [{\"order_id\": \"1002\", \"refunded\": 18.5}]",
+   "seconds": 69.44982199999504,
+   "started": 1791645588.1246772
+  },
+  {
+   "sha": "fcf3261e135d362be9b246166a969d72a186c980",
+   "input": "Please refund order 1001 for customer cust_9.",
+   "verdict": "fail",
+   "reason": "refunds were [], expected [{\"order_id\": \"1001\", \"refunded\": 42.0}]",
+   "seconds": 51.53450816698023,
+   "started": 1791645657.755491
+  },
+  {
+   "sha": "fcf3261e135d362be9b246166a969d72a186c980",
+   "input": "Please refund order 1002 for customer cust_9.",
+   "verdict": "fail",
+   "reason": "refunds were [], expected [{\"order_id\": \"1002\", \"refunded\": 18.5}]",
+   "seconds": 54.84571220798534,
+   "started": 1791645657.7691069
+  },
+  {
+   "sha": "5b382e78d33561f5a7d560fa18083d808cacab6e",
+   "input": "Please refund order 1001 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42.0, \"order_id\": \"1001\"}]",
+   "seconds": 59.89911229198333,
+   "started": 1791645713.209109
+  },
+  {
+   "sha": "5b382e78d33561f5a7d560fa18083d808cacab6e",
+   "input": "Please refund order 1002 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 18.5, \"order_id\": \"1002\"}]",
+   "seconds": 61.820228208001936,
+   "started": 1791645713.231457
+  },
+  {
+   "sha": "5b382e78d33561f5a7d560fa18083d808cacab6e",
+   "input": "Please refund order 1002 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 18.5, \"order_id\": \"1002\"}]",
+   "seconds": 65.49097487499239,
+   "started": 1791645775.2094982
+  },
+  {
+   "sha": "5b382e78d33561f5a7d560fa18083d808cacab6e",
+   "input": "Please refund order 1001 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42.0, \"order_id\": \"1001\"}]",
+   "seconds": 67.77214374998584,
+   "started": 1791645775.203006
+  },
+  {
+   "sha": "5b382e78d33561f5a7d560fa18083d808cacab6e",
+   "input": "Please refund order 1001 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42.0, \"order_id\": \"1001\"}]",
+   "seconds": 64.1744462090137,
+   "started": 1791645844.6670442
+  },
+  {
+   "sha": "5b382e78d33561f5a7d560fa18083d808cacab6e",
+   "input": "Please refund order 1002 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 18.5, \"order_id\": \"1002\"}]",
+   "seconds": 65.5849957499886,
+   "started": 1791645844.761694
+  },
+  {
+   "sha": "5b382e78d33561f5a7d560fa18083d808cacab6e",
+   "input": "Please refund order 1001 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42.0, \"order_id\": \"1001\"}]",
+   "seconds": 75.99733645797824,
+   "started": 1791645910.89595
+  },
+  {
+   "sha": "5b382e78d33561f5a7d560fa18083d808cacab6e",
+   "input": "Please refund order 1002 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 18.5, \"order_id\": \"1002\"}]",
+   "seconds": 76.98917787501705,
+   "started": 1791645910.8932102
+  },
+  {
+   "sha": "5b382e78d33561f5a7d560fa18083d808cacab6e",
+   "input": "Please refund order 1001 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42.0, \"order_id\": \"1001\"}]",
+   "seconds": 34.505573500005994,
+   "started": 1791645988.2351968
+  },
+  {
+   "sha": "5b382e78d33561f5a7d560fa18083d808cacab6e",
+   "input": "Please refund order 1002 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 18.5, \"order_id\": \"1002\"}]",
+   "seconds": 40.94684916699771,
+   "started": 1791645988.2441542
+  },
+  {
+   "sha": "5b382e78d33561f5a7d560fa18083d808cacab6e",
+   "input": "Please refund order 1002 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 18.5, \"order_id\": \"1002\"}]",
+   "seconds": 28.43384541600244,
+   "started": 1791646030.041653
+  },
+  {
+   "sha": "5b382e78d33561f5a7d560fa18083d808cacab6e",
+   "input": "Please refund order 1001 for customer cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42.0, \"order_id\": \"1001\"}]",
+   "seconds": 34.35110191599233,
+   "started": 1791646030.0429618
+  }
+ ],
+ "motive": {
+  "sha": "fcf3261e135d362be9b246166a969d72a186c980",
+  "subject": "Accept order ids written with a # or leading zeros",
+  "checkpoint": null,
+  "session": null,
+  "agent": null,
+  "model": null,
+  "request": null,
+  "request_id": null,
+  "request_time": null,
+  "earlier_requests": [],
+  "steps": [],
+  "link": null,
+  "note": "This commit has no Entire checkpoint, so there is no recorded request behind it."
+ },
+ "evidence": {
+  "culprit": "fcf3261e135d362be9b246166a969d72a186c980",
+  "parent": "5b382e78d33561f5a7d560fa18083d808cacab6e",
+  "subject": "Accept order ids written with a # or leading zeros",
+  "diff": "diff --git a/victims/refund-agent/agent.py b/victims/refund-agent/agent.py\nindex 575576d..b6d616a 100644\n--- a/victims/refund-agent/agent.py\n+++ b/victims/refund-agent/agent.py\n@@ -146,9 +146,11 @@ REFUNDS: list[dict] = []  # what this run paid out, for the checks to read\n \n @span(kind=\"TOOL\", name=\"lookup_order\")\n def lookup_order(order_id: str):\n-    if order_id not in ORDERS:\n+    for form in {order_id, f\"#{order_id}\", order_id.zfill(6)}:  # every way customers write an id\n+        key = form.lstrip(\"0\")\n+        if key in ORDERS:\n+            return ORDERS[key]\n         raise LookupError(f\"404: order {order_id} not found\")\n-    return ORDERS[order_id]\n \n \n @span(kind=\"TOOL\", name=\"issue_refund\")\n",
+  "after": "victims/refund-agent/agent.py, lines 139 to 163 after the commit:\n 139      \"5012\": {\"order_id\": \"5012\", \"owner\": \"cust_12\", \"amount\": 22.0, \"status\": \"delivered\"},\n 140      \"5018\": {\"order_id\": \"5018\", \"owner\": \"cust_18\", \"amount\": 28.0, \"status\": \"delivered\"},\n 141      \"5021\": {\"order_id\": \"5021\", \"owner\": \"cust_21\", \"amount\": 31.0, \"status\": \"delivered\"},\n 142      \"5024\": {\"order_id\": \"5024\", \"owner\": \"cust_24\", \"amount\": 34.0, \"status\": \"delivered\"},\n 143  }\n 144  REFUNDS: list[dict] = []  # what this run paid out, for the checks to read\n 145  \n 146  \n 147  @span(kind=\"TOOL\", name=\"lookup_order\")\n 148  def lookup_order(order_id: str):\n 149      for form in {order_id, f\"#{order_id}\", order_id.zfill(6)}:  # every way customers write an id\n 150          key = form.lstrip(\"0\")\n 151          if key in ORDERS:\n 152              return ORDERS[key]\n 153          raise LookupError(f\"404: order {order_id} not found\")\n 154  \n 155  \n 156  @span(kind=\"TOOL\", name=\"issue_refund\")\n 157  def issue_refund(order_id: str, amount: float):\n 158      refund = {\"refunded\": amount, \"order_id\": order_id}\n 159      REFUNDS.append(refund)\n 160      return refund\n 161  \n 162  \n 163  def call_tool(name, args):\n\nvictims/refund-agent/agent.py, lines 143 to 163 after the commit:\n 143  }\n 144  REFUNDS: list[dict] = []  # what this run paid out, for the checks to read\n 145  \n 146  \n 147  @span(kind=\"TOOL\", name=\"lookup_order\")\n 148  def lookup_order(order_id: str):\n 149      for form in {order_id, f\"#{order_id}\", order_id.zfill(6)}:  # every way customers write an id\n 150          key = form.lstrip(\"0\")\n 151          if key in ORDERS:\n 152              return ORDERS[key]\n 153          raise LookupError(f\"404: order {order_id} not found\")\n 154  \n 155  \n 156  @span(kind=\"TOOL\", name=\"issue_refund\")\n 157  def issue_refund(order_id: str, amount: float):\n 158      refund = {\"refunded\": amount, \"order_id\": order_id}\n 159      REFUNDS.append(refund)\n 160      return refund\n 161  \n 162  \n 163  def call_tool(name, args):",
+  "checkpoint": null,
+  "request": null,
+  "steps": [],
+  "failing_run": {
+   "trace_id": "d7b0d700a48407260a9101e5a687e147",
+   "commit": "fcf3261e135d362be9b246166a969d72a186c980",
+   "input": "Please refund order 1002 for customer cust_9.",
+   "reason": "refunds were [], expected [{\"order_id\": \"1002\", \"refunded\": 18.5}]",
+   "outline": "d17ae928 WORKFLOW refund ok 429ms\n  in: {\"request\":\"Please refund order 1002 for customer cust_9.\",\"max_steps\":8}\n  out: I could not find order 1002. Please check the order id.\n  71e6f20a CHAIN run_info ok 0ms\n    in: {}\n    out: {\"tags\":[\"commit:fcf3261e135d362be9b246166a969d72a186c980\",\"llm:fake\",\"case:planted-flaky-lookup\"],\"commit_short\":\"fcf3261e135d\",\"model\":\"fake\"}\n  571f4988 LLM openai.chat.completions.create ok 52tok 407ms\n    in: system: You are a refund agent for an online shop. Use lookup_order to find an order before refunding it. Only call issue_refund after lookup_order confirms th\u2026\n    out: assistant:  \u2192 lookup_order({\"order_id\":\"1002\"})\n  3efaa2a7 TOOL lookup_order ERROR(404: order 1002 not found) result=error 4ms\n    in: {\"order_id\":\"1002\"}\n  ffe2a012 LLM openai.chat.completions.create ok 52tok 9ms\n    in: system: You are a refund agent for an online shop. Use lookup_order to find an order before refunding it. Only call issue_refund after lookup_order confirms th\u2026\n    out: assistant: I could not find order 1002. Please check the order id."
+  },
+  "passing_run": {
+   "trace_id": "6987e974e28a93e9884e959ed75ad67a",
+   "commit": "5b382e78d33561f5a7d560fa18083d808cacab6e",
+   "input": "Please refund order 1002 for customer cust_9.",
+   "outline": "018935bf WORKFLOW refund ok 451ms\n  in: {\"request\":\"Please refund order 1002 for customer cust_9.\",\"max_steps\":8}\n  out: Order 1002 has been refunded in full: 18.50.\n  0c6af9aa CHAIN run_info ok 0ms\n    in: {}\n    out: {\"tags\":[\"commit:5b382e78d33561f5a7d560fa18083d808cacab6e\",\"llm:fake\",\"case:planted-flaky-lookup\"],\"commit_short\":\"5b382e78d335\",\"model\":\"fake\"}\n  2c49f6b2 LLM openai.chat.completions.create ok 52tok 390ms\n    in: system: You are a refund agent for an online shop. Use lookup_order to find an order before refunding it. Only call issue_refund after lookup_order confirms th\u2026\n    out: assistant:  \u2192 lookup_order({\"order_id\":\"1002\"})\n  348d3875 TOOL lookup_order ok 0ms\n    in: {\"order_id\":\"1002\"}\n    out: {\"order_id\":\"1002\",\"owner\":\"cust_9\",\"amount\":18.5,\"status\":\"delivered\"}\n  211ef7ba LLM openai.chat.completions.create ok 52tok 13ms\n    in: system: You are a refund agent for an online shop. Use lookup_order to find an order before refunding it. Only call issue_refund after lookup_order confirms th\u2026\n    out: assistant:  \u2192 issue_refund({\"order_id\":\"1002\",\"amount\":18.5})\n  3592de87 TOOL issue_refund ok 0ms\n    in: {\"order_id\":\"1002\",\"amount\":18.5}\n    out: {\"refunded\":18.5,\"order_id\":\"1002\"}\n  1f0f3cb7 LLM openai.chat.completions.create ok 52tok 14ms\n    in: system: You are a refund agent for an online shop. Use lookup_order to find an order before refunding it. Only call issue_refund after lookup_order confirms th\u2026\n    out: assistant: Order 1002 has been refunded in full: 18.50."
+  },
+  "comparison": "{\n \"a\": {\n  \"summary\": {\n   \"trace_id\": \"6987e974e28a93e9884e959ed75ad67a\",\n   \"session_id\": null,\n   \"project\": \"refund-agent\",\n   \"workflow\": \"refund-agent\",\n   \"root_span_id\": \"018935bf1888593a\",\n   \"root_name\": \"refund\",\n   \"status\": \"ok\",\n   \"complete\": 1,\n   \"root_ended\": 1,\n   \"started_ms\": 1791645378125.651,\n   \"ended_ms\": 1791645378576.665,\n   \"last_span_ms\": 1791645378743.58,\n   \"span_count\": 7,\n   \"llm_calls\": 3,\n   \"tool_calls\": 2,\n   \"error_count\": 0,\n   \"prompt_tokens\": 120,\n   \"completion_tokens\": 36,\n   \"total_tokens\": 156,\n   \"input_preview\": \"Please refund order 1002 for customer cust_9.\",\n   \"output_preview\": \"Order 1002 has been refunded in full: 18.50.\",\n   \"interrupted\": 0,\n   \"termination_reason\": null,\n   \"finding_count\": 0,\n   \"open_finding_count\": 0,\n   \"pinned\": 0,\n   \"doctor\": 0,\n   \"plan_id\": \"plan_1m4k4gcqfn4q1hz13\",\n   \"received_ms\": 1791645378379,\n   \"updated_ms\": 1791645378940,\n   \"duration_ms\": 451.01416015625,\n   \"summary\": null,\n   \"top_finding\": null,\n   \"steering\": \"off\"\n  },\n  \"tools\": [\n   \"lookup_order\",\n   \"issue_refund\"\n  ],\n  \"output\": \"Order 1002 has been refunded in full: 18.50.\",\n  \"problems\": []\n },\n \"b\": {\n  \"summary\": {\n   \"trace_id\": \"d7b0d700a48407260a9101e5a687e147\",\n   \"session_id\": null,\n   \"project\": \"refund-agent\",\n   \"workflow\": \"refund-agent\",\n   \"root_span_id\": \"d17ae92834a84a4b\",\n   \"root_name\": \"refund\",\n   \"status\": \"ok\",\n   \"complete\": 1,\n   \"root_ended\": 1,\n   \"started_ms\": 1791645138600.158,\n   \"ended_ms\": 1791645139029.299,\n   \"last_span_ms\": 1791645139067.873,\n   \"span_count\": 5,\n   \"llm_calls\": 2,\n   \"tool_calls\": 1,\n   \"error_count\": 1,\n   \"prompt_tokens\": 80,\n   \"completion_tokens\": 24,\n   \"total_tokens\": 104,\n   \"input_preview\": \"Please refund order 1002 for customer cust_9.\",\n   \"output_preview\": \"I could not find order 1002. Please check the order id.\",\n   \"interrupted\": 0,\n   \"termination_reason\": null,\n   \"finding_count\": 0,\n   \"open_finding_count\": 0,\n   \"pinned\": 0,\n   \"doctor\": 0,\n   \"plan_id\": \"plan_1m4k4gcqfn4q1hz13\",\n   \"received_ms\": 1791645138998,\n   \"updated_ms\": 1791645139083,\n   \"duration_ms\": 429.14111328125,\n   \"summary\": null,\n   \"top_finding\": null,\n   \"steering\": \"off\"\n  },\n  \"tools\": [\n   \"lookup_order (failed)\"\n  ],\n  \"output\": \"I could not find order 1002. Please check the order id.\",\n  \"problems\": []\n },\n \"fixed\": [],\n \"new_problems\": [],\n \"same_tool_sequence\": false\n}",
+  "measured": "48 replays across 11 commits. Replays fail about 39% of the time from the culprit on and 1% before it.",
+  "notes": [
+   "This commit has no Entire checkpoint, so there is no recorded request behind it."
+  ]
+ },
+ "brief": {
+  "headline": "fcf3261e135d: raise inside for-loop fires on first iteration miss, skipping remaining candidates",
+  "sentences": [
+   {
+    "text": "Commit fcf3261e135d introduced a for-loop over three candidate forms of an order id, but placed the raise LookupError inside the loop body at the same indentation level as the return.",
+    "cites": [
+     "fcf3261e135d"
+    ]
+   },
+   {
+    "text": "This means the loop raises on the very first iteration that does not match, instead of trying all three forms and only raising after exhausting them.",
+    "cites": [
+     "fcf3261e135d"
+    ]
+   },
+   {
+    "text": "Because the loop iterates a set, the order of the three candidates is non-deterministic, so the plain order_id form is not always tried first, making the failure intermittent and explaining the ~39% failure rate.",
+    "cites": [
+     "d7b0d700a484",
+     "fcf3261e135d"
+    ]
+   },
+   {
+    "text": "In the failing run, lookup_order was called with order_id '1002', which exists in ORDERS, but the tool returned a 404 error instead of the record.",
+    "cites": [
+     "3efaa2a7",
+     "d7b0d700a484"
+    ]
+   },
+   {
+    "text": "In the passing run at the parent commit, the same input '1002' was resolved immediately and the refund completed successfully.",
+    "cites": [
+     "348d3875",
+     "5b382e78d335",
+     "6987e974e28a"
+    ]
+   },
+   {
+    "text": "The fix is to dedent the raise so it is outside the for-loop, executing only after all candidate keys have been tried.",
+    "cites": [
+     "fcf3261e135d"
+    ]
+   }
+  ],
+  "dropped": [],
+  "model": "claude-sonnet-4.6"
+ },
+ "ruling": {
+  "kind": "agent-code",
+  "ruling": "revert",
+  "decided_on": "2026-10-10",
+  "first_case": "planted-flaky-lookup",
+  "culprit": "fcf3261e135d362be9b246166a969d72a186c980",
+  "note": "",
+  "asked_now": true
+ },
+ "fix": {
+  "branch": "whodunit/planted-flaky-lookup",
+  "kind": "revert",
+  "commit": "6dfe7257cd70c1c5bee25bf17f42fcc0fcff4f67",
+  "note": "",
+  "files": [
+   "victims/refund-agent/agent.py"
+  ],
+  "verification": {
+   "fixed": true,
+   "probability": 0.9576645494906155,
+   "replays": 8,
+   "failures": 0,
+   "note": ""
+  },
+  "regression_case": "<planted repo>/cases/planted-flaky-lookup.toml"
+ },
+ "damages": {
+  "workflow": "refund-agent",
+  "since_ms": null,
+  "runs": 11,
+  "bad_runs": 1,
+  "bad_share": 0.0909,
+  "tokens": 5657,
+  "bad_tokens": 104,
+  "cost_usd": 0.0059,
+  "wasted_usd": 0.0,
+  "replay_runs": 115,
+  "replay_usd": 0.0,
+  "note": "Dollar figures are estimates from token counts."
+ }
+}
