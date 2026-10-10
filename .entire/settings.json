@@ -1,4 +1,5 @@
 {
+  "enabled": true,
   "redaction": {
     "pii": {
       "enabled": true,
