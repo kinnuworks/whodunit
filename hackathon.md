@@ -37,7 +37,7 @@ Found out along the way:
 
 Not tested yet: `REFUND_LLM=own`, the owner's key fallback.
 
-### 7:22 PM, first Entire checkpoints verified
+### 7:17 PM, first Entire checkpoints verified
 
 The hooks do fire for sessions run in the desktop app, which was the open question. Both commits got an `Entire-Checkpoint:` trailer, and `entire checkpoint list` shows 2 checkpoints: `fc9699a4e609` on 601c1fc and `f8f2b3618deb` on d210212.
 
