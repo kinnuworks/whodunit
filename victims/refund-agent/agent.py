@@ -8,6 +8,7 @@ the commit it ran on.
     uv run agent.py "Please refund order 1001 for customer cust_9."
     REFUND_LLM=gateway uv run agent.py "..."     # the hackathon gateway
     TRACE_TO=neatlogs uv run agent.py "..."      # send the trace to neatlogs cloud
+    uv run agent.py "..." --quiet                # skip printing the reply, keep only the trace
 
 Settings, all environment variables:
 
@@ -193,13 +194,13 @@ def run(request: str, max_steps: int = 8):
 
 
 if __name__ == "__main__":
-    args = [a for a in sys.argv[1:] if a != "--json"]
+    args = [a for a in sys.argv[1:] if a not in ("--json", "--quiet")]
     request = os.environ.get("NEATROOTS_REPLAY_INPUT") or " ".join(args) or "Please refund order 1001 for customer cust_9."
     try:
         reply = run(request)
         if "--json" in sys.argv:
             print(json.dumps({"request": request, "reply": reply, "refunds": REFUNDS, "model": MODEL}))
-        else:
+        elif "--quiet" not in sys.argv:
             print(reply)
     finally:
         neatlogs.flush()
