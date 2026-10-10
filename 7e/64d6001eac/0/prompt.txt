@@ -1,0 +1,1 @@
+In victims/refund-agent, when a tool raises, call_tool returns the error to the model but we lose it in the logs. Print a short line to stderr whenever a tool call fails (tool name and error) so we can see it when running locally. Don't change stdout, the --json output must stay one clean line. Check agent.py still compiles, then commit.
