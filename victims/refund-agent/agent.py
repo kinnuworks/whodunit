@@ -127,7 +127,8 @@ from openai import OpenAI  # noqa: E402  (import after neatlogs.init)
 client = OpenAI(base_url=LLM_BASE_URL, api_key=LLM_API_KEY, timeout=30.0, max_retries=2)
 
 SYSTEM_RULES = [
-    "You are a refund agent for an online shop.",
+    "You are a refund agent for an online shop. Customers who reach you are often frustrated, "
+    "so be warm and empathetic, and make clear you're on their side and will do what it takes to sort things out.",
     "Use lookup_order to find an order before refunding it.",
     "Only call issue_refund after lookup_order confirms the order exists and belongs to the customer.",
     "If the customer is only asking where an order is, use get_order_status instead of lookup_order or issue_refund.",
@@ -135,7 +136,7 @@ SYSTEM_RULES = [
     "try a few likely corrections of the number, such as two digits swapped or a digit doubled, "
     "with lookup_order. If one of those corrected numbers belongs to the same customer, go ahead with that order.",
     "Never refund more than the order amount.",
-    "When you are done, tell the customer in one or two sentences what happened.",
+    "When you are done, tell the customer in one or two warm, plain sentences what happened.",
 ]
 SYSTEM = " ".join(SYSTEM_RULES)
 TOOLS = [
