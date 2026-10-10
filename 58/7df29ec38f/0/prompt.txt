@@ -1,0 +1,273 @@
+Research the other neatHack entries: search #neatHack posts and any linked public repos from 10 to 12 October 2026. For each, note what the agent does, which of neatlogs, Entire and cfo.ai it shows, and how far along it looks. Then say where a project that finds the commit that broke an AI agent is stronger or weaker than the field, look at code and all, and how ours will placed against them, and how we can win and beat them
+
+---
+
+<task-notification>
+<task-id>a50a84ca8e7088d4a</task-id>
+<tool-use-id>toolu_014JmaaXCmzCtveGmvqssNAg</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-kinnu-neathack/ab623eaf-f207-4102-9002-9ee611c73914/tasks/a50a84ca8e7088d4a.output</output-file>
+<status>completed</status>
+<summary>Agent "Survey hackathon repos, list 1" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>Report on the 26 repos in `/private/tmp/claude-501/-Users-kinnu-neathack/ab623eaf-f207-4102-9002-9ee611c73914/scratchpad/field/` (chunk1). "Trailers" means `Entire-Checkpoint:` trailers out of total commits. Nothing was cloned or run; a few evidence files were read through `gh api`.
+
+## Entries with real substance
+
+**haodaz/hioffer**. PhD-application agent: researches program requirements and faculty, drafts tailored materials, verifies its own citations.
+- neatlogs: five screenshots in `evidence/neatlogs/` (trace list, tree, detections, the run-1 error); runs tagged `run1`..`run5`. No public trace links.
+- Entire: 43/45 trailers, `.entire/`, saved `checkpoint list/explain/tokens` and `entire why` output. No entire-graph.
+- cfo.ai: public link (cfo.ai/s/A_qiW6hIGmm-3fDR), four screenshots, results file (Year 1 revenue $98,000, 76.3% margin, pre-seed scenario runs dry August of Year 2).
+- Progress: live on Vercel and Railway, one test file. Measured: per-call input tokens 27.4k to 13.6k, about $2.2 to $0.83 per program, seven defects logged across five runs, including a 429 budget exhaustion.
+- Gaps: demo is a script and tooling with no video file; posts are drafts.
+- Verdict: the most complete evidence set on this list.
+
+**Sher110106/migration-parachute**. Agent runs expand/backfill/contract Postgres migrations, backs off under lock contention, and gates the destructive step on proof and owner approval.
+- neatlogs: `neatlogs-before.png` and `neatlogs-after.png` plus JSON replays.
+- Entire: 14/25 trailers, checkpoint metadata, two entire-graph JSON outputs.
+- cfo.ai: workspace page link plus a verification file with three scenarios (base month-24 MRR $25,410; downside ends at -$98,887 cash).
+- Progress: results table is baseline 0 rows kept, v0 4,000, v1 10,000; 12 scenarios with v0 passing 11 and v1 12; LLM planner $0.0094 total. Demo mp4 in a GitHub release.
+- Gaps: posts are drafts ("Nothing here has been posted").
+- Verdict: strong, with a very clean before/after story.
+
+**sanchit940/nightwatch-agent**. DevOps agent that diagnoses injected incidents and changes infrastructure only through HMAC-bound approvals.
+- neatlogs: SDK spans in code; no screenshots or links in the tree.
+- Entire: 19/20 trailers, `docs/entire-evidence.md`.
+- cfo.ai: inputs file only (pricing $199 and $799, measured cost per incident); no link.
+- Progress: 12 real faults across five prompt versions: correct fix decision 67% (v1) to 92% (v5), about $0.059 per incident, 0 unauthorized changes. It reports that root-cause accuracy dropped from 100% to 92%.
+- Gaps: posts are drafts, no video, two test files.
+- Verdict: strong agent and eval; thin on cfo.ai and neatlogs proof.
+
+**DurgaPritam/neatHack-QBITS- (PreJudge)**. Audits a public repo against the neatHack rubric, checks README claims against code, and returns a score and fix list.
+- neatlogs: three public trace links in `EVIDENCE.md` (labels still placeholders).
+- Entire: nothing (0 trailers, no `.entire/`).
+- cfo.ai: public link (cfo.ai/s/xBCsLLiMtconXUBf) plus `docs/business-plan.md` ($199/$499/$999 tiers, $0.0095 per audit, 97% margin).
+- Progress: 39 commits, 18 test files. Measured: 40,086 tokens/106s/0 of 8 verified to 19,066/52s/5 of 7; time to first result 34-52s to 5.5-12s; Groq 429 recovery.
+- Verdict: good numbers, but missing a required tool so far. It could be pointed at our repo.
+
+**hacker-git-code/underwrite-**. Analyst, skeptic, watcher and coach agents write sourced venture diligence memos; the coach rewrites prompts from neatlogs traces.
+- neatlogs: SDK and MCP use in code; trace ids said to be in dossiers; no screenshots.
+- Entire: 12/13 trailers, `graph-agent.md`, `submission/ENTIRE.md`.
+- cfo.ai: `business/PLAN.md` is inputs only; the README's own checklist leaves cfo.ai unticked.
+- Progress: live GitHub Pages site with memos, 12-company eval run in the tree. The README results table is an "Evaluation in progress" placeholder; before/after and posts are unticked; video pending.
+- Verdict: the most ambitious agent, with required evidence still open.
+
+**sourabhnirvani/teamloop**. A crew of bots that controls a Windows laptop from desktop, phone or Telegram, with approval cards.
+- neatlogs: `teamloop/trace.py` and a test; no screenshots or links.
+- Entire: 19/50 trailers, checkpoint lists for both teammates.
+- cfo.ai: not mentioned anywhere in the README or tree.
+- Progress: 27 test files, eval JSONs. `evidence/before_after.json` compares one bot with the crew (11.7s/8,915 tokens against 15.7s/18,218), which is a comparison and shows no improvement.
+- Verdict: a lot of working product, missing a required tool.
+
+**aarush323/NeatHacks (Loadline)**. Boots a repo in Docker, load-tests it with k6, and an investigator agent writes an evidence-backed report.
+- neatlogs: setup and probe code, described as optional; no trace was sent.
+- Entire: 5/6 trailers; entire-graph is a runtime tool (`loadline/entire_runtime/`).
+- cfo.ai: "business plan only", no file.
+- Progress: 91 test-related files, sealed oracles; no measured results in the README.
+- Verdict: well engineered, with no evidence yet.
+
+**DiverseXL/foreman**. TypeScript CLI that resolves seeded issues with a rubric, entire-graph context, patches and a validator.
+- neatlogs: smoke script and telemetry module.
+- Entire: 3/5 trailers; eight entire-graph JSON outputs in `docs/evidence/entire-graph-issue-3/`.
+- cfo.ai: nothing.
+- Progress: 14 test files, no results; patch proposal only just landed.
+
+**JMadhan1/tenantguard**. Reproduces a planted tenant-isolation leak, fixes it, catches its own regressing fix, and proves the final fix.
+- neatlogs: code path only. Entire: 0 trailers, no `.entire/`. cfo.ai: `BUSINESS_PLAN.md` written "for cfo.ai", not loaded.
+- `docs/EVIDENCE.md` is a template of LINK placeholders. The shown run uses a scripted offline brain. The README's "tests passing" badge is static.
+- Verdict: nice recovery story, no sponsor evidence.
+
+**Vex-15/Agent-RedOps**. Runs 11 attack scenarios on a simulated procurement pipeline and re-runs them with guards applied.
+- neatlogs: spans in code. Entire: `.entire/` present, 0 trailers. cfo.ai: `BUSINESS_PLAN.md` ($999/mo tier), no cfo.ai artefact.
+- Claims 48 pytest tests (one test file). The pipeline is deterministic, so the "agent" is thin.
+
+**AdiGoCrazy/atlas-commerce**. Prototype for regional product ranking from synthetic signals.
+- 7/33 trailers, 74 tests passing.
+- The README states neatlogs live evidence is blocked (no key) and cfo.ai is "degraded" with local simulation, though `docs/evidence/cfo-ai-harbor-bay.xlsx` exists.
+- No autonomous loop is wired.
+
+**ibochivincent-lang/proof-of-search-ai (Dala)**. LangGraph research agent with cited reports and SHA-256 source ledger.
+- neatlogs: handler wired, doctor probe pass claimed. Entire: `.entire/` and graph guide, but 0 trailers. cfo.ai: `financial_plan.md` only.
+- Live EC2 URL claimed.
+- Problems: the README prints what look like live neatlogs and Crustdata API keys. Most commits rebuild a "Dala" marketing site (team and investor images in the tree).
+
+**PeytonLi/Conduit**. Planned supplier-delay recovery agent.
+- 63 commits, 86 test-related files, 0 trailers.
+- README: "No live provider or supplier workflow is enabled"; sponsor tools are mentions only.
+
+## Early or thin
+
+- **techbyFEMI/TestGap-Agent**: finds Python test gaps and drafts tests. 1/10 trailers, an entire-graph note, and a cfo.ai brief that it labels "prepared input, not proof". Drafted tests are not executed yet.
+- **angqd/NeatHacks (ToolPrune)**: hierarchical tool retrieval. 6/7 trailers. Eval set frozen, baselines not built, "Hypothesis unproven". No agent, no cfo.ai.
+- **davre001/Torque (Suture)**: issue-to-PR agent with trace-driven recovery. The README describes `agents/`, `tools/`, `business/` and `demo/`; the tree has none of them, only `frontend/` and `evidence/README.md`. 2/16 trailers.
+- **Misterhoye10/neat-patch**: issue-to-PR "self-healing" agent. Four commits in 37 minutes. The trailers are hand-made ids (for example `chk_model_sunset_healed_...`) and `.entire/checkpoints/*.json` is its own format. The tracer is a custom local file writer. "Live metrics" (3/3 tests, 83% margin) are unsupported.
+- **khushi-infinity/factora-agents**: factory digital twin. "No agents, no ML yet". 0 trailers, with the Entire limitation documented; the business plan is "not yet modelled".
+- **Thesusxo/JobReady**: PHP interview-prep agent. neatlogs HTTP client, 1/5 trailers, no cfo.ai.
+- **SamarthKarnam4246/GhostErase**: document deletion prototype. Two commits. Says Entire is not installed and cfo.ai OAuth is unverified.
+- **23f2001033/interlock**: lands multiple AI-written branches and finds changes that fail only together. Three commits: spec and skeleton only.
+- **nylxar/readme-liar-detector**: verifies README claims by running them sandboxed. Two commits; evidence folders named but absent.
+- **NUNRIBHAC/Neathack-Agent (DisruptRadar)**: three commits and a two-line README.
+- **Jevelopers-neatHack-2026/event-intelligence, agent-harness, brand-kit**: three components of one project, TicketStub (the main repo is not on my list). 88, 21 and 7 commits, heavy tests, 0 trailers. Each README says it does not establish "connected sponsor tools".
+
+## Five strongest, ranked
+
+1. **hioffer**: only entry with all three tools evidenced by artefacts, plus a live site and measured before/after cost numbers.
+2. **migration-parachute**: crisp three-row results table, entire-graph outputs, neatlogs screenshots, cfo.ai scenarios and a recorded demo.
+3. **nightwatch-agent**: best eval rigour (12 real faults, five versions, misses reported) and 19/20 checkpoints, but cfo.ai and neatlogs proof are still thin.
+4. **PreJudge (QBITS)**: public neatlogs trace links and a public cfo.ai model with real numbers; no Entire at all.
+5. **underwrite**: strongest agent design and a live memo site; its own checklist shows before/after, cfo.ai and posts unfinished.
+
+No repo on this list shows posted #neatHack links; hioffer, parachute and nightwatch have drafts only.
+
+## Overlap with Whodunit
+
+Nobody on this list bisects commit history or uses Entire checkpoints to recover why a change was made. The nearest:
+
+- **interlock**: attributes a combined failure to specific AI-written branches, proves it with a test, and tells the responsible coding agent. Closest in spirit, but only a spec so far.
+- **Torque, neat-patch, foreman**: issue to patch to verified fix. Torque's recovery agent reads the failed neatlogs trace, but little of it is built.
+- **tenantguard**: reproduce, fix, and prove the fix with a deterministic verifier, on one planted bug.
+- **underwrite**: its coach improves the agent from neatlogs traces and keeps a change only if the eval improves. Same "prove it with replays" idea, applied to prompts.</result>
+<usage><subagent_tokens>173125</subagent_tokens><tool_uses>17</tool_uses><duration_ms>179826</duration_ms></usage>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>a5a4ce1c79be896da</task-id>
+<tool-use-id>toolu_01Kq3vRpzpHXPjzHrVtosrwz</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-kinnu-neathack/ab623eaf-f207-4102-9002-9ee611c73914/tasks/a5a4ce1c79be896da.output</output-file>
+<status>completed</status>
+<summary>Agent "Survey hackathon repos, list 0" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>Read all 27 entries from README, tree and commits, plus four files fetched with `gh api` (Blast Radius `WRITEUP.md` and `docs/cfo-plan.md`, Tracewise `docs/evidence/scenarios.md`, Haq `EVIDENCE.md`). I did not open any live site, video, trace or cfo.ai link, so "link" below means it is present in the README, not that it works. All timestamps are UTC.
+
+Source folder: `/private/tmp/claude-501/-Users-kinnu-neathack/ab623eaf-f207-4102-9002-9ee611c73914/scratchpad/field/`
+
+## Entries
+
+**1. edycutjong/cair (Cair)**. Plans how a prize or client payment reaches a non-US bank account, refusing routes that cannot deliver.
+- neatlogs: SDK wired, dashboard trace links (login needed), 6 screenshots in `docs/assets/neatlogs/`, 12 trace exports in `evidence/traces/`.
+- Entire: 0 trailers, checkpoints deliberately off; entire-graph outputs in `evidence/entire/` (10 files).
+- cfo.ai: public share link, `docs/cfo/Runway.xlsx`, `docs/BUSINESS-PLAN.md`; runway 1.35 months on the $25 credit.
+- Progress: 79 commits, "571 passing" badge, live app, two X posts, no video link yet. One-call baseline recommended a ruled-out route in 18/48 cases against 0/48 for the agent; forced FX failure handled 48/48.
+- Verdict: the most complete entry on the list; the missing checkpoints are its one gap.
+
+**2. akarsh-dhingra/SpeedRadar-NeetHack (Spend Radar)**. Compares a company's people spend with competitors and tries to disprove its own findings.
+- neatlogs: SDK wired, trace ids in `evidence/traces.md`; no screenshots.
+- Entire: 37 trailers in 45 commits, checkpoint and graph outputs in `evidence/entire/`.
+- cfo.ai: share link, xlsx exports in `business/cfoai/`, three scenarios; Base is cash-flow positive in month 15.
+- Progress: peers kept 2/5 to 5/5, credits 26.6 to 5.4, reasoning-call latency 120.9 s to 6.5 s, held-out scorecards 5/6 to 6/6. GIF is still a placeholder; no X links in the README.
+- Verdict: strong on all three tools, with honest caveats.
+
+**3. usv240/niyam (Niyam)**. Reads new Maharashtra government orders and updates welfare eligibility rules in code through verified PRs.
+- neatlogs: wired, `evidence/neatlogs.md`.
+- Entire: 1 trailer in 35 commits here (README says checkpoints sit mainly in the separate rulebook repo), `evidence/entire.md` and one screenshot.
+- cfo.ai: claimed; only `business/README.md` exists, contents unread.
+- Progress: v1 to v3 cost per document $0.88 to $0.13, time 110 s to 40 s, correct act-or-ask 67% to 100%. Live site and API on AWS, three merged agent PRs; video "added on submission day".
+- Verdict: strong and original, with real artefacts.
+
+**4. Shivam-sopho/release-gate-agent**. Diffs two Android APKs, drives an emulator through at-risk journeys on both builds, then stops at a human gate.
+- neatlogs: SDK wrap; `evidence/` holds 53 files, mostly device screenshots and benchmark summaries.
+- Entire: 2 trailers in 40 commits, a checkpoint link, a Trail link, `.entire/runners/`, `docs/entire.md`.
+- cfo.ai: `docs/business-plan.md` and `docs/cfo-ai/projection.csv`; $199/month, break-even near 22 customers.
+- Progress: turns 39.0 to 24.2, cost $0.264 to $0.205, verdicts 4/4 both. Demo video already on YouTube; no test files.
+- Verdict: the only entry with a video; its first commit is "Port base from prior project".
+
+**5. Axhat/neatlogs-hack (Blast Radius)**. Finds vulnerable pinned packages, maps them to revenue at risk and fixes the upgrade.
+- neatlogs: wired, trace screenshots in `social/media/` and `video/public/`.
+- Entire: 20 trailers in 21 commits; graph mode added later (WRITEUP still says the graph is unused).
+- cfo.ai: `docs/cfo-plan.md` with pricing ($15 and $25 per repo) and stress costs.
+- Progress: LLM steps 19.7 to 4.3, cost $0.199 to $0.041, time 48.4 s to 18.5 s (3 runs each). X thread, AWS dashboard, `social/media/1-video.mp4`.
+- Verdict: every evidence box ticked on a small seeded demo; the README is five lines.
+
+**6. PhiBao/verbatim**. Research agent whose claims are checked against fetched sources by a verifier with no model in it.
+- neatlogs: "29 traces ingested", public project claimed; no screenshots.
+- Entire: 3 trailers in 24 commits.
+- cfo.ai: `docs/business-plan.md` plus two "what to type into cfo.ai" guides, so the model itself may not exist yet.
+- Progress: live on fly.dev; one run of 57 claims gave 47 verified, 2 contradicted, 8 unsupported; 39 Rust tests. No before/after table.
+- Verdict: a strong idea with lighter evidence.
+
+**7. Im-Akii/MergeMind**. GitHub agent that triages an issue, guides the author's PR and merges after maintainer approval.
+- neatlogs: "optional: tracing", nothing in the tree.
+- Entire: 0 trailers; entire-graph is used inside the agent.
+- cfo.ai: share link and `evidence/cfo/` unit economics.
+- Progress: backtest on 450 issues and 438 PRs, fix file in top 3 from 0.68 to 0.74, false-alarm holds 12% to 5%. 16 commits, 15 test files, no video or X links.
+- Verdict: the best evaluation here, weak on neatlogs and checkpoints.
+
+**8. Arnab-Afk/wise (Tracewise)**. On-call agent that diagnoses a broken service, rolls back or flags, verifies recovery and hands a fix to a coding agent.
+- neatlogs: `tracing.py`, mention only.
+- Entire: 0 trailers; `entire graph` and `checkpoint explain` are called by the agent.
+- cfo.ai: README points to `docs/business/`, which is not in the tree.
+- Progress: 11 commits, the first several sharing one timestamp. `scenarios.md` lists 11 resolved incidents at $0.08 to $0.15, six dated 9 October, before the window.
+- Verdict: an ambitious system, with the business plan absent.
+
+**9. Vaibhaav-Tiwari/neatlogs-hack (Tally)**. Routes a coding backlog to the cheapest capable model under a budget and escalates failures.
+- neatlogs and cfo.ai: adapters with tests; README says the cfo.ai values are placeholders. No plan file, traces or screenshots.
+- Entire: 58 trailers in 159 commits.
+- Progress: about 35 test files; the demo uses simulated workers and the README shows no measured results.
+- Verdict: the most engineering volume with the least evidence so far.
+
+**10. abhilash2429/BladeRunner**. Watchdog that reads other agents' neatlogs traces, quarantines rule-breaking runs and patches the guardrail.
+- neatlogs: client code and about 25 recorded API fixtures.
+- Entire: 1 trailer in 50 commits, `.entire/graph-agent.md`.
+- cfo.ai: nothing.
+- Progress: about 22 test files; the README is three lines promising numbers later.
+- Verdict: deep neatlogs use, nothing else shown yet.
+
+**11. rohitraj2496-source/Hackathon_1 (Haq)**. Hindi voice agent that finds the government schemes a family qualifies for.
+- neatlogs: SDK wired, trace ids saved in results. Entire: 25 trailers in 26 commits. cfo.ai: nothing.
+- Progress: accuracy 0.50 to 0.86 and cost $0.93 to $0.22 per household, on 9 households.
+- Verdict: a good agent that fails the cfo.ai requirement as it stands.
+
+**12. Sathvikar01/morrow (Serene)**. Evidence-bound family intelligence agent. Adapters for neatlogs and cfo.ai, 11 trailers in 14 commits, 144 tests. The README says the investigation loop and UI are not built.
+
+**13. mohammadfahimhaque/sentinelops-ai**. Incident responder for a simulated Postgres missing-index outage. neatlogs over OTLP with a readback script, 3 trailers in 4 commits, no cfo.ai, 8 test files.
+
+**14. karthik1codes/retrench**. Keep-or-kill P&amp;L per AI feature. The 23 KB README is mostly a spec; 5 commits with one bulk app drop, 0 trailers, client libraries for all three tools, a mock-data flag, no results.
+
+**15. Mike-Demo/truthops**. Investigates viral corporate claims and drafts a response plan. neatlogs is wired, Entire shows 1 trailer with a support question pending, and the cfo.ai link is a private app chat URL.
+
+**16. DhayananthB/receipts**. Marks startup pitch claims supported, contradicted or unverifiable. 3 trailers in 5 commits, Entire runners and graph config, neatlogs skill files only, no cfo.ai.
+
+**17. Kalpesh1Sharma/Aristo (MarginGhost)**. Audits supplier invoices against contracts. 5 trailers in 8 commits, neatlogs doctor only, no cfo.ai, no results.
+
+**18. prakharsingh-74/Groovi-AI**. Agent configuration platform. The README claims "82.3% SaaS Gross Margin" and a "22-Month Runway Model", but the tree has no plan file, no Entire files and no tests; only `lib/neatlogs.ts`.
+
+**19. Viswesh934/BUST**. Turns deal notes into sales collateral. 3 trailers in 7 commits, the sponsor tools are mentions, and the demo milestone is marked planned.
+
+**20. prabhat-gp/neathack-upi (DisputePro)**. Clears UPI payment exceptions with three agents. neatlogs wired, 2 trailers in 7 commits, and the README says cfo.ai is "Not started".
+
+**21. abhijitmanna912001/mindstack-neathack (SignalScout)**. Prospecting agent shell. Placeholder README, 11 trailers in 20 commits, a hello-trace script, placeholder result components.
+
+**22. kaulastudies/proofagent-neathack-2026**. Repairs arithmetic bugs in three billing fixtures with independent test checks. 4 commits, 18 tests, proposals are scripted replay, and the Entire and cfo.ai boxes are unticked in its own README.
+
+**23. manuaishika/neat (Vani Watchtower)**. Agent team that finds the failing layer in a voice-agent pipeline, fixes it and verifies by replay. 8 files, 2 commits dated 8 October, sponsor tools as mentions only.
+
+**24. MrSujalThapa/neathacks (HackFinder)**. Finds hackathons and fills application forms. One commit, "Baseline existing Hackathon Finder", 632 files, no sponsor tools visible.
+
+**25. Mkzay/neathack-2026**. A neatlogs smoke test and an Entire checkpoint check (2 trailers in 3 commits); no agent yet.
+
+**26. Jevelopers-neatHack-2026/getticketstub.com**. Architecture documents only; the README says they do not establish working functionality.
+
+**27. McEal/BuildCheck-Hacks**. Empty README, 2 commits, a Vite scaffold.
+
+## Five strongest, ranked
+
+1. **Cair**: measured ablations, a forced-failure run, live app, neatlogs screenshots, public cfo.ai model and X posts; it lacks checkpoints and a video.
+2. **Spend Radar**: 37 checkpoints, graph outputs, cfo.ai exports with scenarios and before/after scorecards on held-out data; it lacks a video and visible X links.
+3. **Niyam**: a real-world problem, three-version improvement table, live deployment and merged agent PRs; the cfo.ai plan is one unread file.
+4. **release-gate-agent**: the only finished demo video, with all three tools evidenced and clean before/after numbers; ported from an earlier project.
+5. **Blast Radius**: every evidence item present, including video file, X thread and 20 checkpoints; the demo task is small.
+
+Verbatim, MergeMind and Tracewise sit just outside.
+
+## Overlap with "which commit broke the agent"
+
+- **Tracewise** is the closest. It attributes a code-bug incident to a deploy and commit, rolls back, has a coding agent fix forward with a regression test, and verifies recovery. Its target is a service outage, and the README shows no bisect, no repeated replays and no reading of the culprit's original session.
+- **Retrench** claims to resolve a margin cliff to a "causal commit / session" through Entire. This is a spec with mock data so far.
+- **Vani Watchtower** localises a failing layer in an agent pipeline and verifies the fix by replay, with no commit attribution and pre-window commits.
+- **BladeRunner** is adjacent: it catches agents misbehaving from traces and patches guardrails, with no link to commits.
+- **release-gate-agent** finds regressions between two builds with a root cause and suggested fix, but for Android binaries.
+
+None of the 27 does a statistical bisect over commits or surfaces the request behind the culprit commit.</result>
+<usage><subagent_tokens>172940</subagent_tokens><tool_uses>14</tool_uses><duration_ms>194110</duration_ms></usage>
+</task-notification>
