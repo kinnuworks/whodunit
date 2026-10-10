@@ -28,6 +28,7 @@ class Case:
     check: dict = field(default_factory=lambda: {"kind": "refunds"})
     env: dict = field(default_factory=dict)
     timeout: float = 120.0
+    fixed: str = ""  # the commit that fixed it, once the case is closed and kept as a regression test
 
     @classmethod
     def load(cls, path: str | Path) -> "Case":

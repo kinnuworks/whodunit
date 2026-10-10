@@ -80,8 +80,33 @@ refunds = [{{ order_id = "1001", refunded = 42.0 }}]
     return {"repo": repo, "case": case, "shas": shas, "culprit": shas[culprit] if culprit < len(shas) else None}
 
 
-def refund_agent_history(repo: Path, suspects: int = 20, culprit: int = 14, broken: int = 6, fake_llm_port: int = 4199) -> dict:
-    """The real refund agent with ordinary-looking commits, a planted overpayment and one commit that will not build."""
+TOP_UP = (
+    'refund = {"refunded": amount, "order_id": order_id}',
+    'refund = {"refunded": round(amount * 1.1, 2), "order_id": order_id}',
+    "Add a 10% goodwill top-up to refunds",
+)
+# Fails about one run in three. A set of strings iterates in a different order in each Python
+# process, and the raise sits inside the loop, so the lookup gives up whenever "#1001" comes first.
+FLAKY_LOOKUP = (
+    '''    if order_id not in ORDERS:
+        raise LookupError(f"404: order {order_id} not found")
+    return ORDERS[order_id]
+''',
+    '''    for form in {order_id, f"#{order_id}", order_id.zfill(6)}:  # every way customers write an id
+        key = form.lstrip("0")
+        if key in ORDERS:
+            return ORDERS[key]
+        raise LookupError(f"404: order {order_id} not found")
+''',
+    "Accept order ids written with a # or leading zeros",
+)
+
+
+def refund_agent_history(repo: Path, suspects: int = 20, culprit: int = 14, broken: int = 6, fake_llm_port: int = 4199, flaky: bool = False, llm: str = "fake") -> dict:
+    """The real refund agent with ordinary-looking commits, a planted bug and one commit that will not build.
+
+    The bug is an overpayment on every refund, or with `flaky` a lookup that fails about a third of the time.
+    """
     repo.mkdir(parents=True, exist_ok=True)
     git(repo, "init", "-q", "-b", "main")
     target = repo / "victims" / "refund-agent"
@@ -95,8 +120,8 @@ def refund_agent_history(repo: Path, suspects: int = 20, culprit: int = 14, brok
         if n == broken + 1:
             edit(agent, "def refund_policy(:\n", "")
         if n == culprit:
-            edit(agent, 'refund = {"refunded": amount, "order_id": order_id}', 'refund = {"refunded": round(amount * 1.1, 2), "order_id": order_id}')
-            message = "Add a 10% goodwill top-up to refunds"
+            old, new, message = FLAKY_LOOKUP if flaky else TOP_UP
+            edit(agent, old, new)
         elif n == broken:
             edit(agent, "REFUNDS: list[dict] = []", "def refund_policy(:\nREFUNDS: list[dict] = []")
             message = "Start a refund policy helper"
@@ -115,8 +140,9 @@ def refund_agent_history(repo: Path, suspects: int = 20, culprit: int = 14, brok
             message = f"Note a manual check in the README ({n})"
         shas.append(commit(repo, message))
     case = repo / "case.toml"
-    case.write_text(f'''id = "planted-top-up"
-symptom = "Refunds pay out more than the order amount"
+    second = '{ order_id = "1002", refunded = 18.5 }' if flaky else ""
+    case.write_text(f'''id = "{"planted-flaky-lookup" if flaky else "planted-top-up"}"
+symptom = "{"Some refunds are refused with an order not found error" if flaky else "Refunds pay out more than the order amount"}"
 good = "{shas[0]}"
 bad = "{shas[-1]}"
 target = "victims/refund-agent"
@@ -124,7 +150,7 @@ build = ["uv", "run", "-q", "python", "-m", "py_compile", "agent.py"]
 run = ["uv", "run", "-q", "agent.py", "--json", "{{input}}"]
 
 [env]
-REFUND_LLM = "fake"
+REFUND_LLM = "{llm}"
 FAKE_LLM_URL = "http://127.0.0.1:{fake_llm_port}/v1"
 
 [[inputs]]
@@ -132,13 +158,18 @@ text = "Please refund order 1001 for customer cust_9."
 refunds = [{{ order_id = "1001", refunded = 42.0 }}]
 
 [[inputs]]
-text = "Please refund order 2002 for customer cust_9."
-refunds = []
+text = "Please refund order {"1002" if flaky else "2002"} for customer cust_9."
+refunds = [{second}]
 ''')
     return {"repo": repo, "case": case, "shas": shas, "culprit": shas[culprit], "broken": shas[broken]}
 
 
 if __name__ == "__main__":
-    made = refund_agent_history(Path(sys.argv[1]))
+    # python tests/planted.py <folder> [flaky] [suspects] [culprit] [llm]
+    extra = sys.argv[2:]
+    flaky = bool(extra) and extra[0] == "flaky"
+    numbers = [int(a) for a in extra if a.isdigit()]
+    llm = next((a for a in extra if a in ("fake", "mock", "gateway", "own")), "fake")
+    made = refund_agent_history(Path(sys.argv[1]), *numbers[:2], flaky=flaky, llm=llm)
     print(made["case"])
     print("culprit", made["culprit"])

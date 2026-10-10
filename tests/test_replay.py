@@ -65,7 +65,7 @@ def test_plain_bisect_over_worktrees_finds_the_planted_commit(tmp_path):
 
 def test_cli_names_the_culprit(tmp_path, capsys):
     made = stub_history(tmp_path / "repo", suspects=20, culprit=5)
-    assert main(["lineup", str(made["case"]), "--repo", str(made["repo"]), "--json"]) == 0
+    assert main(["lineup", str(made["case"]), "--repo", str(made["repo"]), "--method", "plain", "--json"]) == 0
     report = json.loads(capsys.readouterr().out)
     assert report["culprit"]["sha"] == made["culprit"]
     assert report["suspects"] == 20 and report["linear_scan_commits"] == 5
@@ -73,8 +73,38 @@ def test_cli_names_the_culprit(tmp_path, capsys):
 
 def test_cli_refuses_a_case_whose_bad_ref_passes(tmp_path, capsys):
     made = stub_history(tmp_path / "repo", suspects=6, culprit=99)
-    assert main(["lineup", str(made["case"]), "--repo", str(made["repo"])]) == 2
+    assert main(["lineup", str(made["case"]), "--repo", str(made["repo"]), "--method", "plain"]) == 2
     assert "does not fail" in capsys.readouterr().out
+
+
+def test_cli_statistical_names_the_culprit_with_a_probability(tmp_path, capsys):
+    made = stub_history(tmp_path / "repo", suspects=12, culprit=5, broken=(3,))
+    assert main(["lineup", str(made["case"]), "--repo", str(made["repo"]), "--budget", "60", "--parallel", "3", "--json"]) == 0
+    report = json.loads(capsys.readouterr().out)
+    assert report["culprit"]["sha"] == made["culprit"]
+    assert report["culprit"]["probability"] >= 0.95
+    assert report["replays"] <= 60 and report["failure_rate_from"] > 0.8
+
+
+def test_cli_statistical_says_so_when_the_bad_ref_never_fails(tmp_path, capsys):
+    made = stub_history(tmp_path / "repo", suspects=6, culprit=99)
+    assert main(["lineup", str(made["case"]), "--repo", str(made["repo"]), "--budget", "40"]) == 1
+    assert "the bad ref passed all" in capsys.readouterr().out
+
+
+def test_a_timeout_stops_the_agent_and_its_children(tmp_path):
+    import sys
+    import time
+
+    from whodunit.replay import run_command
+
+    marker = tmp_path / "still-alive"
+    child = f"import time, pathlib; time.sleep(3); pathlib.Path({str(marker)!r}).write_text('x')"
+    parent = f"import subprocess, sys; subprocess.run([sys.executable, '-c', {child!r}])"
+    with pytest.raises(subprocess.TimeoutExpired):
+        run_command([sys.executable, "-c", parent], tmp_path, {}, timeout=1)
+    time.sleep(4)
+    assert not marker.exists()
 
 
 @pytest.mark.slow

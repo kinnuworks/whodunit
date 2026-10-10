@@ -60,7 +60,7 @@ def llm_settings() -> tuple[str, str, str]:
     if choice == "gateway":
         return need("LITELLM_BASE_URL"), need("LITELLM_API_KEY"), "claude-haiku"
     if choice == "own":
-        return "https://api.anthropic.com/v1/", need("ANTHROPIC_API_KEY"), "claude-haiku-4-5"
+        return "https://api.anthropic.com/v1/", need("ANTHROPIC_API_KEY"), "claude-haiku-5-5"
     sys.exit(f"REFUND_LLM={choice} is not one of mock, fake, gateway, own.")
 
 

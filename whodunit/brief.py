@@ -1,0 +1,194 @@
+"""The root-cause brief.
+
+It is written from three things: the culprit's diff, the part of the coding session that
+produced it, and a failing run set against a passing one. Every sentence has to cite a span id,
+a commit or a checkpoint that is actually in that evidence, and a sentence that does not is cut.
+"""
+
+import json
+import re
+from dataclasses import asdict, dataclass, field
+from pathlib import Path
+
+from . import llm
+from .motive import Motive
+from .neat import Mcp, NeatError, replay_runs
+from .suspects import git
+
+MAX_DIFF = 6000
+
+
+@dataclass
+class Evidence:
+    culprit: str
+    parent: str
+    subject: str
+    diff: str
+    checkpoint: str | None = None
+    request: str | None = None
+    steps: list[dict] = field(default_factory=list)
+    failing_run: dict | None = None  # {"trace_id", "commit", "input", "outline"}
+    passing_run: dict | None = None
+    comparison: str | None = None
+    notes: list[str] = field(default_factory=list)
+
+    def citable(self) -> set[str]:
+        """Every id a sentence may cite."""
+        ids = {self.culprit[:12], self.parent[:12]}
+        if self.checkpoint:
+            ids.add(self.checkpoint)
+        ids.update(step["id"] for step in self.steps if step.get("id"))
+        for run in (self.failing_run, self.passing_run):
+            if run:
+                ids.add(run["trace_id"][:12])
+                ids.update(re.findall(r"^\s*([0-9a-f]{8}) [A-Z_]+ ", run.get("outline", ""), flags=re.M))
+        return ids
+
+
+def _match_run(runs: list[dict], replay: dict) -> dict | None:
+    """The neatroots run a replay produced: same commit, same input, started while the replay ran."""
+    start, end = replay["started"] * 1000 - 1500, (replay["started"] + replay["seconds"]) * 1000 + 1500
+    hits = [r for r in runs if r["commit"] == replay["sha"] and r["input_preview"] == replay["input"] and start <= r["started_ms"] <= end]
+    return hits[0] if len(hits) == 1 else None
+
+
+def gather(repo: str | Path, case_id: str, culprit: str, target: str, replays: list[dict], motive: Motive | None, mcp: Mcp | None, order: list[str] | None = None) -> Evidence:
+    """Collect what the brief may draw on. `replays` are the lineup's replays, as dicts.
+
+    `order` is the suspects' SHAs oldest first. A failing run is taken from the culprit or the
+    nearest commit after it, and a passing run from the nearest commit before it, same input.
+    """
+    full = git(repo, "rev-parse", culprit).strip()
+    parent = git(repo, "rev-parse", f"{full}^").strip()
+    subject = git(repo, "show", "-s", "--format=%s", full).strip()
+    diff = git(repo, "show", "--format=", "--unified=3", full, "--", target)
+    if len(diff) > MAX_DIFF:
+        diff = diff[:MAX_DIFF] + "\n[diff cut here]\n"
+    evidence = Evidence(culprit=full, parent=parent, subject=subject, diff=diff)
+    if motive:
+        evidence.checkpoint, evidence.request = motive.checkpoint, motive.request
+        evidence.steps = [asdict(s) for s in motive.steps]
+        if motive.note:
+            evidence.notes.append(motive.note)
+    if mcp is None:
+        evidence.notes.append("neatroots was not asked for runs.")
+        return evidence
+    try:
+        runs = replay_runs(mcp, case_id)
+        order = order or [full]
+        at = order.index(full) if full in order else 0
+        rank = {sha: n for n, sha in enumerate(order)}
+        rank.setdefault(parent, -1)
+        failing = sorted((r for r in replays if r["verdict"] == "fail" and rank.get(r["sha"], -9) >= at), key=lambda r: rank[r["sha"]])
+        for replay in failing:
+            run = _match_run(runs, replay)
+            if run is None:
+                continue
+            passing = sorted(
+                (r for r in replays if r["verdict"] == "pass" and r["input"] == replay["input"] and -1 <= rank.get(r["sha"], -9) < at),
+                key=lambda r: -rank[r["sha"]],
+            )
+            other = next((m for m in (_match_run(runs, r) for r in passing) if m), None)
+            evidence.failing_run = {"trace_id": run["trace_id"], "commit": run["commit"], "input": replay["input"], "reason": replay["reason"],
+                                    "outline": mcp.call("get_run_outline", trace_id=run["trace_id"])["outline"]}
+            if other:
+                evidence.passing_run = {"trace_id": other["trace_id"], "commit": other["commit"], "input": replay["input"],
+                                        "outline": mcp.call("get_run_outline", trace_id=other["trace_id"])["outline"]}
+                compared = mcp.call("compare_runs", a=other["trace_id"], b=run["trace_id"])
+                evidence.comparison = compared if isinstance(compared, str) else json.dumps(compared, indent=1)[:3000]
+            break
+        if evidence.failing_run is None:
+            evidence.notes.append("No failing replay could be matched to a run in neatroots.")
+        elif evidence.passing_run is None:
+            evidence.notes.append("No passing replay of the same input before the culprit could be matched to a run in neatroots.")
+    except (NeatError, KeyError, TypeError) as exc:
+        evidence.notes.append(f"neatroots could not supply runs: {exc}")
+    return evidence
+
+
+SYSTEM = """You write the root-cause brief for a regression in an AI agent. You are given the commit that a bisect \
+named as the culprit, what the coding agent was asked to do in that commit, and a failing run next to a passing run.
+
+Rules:
+- Say which commit did it and why first. Then say how the failure shows up in the failing run.
+- Use only what the evidence shows. If the evidence does not show something, do not say it.
+- Every sentence must cite at least one id from the list of citable ids: a span id, a commit, a checkpoint or a session step.
+- Plain words, short sentences, no hype. Six sentences at most.
+
+Answer with JSON only, in this shape:
+{"headline": "one line, under 90 characters", "sentences": [{"text": "...", "cites": ["id", "id"]}]}"""
+
+
+def prompt_for(evidence: Evidence, symptom: str) -> str:
+    parts = [
+        f"Symptom: {symptom}",
+        f"Culprit commit: {evidence.culprit[:12]} \"{evidence.subject}\" (parent {evidence.parent[:12]})",
+        f"Entire checkpoint: {evidence.checkpoint or 'none'}",
+        f"What the coding agent was asked: {evidence.request or 'not recorded'}",
+        "Session steps between that request and the commit:\n" + ("\n".join(
+            f"[{s['id']}] {s['kind']}{' ' + s['file'] if s.get('file') else ''}: {s['text'][:400]}" for s in evidence.steps[-25:]) or "none recorded"),
+        "Diff of the culprit commit:\n" + evidence.diff,
+    ]
+    for label, run in (("Failing run", evidence.failing_run), ("Passing run", evidence.passing_run)):
+        if run:
+            parts.append(f"{label} {run['trace_id'][:12]} at commit {run['commit'][:12]}, input: {run['input']}\n{run['outline']}")
+    if evidence.comparison:
+        parts.append("neatroots comparison, passing run first:\n" + evidence.comparison)
+    parts.append("Citable ids: " + ", ".join(sorted(evidence.citable())))
+    return "\n\n".join(parts)
+
+
+def check_citations(brief: dict, evidence: Evidence) -> dict:
+    """Keep only sentences whose citations are real. A cite matches by prefix in either direction."""
+    allowed = evidence.citable()
+
+    def real(cite: str) -> str | None:
+        cite = str(cite).strip().strip("[]`")
+        if len(cite) < 6:
+            return None
+        return next((a for a in allowed if a.startswith(cite) or cite.startswith(a)), None)
+
+    kept, dropped = [], []
+    for sentence in brief.get("sentences", []):
+        cites = sorted({c for c in (real(c) for c in sentence.get("cites", [])) if c})
+        (kept if cites and sentence.get("text", "").strip() else dropped).append({"text": sentence.get("text", "").strip(), "cites": cites})
+    return {"headline": str(brief.get("headline", "")).strip(), "sentences": kept, "dropped": [d["text"] for d in dropped]}
+
+
+def template_brief(evidence: Evidence, symptom: str) -> dict:
+    """A brief with no model: the facts in fixed sentences, each with its citation."""
+    culprit = evidence.culprit[:12]
+    sentences = [{"text": f"The failures start at commit {culprit}, \"{evidence.subject}\".", "cites": [culprit]}]
+    if evidence.request and evidence.checkpoint:
+        asked = evidence.request.strip().splitlines()[0][:200]
+        sentences.append({"text": f"That commit came from a coding session that was asked: \"{asked}\"", "cites": [evidence.checkpoint]})
+    else:
+        sentences.append({"text": "No coding session is recorded for that commit, so the request behind it is unknown.", "cites": [culprit]})
+    if evidence.failing_run:
+        run = evidence.failing_run
+        sentences.append({"text": f"In a failing replay of \"{run['input']}\", {run['reason']}.", "cites": [run["trace_id"][:12]]})
+    if evidence.passing_run:
+        run = evidence.passing_run
+        sentences.append({"text": f"The same input passed one step earlier, at commit {run['commit'][:12]}.", "cites": [run["trace_id"][:12], run["commit"][:12]]})
+    return {"headline": f"{evidence.subject}: {symptom}"[:90], "sentences": sentences, "dropped": [], "model": "none, fixed template"}
+
+
+def write_brief(evidence: Evidence, symptom: str) -> dict:
+    """Ask the model for the brief and check its citations. Falls back to the template, and says so."""
+    if llm.choice() == "none":
+        return template_brief(evidence, symptom)
+    try:
+        answer = llm.ask(SYSTEM, prompt_for(evidence, symptom))
+        found = re.search(r"\{.*\}", answer, flags=re.S)
+        brief = check_citations(json.loads(found.group(0)), evidence)
+    except (llm.LlmError, AttributeError, json.JSONDecodeError, KeyError) as exc:
+        fallback = template_brief(evidence, symptom)
+        fallback["model"] = f"none, fixed template (the model step failed: {exc})"
+        return fallback
+    if not brief["sentences"]:
+        fallback = template_brief(evidence, symptom)
+        fallback["model"] = "none, fixed template (the model's sentences had no valid citations)"
+        fallback["dropped"] = brief["dropped"]
+        return fallback
+    brief["model"] = llm.model_name()
+    return brief

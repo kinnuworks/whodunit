@@ -1,0 +1,79 @@
+"""The damages: how many runs went bad, and what they cost.
+
+Counts come from the traces neatroots holds. The dollar figures are estimates from token
+counts and a price per million tokens, and are labelled as estimates wherever they appear.
+Writing them to cfo.ai is a separate step that needs the owner's yes.
+"""
+
+from dataclasses import asdict, dataclass
+
+from .neat import Mcp
+
+# US dollars per million tokens (input, output), by the model name on the LLM span. These are
+# list prices as best known when this was written. Pass your own to `count` for real billing.
+PRICES = {"claude-haiku": (1.00, 5.00), "claude-sonnet-4.6": (3.00, 15.00), "fake": (0.0, 0.0), "mock": (0.0, 0.0)}
+
+
+@dataclass
+class Damages:
+    workflow: str
+    since_ms: float | None
+    runs: int
+    bad_runs: int
+    bad_share: float
+    tokens: int
+    bad_tokens: int
+    cost_usd: float  # of all runs in the window
+    wasted_usd: float  # of the bad runs
+    replay_runs: int = 0  # runs Whodunit itself made while investigating
+    replay_usd: float = 0.0
+    note: str = "Dollar figures are estimates from token counts."
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+
+def _cost(prompt_tokens: int, completion_tokens: int, price: tuple[float, float]) -> float:
+    return (prompt_tokens * price[0] + completion_tokens * price[1]) / 1_000_000
+
+
+BAD = "(r.status = 'error' or r.error_count > 0 or r.finding_count > 0)"
+REPLAY = "exists (select 1 from spans i where i.trace_id = r.trace_id and i.name = 'run_info' and i.attributes like '{like}')"
+
+
+def _spend(mcp: Mcp, where: str, prices: dict) -> tuple[float, float, int, int]:
+    """(cost of all runs, cost of bad runs, tokens, bad tokens) for the runs that match, priced per model."""
+    rows = mcp.call("query_sql", sql=(
+        f"select s.model as model, {BAD} as bad, coalesce(sum(s.prompt_tokens), 0) as pt, coalesce(sum(s.completion_tokens), 0) as ct "
+        f"from runs r join spans s on s.trace_id = r.trace_id and s.span_kind = 'LLM' where {where} group by s.model, bad"
+    ))["rows"]
+    cost = bad_cost = tokens = bad_tokens = 0
+    for row in rows:
+        spent = _cost(row["pt"], row["ct"], prices.get(row["model"] or "", (0.0, 0.0)))
+        cost, tokens = cost + spent, tokens + row["pt"] + row["ct"]
+        if row["bad"]:
+            bad_cost, bad_tokens = bad_cost + spent, bad_tokens + row["pt"] + row["ct"]
+    return cost, bad_cost, tokens, bad_tokens
+
+
+def count(mcp: Mcp, workflow: str, since_ms: float | None = None, case_id: str | None = None, prices: dict | None = None) -> Damages:
+    """Count a workflow's runs since the failures began. A run is bad if it errored or neatroots raised a finding on it.
+
+    Replays made for a case are left out of the damage and reported on their own line.
+    """
+    prices = prices or PRICES
+    safe = workflow.replace("'", "''")
+    window = f" and r.started_ms >= {float(since_ms)}" if since_ms else ""
+    production = f"r.workflow = '{safe}' and r.doctor = 0{window} and not " + REPLAY.format(like="%case:%")
+    row = mcp.call("query_sql", sql=f"select count(*) as runs, coalesce(sum({BAD}), 0) as bad from runs r where {production}")["rows"][0]
+    cost, bad_cost, tokens, bad_tokens = _spend(mcp, production, prices)
+    damages = Damages(
+        workflow=workflow, since_ms=since_ms, runs=row["runs"], bad_runs=row["bad"],
+        bad_share=round(row["bad"] / row["runs"], 4) if row["runs"] else 0.0,
+        tokens=tokens, bad_tokens=bad_tokens, cost_usd=round(cost, 4), wasted_usd=round(bad_cost, 4),
+    )
+    if case_id:
+        mine = REPLAY.format(like=f"%case:{case_id}%".replace("'", "''"))
+        damages.replay_runs = mcp.call("query_sql", sql=f"select count(*) as runs from runs r where {mine}")["rows"][0]["runs"]
+        damages.replay_usd = round(_spend(mcp, mine, prices)[0], 4)
+    return damages

@@ -68,3 +68,42 @@ Found out along the way:
 
 - A replay costs about 4.5 seconds here, counting the first `uv run` in a fresh worktree, which builds that worktree's environment from the uv cache.
 - The planted history has no Entire checkpoints, because nobody asked a coding agent for those commits. The motive step needs the real history from the second session.
+
+### 8:51 PM, the statistical bisect and what the simulator says about it
+
+`whodunit/lineup.py` now has the statistical bisect: one change point, an unknown failure rate on each side with a Beta prior, and an exact posterior over which suspect is the first bad one. It names a commit at 95% and otherwise hands back the remaining suspects with probabilities. `whodunit/simulate.py` runs it against simulated cases next to plain bisect, and `eval/simulator/` holds the charts, the tables and a write-up.
+
+What the simulator found, with 40 suspects and 500 cases per point:
+
+- When good commits never fail, plain bisect with repeats beats the statistical bisect at every budget. On a bug that fails 30% of the time, 80 replays get plain bisect with repeats to 97% and the statistical bisect to 67%. This was not the result hoped for and it is in the write-up as it stands.
+- When good commits fail 5% of the time on their own, plain bisect with repeats collapses and gets worse with more replays: 31% right at 40 replays, 4% at 320. The statistical bisect reaches 60% at 160 replays and 84% at 320.
+- Plain bisect with one replay per commit is right 10% of the time on the 30% bug.
+- The statistical bisect's wrong accusations run from 0% to 7% of cases. The bar is 95%, so 7% is over.
+
+Two changes from the brief, both made because of the simulator. The prior on the good side's failure rate went from uniform to about 5%, which took the 30% bug from 59% solved to 93% at 300 replays. And the next replay is picked by expected information gain. I first believed the picker was the big win, then re-measured with the new prior and found the two pickers within a couple of cases of each other, so the write-up says the prior did the work.
+
+### 8:51 PM, a real run got tangled up with the machine
+
+The first try at bisecting a flaky bug in the real agent was thrown away. Three things were going on:
+
+- neatroots now has a local model switched on (`qwen2.5:3b-16k` through Ollama), which it did not at 7 PM. Its `ignored-tool-error` check runs that model on incoming runs, so 4 replays at a time queued model work behind every run, on a machine already busy with other jobs. Load average passed 300 and a 3 second replay took over 2 minutes.
+- Replays then hit the 120 second timeout and were counted as failures, which they were not.
+- The timeout killed `uv` and left the agent process running. `run_command` now stops the whole process group, with a test.
+
+Worktrees with the same lockfile now share one environment, so a new commit no longer means a new install. The run was restarted at 2 replays at a time.
+
+One good thing came out of it: neatroots raised 4 findings by itself on the flaky lookup failures ("Carried on after a failed tool call", probability 0.82 to 0.89), so its checks do see this bug. One of its explanations is wrong about what the agent did next, with a grounding score of 0.03.
+
+### 8:51 PM, motive, brief, ruling, fix, damages and the case file
+
+All in as commands that read and write one case record: `whodunit motive`, `brief`, `ruling`, `fix`, `check`, `damages` and `open-case`.
+
+- Motive works on this repo's own checkpoints. For commit d210212 Entire shows "no prompt recorded", because that checkpoint covers the second commit of one long turn. Tying the prompt to the commit by time recovers it.
+- The brief asks a model for JSON and cuts any sentence whose citation is not a span, commit, checkpoint or session step that is really in the evidence. With no model it falls back to a fixed template and says so.
+- The ruling is asked once per kind of change and kept under `rulings/`. Entire Brain is not set up on this machine, so there is no mirror yet.
+- The fix reverts or patches on a local branch and replays until it is 95% likely fixed or 95% likely not. With a bug that fails a third of the time, 10 clean replays give 97.6%.
+- Damages are counted from neatroots and priced per model from the LLM spans. The prices in the code are list prices from memory and need checking before any number goes to cfo.ai.
+
+85 fast tests pass. They take about 4 and a half minutes on this machine today because of the load.
+
+Still open: the session transcript also carries `ownerAccountUuid` and `ownerOrganizationUuid` fields in its `bridge-session` entries. That goes on the list for the owner to read before anything is pushed.
