@@ -150,6 +150,7 @@ REFUNDS: list[dict] = []  # what this run paid out, for the checks to read
 
 @span(kind="TOOL", name="lookup_order")
 def lookup_order(order_id: str):
+    """Look up an order by id. Returns the order dict, or raises LookupError if it does not exist."""
     if order_id not in ORDERS:
         raise LookupError(f"404: order {order_id} not found")
     return ORDERS[order_id]
@@ -157,12 +158,15 @@ def lookup_order(order_id: str):
 
 @span(kind="TOOL", name="issue_refund")
 def issue_refund(order_id: str, amount: float):
+    """Record a refund for an order. Returns a dict with the rounded amount refunded and the order_id."""
     refund = {"refunded": round(amount), "order_id": order_id}
     REFUNDS.append(refund)
     return refund
 
 
 def call_tool(name, args):
+    """Dispatch a tool call by name with its arguments. Returns the tool's result as a JSON string,
+    or a JSON string with an "error" key if the tool call raised."""
     fn = {"lookup_order": lookup_order, "issue_refund": issue_refund}[name]
     try:
         return json.dumps(fn(**args))
