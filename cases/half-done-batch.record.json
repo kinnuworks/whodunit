@@ -1,0 +1,1493 @@
+{
+ "case": {
+  "id": "half-done-batch",
+  "symptom": "Customers who ask for two orders back in one message sometimes get one refund or none, and the reply says a person will follow up.",
+  "good": "7d991542f6e7d12f6c4c8d62baac9ff8deb8638c",
+  "bad": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+  "target": "victims/refund-agent",
+  "file": "cases/half-done-batch.toml",
+  "repo": "."
+ },
+ "suspects": [
+  {
+   "sha": "aaa4031687f026a0e08b126c9fa09e63933625bf",
+   "subject": "Add a get_order_status tool for where-is-my-order questions",
+   "checkpoint": "485899b3c448",
+   "touches_target": true,
+   "probability": 0.0012
+  },
+  {
+   "sha": "923ccb8d2385e07f969417638008d370563442c8",
+   "subject": "Add agent version to the run_info span, read from pyproject.toml",
+   "checkpoint": "004ae8972d75",
+   "touches_target": true,
+   "probability": 0.0012
+  },
+  {
+   "sha": "42978be0a2352c8c6291703b61f31d1978e3ba19",
+   "subject": "Add a troubleshooting section to the refund-agent README",
+   "checkpoint": "1ff64aa3f19e",
+   "touches_target": true,
+   "probability": 0.0012
+  },
+  {
+   "sha": "31ac827491687d9ae6282568d676baaa576d928e",
+   "subject": "Prefix failed tool call stderr line with a timestamp",
+   "checkpoint": "c4c54f1457ea",
+   "touches_target": true,
+   "probability": 0.0012
+  },
+  {
+   "sha": "2664898a8d0c95720e08db03c95309f5dd62e67b",
+   "subject": "Warm up the refund agent's system prompt",
+   "checkpoint": "71fa230aebcf",
+   "touches_target": true,
+   "probability": 0.0012
+  },
+  {
+   "sha": "d223a27c687f4dd55d9a23f5f20d20a8531bb2d6",
+   "subject": "Give customers the benefit of the doubt on small details",
+   "checkpoint": "472b5c282a4b",
+   "touches_target": true,
+   "probability": 0.0012
+  },
+  {
+   "sha": "46bd74355ea7eaef3608322ce257a6cab6ffa5d1",
+   "subject": "Acknowledge the problem first and offer refund or replacement where it fits",
+   "checkpoint": "a425eaec40d0",
+   "touches_target": true,
+   "probability": 0.0012
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "subject": "Keep refund agent from naming other customers when it can't help",
+   "checkpoint": "6f89d7d1f88f",
+   "touches_target": true,
+   "probability": 0.00169
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "subject": "Require a reason on every refund and cut model calls to save on gateway spend",
+   "checkpoint": "d098c3973305",
+   "touches_target": true,
+   "probability": 0.95796
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "subject": "Add order 9009 for cust_5",
+   "checkpoint": "deb685ab53a3",
+   "touches_target": true,
+   "probability": 0.01659
+  },
+  {
+   "sha": "32f8faafcb06462cf43dba5de49e1e9c67367976",
+   "subject": "Report model_calls in --json output for cost tracking",
+   "checkpoint": "412d52930049",
+   "touches_target": true,
+   "probability": 0.00906
+  },
+  {
+   "sha": "0a12ddea74f5b68fd4afb82a53a85b65233a746f",
+   "subject": "Hoist tool registry in call_tool to module-level TOOL_FUNCTIONS",
+   "checkpoint": "9a3cbd1e9c14",
+   "touches_target": true,
+   "probability": 0.00236
+  },
+  {
+   "sha": "463076906c7823c256e43331b1aae393ace08dee",
+   "subject": "Refresh refund-agent README's list of changes from the neatroots example",
+   "checkpoint": "400923d529ce",
+   "touches_target": true,
+   "probability": 0.00113
+  },
+  {
+   "sha": "7d719e7aacb7acfb7a9221cac0dde7660dbc3857",
+   "subject": "Catch invalid JSON in tool call arguments instead of crashing the run",
+   "checkpoint": "77506d8caa4c",
+   "touches_target": true,
+   "probability": 0.00182
+  },
+  {
+   "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+   "subject": "Show an example --json line in refund-agent README",
+   "checkpoint": "d24473f3fca4",
+   "touches_target": true,
+   "probability": 0.00095
+  }
+ ],
+ "lineup": {
+  "case": "half-done-batch",
+  "method": "statistical",
+  "suspects": 15,
+  "commits_tested": 10,
+  "replays": 168,
+  "seconds": 2357.1,
+  "culprit": {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "subject": "Require a reason on every refund and cut model calls to save on gateway spend",
+   "checkpoint": "d098c3973305",
+   "files": [
+    "victims/refund-agent/README.md",
+    "victims/refund-agent/agent.py",
+    "victims/refund-agent/fake_llm.py"
+   ],
+   "probability": 0.958
+  },
+  "remaining": [
+   {
+    "sha": "c54575368397e58f98e19f28d555fe081677b964",
+    "subject": "Require a reason on every refund and cut model calls to save on gateway spend",
+    "probability": 0.958
+   }
+  ],
+  "failure_rate_before": 0.006,
+  "failure_rate_from": 0.137,
+  "linear_scan_commits": 9
+ },
+ "replays": [
+  {
+   "sha": "7d991542f6e7d12f6c4c8d62baac9ff8deb8638c",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 5.616806249978254,
+   "started": 1791658837.4414122
+  },
+  {
+   "sha": "7d991542f6e7d12f6c4c8d62baac9ff8deb8638c",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 5.810296374984318,
+   "started": 1791658837.443197
+  },
+  {
+   "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 6.128532083996106,
+   "started": 1791658837.441513
+  },
+  {
+   "sha": "7d991542f6e7d12f6c4c8d62baac9ff8deb8638c",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 6.359230500005651,
+   "started": 1791658843.2678342
+  },
+  {
+   "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 6.554516999982297,
+   "started": 1791658843.072709
+  },
+  {
+   "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 6.070015292003518,
+   "started": 1791658843.5851781
+  },
+  {
+   "sha": "7d991542f6e7d12f6c4c8d62baac9ff8deb8638c",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 5.290816333988914,
+   "started": 1791658849.6515
+  },
+  {
+   "sha": "7d991542f6e7d12f6c4c8d62baac9ff8deb8638c",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 5.663374750001822,
+   "started": 1791658849.66865
+  },
+  {
+   "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 5.950464416993782,
+   "started": 1791658849.6513019
+  },
+  {
+   "sha": "7d991542f6e7d12f6c4c8d62baac9ff8deb8638c",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 5.155041082995012,
+   "started": 1791658855.3507688
+  },
+  {
+   "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 6.247084874979919,
+   "started": 1791658854.956544
+  },
+  {
+   "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 5.612889667012496,
+   "started": 1791658855.6164181
+  },
+  {
+   "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "fail",
+   "reason": "refunds were [], expected [{\"order_id\": \"6006\", \"refunded\": 25.0}, {\"order_id\": \"7007\", \"refunded\": 60.0}]",
+   "seconds": 3.7642121659882832,
+   "started": 1791658861.248769
+  },
+  {
+   "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 5.551250166987302,
+   "started": 1791658861.2490041
+  },
+  {
+   "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 5.980526250001276,
+   "started": 1791658861.2491121
+  },
+  {
+   "sha": "46bd74355ea7eaef3608322ce257a6cab6ffa5d1",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 5.968931292009074,
+   "started": 1791658867.2442482
+  },
+  {
+   "sha": "46bd74355ea7eaef3608322ce257a6cab6ffa5d1",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 6.093888584000524,
+   "started": 1791658867.244456
+  },
+  {
+   "sha": "46bd74355ea7eaef3608322ce257a6cab6ffa5d1",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 6.120735000004061,
+   "started": 1791658867.24511
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 66.47063066699775,
+   "started": 1791658873.382304
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 66.52709779201541,
+   "started": 1791658873.382455
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 66.8628969170095,
+   "started": 1791658873.3824441
+  },
+  {
+   "sha": "32f8faafcb06462cf43dba5de49e1e9c67367976",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "fail",
+   "reason": "refunds were [], expected [{\"order_id\": \"6006\", \"refunded\": 25.0}, {\"order_id\": \"7007\", \"refunded\": 60.0}]",
+   "seconds": 4.031682291999459,
+   "started": 1791658940.272581
+  },
+  {
+   "sha": "32f8faafcb06462cf43dba5de49e1e9c67367976",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 6.113570041983621,
+   "started": 1791658940.272424
+  },
+  {
+   "sha": "32f8faafcb06462cf43dba5de49e1e9c67367976",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 6.1520397500135005,
+   "started": 1791658940.2725601
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 5.913584875001106,
+   "started": 1791658946.4399612
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 6.356364791980013,
+   "started": 1791658946.43984
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 6.504250208003214,
+   "started": 1791658946.440332
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "fail",
+   "reason": "refunds were [], expected [{\"order_id\": \"6006\", \"refunded\": 25.0}, {\"order_id\": \"7007\", \"refunded\": 60.0}]",
+   "seconds": 3.978004292002879,
+   "started": 1791658952.9629571
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 6.017275457998039,
+   "started": 1791658952.964118
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 6.0195804169925395,
+   "started": 1791658952.962809
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 5.946109708980657,
+   "started": 1791658959.0015948
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 5.956042916979641,
+   "started": 1791658959.001396
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 6.1168502919899765,
+   "started": 1791658959.001281
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 5.6678382079990115,
+   "started": 1791658965.1366
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 6.020621332980227,
+   "started": 1791658965.136024
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 6.255546542000957,
+   "started": 1791658965.1363971
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 6.060312166984659,
+   "started": 1791658971.412645
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 6.298791084002005,
+   "started": 1791658971.412556
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 6.765184666001005,
+   "started": 1791658971.4123409
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 67.16810558302677,
+   "started": 1791658978.198035
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 67.22068612501607,
+   "started": 1791658978.1982799
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 67.34457341697998,
+   "started": 1791658978.198355
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 6.084060374996625,
+   "started": 1791659045.575168
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 6.083830667019356,
+   "started": 1791659045.575474
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 6.215180500003044,
+   "started": 1791659045.575383
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "fail",
+   "reason": "refunds were [], expected [{\"order_id\": \"6006\", \"refunded\": 25.0}, {\"order_id\": \"7007\", \"refunded\": 60.0}]",
+   "seconds": 3.3428945420018863,
+   "started": 1791659051.8081899
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 5.391973084013443,
+   "started": 1791659051.8084831
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 5.633142374979798,
+   "started": 1791659051.808321
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 5.618518959003268,
+   "started": 1791659057.4592278
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 5.711074708000524,
+   "started": 1791659057.459028
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}], expected [{\"order_id\": \"6006\", \"refunded\": 25.0}, {\"order_id\": \"7007\", \"refunded\": 60.0}]",
+   "seconds": 6.121453999978257,
+   "started": 1791659057.4593458
+  },
+  {
+   "sha": "46bd74355ea7eaef3608322ce257a6cab6ffa5d1",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 5.761438332992839,
+   "started": 1791659063.600661
+  },
+  {
+   "sha": "46bd74355ea7eaef3608322ce257a6cab6ffa5d1",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 5.785589417006122,
+   "started": 1791659063.6010602
+  },
+  {
+   "sha": "46bd74355ea7eaef3608322ce257a6cab6ffa5d1",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 5.919319582986645,
+   "started": 1791659063.6008599
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 5.793124624993652,
+   "started": 1791659069.536819
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 6.072588084003655,
+   "started": 1791659069.53635
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 6.072441708005499,
+   "started": 1791659069.536584
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 6.177840791002382,
+   "started": 1791659075.629026
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 6.1778040420031175,
+   "started": 1791659075.629148
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 6.206067291990621,
+   "started": 1791659075.629353
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 67.08549141700496,
+   "started": 1791659081.855428
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 67.1043622920115,
+   "started": 1791659081.8553212
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 67.23806149998563,
+   "started": 1791659081.855671
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 6.259111333987676,
+   "started": 1791659149.12326
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 6.284086416999344,
+   "started": 1791659149.123082
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 6.491534500004491,
+   "started": 1791659149.122943
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 5.548083166999277,
+   "started": 1791659155.631171
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 5.632800124993082,
+   "started": 1791659155.6309178
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 5.704827124980511,
+   "started": 1791659155.631018
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 6.34083937498508,
+   "started": 1791659161.353056
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 6.425342041999102,
+   "started": 1791659161.3529239
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 6.44304633300635,
+   "started": 1791659161.352723
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 5.596292709000409,
+   "started": 1791659167.815852
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 5.810706624994054,
+   "started": 1791659167.815783
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 5.888077042007353,
+   "started": 1791659167.8155441
+  },
+  {
+   "sha": "32f8faafcb06462cf43dba5de49e1e9c67367976",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 5.860549375007395,
+   "started": 1791659173.722592
+  },
+  {
+   "sha": "32f8faafcb06462cf43dba5de49e1e9c67367976",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 5.894733041001018,
+   "started": 1791659173.7228868
+  },
+  {
+   "sha": "32f8faafcb06462cf43dba5de49e1e9c67367976",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived damaged\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 6.0980565839854535,
+   "started": 1791659173.722692
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 6.028309332992649,
+   "started": 1791659179.842465
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 6.126982459012652,
+   "started": 1791659179.842151
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 6.329572040995117,
+   "started": 1791659179.8423748
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 66.76146379200509,
+   "started": 1791659186.192081
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 67.19453312500264,
+   "started": 1791659186.1923058
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 67.26482170799864,
+   "started": 1791659186.1924
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 6.194518499978585,
+   "started": 1791659253.488467
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 6.389296457986347,
+   "started": 1791659253.488715
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 6.4467409159988165,
+   "started": 1791659253.488767
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 5.881730291992426,
+   "started": 1791659259.950458
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 6.11927220900543,
+   "started": 1791659259.9505641
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 6.177243416983401,
+   "started": 1791659259.950963
+  },
+  {
+   "sha": "463076906c7823c256e43331b1aae393ace08dee",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 5.767322084022453,
+   "started": 1791659266.1472
+  },
+  {
+   "sha": "463076906c7823c256e43331b1aae393ace08dee",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 5.883635625010356,
+   "started": 1791659266.1471858
+  },
+  {
+   "sha": "463076906c7823c256e43331b1aae393ace08dee",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 5.906539999996312,
+   "started": 1791659266.14706
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 6.617053583002416,
+   "started": 1791659272.074433
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 6.68713029200444,
+   "started": 1791659272.0745559
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 6.725081040989608,
+   "started": 1791659272.074214
+  },
+  {
+   "sha": "7d719e7aacb7acfb7a9221cac0dde7660dbc3857",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "fail",
+   "reason": "refunds were [], expected [{\"order_id\": \"6006\", \"refunded\": 25.0}, {\"order_id\": \"7007\", \"refunded\": 60.0}]",
+   "seconds": 4.035494749987265,
+   "started": 1791659278.8185952
+  },
+  {
+   "sha": "7d719e7aacb7acfb7a9221cac0dde7660dbc3857",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 6.0057870829768945,
+   "started": 1791659278.818581
+  },
+  {
+   "sha": "7d719e7aacb7acfb7a9221cac0dde7660dbc3857",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 6.249383207992651,
+   "started": 1791659278.8184252
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 5.913626291992841,
+   "started": 1791659285.094671
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 6.098415666987421,
+   "started": 1791659285.0949929
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 6.148280749999685,
+   "started": 1791659285.0947971
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 66.83540158398682,
+   "started": 1791659291.261982
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 67.07781474999501,
+   "started": 1791659291.261761
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 67.2312339170021,
+   "started": 1791659291.2620952
+  },
+  {
+   "sha": "0a12ddea74f5b68fd4afb82a53a85b65233a746f",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "fail",
+   "reason": "refunds were [], expected [{\"order_id\": \"6006\", \"refunded\": 25.0}, {\"order_id\": \"7007\", \"refunded\": 60.0}]",
+   "seconds": 4.328870875004213,
+   "started": 1791659358.521939
+  },
+  {
+   "sha": "0a12ddea74f5b68fd4afb82a53a85b65233a746f",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 6.159001249994617,
+   "started": 1791659358.5218291
+  },
+  {
+   "sha": "0a12ddea74f5b68fd4afb82a53a85b65233a746f",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 6.286333750002086,
+   "started": 1791659358.521965
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 5.892723291995935,
+   "started": 1791659364.830592
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 6.374510416004341,
+   "started": 1791659364.830318
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 6.430973167007323,
+   "started": 1791659364.830671
+  },
+  {
+   "sha": "32f8faafcb06462cf43dba5de49e1e9c67367976",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 6.236981833004393,
+   "started": 1791659371.2802172
+  },
+  {
+   "sha": "32f8faafcb06462cf43dba5de49e1e9c67367976",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 6.357754625001689,
+   "started": 1791659371.28057
+  },
+  {
+   "sha": "32f8faafcb06462cf43dba5de49e1e9c67367976",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}], expected [{\"order_id\": \"6006\", \"refunded\": 25.0}, {\"order_id\": \"7007\", \"refunded\": 60.0}]",
+   "seconds": 7.328440417011734,
+   "started": 1791659371.2804842
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 5.98291895899456,
+   "started": 1791659378.6316879
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 6.552350165991811,
+   "started": 1791659378.631219
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}], expected [{\"order_id\": \"6006\", \"refunded\": 25.0}, {\"order_id\": \"7007\", \"refunded\": 60.0}]",
+   "seconds": 6.869419875001768,
+   "started": 1791659378.631563
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 5.693069583008764,
+   "started": 1791659385.5206552
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 5.744502042012755,
+   "started": 1791659385.519828
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 5.9894006659742445,
+   "started": 1791659385.520512
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "fail",
+   "reason": "refunds were [], expected [{\"order_id\": \"6006\", \"refunded\": 25.0}, {\"order_id\": \"7007\", \"refunded\": 60.0}]",
+   "seconds": 4.153339959011646,
+   "started": 1791660352.628413
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 66.86680308301584,
+   "started": 1791660352.6273322
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}], expected [{\"order_id\": \"1001\", \"refunded\": 42.0}, {\"order_id\": \"6006\", \"refunded\": 25.0}]",
+   "seconds": 66.95721891699941,
+   "started": 1791660352.627469
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 6.8439867080014665,
+   "started": 1791660419.612779
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 7.009290415997384,
+   "started": 1791660419.61294
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 7.029358542000409,
+   "started": 1791660419.612946
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 6.183794207987376,
+   "started": 1791660426.664337
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 6.889064374990994,
+   "started": 1791660426.663998
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 7.827963582996745,
+   "started": 1791660426.664413
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 6.507609541004058,
+   "started": 1791660434.514464
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 6.6263649159809574,
+   "started": 1791660434.514176
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 6.75391691699042,
+   "started": 1791660434.514358
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 5.997477583005093,
+   "started": 1791660441.2963572
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 6.1318281660205685,
+   "started": 1791660441.296154
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 6.251402374997269,
+   "started": 1791660441.295958
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 6.048125082976185,
+   "started": 1791660447.568362
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 6.229111124994233,
+   "started": 1791660447.568044
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 6.360541041009128,
+   "started": 1791660447.5670872
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 6.046815459005302,
+   "started": 1791660453.951741
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 6.071696291997796,
+   "started": 1791660453.9518452
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 6.411116708011832,
+   "started": 1791660453.951392
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 66.98045641701901,
+   "started": 1791660460.3832378
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 67.08853954199003,
+   "started": 1791660460.383018
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 67.48226824999438,
+   "started": 1791660460.383331
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 6.564020499994513,
+   "started": 1791660527.896847
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 6.62644837499829,
+   "started": 1791660527.896585
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 6.671201290999306,
+   "started": 1791660527.896724
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 5.866216249996796,
+   "started": 1791660534.587199
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 6.260060583008453,
+   "started": 1791660534.5889149
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 6.700160042004427,
+   "started": 1791660534.586842
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 6.001182750012958,
+   "started": 1791660541.308214
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 6.267750708007952,
+   "started": 1791660541.308295
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 6.384353542001918,
+   "started": 1791660541.308
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 6.236306999984663,
+   "started": 1791660547.7126348
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 6.357603332988219,
+   "started": 1791660547.712517
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 7.537672875012504,
+   "started": 1791660547.712298
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 5.883674875018187,
+   "started": 1791660555.269152
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 5.96990291698603,
+   "started": 1791660555.269232
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 5.972140291996766,
+   "started": 1791660555.268914
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 6.008194541995181,
+   "started": 1791660561.263154
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\"}, {\"refunded\": 25, \"order_id\": \"6006\"}]",
+   "seconds": 67.04821000000811,
+   "started": 1791660561.263287
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\"}, {\"refunded\": 60, \"order_id\": \"7007\"}]",
+   "seconds": 67.17577287499444,
+   "started": 1791660561.262992
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 6.083844709006371,
+   "started": 1791660628.464583
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 6.289629832986975,
+   "started": 1791660628.464223
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived broken\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived broken\"}]",
+   "seconds": 6.510140541999135,
+   "started": 1791660628.464372
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "fail",
+   "reason": "refunds were [], expected [{\"order_id\": \"6006\", \"refunded\": 25.0}, {\"order_id\": \"7007\", \"refunded\": 60.0}]",
+   "seconds": 3.5497803750040475,
+   "started": 1791660634.996172
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Orders 1001 and 6006 both arrived broken. Please refund both, I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 42, \"order_id\": \"1001\", \"reason\": \"arrived damaged\"}, {\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 6.11363845798769,
+   "started": 1791660634.995866
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "input": "Please refund orders 6006 and 7007 for customer cust_9, both arrived damaged.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 25, \"order_id\": \"6006\", \"reason\": \"arrived damaged\"}, {\"refunded\": 60, \"order_id\": \"7007\", \"reason\": \"arrived damaged\"}]",
+   "seconds": 6.404588499979582,
+   "started": 1791660634.99598
+  }
+ ]
+}

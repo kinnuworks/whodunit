@@ -1,0 +1,606 @@
+{
+ "case": {
+  "id": "turned-away",
+  "symptom": "Customers asking for a refund on an order that has shipped get a kind reply and no refund.",
+  "good": "4c5adbcc2b967732cd0ae9a9544d765851ebad0b",
+  "bad": "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
+  "target": "victims/refund-agent",
+  "file": "cases/turned-away.toml",
+  "repo": "."
+ },
+ "suspects": [
+  {
+   "sha": "fedf89729b98beb2fe11d7e016c997cbe5225b2a",
+   "subject": "Check currency codes and positive amounts in smoke.py",
+   "checkpoint": "2a120fdb85c4",
+   "touches_target": true,
+   "probability": 4e-05
+  },
+  {
+   "sha": "5cfdd5acf608c70102c5a609aa579b0b3a9ed9a4",
+   "subject": "Mention smoke.py in the refund agent README",
+   "checkpoint": "9fcae62e846a",
+   "touches_target": true,
+   "probability": 4e-05
+  },
+  {
+   "sha": "e4a3e567223eab74001e8e0d47d607a3bcd141c8",
+   "subject": "Label SYSTEM_RULES groups with one-line comments",
+   "checkpoint": "7317b1f17593",
+   "touches_target": true,
+   "probability": 4e-05
+  },
+  {
+   "sha": "c0fb4a11007e62e9b6b401d335e8c3e21ccf220b",
+   "subject": "Cache agent_version so it doesn't reread pyproject.toml every call",
+   "checkpoint": "1dab4a27d094",
+   "touches_target": true,
+   "probability": 0.00192
+  },
+  {
+   "sha": "38d1b4f23bfcdcc9756fcf59dd23407c3e36df0f",
+   "subject": "Add order 1212 for cust_4",
+   "checkpoint": "9fea3dfc829b",
+   "touches_target": true,
+   "probability": 0.00192
+  },
+  {
+   "sha": "ca0a2d6288aad40896ccd6d015ef5bd43c4e56fd",
+   "subject": "Reassure customers instead of refunding orders still in transit",
+   "checkpoint": "6b2050de3c0b",
+   "touches_target": true,
+   "probability": 0.99582
+  },
+  {
+   "sha": "a7b2b34584f03ac5eab1cf49e35dc9aa5626e42b",
+   "subject": "Turn the refund-agent order list into a table",
+   "checkpoint": "b2627c1c6659",
+   "touches_target": true,
+   "probability": 0.0002
+  },
+  {
+   "sha": "95b3ca73b1fd470565810af86e18a290d451522d",
+   "subject": "Fail smoke.py on duplicate order_id keys or key/field mismatches",
+   "checkpoint": "16710143c303",
+   "touches_target": true,
+   "probability": 0.0
+  },
+  {
+   "sha": "fe9564a05b58723889be8cf1869d48a31c3177f3",
+   "subject": "Warn on stderr when WHODUNIT_ENV points to a missing file",
+   "checkpoint": "37d636ad652b",
+   "touches_target": true,
+   "probability": 0.0
+  },
+  {
+   "sha": "c1f5a526ee7685fab9ce494c9c8817115a953610",
+   "subject": "Update agent.py docstring: document --json and orders.json",
+   "checkpoint": "c48ebff2204a",
+   "touches_target": true,
+   "probability": 0.0
+  },
+  {
+   "sha": "6a4e489058122b3672690033e4a9dd769fed23ec",
+   "subject": "Bump refund-agent version to 0.3.0",
+   "checkpoint": "20bb9557155f",
+   "touches_target": true,
+   "probability": 0.0
+  },
+  {
+   "sha": "f7b69ac79ec34a28950e2de4137ef72b1cd8aecb",
+   "subject": "refund-agent: add How refunds are decided section to README",
+   "checkpoint": "04752b5408c4",
+   "touches_target": true,
+   "probability": 0.0
+  },
+  {
+   "sha": "216855eccf7c93f3f2980418fdeacf33cd4f7291",
+   "subject": "refund-agent: ignore __pycache__ and .venv",
+   "checkpoint": "1f2c6a9ae475",
+   "touches_target": true,
+   "probability": 0.0
+  },
+  {
+   "sha": "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
+   "subject": "refund-agent: print a one-line summary on smoke.py success",
+   "checkpoint": "9c8bde92951d",
+   "touches_target": true,
+   "probability": 0.0
+  }
+ ],
+ "lineup": {
+  "case": "turned-away",
+  "method": "statistical",
+  "suspects": 14,
+  "commits_tested": 6,
+  "replays": 24,
+  "seconds": 317.3,
+  "culprit": {
+   "sha": "ca0a2d6288aad40896ccd6d015ef5bd43c4e56fd",
+   "subject": "Reassure customers instead of refunding orders still in transit",
+   "checkpoint": "6b2050de3c0b",
+   "files": [
+    "victims/refund-agent/agent.py"
+   ],
+   "probability": 0.9958
+  },
+  "remaining": [
+   {
+    "sha": "ca0a2d6288aad40896ccd6d015ef5bd43c4e56fd",
+    "subject": "Reassure customers instead of refunding orders still in transit",
+    "probability": 0.9958
+   }
+  ],
+  "failure_rate_before": 0.023,
+  "failure_rate_from": 0.929,
+  "linear_scan_commits": 6
+ },
+ "replays": [
+  {
+   "sha": "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
+   "input": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+   "verdict": "fail",
+   "reason": "refunds were [], expected [{\"order_id\": \"8008\", \"refunded\": 90.0}]",
+   "seconds": 5.864881082990905,
+   "started": 1791659499.8774898
+  },
+  {
+   "sha": "4c5adbcc2b967732cd0ae9a9544d765851ebad0b",
+   "input": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 90, \"order_id\": \"8008\", \"reason\": \"ordered by mistake\"}]",
+   "seconds": 5.871438125002896,
+   "started": 1791659499.876595
+  },
+  {
+   "sha": "4c5adbcc2b967732cd0ae9a9544d765851ebad0b",
+   "input": "Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"ordered wrong item by mistake\"}]",
+   "seconds": 6.057023667002795,
+   "started": 1791659499.877669
+  },
+  {
+   "sha": "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
+   "input": "Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.",
+   "verdict": "fail",
+   "reason": "refunds were [], expected [{\"order_id\": \"2002\", \"refunded\": 30.0}]",
+   "seconds": 5.040230165992398,
+   "started": 1791659505.762857
+  },
+  {
+   "sha": "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
+   "input": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+   "verdict": "fail",
+   "reason": "refunds were [], expected [{\"order_id\": \"8008\", \"refunded\": 90.0}]",
+   "seconds": 5.425576082983753,
+   "started": 1791659505.949408
+  },
+  {
+   "sha": "4c5adbcc2b967732cd0ae9a9544d765851ebad0b",
+   "input": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 90, \"order_id\": \"8008\", \"reason\": \"ordered by mistake\"}]",
+   "seconds": 66.67985462502111,
+   "started": 1791659505.7627509
+  },
+  {
+   "sha": "4c5adbcc2b967732cd0ae9a9544d765851ebad0b",
+   "input": "Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"ordered wrong item by mistake\"}]",
+   "seconds": 66.40208666698891,
+   "started": 1791659510.817051
+  },
+  {
+   "sha": "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
+   "input": "Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 0, \"order_id\": \"2002\", \"reason\": \"ordered wrong item by mistake\"}], expected [{\"order_id\": \"2002\", \"refunded\": 30.0}]",
+   "seconds": 67.0980843330035,
+   "started": 1791659511.388318
+  },
+  {
+   "sha": "4c5adbcc2b967732cd0ae9a9544d765851ebad0b",
+   "input": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 90, \"order_id\": \"8008\", \"reason\": \"ordered by mistake\"}]",
+   "seconds": 6.185349832987413,
+   "started": 1791659572.470061
+  },
+  {
+   "sha": "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
+   "input": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+   "verdict": "fail",
+   "reason": "refunds were [], expected [{\"order_id\": \"8008\", \"refunded\": 90.0}]",
+   "seconds": 5.215300999989267,
+   "started": 1791659577.236323
+  },
+  {
+   "sha": "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
+   "input": "Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.",
+   "verdict": "fail",
+   "reason": "refunds were [], expected [{\"order_id\": \"2002\", \"refunded\": 30.0}]",
+   "seconds": 5.145699290995253,
+   "started": 1791659578.668659
+  },
+  {
+   "sha": "4c5adbcc2b967732cd0ae9a9544d765851ebad0b",
+   "input": "Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"ordered wrong item by mistake\"}]",
+   "seconds": 5.541408541990677,
+   "started": 1791659578.500093
+  },
+  {
+   "sha": "a7b2b34584f03ac5eab1cf49e35dc9aa5626e42b",
+   "input": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+   "verdict": "fail",
+   "reason": "refunds were [], expected [{\"order_id\": \"8008\", \"refunded\": 90.0}]",
+   "seconds": 5.336366541014286,
+   "started": 1791659584.0605068
+  },
+  {
+   "sha": "a7b2b34584f03ac5eab1cf49e35dc9aa5626e42b",
+   "input": "Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.",
+   "verdict": "fail",
+   "reason": "refunds were [], expected [{\"order_id\": \"2002\", \"refunded\": 30.0}]",
+   "seconds": 5.700182125001447,
+   "started": 1791659584.0606441
+  },
+  {
+   "sha": "a7b2b34584f03ac5eab1cf49e35dc9aa5626e42b",
+   "input": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+   "verdict": "fail",
+   "reason": "refunds were [], expected [{\"order_id\": \"8008\", \"refunded\": 90.0}]",
+   "seconds": 5.737798874994041,
+   "started": 1791659584.060653
+  },
+  {
+   "sha": "e4a3e567223eab74001e8e0d47d607a3bcd141c8",
+   "input": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 90, \"order_id\": \"8008\", \"reason\": \"ordered by mistake\"}]",
+   "seconds": 5.903020832978655,
+   "started": 1791659589.816662
+  },
+  {
+   "sha": "e4a3e567223eab74001e8e0d47d607a3bcd141c8",
+   "input": "Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"ordered wrong item by mistake\"}]",
+   "seconds": 5.903866458014818,
+   "started": 1791659589.815878
+  },
+  {
+   "sha": "e4a3e567223eab74001e8e0d47d607a3bcd141c8",
+   "input": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 90, \"order_id\": \"8008\", \"reason\": \"ordered by mistake\"}]",
+   "seconds": 6.104714375018375,
+   "started": 1791659589.816681
+  },
+  {
+   "sha": "38d1b4f23bfcdcc9756fcf59dd23407c3e36df0f",
+   "input": "Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"ordered wrong item by mistake\"}]",
+   "seconds": 5.291298166004708,
+   "started": 1791659595.9376209
+  },
+  {
+   "sha": "38d1b4f23bfcdcc9756fcf59dd23407c3e36df0f",
+   "input": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 90, \"order_id\": \"8008\", \"reason\": \"ordered by mistake\"}]",
+   "seconds": 5.418614082998829,
+   "started": 1791659595.937027
+  },
+  {
+   "sha": "38d1b4f23bfcdcc9756fcf59dd23407c3e36df0f",
+   "input": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 90, \"order_id\": \"8008\", \"reason\": \"ordered by mistake\"}]",
+   "seconds": 5.488740165979834,
+   "started": 1791659595.9368691
+  },
+  {
+   "sha": "ca0a2d6288aad40896ccd6d015ef5bd43c4e56fd",
+   "input": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+   "verdict": "fail",
+   "reason": "refunds were [], expected [{\"order_id\": \"8008\", \"refunded\": 90.0}]",
+   "seconds": 5.275075790996198,
+   "started": 1791659601.442106
+  },
+  {
+   "sha": "ca0a2d6288aad40896ccd6d015ef5bd43c4e56fd",
+   "input": "Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.",
+   "verdict": "fail",
+   "reason": "refunds were [], expected [{\"order_id\": \"2002\", \"refunded\": 30.0}]",
+   "seconds": 5.276563291990897,
+   "started": 1791659601.441327
+  },
+  {
+   "sha": "ca0a2d6288aad40896ccd6d015ef5bd43c4e56fd",
+   "input": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+   "verdict": "fail",
+   "reason": "refunds were [], expected [{\"order_id\": \"8008\", \"refunded\": 90.0}]",
+   "seconds": 5.296867375000147,
+   "started": 1791659601.441428
+  }
+ ],
+ "motive": {
+  "sha": "ca0a2d6288aad40896ccd6d015ef5bd43c4e56fd",
+  "subject": "Reassure customers instead of refunding orders still in transit",
+  "checkpoint": "6b2050de3c0b",
+  "session": "03501d47-85ec-4281-9fac-663896174f37",
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5",
+  "request": "victims/refund-agent: one more for friendlier replies. When someone asks for a refund on an order that's still shipped and hasn't arrived yet, the agent is a bit blunt about it. Customers in that spot are usually just anxious it's lost. Make the agent warmer there: reassure them the order is on its way, tell them when it was placed, and let them know they're welcome to come back for a refund if it doesn't turn up or they still don't want it once it arrives. Check agent.py still compiles, then commit.",
+  "request_id": "dad7cef2",
+  "request_time": "2026-10-10T18:30:48.931000+00:00",
+  "earlier_requests": [],
+  "steps": [
+   {
+    "id": "cc7d267a",
+    "kind": "ran",
+    "text": "cd /Users/kinnu/neathack/victims/refund-agent && grep -n \"shipped\\|blunt\\|still on its way\\|not arrived\\|SYSTEM_RULES\" agent.py | head -60",
+    "file": null
+   },
+   {
+    "id": "1db385a1",
+    "kind": "read",
+    "text": "victims/refund-agent/agent.py",
+    "file": "victims/refund-agent/agent.py"
+   },
+   {
+    "id": "7a0ddc77",
+    "kind": "ran",
+    "text": "grep -n \"shipped\\|status\" orders.json | head -30; echo ---; grep -rn \"shipped\" . --include=\"*.py\" --include=\"*.md\" 2>/dev/null",
+    "file": null
+   },
+   {
+    "id": "3ff51dca",
+    "kind": "ran",
+    "text": "cat README.md; echo ---SMOKE---; cat smoke.py 2>/dev/null | head -100",
+    "file": null
+   },
+   {
+    "id": "70fa4267",
+    "kind": "said",
+    "text": "Now I'll add the new rule to `SYSTEM_RULES` so shipped (not yet delivered) orders get a warmer, reassuring reply instead of a blunt refund.",
+    "file": null
+   },
+   {
+    "id": "f511062a",
+    "kind": "edited",
+    "text": "    # Lookups and ownership: when to call lookup_order vs issue_refund, and whose order it is\n    \"If the customer has already given both an order number and an amount, call issue_refund directly with \"\n    \"those, without calling lookup_order first, unless you still need to check whether the order has been \"\n    \"delivered yet.\",\n    \"Only call lookup_order when the order number or the amount is missing or unclear, or when you need to \"\n    \"check whether the order has been delivered yet, to find or confirm it before refunding.\",",
+    "file": "victims/refund-agent/agent.py"
+   },
+   {
+    "id": "42b9b357",
+    "kind": "edited",
+    "text": "    # Shipped orders: a refund request before the order has even arrived\n    \"If a refund request is for an order that's still shipped, not yet delivered, don't issue the refund yet. \"\n    \"Reassure the customer it's on its way, tell them when it was placed (the placed_on date), and let them \"\n    \"know they're welcome to come back for a refund if it doesn't turn up or they still don't want it once it \"\n    \"arrives.\",\n    # Refunds: what issue_refund can and can't do\n    \"Never refund more than the order amount.\",",
+    "file": "victims/refund-agent/agent.py"
+   },
+   {
+    "id": "ded41f9e",
+    "kind": "said",
+    "text": "Now let's check that agent.py still compiles.",
+    "file": null
+   },
+   {
+    "id": "88862b5f",
+    "kind": "ran",
+    "text": "uv run python -c \"import py_compile; py_compile.compile('agent.py', doraise=True); print('OK')\" 2>&1 || python3 -c \"import py_compile; py_compile.compile('agent.py', doraise=True); print('OK')\"",
+    "file": null
+   },
+   {
+    "id": "a705541a",
+    "kind": "ran",
+    "text": "uv run python -c \"import py_compile; py_compile.compile('agent.py', doraise=True); print('OK')\"",
+    "file": null
+   },
+   {
+    "id": "a34065e6",
+    "kind": "said",
+    "text": "Compiles fine. Now committing.",
+    "file": null
+   },
+   {
+    "id": "b4ab66a9",
+    "kind": "ran",
+    "text": "git status --porcelain && git diff -- agent.py",
+    "file": null
+   },
+   {
+    "id": "251acb62",
+    "kind": "ran",
+    "text": "cd /Users/kinnu/neathack && git add victims/refund-agent/agent.py && git commit -m \"Reassure customers instead of refunding orders still in transit\n\nWhen a refund request comes in for an order that's shipped but not yet\ndelivered, the agent now checks its status, reassures the customer it's\non the w",
+    "file": null
+   },
+   {
+    "id": "c8c4d435",
+    "kind": "ran",
+    "text": "pwd && git rev-parse --show-toplevel",
+    "file": null
+   },
+   {
+    "id": "a4215d0f",
+    "kind": "said",
+    "text": "Good, the repo root is `/Users/kinnu/neathack` and the cwd is already inside it, so no `cd` is needed.",
+    "file": null
+   }
+  ],
+  "link": null,
+  "note": ""
+ },
+ "evidence": {
+  "culprit": "ca0a2d6288aad40896ccd6d015ef5bd43c4e56fd",
+  "parent": "38d1b4f23bfcdcc9756fcf59dd23407c3e36df0f",
+  "subject": "Reassure customers instead of refunding orders still in transit",
+  "diff": "diff --git a/victims/refund-agent/agent.py b/victims/refund-agent/agent.py\nindex b3de501..0f0bb1a 100644\n--- a/victims/refund-agent/agent.py\n+++ b/victims/refund-agent/agent.py\n@@ -143,9 +143,10 @@ SYSTEM_RULES = [\n     \"double-check something and write back.\",\n     # Lookups and ownership: when to call lookup_order vs issue_refund, and whose order it is\n     \"If the customer has already given both an order number and an amount, call issue_refund directly with \"\n-    \"those, without calling lookup_order first.\",\n-    \"Only call lookup_order when the order number or the amount is missing or unclear, to find or confirm it \"\n-    \"before refunding.\",\n+    \"those, without calling lookup_order first, unless you still need to check whether the order has been \"\n+    \"delivered yet.\",\n+    \"Only call lookup_order when the order number or the amount is missing or unclear, or when you need to \"\n+    \"check whether the order has been delivered yet, to find or confirm it before refunding.\",\n     \"When you call issue_refund, give a short reason for the refund in a few words, such as 'arrived damaged', \"\n     \"based on what the customer told you.\",\n     \"If the customer is only asking where an order is, use get_order_status instead of lookup_order or issue_refund.\",\n@@ -161,6 +162,11 @@ SYSTEM_RULES = [\n     \"another customer or any internal id. Don't suggest the customer did anything wrong. Just let them know you \"\n     \"can't apply it to their account and that you'll get them sorted, and ask for whatever you need to find the \"\n     \"right order.\",\n+    # Shipped orders: a refund request before the order has even arrived\n+    \"If a refund request is for an order that's still shipped, not yet delivered, don't issue the refund yet. \"\n+    \"Reassure the customer it's on its way, tell them when it was placed (the placed_on date), and let them \"\n+    \"know they're welcome to come back for a refund if it doesn't turn up or they still don't want it once it \"\n+    \"arrives.\",\n     # Refunds: what issue_refund can and can't do\n     \"Never refund more than the order amount.\",\n     \"You can only issue a refund, not send a replacement. If a replacement would make sense for what the \"\n",
+  "after": "victims/refund-agent/agent.py, lines 136 to 160 after the commit:\n 136      # Tone: how to come across to an upset customer\n 137      \"You are a refund agent for an online shop. Customers who reach you are often frustrated, \"\n 138      \"so be warm and empathetic, and make clear you're on their side and will do what it takes to sort things out.\",\n 139      \"Start your reply by acknowledging what went wrong for the customer, in your own words, before you say \"\n 140      \"what you did about it.\",\n 141      \"Give customers the benefit of the doubt on small details, like a mistyped order number or an imprecise \"\n 142      \"amount or date. Try to resolve the request fully in this one reply rather than asking the customer to \"\n 143      \"double-check something and write back.\",\n 144      # Lookups and ownership: when to call lookup_order vs issue_refund, and whose order it is\n 145      \"If the customer has already given both an order number and an amount, call issue_refund directly with \"\n 146      \"those, without calling lookup_order first, unless you still need to check whether the order has been \"\n 147      \"delivered yet.\",\n 148      \"Only call lookup_order when the order number or the amount is missing or unclear, or when you need to \"\n 149      \"check whether the order has been delivered yet, to find or confirm it before refunding.\",\n 150      \"When you call issue_refund, give a short reason for the refund in a few words, such as 'arrived damaged', \"\n 151      \"based on what the customer told you.\",\n 152      \"If the customer is only asking where an order is, use get_order_status instead of lookup_order or issue_refund.\",\n 153      # Typos: retry likely mistypes of the order number\n 154      \"Customers often mistype order numbers. If lookup_order says an order was not found, \"\n 155      \"try a few likely corrections of the number, such as two digits swapped or a digit doubled, \"\n 156      \"with lookup_order. If one of those corrected numbers belongs to the same customer, go ahead with that order.\",\n 157      \"To check whether an order is the customer's, call lookup_order and compare the owner field it returns to \"\n 158      \"the customer id the customer gave you. That's the only account check there is, there's no separate lookup \"\n 159      \"for customer accounts, so never tell a customer you can't look up their account. A matching owner means \"\n 160      \"you're clear to go ahead, including calling issue_refund.\",\n\nvictims/refund-agent/agent.py, lines 155 to 180 after the commit:\n 155      \"try a few likely corrections of the number, such as two digits swapped or a digit doubled, \"\n 156      \"with lookup_order. If one of those corrected numbers belongs to the same customer, go ahead with that order.\",\n 157      \"To check whether an order is the customer's, call lookup_order and compare the owner field it returns to \"\n 158      \"the customer id the customer gave you. That's the only account check there is, there's no separate lookup \"\n 159      \"for customer accounts, so never tell a customer you can't look up their account. A matching owner means \"\n 160      \"you're clear to go ahead, including calling issue_refund.\",\n 161      \"If an order doesn't belong to this customer, or you can't confirm it does, never say whose it is or mention \"\n 162      \"another customer or any internal id. Don't suggest the customer did anything wrong. Just let them know you \"\n 163      \"can't apply it to their account and that you'll get them sorted, and ask for whatever you need to find the \"\n 164      \"right order.\",\n 165      # Shipped orders: a refund request before the order has even arrived\n 166      \"If a refund request is for an order that's still shipped, not yet delivered, don't issue the refund yet. \"\n 167      \"Reassure the customer it's on its way, tell them when it was placed (the placed_on date), and let them \"\n 168      \"know they're welcome to come back for a refund if it doesn't turn up or they still don't want it once it \"\n 169  ",
+  "checkpoint": "6b2050de3c0b",
+  "request": "victims/refund-agent: one more for friendlier replies. When someone asks for a refund on an order that's still shipped and hasn't arrived yet, the agent is a bit blunt about it. Customers in that spot are usually just anxious it's lost. Make the agent warmer there: reassure them the order is on its way, tell them when it was placed, and let them know they're welcome to come back for a refund if it doesn't turn up or they still don't want it once it arrives. Check agent.py still compiles, then commit.",
+  "steps": [
+   {
+    "id": "cc7d267a",
+    "kind": "ran",
+    "text": "cd /Users/kinnu/neathack/victims/refund-agent && grep -n \"shipped\\|blunt\\|still on its way\\|not arrived\\|SYSTEM_RULES\" agent.py | head -60",
+    "file": null
+   },
+   {
+    "id": "1db385a1",
+    "kind": "read",
+    "text": "victims/refund-agent/agent.py",
+    "file": "victims/refund-agent/agent.py"
+   },
+   {
+    "id": "7a0ddc77",
+    "kind": "ran",
+    "text": "grep -n \"shipped\\|status\" orders.json | head -30; echo ---; grep -rn \"shipped\" . --include=\"*.py\" --include=\"*.md\" 2>/dev/null",
+    "file": null
+   },
+   {
+    "id": "3ff51dca",
+    "kind": "ran",
+    "text": "cat README.md; echo ---SMOKE---; cat smoke.py 2>/dev/null | head -100",
+    "file": null
+   },
+   {
+    "id": "70fa4267",
+    "kind": "said",
+    "text": "Now I'll add the new rule to `SYSTEM_RULES` so shipped (not yet delivered) orders get a warmer, reassuring reply instead of a blunt refund.",
+    "file": null
+   },
+   {
+    "id": "f511062a",
+    "kind": "edited",
+    "text": "    # Lookups and ownership: when to call lookup_order vs issue_refund, and whose order it is\n    \"If the customer has already given both an order number and an amount, call issue_refund directly with \"\n    \"those, without calling lookup_order first, unless you still need to check whether the order has been \"\n    \"delivered yet.\",\n    \"Only call lookup_order when the order number or the amount is missing or unclear, or when you need to \"\n    \"check whether the order has been delivered yet, to find or confirm it before refunding.\",",
+    "file": "victims/refund-agent/agent.py"
+   },
+   {
+    "id": "42b9b357",
+    "kind": "edited",
+    "text": "    # Shipped orders: a refund request before the order has even arrived\n    \"If a refund request is for an order that's still shipped, not yet delivered, don't issue the refund yet. \"\n    \"Reassure the customer it's on its way, tell them when it was placed (the placed_on date), and let them \"\n    \"know they're welcome to come back for a refund if it doesn't turn up or they still don't want it once it \"\n    \"arrives.\",\n    # Refunds: what issue_refund can and can't do\n    \"Never refund more than the order amount.\",",
+    "file": "victims/refund-agent/agent.py"
+   },
+   {
+    "id": "ded41f9e",
+    "kind": "said",
+    "text": "Now let's check that agent.py still compiles.",
+    "file": null
+   },
+   {
+    "id": "88862b5f",
+    "kind": "ran",
+    "text": "uv run python -c \"import py_compile; py_compile.compile('agent.py', doraise=True); print('OK')\" 2>&1 || python3 -c \"import py_compile; py_compile.compile('agent.py', doraise=True); print('OK')\"",
+    "file": null
+   },
+   {
+    "id": "a705541a",
+    "kind": "ran",
+    "text": "uv run python -c \"import py_compile; py_compile.compile('agent.py', doraise=True); print('OK')\"",
+    "file": null
+   },
+   {
+    "id": "a34065e6",
+    "kind": "said",
+    "text": "Compiles fine. Now committing.",
+    "file": null
+   },
+   {
+    "id": "b4ab66a9",
+    "kind": "ran",
+    "text": "git status --porcelain && git diff -- agent.py",
+    "file": null
+   },
+   {
+    "id": "251acb62",
+    "kind": "ran",
+    "text": "cd /Users/kinnu/neathack && git add victims/refund-agent/agent.py && git commit -m \"Reassure customers instead of refunding orders still in transit\n\nWhen a refund request comes in for an order that's shipped but not yet\ndelivered, the agent now checks its status, reassures the customer it's\non the w",
+    "file": null
+   },
+   {
+    "id": "c8c4d435",
+    "kind": "ran",
+    "text": "pwd && git rev-parse --show-toplevel",
+    "file": null
+   },
+   {
+    "id": "a4215d0f",
+    "kind": "said",
+    "text": "Good, the repo root is `/Users/kinnu/neathack` and the cwd is already inside it, so no `cd` is needed.",
+    "file": null
+   }
+  ],
+  "failing_run": {
+   "trace_id": "10f52c0ae2b315f6a2bc037a9f318b98",
+   "commit": "ca0a2d6288aad40896ccd6d015ef5bd43c4e56fd",
+   "input": "Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.",
+   "reason": "refunds were [], expected [{\"order_id\": \"2002\", \"refunded\": 30.0}]",
+   "outline": "94e7c7db WORKFLOW refund ok 4073ms\n  in: {\"request\":\"Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.\",\"max_steps\":3}\n  out: I can see your order is on its way to you \u2013 it was placed on September 15th and is currently shipped. Here's what I'd suggest: since it's still in transit, let\u2026\n  ed7e2b57 CHAIN run_info ok 1ms\n    in: {\"max_steps\":3}\n    out: {\"tags\":[\"commit:ca0a2d6288aad40896ccd6d015ef5bd43c4e56fd\",\"llm:gateway\",\"case:turned-away\"],\"commit_short\":\"ca0a2d6288aa\",\"model\":\"claude-haiku\",\"version\":\"0.\u2026\n  fa3dfdcc LLM openai.chat.completions.create ok 1571tok 1909ms\n    in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you're on their side\u2026\n    out: assistant: I understand \u2013 it's so easy to order the wrong thing by mistake! Let me sort that refund out for you right away. \u2192 lookup_order({\"order_id\":\"2002\"})\n  bf73aa74 TOOL lookup_order ok 0ms\n    in: {\"order_id\":\"2002\"}\n    out: {\"order_id\":\"2002\",\"owner\":\"cust_4\",\"amount\":30,\"currency\":\"USD\",\"status\":\"shipped\",\"placed_on\":\"2026-09-15\"}\n  535cf3f2 LLM openai.chat.completions.create ok 1746tok 2160ms\n    in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you're on their side\u2026\n    out: assistant: I can see your order is on its way to you \u2013 it was placed on September 15th and is currently shipped. Here's what I'd suggest: since it's still in t\u2026"
+  },
+  "passing_run": {
+   "trace_id": "38c49d062086a3f05468c95f9d3fab48",
+   "commit": "38d1b4f23bfcdcc9756fcf59dd23407c3e36df0f",
+   "input": "Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.",
+   "outline": "35a29c86 WORKFLOW refund ok 4140ms\n  in: {\"request\":\"Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.\",\"max_steps\":3}\n  out: Perfect\u2014I've refunded the full $30 to your account for order 2002. You should see that money back within a few business days depending on your bank.\n  cbed3529 CHAIN run_info ok 1ms\n    in: {\"max_steps\":3}\n    out: {\"tags\":[\"commit:38d1b4f23bfcdcc9756fcf59dd23407c3e36df0f\",\"llm:gateway\",\"case:turned-away\"],\"commit_short\":\"38d1b4f23bfc\",\"model\":\"claude-haiku\",\"version\":\"0.\u2026\n  294cc38b LLM openai.chat.completions.create ok 1435tok 1566ms\n    in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you're on their side\u2026\n    out: assistant:  \u2192 lookup_order({\"order_id\":\"2002\"})\n  7221dbea TOOL lookup_order ok 0ms\n    in: {\"order_id\":\"2002\"}\n    out: {\"order_id\":\"2002\",\"owner\":\"cust_4\",\"amount\":30,\"currency\":\"USD\",\"status\":\"shipped\",\"placed_on\":\"2026-09-15\"}\n  0f9d0d48 LLM openai.chat.completions.create ok 1629tok 1368ms\n    in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you're on their side\u2026\n    out: assistant: I totally understand\u2014ordering the wrong item is frustrating! I'm glad you caught it and reached out. Let me process that refund for you right away. \u2026\n  84739d64 TOOL issue_refund ok 0ms\n    in: {\"order_id\":\"2002\",\"amount\":30,\"reason\":\"ordered wrong item by mistake\"}\n    out: {\"refunded\":30,\"order_id\":\"2002\",\"reason\":\"ordered wrong item by mistake\"}\n  34fa4ae4 LLM openai.chat.completions.create ok 1704tok 1202ms\n    in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you're on their side\u2026\n    out: assistant: Perfect\u2014I've refunded the full $30 to your account for order 2002. You should see that money back within a few business days depending on your bank."
+  },
+  "comparison": "{\n \"a\": {\n  \"summary\": {\n   \"trace_id\": \"38c49d062086a3f05468c95f9d3fab48\",\n   \"session_id\": null,\n   \"project\": \"refund-agent\",\n   \"workflow\": \"refund-agent\",\n   \"root_span_id\": \"35a29c86b0079808\",\n   \"root_name\": \"refund\",\n   \"status\": \"ok\",\n   \"complete\": 1,\n   \"root_ended\": 1,\n   \"started_ms\": 1791659596965.351,\n   \"ended_ms\": 1791659601105.29,\n   \"last_span_ms\": 1791659601118.48,\n   \"span_count\": 7,\n   \"llm_calls\": 3,\n   \"tool_calls\": 2,\n   \"error_count\": 0,\n   \"prompt_tokens\": 4541,\n   \"completion_tokens\": 227,\n   \"total_tokens\": 4768,\n   \"input_preview\": \"Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.\",\n   \"output_preview\": \"Perfect\\u2014I've refunded the full $30 to your account for order 2002. You should see that money back within a few business days depending on your bank.\",\n   \"interrupted\": 0,\n   \"termination_reason\": null,\n   \"finding_count\": 0,\n   \"open_finding_count\": 0,\n   \"pinned\": 0,\n   \"doctor\": 0,\n   \"plan_id\": \"plan_1m4kf5nh7w7g9bfk7\",\n   \"received_ms\": 1791659597067,\n   \"updated_ms\": 1791659601119,\n   \"duration_ms\": 4139.93896484375,\n   \"summary\": null,\n   \"top_finding\": null,\n   \"steering\": \"off\"\n  },\n  \"tools\": [\n   \"lookup_order\",\n   \"issue_refund\"\n  ],\n  \"output\": \"Perfect\\u2014I've refunded the full $30 to your account for order 2002. You should see that money back within a few business days depending on your bank.\",\n  \"problems\": []\n },\n \"b\": {\n  \"summary\": {\n   \"trace_id\": \"10f52c0ae2b315f6a2bc037a9f318b98\",\n   \"session_id\": null,\n   \"project\": \"refund-agent\",\n   \"workflow\": \"refund-agent\",\n   \"root_span_id\": \"94e7c7db1f27382d\",\n   \"root_name\": \"refund\",\n   \"status\": \"ok\",\n   \"complete\": 1,\n   \"root_ended\": 1,\n   \"started_ms\": 1791659602458.427,\n   \"ended_ms\": 1791659606531.312,\n   \"last_span_ms\": 1791659606542.462,\n   \"span_count\": 5,\n   \"llm_calls\": 2,\n   \"tool_calls\": 1,\n   \"error_count\": 0,\n   \"prompt_tokens\": 3121,\n   \"completion_tokens\": 196,\n   \"total_tokens\": 3317,\n   \"input_preview\": \"Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.\",\n   \"output_preview\": \"I can see your order is on its way to you \\u2013 it was placed on September 15th and is currently shipped. Here's what I'd suggest: since it's still in transit, let's wait and see if it arrives. If it does and you still want to send it back, or if it doesn't turn up at all, you're very welcome to come b\\u2026\",\n   \"interrupted\": 0,\n   \"termination_reason\": null,\n   \"finding_count\": 0,\n   \"open_finding_count\": 0,\n   \"pinned\": 0,\n   \"doctor\": 0,\n   \"plan_id\": \"plan_1m4kf5nh7w7g9bfk7\",\n   \"received_ms\": 1791659602586,\n   \"updated_ms\": 1791659606546,\n   \"duration_ms\": 4072.885009765625,\n   \"summary\": null,\n   \"top_finding\": null,\n   \"steering\": \"off\"\n  },\n  \"tools\": [\n   \"lookup_order\"\n  ],\n  \"output\": \"I can see your order is on its way to you \\u2013 it was placed on September 15th and is currently shipped. Here's what I'd suggest: since it's still in transit, let's wait and see if it arrives. If it",
+  "measured": "24 replays across 6 commits. Replays fail about 93% of the time from the culprit on and 2% before it.",
+  "notes": []
+ },
+ "brief": {
+  "headline": "ca0a2d6288aa blocks refunds on shipped orders even when customer's reason is unrelated to delivery",
+  "sentences": [
+   {
+    "text": "Commit ca0a2d6288aa added a SYSTEM_RULES entry at line 166 that tells the agent never to issue a refund if the order status is 'shipped', regardless of the customer's reason.",
+    "cites": [
+     "42b9b357",
+     "ca0a2d6288aa"
+    ]
+   },
+   {
+    "text": "The rule was intended for anxious customers who might just be worried the order is lost, but it also fires when the customer explicitly states a different reason, such as ordering the wrong item.",
+    "cites": [
+     "42b9b357",
+     "f511062a"
+    ]
+   },
+   {
+    "text": "In the failing run, the agent called lookup_order, saw status 'shipped', then applied the new rule and sent a reassurance reply instead of calling issue_refund.",
+    "cites": [
+     "10f52c0ae2b3",
+     "535cf3f2",
+     "bf73aa74"
+    ]
+   },
+   {
+    "text": "The passing run on parent commit 38d1b4f23bfc shows the same lookup returning the same 'shipped' status, after which the agent correctly called issue_refund and completed the refund.",
+    "cites": [
+     "38c49d062086",
+     "7221dbea",
+     "84739d64"
+    ]
+   },
+   {
+    "text": "The comparison confirms the failing run made only one tool call (lookup_order) while the passing run made two (lookup_order and issue_refund).",
+    "cites": [
+     "35a29c86",
+     "94e7c7db"
+    ]
+   },
+   {
+    "text": "The rule added in ca0a2d6288aa contains no carve-out for cases where the customer's stated reason has nothing to do with delivery anxiety, making the block unconditional on order status alone.",
+    "cites": [
+     "42b9b357",
+     "6b2050de3c0b"
+    ]
+   }
+  ],
+  "dropped": [],
+  "model": "claude-sonnet-4.6"
+ }
+}

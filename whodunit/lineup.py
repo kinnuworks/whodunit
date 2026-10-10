@@ -181,6 +181,7 @@ def statistical_bisect(
     good_prior: tuple[float, float] = GOOD_PRIOR,
     bad_prior: tuple[float, float] = BAD_PRIOR,
     on_round: Callable[[list[int], list[str], list[float]], None] | None = None,
+    evidence: Sequence[tuple[int, bool]] = (),
 ) -> Lineup:
     """Find the first bad suspect when a bad commit only fails some of the time.
 
@@ -188,14 +189,21 @@ def statistical_bisect(
     ref. `budget` is the most replays to spend, counting the warm-up runs at both ends. Stops
     when one suspect holds `confidence` of the posterior, or when the budget is gone, in which
     case `remaining` lists the suspects still in play, most likely first.
+
+    `evidence` is what is already known, as (position, failed) pairs: replays from an earlier
+    run of the same case, or the agent's ordinary traffic. It shapes the posterior from the
+    start and does not count against the budget.
     """
     state = ChangePoint(count, priors, good_prior, bad_prior)
+    for position, failed in evidence:
+        state.observe(position, failed)
+    known = state.replays
     tested: list[tuple[int, str]] = []
     skipped: set[int] = set()
     bad = count - 1
 
     def run(positions: list[int]) -> list[str]:
-        positions = positions[: max(0, budget - state.replays)]
+        positions = positions[: max(0, budget - (state.replays - known))]
         if parallel > 1 and len(positions) > 1:
             with ThreadPoolExecutor(max_workers=parallel) as pool:
                 verdicts = list(pool.map(trial, positions))
@@ -222,19 +230,28 @@ def statistical_bisect(
             replays=state.replays, rates=state.rates(top), note=note,
         )
 
-    # Warm up at both ends, so the two failure rates start from evidence.
+    # Warm up at both ends, so the two failure rates start from evidence. Ends that earlier
+    # evidence already covers need less of it.
     warmup = max(1, min(warmup, budget // 4))
-    run([-1, bad] * warmup)
+    seen_good = state.fails[0] + state.passes[0]
+    seen_bad = state.fails[bad + 1] + state.passes[bad + 1]
+    first = []
+    for n in range(warmup):
+        if seen_good + n < warmup:
+            first.append(-1)
+        if seen_bad + n < warmup:
+            first.append(bad)
+    run(first)
     if -1 in skipped or bad in skipped:
         return finish("the good ref or the bad ref will not build")
     extra = 0
-    while state.fails[bad + 1] == 0 and extra < 2 * warmup and state.replays < budget:
+    while state.fails[bad + 1] == 0 and extra < 2 * warmup and state.replays - known < budget:
         run([bad] * max(1, parallel))  # a rare failure may simply not have shown yet
         extra += max(1, parallel)
     if state.fails[bad + 1] == 0:
         return finish(f"the bad ref passed all {state.passes[bad + 1]} of its replays")
 
-    while state.replays < budget:
+    while state.replays - known < budget:
         posterior = state.posterior()
         if max(posterior) >= confidence:
             break

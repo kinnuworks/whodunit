@@ -17,7 +17,7 @@ from .motive import find_motive
 from .neat import NeatError, neatroots
 from .onset import cloud_trend, find_onset, traffic
 from .lineup import linear_scan_cost, plain_bisect, statistical_bisect
-from .replay import FAIL, PASS, Runner
+from .replay import FAIL, PASS, Replay, Runner
 from .suspects import git, list_suspects, resolve
 
 
@@ -71,9 +71,18 @@ def _statistical(args, case, suspects, runner, say):
             say(f"  {who}  {marks:<8}  top suspect {top + 1:>2} at {posterior[top]:5.1%}")
 
     priors = None if args.no_priors else [s.prior for s in suspects]
+    evidence = []
+    if args.resume:
+        # Carry on from the replays an earlier run of this case already paid for.
+        position = {s.sha: n for n, s in enumerate(suspects)}
+        position[resolve(runner.repo, case.good)] = -1
+        runner.replays.extend(Replay(**r) for r in load_record(record_path(args)).get("replays", []) if r["sha"] in position)
+        evidence = [(position[r.sha], r.verdict == FAIL) for r in runner.replays if r.verdict != "skip"]
+        say(f"Resuming with {len(evidence)} replays already on record.")
     say(f"Statistical bisect, at most {args.budget} replays, {args.parallel} at a time. F is a failed replay, a dot is a pass.")
     return statistical_bisect(
         len(suspects), trial, args.budget, priors=priors, confidence=args.confidence, parallel=args.parallel, on_round=on_round,
+        evidence=evidence,
     )
 
 
@@ -385,6 +394,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--budget", type=int, default=120, help="most replays the statistical bisect may spend (default 120)")
     p.add_argument("--confidence", type=float, default=0.95, help="posterior needed to name a culprit (default 0.95)")
     p.add_argument("--parallel", type=int, default=1, help="replays to run at once")
+    p.add_argument("--resume", action="store_true", help="start from the replays already in the case record; --budget is then how many more to spend")
     p.add_argument("--no-priors", action="store_true", help="suspect every commit equally, even ones that never touched the agent")
     p.add_argument("--record", help="where to write the case record (default: next to the case file)")
     p.add_argument("--keep", action="store_true", help="leave the worktrees in .whodunit/worktrees")

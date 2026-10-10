@@ -1,0 +1,1470 @@
+{
+ "case": {
+  "id": "wrong-order-refunded",
+  "symptom": "A customer asked about an order number we have no record of, and every so often the agent refunds one of their other orders instead.",
+  "good": "367c64a5ae2702ae2d1142f0877bb5c56e946b21",
+  "bad": "42978be0a2352c8c6291703b61f31d1978e3ba19",
+  "target": "victims/refund-agent",
+  "file": "cases/wrong-order-refunded.toml",
+  "repo": "."
+ },
+ "suspects": [
+  {
+   "sha": "d871f17de10b583e37ce053b47ab52f109fd3c14",
+   "subject": "Add docstrings to tool functions in refund agent",
+   "checkpoint": "15cb2b8ba0c1",
+   "touches_target": true,
+   "probability": 0.00186
+  },
+  {
+   "sha": "eb819b28dacfdc3b7e6ad0daa5ca9be49115d027",
+   "subject": "Move ORDERS out of agent.py into orders.json",
+   "checkpoint": "fee39ce05493",
+   "touches_target": true,
+   "probability": 0.00186
+  },
+  {
+   "sha": "8619484f9eb4609ee48571a4bb83f93c9c4ceb8a",
+   "subject": "Document orders.json location in refund agent README",
+   "checkpoint": "a23981624a12",
+   "touches_target": true,
+   "probability": 0.00186
+  },
+  {
+   "sha": "bdd8d4dd9fed0be42669bb52e54759be20a800f3",
+   "subject": "Give the OpenAI client a timeout and retry on transient errors",
+   "checkpoint": "96357218120b",
+   "touches_target": true,
+   "probability": 0.00186
+  },
+  {
+   "sha": "909dd7607b8c3fc56f248ec7b28ff4fda5e6d53e",
+   "subject": "Add order 8008 for cust_6",
+   "checkpoint": "4277ef4e0d0a",
+   "touches_target": true,
+   "probability": 0.00186
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "subject": "Bump refund agent version to 0.2.0",
+   "checkpoint": "2e014f99ae2c",
+   "touches_target": true,
+   "probability": 0.00231
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "subject": "Try digit-swap and digit-double corrections on order lookup misses",
+   "checkpoint": "d248e108a420",
+   "touches_target": true,
+   "probability": 0.95097
+  },
+  {
+   "sha": "ded7b9bf18b408b3101249f37c35412df21ccdea",
+   "subject": "Make the too-many-steps message clearer for customers",
+   "checkpoint": "e5c915db0e2b",
+   "touches_target": true,
+   "probability": 0.01414
+  },
+  {
+   "sha": "7d991542f6e7d12f6c4c8d62baac9ff8deb8638c",
+   "subject": "Refresh uv.lock to match refund-agent 0.2.0",
+   "checkpoint": "aa53eb8980b9",
+   "touches_target": true,
+   "probability": 0.01402
+  },
+  {
+   "sha": "aaa4031687f026a0e08b126c9fa09e63933625bf",
+   "subject": "Add a get_order_status tool for where-is-my-order questions",
+   "checkpoint": "485899b3c448",
+   "touches_target": true,
+   "probability": 0.0019
+  },
+  {
+   "sha": "923ccb8d2385e07f969417638008d370563442c8",
+   "subject": "Add agent version to the run_info span, read from pyproject.toml",
+   "checkpoint": "004ae8972d75",
+   "touches_target": true,
+   "probability": 0.00261
+  },
+  {
+   "sha": "42978be0a2352c8c6291703b61f31d1978e3ba19",
+   "subject": "Add a troubleshooting section to the refund-agent README",
+   "checkpoint": "1ff64aa3f19e",
+   "touches_target": true,
+   "probability": 0.00476
+  }
+ ],
+ "lineup": {
+  "case": "wrong-order-refunded",
+  "method": "statistical",
+  "suspects": 12,
+  "commits_tested": 9,
+  "replays": 168,
+  "seconds": 1899.7,
+  "culprit": {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "subject": "Try digit-swap and digit-double corrections on order lookup misses",
+   "checkpoint": "d248e108a420",
+   "files": [
+    "victims/refund-agent/agent.py"
+   ],
+   "probability": 0.951
+  },
+  "remaining": [
+   {
+    "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+    "subject": "Try digit-swap and digit-double corrections on order lookup misses",
+    "probability": 0.951
+   }
+  ],
+  "failure_rate_before": 0.005,
+  "failure_rate_from": 0.12,
+  "linear_scan_commits": 7
+ },
+ "replays": [
+  {
+   "sha": "367c64a5ae2702ae2d1142f0877bb5c56e946b21",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.209598999994341,
+   "started": 1791659607.0588548
+  },
+  {
+   "sha": "367c64a5ae2702ae2d1142f0877bb5c56e946b21",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.240798667015042,
+   "started": 1791659607.0587819
+  },
+  {
+   "sha": "42978be0a2352c8c6291703b61f31d1978e3ba19",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 6.076446582999779,
+   "started": 1791659607.0586722
+  },
+  {
+   "sha": "367c64a5ae2702ae2d1142f0877bb5c56e946b21",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.041171124990797,
+   "started": 1791659611.313278
+  },
+  {
+   "sha": "42978be0a2352c8c6291703b61f31d1978e3ba19",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.540866916999221,
+   "started": 1791659611.283221
+  },
+  {
+   "sha": "367c64a5ae2702ae2d1142f0877bb5c56e946b21",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 65.07708870898932,
+   "started": 1791659615.36848
+  },
+  {
+   "sha": "42978be0a2352c8c6291703b61f31d1978e3ba19",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 60, \"order_id\": \"7007\"}], expected []",
+   "seconds": 67.8347389580158,
+   "started": 1791659613.153451
+  },
+  {
+   "sha": "42978be0a2352c8c6291703b61f31d1978e3ba19",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 66.97307220898801,
+   "started": 1791659616.839776
+  },
+  {
+   "sha": "367c64a5ae2702ae2d1142f0877bb5c56e946b21",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.946973042009631,
+   "started": 1791659680.4718652
+  },
+  {
+   "sha": "42978be0a2352c8c6291703b61f31d1978e3ba19",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 6.18610408299719,
+   "started": 1791659681.007884
+  },
+  {
+   "sha": "367c64a5ae2702ae2d1142f0877bb5c56e946b21",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.709413542004768,
+   "started": 1791659683.831429
+  },
+  {
+   "sha": "42978be0a2352c8c6291703b61f31d1978e3ba19",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.410085250012344,
+   "started": 1791659685.434125
+  },
+  {
+   "sha": "909dd7607b8c3fc56f248ec7b28ff4fda5e6d53e",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.868046499992488,
+   "started": 1791659690.865867
+  },
+  {
+   "sha": "909dd7607b8c3fc56f248ec7b28ff4fda5e6d53e",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.1597032499848865,
+   "started": 1791659690.8658829
+  },
+  {
+   "sha": "909dd7607b8c3fc56f248ec7b28ff4fda5e6d53e",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.164113707985962,
+   "started": 1791659690.865739
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 6.197251624980709,
+   "started": 1791659695.0515819
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 6.36384404200362,
+   "started": 1791659695.050797
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 6.507974166015629,
+   "started": 1791659695.050901
+  },
+  {
+   "sha": "7d991542f6e7d12f6c4c8d62baac9ff8deb8638c",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.450232041999698,
+   "started": 1791659701.580672
+  },
+  {
+   "sha": "7d991542f6e7d12f6c4c8d62baac9ff8deb8638c",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.473996790999081,
+   "started": 1791659701.5807202
+  },
+  {
+   "sha": "7d991542f6e7d12f6c4c8d62baac9ff8deb8638c",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.483519875007914,
+   "started": 1791659701.579977
+  },
+  {
+   "sha": "aaa4031687f026a0e08b126c9fa09e63933625bf",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.701954291987931,
+   "started": 1791659707.0827599
+  },
+  {
+   "sha": "aaa4031687f026a0e08b126c9fa09e63933625bf",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.830357541010017,
+   "started": 1791659707.082752
+  },
+  {
+   "sha": "aaa4031687f026a0e08b126c9fa09e63933625bf",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.891102749999845,
+   "started": 1791659707.0825548
+  },
+  {
+   "sha": "923ccb8d2385e07f969417638008d370563442c8",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.477633417001925,
+   "started": 1791659712.990321
+  },
+  {
+   "sha": "923ccb8d2385e07f969417638008d370563442c8",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.486738832987612,
+   "started": 1791659712.989656
+  },
+  {
+   "sha": "923ccb8d2385e07f969417638008d370563442c8",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.52100400000927,
+   "started": 1791659712.98954
+  },
+  {
+   "sha": "923ccb8d2385e07f969417638008d370563442c8",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 66.49436104201595,
+   "started": 1791659718.530615
+  },
+  {
+   "sha": "923ccb8d2385e07f969417638008d370563442c8",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 66.66572345799068,
+   "started": 1791659718.530497
+  },
+  {
+   "sha": "923ccb8d2385e07f969417638008d370563442c8",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 66.88402650001808,
+   "started": 1791659718.530414
+  },
+  {
+   "sha": "923ccb8d2385e07f969417638008d370563442c8",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.790777125017485,
+   "started": 1791659785.447814
+  },
+  {
+   "sha": "923ccb8d2385e07f969417638008d370563442c8",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.919266707991483,
+   "started": 1791659785.4476979
+  },
+  {
+   "sha": "923ccb8d2385e07f969417638008d370563442c8",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.988566208980046,
+   "started": 1791659785.447863
+  },
+  {
+   "sha": "923ccb8d2385e07f969417638008d370563442c8",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.567490124987671,
+   "started": 1791659791.453064
+  },
+  {
+   "sha": "923ccb8d2385e07f969417638008d370563442c8",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 6.136824624991277,
+   "started": 1791659791.452951
+  },
+  {
+   "sha": "923ccb8d2385e07f969417638008d370563442c8",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 60, \"order_id\": \"7007\"}], expected []",
+   "seconds": 6.99676008298411,
+   "started": 1791659791.453233
+  },
+  {
+   "sha": "ded7b9bf18b408b3101249f37c35412df21ccdea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.599822624993976,
+   "started": 1791659798.4675908
+  },
+  {
+   "sha": "ded7b9bf18b408b3101249f37c35412df21ccdea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.600054416980129,
+   "started": 1791659798.4674492
+  },
+  {
+   "sha": "ded7b9bf18b408b3101249f37c35412df21ccdea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.750874124991242,
+   "started": 1791659798.468346
+  },
+  {
+   "sha": "7d991542f6e7d12f6c4c8d62baac9ff8deb8638c",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.621284833992831,
+   "started": 1791659804.238343
+  },
+  {
+   "sha": "7d991542f6e7d12f6c4c8d62baac9ff8deb8638c",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 60, \"order_id\": \"7007\"}], expected []",
+   "seconds": 7.094595125003252,
+   "started": 1791659804.2379708
+  },
+  {
+   "sha": "7d991542f6e7d12f6c4c8d62baac9ff8deb8638c",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 60, \"order_id\": \"7007\"}], expected []",
+   "seconds": 7.255098584020743,
+   "started": 1791659804.238137
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.143318875023397,
+   "started": 1791659811.514705
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.159144500008551,
+   "started": 1791659811.513887
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.296380374988075,
+   "started": 1791659811.5147352
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 66.65441991700209,
+   "started": 1791659815.833576
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 66.6804031659849,
+   "started": 1791659815.832999
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 66.75112445899867,
+   "started": 1791659815.833256
+  },
+  {
+   "sha": "ded7b9bf18b408b3101249f37c35412df21ccdea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 6.342020624986617,
+   "started": 1791659882.605321
+  },
+  {
+   "sha": "ded7b9bf18b408b3101249f37c35412df21ccdea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 6.372069541015662,
+   "started": 1791659882.605136
+  },
+  {
+   "sha": "ded7b9bf18b408b3101249f37c35412df21ccdea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 6.45089458298753,
+   "started": 1791659882.605574
+  },
+  {
+   "sha": "ded7b9bf18b408b3101249f37c35412df21ccdea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.52689820798696,
+   "started": 1791659889.073099
+  },
+  {
+   "sha": "ded7b9bf18b408b3101249f37c35412df21ccdea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.562758666987065,
+   "started": 1791659889.072911
+  },
+  {
+   "sha": "ded7b9bf18b408b3101249f37c35412df21ccdea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.604908208013512,
+   "started": 1791659889.073987
+  },
+  {
+   "sha": "ded7b9bf18b408b3101249f37c35412df21ccdea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.6652003749914,
+   "started": 1791659894.701803
+  },
+  {
+   "sha": "ded7b9bf18b408b3101249f37c35412df21ccdea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.693819457985228,
+   "started": 1791659894.701984
+  },
+  {
+   "sha": "ded7b9bf18b408b3101249f37c35412df21ccdea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 60, \"order_id\": \"7007\"}], expected []",
+   "seconds": 6.9076454999740236,
+   "started": 1791659894.701684
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.059516999986954,
+   "started": 1791659901.6287382
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.067163374973461,
+   "started": 1791659901.628582
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.180577582999831,
+   "started": 1791659901.628991
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.550316125008976,
+   "started": 1791659905.8255649
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.612546624994138,
+   "started": 1791659905.825873
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.62661524998839,
+   "started": 1791659905.8257852
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 6.139323540992336,
+   "started": 1791659911.471264
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 6.139624666015152,
+   "started": 1791659911.47103
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 6.173611458012601,
+   "started": 1791659911.4713511
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 66.54325070799678,
+   "started": 1791659917.662983
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 66.7921977500082,
+   "started": 1791659917.663352
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 67.59061345801456,
+   "started": 1791659917.663104
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.82777062500827,
+   "started": 1791659985.2867022
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 6.110080250015017,
+   "started": 1791659985.287012
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 60, \"order_id\": \"7007\"}], expected []",
+   "seconds": 7.486709999997402,
+   "started": 1791659985.286981
+  },
+  {
+   "sha": "909dd7607b8c3fc56f248ec7b28ff4fda5e6d53e",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.160230541980127,
+   "started": 1791659992.79213
+  },
+  {
+   "sha": "909dd7607b8c3fc56f248ec7b28ff4fda5e6d53e",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.2414380830014125,
+   "started": 1791659992.7922041
+  },
+  {
+   "sha": "909dd7607b8c3fc56f248ec7b28ff4fda5e6d53e",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.275524040975142,
+   "started": 1791659992.791921
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.579054500005441,
+   "started": 1791659997.082839
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.646696208976209,
+   "started": 1791659997.0830662
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.8306829590001144,
+   "started": 1791659997.0827122
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.3225834160111845,
+   "started": 1791660000.936123
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.351815874979366,
+   "started": 1791660000.935945
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.449516042019241,
+   "started": 1791660000.9357362
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.9184939170081634,
+   "started": 1791660005.400075
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.948758334008744,
+   "started": 1791660005.4003131
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.278817166981753,
+   "started": 1791660005.401074
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.722925332986051,
+   "started": 1791660009.700583
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.72308699999121,
+   "started": 1791660009.7005172
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.86089254100807,
+   "started": 1791660009.7002912
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.586612708022585,
+   "started": 1791660013.578349
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.586583416996291,
+   "started": 1791660013.578469
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.783967958006542,
+   "started": 1791660013.578686
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 67.26471074999426,
+   "started": 1791660019.38007
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 67.26464129198575,
+   "started": 1791660019.3802361
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 60, \"order_id\": \"7007\"}], expected []",
+   "seconds": 67.4889243330108,
+   "started": 1791660019.3799171
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.374712000018917,
+   "started": 1791660086.901582
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.386228041985305,
+   "started": 1791660086.90146
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.397337375005009,
+   "started": 1791660086.9013171
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.065062250010669,
+   "started": 1791660091.317297
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.065901708003366,
+   "started": 1791660091.3174798
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.111077084002318,
+   "started": 1791660091.317591
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.8497105420101434,
+   "started": 1791660095.449815
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.914444124995498,
+   "started": 1791660095.449696
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.080616291001206,
+   "started": 1791660095.449455
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.051654167007655,
+   "started": 1791660099.5463529
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.057193292013835,
+   "started": 1791660099.5460649
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.081906958017498,
+   "started": 1791660099.546278
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.9516673749894835,
+   "started": 1791660104.647542
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.9542263750045095,
+   "started": 1791660104.647732
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.954265333013609,
+   "started": 1791660104.6486368
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.9643939590023365,
+   "started": 1791660108.6190012
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.015788167016581,
+   "started": 1791660108.618696
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.02648945801775,
+   "started": 1791660108.618796
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.5655210409895517,
+   "started": 1791660112.6662989
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.754019457992399,
+   "started": 1791660112.666412
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.9140275829995517,
+   "started": 1791660112.666604
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.7299065830011386,
+   "started": 1791660116.59626
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.988043084013043,
+   "started": 1791660116.596479
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.020694624981843,
+   "started": 1791660116.596378
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.1723725000047125,
+   "started": 1791660120.634475
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.682169415988028,
+   "started": 1791660120.634166
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 60, \"order_id\": \"7007\"}], expected []",
+   "seconds": 68.10286345798522,
+   "started": 1791660120.634263
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 34.202249374997336,
+   "started": 1791660246.088054
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 34.22882820799714,
+   "started": 1791660246.087183
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 34.452327540988335,
+   "started": 1791660246.088096
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.1001480410050135,
+   "started": 1791660280.570521
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.116527125006542,
+   "started": 1791660280.570424
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.126446375012165,
+   "started": 1791660280.5706398
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.7579228329996113,
+   "started": 1791660284.7129118
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.8484965419920627,
+   "started": 1791660284.713231
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.898636041994905,
+   "started": 1791660284.713035
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.645350375009002,
+   "started": 1791660288.632336
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.816100208001444,
+   "started": 1791660288.632444
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.853851542022312,
+   "started": 1791660288.632194
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.7070030419854447,
+   "started": 1791660292.5056798
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.866065874986816,
+   "started": 1791660292.505291
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.983064458006993,
+   "started": 1791660292.505446
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.057926207984565,
+   "started": 1791660296.50894
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.119094666995807,
+   "started": 1791660296.509057
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.1219854170049075,
+   "started": 1791660296.508737
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.17036887499853,
+   "started": 1791660300.646864
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.2049111670057755,
+   "started": 1791660300.647181
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.221677749999799,
+   "started": 1791660300.6470242
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.942007375007961,
+   "started": 1791660304.8911538
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.124799749988597,
+   "started": 1791660304.890799
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.125100625009509,
+   "started": 1791660304.890692
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.753793542011408,
+   "started": 1791660309.032115
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.7604510000091977,
+   "started": 1791660309.031839
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.9425021659990307,
+   "started": 1791660309.03196
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.9181445830035955,
+   "started": 1791660312.996408
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 6.126139832980698,
+   "started": 1791660312.9965281
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 6.247020790993702,
+   "started": 1791660312.996515
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.551939208991826,
+   "started": 1791660319.258334
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.648259625013452,
+   "started": 1791660319.2602398
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.755078083981061,
+   "started": 1791660319.258469
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.281025041011162,
+   "started": 1791660325.034194
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.461878875008551,
+   "started": 1791660325.034101
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.644967500003986,
+   "started": 1791660325.034401
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.386145458003739,
+   "started": 1791660330.697085
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.6609165420231875,
+   "started": 1791660330.696666
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 6.160113207995892,
+   "started": 1791660330.6968498
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.802285333018517,
+   "started": 1791660336.876114
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 6.2235468339931685,
+   "started": 1791660336.8767161
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 60, \"order_id\": \"7007\"}], expected []",
+   "seconds": 7.1310371250147,
+   "started": 1791660336.876626
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.7213835829752497,
+   "started": 1791660344.0258582
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.761712625011569,
+   "started": 1791660344.025745
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.8725805419962853,
+   "started": 1791660344.025471
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.117690500017488,
+   "started": 1791660347.9148202
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.344532207993325,
+   "started": 1791660347.9149508
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.359395666979253,
+   "started": 1791660347.9151309
+  }
+ ]
+}

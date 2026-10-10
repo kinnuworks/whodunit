@@ -1,0 +1,65 @@
+{
+  "cases": 5,
+  "solved": 3,
+  "wrong_accusations": 0,
+  "nobody_named": 2,
+  "not_run": 0,
+  "replays": 315,
+  "rows": [
+    {
+      "case": "cases/cents-off.toml",
+      "outcome": "solved",
+      "top_suspect_right": true,
+      "suspects": 13,
+      "replays": 21,
+      "commits_tested": 5,
+      "linear_scan_commits": 7,
+      "minutes": 4.9,
+      "replay_usd": null
+    },
+    {
+      "case": "cases/wrong-order-refunded.toml",
+      "outcome": "nobody named",
+      "top_suspect_right": true,
+      "suspects": 12,
+      "replays": 120,
+      "commits_tested": 9,
+      "linear_scan_commits": 7,
+      "minutes": 26.5,
+      "replay_usd": null
+    },
+    {
+      "case": "cases/half-done-batch.toml",
+      "outcome": "nobody named",
+      "top_suspect_right": false,
+      "suspects": 15,
+      "replays": 120,
+      "commits_tested": 10,
+      "linear_scan_commits": 9,
+      "minutes": 27.2,
+      "replay_usd": null
+    },
+    {
+      "case": "cases/strangers-paid.toml",
+      "outcome": "solved",
+      "top_suspect_right": true,
+      "suspects": 11,
+      "replays": 30,
+      "commits_tested": 5,
+      "linear_scan_commits": 6,
+      "minutes": 5.3,
+      "replay_usd": null
+    },
+    {
+      "case": "cases/turned-away.toml",
+      "outcome": "solved",
+      "top_suspect_right": true,
+      "suspects": 14,
+      "replays": 24,
+      "commits_tested": 6,
+      "linear_scan_commits": 6,
+      "minutes": 5.3,
+      "replay_usd": null
+    }
+  ]
+}

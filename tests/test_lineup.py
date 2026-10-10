@@ -141,3 +141,18 @@ def test_priors_speed_things_up_when_they_point_the_right_way():
 def test_parallel_rounds_stay_inside_the_budget():
     found = statistical_bisect(20, flaky(9, 0.5, seed=1), budget=50, parallel=4)
     assert found.replays <= 50
+
+
+def test_earlier_evidence_is_free_and_shapes_the_posterior():
+    first = statistical_bisect(30, flaky(17, 0.25, seed=5), budget=40)
+    assert first.culprit is None
+    known = [(position, verdict == FAIL) for position, verdict in first.tested if verdict != SKIP]
+    calls = []
+
+    def trial(position):
+        calls.append(position)
+        return flaky(17, 0.25, seed=6 + len(calls))(position)
+    second = statistical_bisect(30, trial, budget=25, evidence=known)
+    assert len(calls) <= 25  # the budget covers new replays only
+    assert second.replays == len(known) + len(calls)
+    assert -1 not in calls  # the good ref was already warmed up

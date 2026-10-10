@@ -1,0 +1,12 @@
+{"cases": [
+  {"case": "cases/cents-off.toml", "culprit": "367c64a5ae2702ae2d1142f0877bb5c56e946b21", "rate": 1.0,
+   "note": "issue_refund rounds the amount to a whole unit, so 3003 pays 130 and 5005 pays 65. 12/12 wrong at the bad ref, 12/12 right at the good ref."},
+  {"case": "cases/wrong-order-refunded.toml", "culprit": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb", "rate": 0.3,
+   "note": "A system prompt rule to try corrected order numbers on a 404 makes the agent refund 7007 when asked about 707. Measured 3/10, 4/12 at the culprit and 4/10, 3/12 at the bad ref; 0/8 at the good ref. The commit after the bad ref measured 1/24, with no behaviour change in its diff."},
+  {"case": "cases/half-done-batch.toml", "culprit": "c54575368397e58f98e19f28d555fe081677b964", "rate": 0.25,
+   "note": "The same commit adds a required refund reason (worth keeping) and cuts the loop to 3 model calls and 150 tokens. Two-order requests run out of calls. 6006+7007 failed 4/10 at the culprit and 5/12 at the bad ref; 1001+6006 failed 1/12 at the bad ref. Both 8/8 right at the good ref. A two-order request that gives no reason fails every time at the bad ref, so it was left out."},
+  {"case": "cases/strangers-paid.toml", "culprit": "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca", "rate": 0.72,
+   "note": "The prompt lets the agent skip lookup_order when the customer names an amount, and the ownership rule went with it. Refunds wrong-owner orders 7/10 and 7/10 at the culprit, 6/10 and 9/10 at the bad ref, 0/16 at the good ref. It also broke plain refunds about 8 times in 10 until a later commit repaired the prompt."},
+  {"case": "cases/turned-away.toml", "culprit": "ca0a2d6288aad40896ccd6d015ef5bd43c4e56fd", "rate": 1.0,
+   "note": "A friendlier-replies request for orders still in transit tells the agent not to refund shipped orders. 8008 and 2002 (both shipped) refund nothing 16/16 at the bad ref, 16/16 right at the good ref."}
+]}
