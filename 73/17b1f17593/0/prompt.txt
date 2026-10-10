@@ -1,0 +1,1 @@
+victims/refund-agent: the SYSTEM_RULES list has grown and is hard to scan. Add a one-line comment above each group of rules (tone, lookups and ownership, refunds, typos, wrapping up) without changing any rule text or their order. Check agent.py still compiles, then commit.
