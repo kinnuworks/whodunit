@@ -7,5 +7,6 @@
   "5005": {"order_id": "5005", "owner": "cust_3", "amount": 64.75, "currency": "USD", "status": "delivered", "placed_on": "2026-09-25"},
   "6006": {"order_id": "6006", "owner": "cust_9", "amount": 25.0, "currency": "USD", "status": "delivered", "placed_on": "2026-09-18"},
   "7007": {"order_id": "7007", "owner": "cust_9", "amount": 60.0, "currency": "USD", "status": "delivered", "placed_on": "2026-10-02"},
-  "8008": {"order_id": "8008", "owner": "cust_6", "amount": 90.0, "currency": "USD", "status": "shipped", "placed_on": "2026-10-05"}
+  "8008": {"order_id": "8008", "owner": "cust_6", "amount": 90.0, "currency": "USD", "status": "shipped", "placed_on": "2026-10-05"},
+  "9009": {"order_id": "9009", "owner": "cust_5", "amount": 45.0, "currency": "USD", "status": "delivered", "placed_on": "2026-09-30"}
 }
