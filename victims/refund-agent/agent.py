@@ -217,7 +217,11 @@ def call_tool(name, args):
         return json.dumps(fn(**args))
     except Exception as exc:  # the agent sees tool errors as results
         timestamp = datetime.now().strftime("%H:%M:%S")
-        print(f"[{timestamp}] tool {name} failed: {exc}", file=sys.stderr)
+        order_id = args.get("order_id")
+        if order_id is not None:
+            print(f"[{timestamp}] tool {name} failed for order {order_id}: {exc}", file=sys.stderr)
+        else:
+            print(f"[{timestamp}] tool {name} failed: {exc}", file=sys.stderr)
         return json.dumps({"error": str(exc)})
 
 
