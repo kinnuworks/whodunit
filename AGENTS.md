@@ -39,6 +39,12 @@ Python 3.12 through uv, in one repo.
 - `whodunit/fix.py`: applies the fix on a branch, replays the case until the posterior says it is fixed, adds the case to `cases/` as a regression test, and opens the PR or Trail.
 - `whodunit/damages.py`: counts bad runs and cost from traces and writes them to cfo.ai.
 - `whodunit/casefile/`: the static HTML case file, which is the main demo surface, and the CLI command `whodunit open-case`.
+- `whodunit/onset.py`: reads the agent's ordinary runs from neatroots and brackets the failure between a good and a bad ref with the same change-point model. `--cloud` asks neatlogs when a detection began firing.
+- `whodunit/neat.py`, `whodunit/llm.py`, `whodunit/env.py`: the MCP client for neatroots and neatlogs, the one place a model is asked for text, and the `.env` loader.
+- `whodunit/simulate.py` and `whodunit/chart.py`: the simulator and its SVG charts. Results live in `eval/simulator/`.
+- `whodunit/cli.py`: the commands. Each step reads and writes one case record, `<case>.record.json`, next to the case file.
+- `eval/`: `score.py` scores cases against a sealed answer key, `traffic.py` sends everyday requests through a history, and `SECOND-SESSION.md` briefs the session that grows the victim.
+- `tests/planted.py`: throwaway histories with a known culprit (an overpayment, a lookup that fails one run in three, a prompt change that needs a real model).
 - `victims/refund-agent/`: the demo target. It starts from the refund agent in neatroots' `examples/` (Apache-2.0, and the README must say so) and grows to 40 or more commits through real coding-agent requests in a separate session, so the history and its checkpoints are genuine.
 
 ### The statistical bisect
