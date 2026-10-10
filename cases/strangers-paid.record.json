@@ -371,7 +371,7 @@
    {
     "id": "f0234fd7",
     "kind": "ran",
-    "text": "find /Users/kinnu/neathack/victims/refund-agent -maxdepth 2 -type f | sort",
+    "text": "find victims/refund-agent -maxdepth 2 -type f | sort",
     "file": null
    },
    {
@@ -395,31 +395,31 @@
    {
     "id": "e52b4028",
     "kind": "ran",
-    "text": "cd /Users/kinnu/neathack/victims/refund-agent && python3 -m py_compile agent.py && echo COMPILE_OK",
+    "text": "cd victims/refund-agent && python3 -m py_compile agent.py && echo COMPILE_OK",
     "file": null
    },
    {
     "id": "3b686cb1",
     "kind": "ran",
-    "text": "cd /Users/kinnu/neathack && git status victims/refund-agent && git diff victims/refund-agent",
+    "text": "cd . && git status victims/refund-agent && git diff victims/refund-agent",
     "file": null
    },
    {
     "id": "1f6c6f80",
     "kind": "ran",
-    "text": "git -C /Users/kinnu/neathack status victims/refund-agent && git -C /Users/kinnu/neathack diff victims/refund-agent",
+    "text": "git -C . status victims/refund-agent && git -C . diff victims/refund-agent",
     "file": null
    },
    {
     "id": "3fa108e3",
     "kind": "ran",
-    "text": "git -C /Users/kinnu/neathack status victims/refund-agent",
+    "text": "git -C . status victims/refund-agent",
     "file": null
    },
    {
     "id": "d95f9915",
     "kind": "ran",
-    "text": "git -C /Users/kinnu/neathack diff -- victims/refund-agent/agent.py",
+    "text": "git -C . diff -- victims/refund-agent/agent.py",
     "file": null
    },
    {
@@ -444,7 +444,7 @@
    {
     "id": "f0234fd7",
     "kind": "ran",
-    "text": "find /Users/kinnu/neathack/victims/refund-agent -maxdepth 2 -type f | sort",
+    "text": "find victims/refund-agent -maxdepth 2 -type f | sort",
     "file": null
    },
    {
@@ -468,31 +468,31 @@
    {
     "id": "e52b4028",
     "kind": "ran",
-    "text": "cd /Users/kinnu/neathack/victims/refund-agent && python3 -m py_compile agent.py && echo COMPILE_OK",
+    "text": "cd victims/refund-agent && python3 -m py_compile agent.py && echo COMPILE_OK",
     "file": null
    },
    {
     "id": "3b686cb1",
     "kind": "ran",
-    "text": "cd /Users/kinnu/neathack && git status victims/refund-agent && git diff victims/refund-agent",
+    "text": "cd . && git status victims/refund-agent && git diff victims/refund-agent",
     "file": null
    },
    {
     "id": "1f6c6f80",
     "kind": "ran",
-    "text": "git -C /Users/kinnu/neathack status victims/refund-agent && git -C /Users/kinnu/neathack diff victims/refund-agent",
+    "text": "git -C . status victims/refund-agent && git -C . diff victims/refund-agent",
     "file": null
    },
    {
     "id": "3fa108e3",
     "kind": "ran",
-    "text": "git -C /Users/kinnu/neathack status victims/refund-agent",
+    "text": "git -C . status victims/refund-agent",
     "file": null
    },
    {
     "id": "d95f9915",
     "kind": "ran",
-    "text": "git -C /Users/kinnu/neathack diff -- victims/refund-agent/agent.py",
+    "text": "git -C . diff -- victims/refund-agent/agent.py",
     "file": null
    },
    {

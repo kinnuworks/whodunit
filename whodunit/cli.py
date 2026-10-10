@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import sys
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict
 from pathlib import Path
 
@@ -208,6 +209,21 @@ def brief(args) -> int:
         repo, case.id, culprit, case.target, record.get("replays", []), found,
         None if args.no_runs else neatroots(), order=[s["sha"] for s in record["suspects"]],
     )
+    if evidence.failing_run is None and not args.no_runs:
+        # No failing run could be tied to a replay on record. Make a few more, tagged one by one.
+        with Runner(repo, case) as runner:
+            parent = evidence.parent
+            for batch in range(6):
+                with ThreadPoolExecutor(max_workers=3) as pool:
+                    verdicts = list(pool.map(lambda _: runner.trial(culprit), range(3)))
+                if FAIL in verdicts:
+                    break
+            for _ in range(3):
+                if runner.trial(parent) == PASS:
+                    break
+            record.setdefault("replays", []).extend(asdict(r) for r in runner.replays)
+        order = [s["sha"] for s in record["suspects"]]
+        evidence = briefs.gather(repo, case.id, culprit, case.target, record["replays"], found, neatroots(), order=order)
     lineup_report = record["lineup"]
     if "failure_rate_from" in lineup_report:
         evidence.measured = (

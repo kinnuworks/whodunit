@@ -39,11 +39,11 @@ def classify(diff: str, files: list[str]) -> str:
     names = " ".join(files).lower()
     if re.search(r"(pyproject\.toml|uv\.lock|requirements[\w.-]*\.txt|package(-lock)?\.json)", names) and not re.search(r"\.py\b", names):
         return "dependency"
-    if re.search(r"\b(SYSTEM|PROMPT|INSTRUCTIONS)\b|system_prompt|\"role\": \"system\"", text) or "prompt" in names:
+    if re.search(r"\b(SYSTEM|PROMPT|INSTRUCTIONS)[A-Z_]*\b|system_prompt|\"role\": \"system\"", text) or "prompt" in names:
         return "prompt"
     # A reworded prompt often changes only the string lines inside it, and the name sits in the context.
     only_strings = bool(changed) and all(line.strip()[:1] in "\"'" or line.strip()[:2] in ('f"', "f'") for line in changed if line.strip())
-    if only_strings and re.search(r"\b(SYSTEM|PROMPT|INSTRUCTIONS)\b|system_prompt", diff):
+    if only_strings and re.search(r"\b(SYSTEM|PROMPT|INSTRUCTIONS)[A-Z_]*\b|system_prompt", diff):
         return "prompt"
     if re.search(r"\b(MODEL|temperature|max_tokens|top_p)\b", text):
         return "model-settings"

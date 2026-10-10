@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Case wrong-order-refunded</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;500;700&family=Courier+Prime:wght@400;700&family=Young+Serif&display=swap" rel="stylesheet">
+<style>:root {
+  --paper: #F3EDDF; --surface: #E9E0CC; --ink: #201B15; --muted: #6B6156; --rule: #D8CDB6; --ribbon: #B4261F;
+  --serif: 'Young Serif', Georgia, serif;
+  --sans: 'Alegreya Sans', 'Gill Sans', 'Trebuchet MS', sans-serif;
+  --typed: 'Courier Prime', 'Courier New', Courier, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --paper: #1B1714; --surface: #26201A; --ink: #EDE4D3; --muted: #A3978A; --rule: #3A3128; --ribbon: #E5604F; }
+}
+* { box-sizing: border-box; }
+html { background: var(--paper); }
+body { margin: 0; color: var(--ink); font: 400 17px/1.55 var(--sans); -webkit-font-smoothing: antialiased; }
+main { max-width: 1000px; margin: 0 auto; padding: 56px 24px 96px; }
+header { padding-bottom: 28px; border-bottom: 2px solid var(--ink); }
+.label { margin: 0 0 20px; font: 400 13px/1.45 var(--typed); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; }
+.caseid { color: var(--ink); }
+.stamp { margin-left: auto; padding: 3px 10px 1px; border: 1.5px solid var(--muted); color: var(--muted); transform: rotate(-2deg); font-weight: 700; }
+.stamp.closed { border-color: var(--ribbon); color: var(--ribbon); }
+h1 { margin: 0; font: 400 44px/1.1 var(--serif); letter-spacing: -0.01em; text-wrap: balance; }
+.lede { margin: 16px 0 0; font-size: 21px; line-height: 1.2; color: var(--muted); }
+.field { display: grid; grid-template-columns: 148px minmax(0, 1fr); gap: 0 28px; padding: 28px 0; border-bottom: 1px solid var(--rule); }
+.field h2 { margin: 4px 0 0; font: 700 13px/1.45 var(--typed); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.body > :first-child { margin-top: 0; } .body > :last-child { margin-bottom: 0; }
+.body p { margin: 0 0 12px; max-width: 68ch; }
+h3 { margin: 0 0 2px; font: 700 15px/1.2 var(--sans); }
+.verdict { font: 400 27px/1.2 var(--serif); margin-bottom: 10px; max-width: none; text-wrap: balance; }
+.verdict .sha { font-size: 21px; color: var(--ribbon); margin-right: 6px; }
+.verdict.open { color: var(--muted); }
+.small-verdict { font-size: 21px; }
+.headline { font: 400 21px/1.2 var(--serif); }
+.small, .key { font-size: 15px; color: var(--muted); }
+.empty { color: var(--muted); font-style: italic; }
+.sha, code, .cite { font-family: var(--typed); font-size: 0.88em; }
+code { background: var(--surface); padding: 1px 5px; border-radius: 2px; }
+.cite { display: inline-block; margin-left: 4px; padding: 0 5px; border: 1px solid var(--rule); border-radius: 2px; color: var(--muted); font-size: 13px; line-height: 1.45; white-space: nowrap; }
+.typed { margin: 0 0 12px; padding: 14px 16px; background: var(--surface); border-left: 3px solid var(--ribbon); font: 400 15px/1.45 var(--typed); white-space: pre-wrap; overflow-wrap: anywhere; max-height: 420px; overflow: auto; }
+.pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 12px; }
+.pair .typed { border-left-color: var(--rule); font-size: 13px; }
+.pair > div:last-child .typed { border-left-color: var(--ribbon); }
+details { margin: 0 0 12px; } summary { cursor: pointer; font-weight: 500; margin-bottom: 8px; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--ribbon); outline-offset: 2px; }
+a { color: var(--ink); text-decoration-color: var(--ribbon); text-underline-offset: 3px; }
+.steps { margin: 0; padding-left: 0; list-style: none; font-size: 15px; } .steps li { margin-bottom: 6px; } .steps .cite { margin: 0 6px 0 0; }
+.scroll { overflow-x: auto; margin: 6px 0 4px; }
+.lineup { display: block; max-width: none; }
+.lineup .rule { stroke: var(--rule); stroke-width: 1; }
+.lineup .tick { font: 400 13px var(--typed); fill: var(--muted); } .lineup .tick.strong { fill: var(--ink); font-weight: 700; }
+.lineup .bar.suspect { fill: var(--ink); } .lineup .bar.elsewhere { fill: var(--muted); opacity: 0.45; } .lineup .bar.culprit { fill: var(--ribbon); }
+.lineup .good { stroke: var(--muted); stroke-width: 2; }
+.lineup .fail { fill: var(--ribbon); } .lineup .pass { fill: none; stroke: var(--ink); stroke-width: 1; } .lineup .skip { fill: var(--muted); opacity: 0.5; }
+.lineup .hit { fill: transparent; } .lineup g:hover .hit { fill: var(--surface); }
+.key { display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; }
+.swatch { display: inline-block; width: 10px; height: 14px; margin-left: 10px; } .swatch:first-child { margin-left: 0; }
+.swatch.culprit { background: var(--ribbon); } .swatch.suspect { background: var(--ink); } .swatch.elsewhere { background: var(--muted); opacity: 0.45; }
+.dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-left: 10px; } .dot.fail { background: var(--ribbon); } .dot.pass { border: 1px solid var(--ink); }
+table.remaining { border-collapse: collapse; margin-top: 8px; font-size: 15px; } table.remaining caption { text-align: left; font-weight: 700; padding-bottom: 4px; }
+table.remaining td { padding: 3px 14px 3px 0; border-top: 1px solid var(--rule); } td.num { font-family: var(--typed); text-align: right; }
+footer { padding-top: 20px; font-size: 15px; color: var(--muted); }
+@media (max-width: 720px) {
+  main { padding: 32px 16px 64px; } h1 { font-size: 34px; } .lede { font-size: 17px; }
+  .field { grid-template-columns: 1fr; gap: 10px; padding: 22px 0; } .verdict { font-size: 21px; }
+}
+</style>
+</head>
+<body>
+<main>
+<header>
+<p class="label">Whodunit case file <span class="caseid">wrong-order-refunded</span><span class="stamp closed">Culprit named</span></p>
+<h1>A customer asked about an order number we have no record of, and every so often the agent refunds one of their other orders instead.</h1>
+<p class="lede">12 commits since it last worked. Which one did it?</p>
+</header>
+<section class="field"><h2>Suspects</h2><div class="body"><p class="verdict"><span class="sha">d4fb1587c066</span> Try digit-swap and digit-double corrections on order lookup misses</p><p>Suspects: 12. Cleared: 11. Confidence: 95.1%.</p><p class="small">168 replays across 9 commits, 31.7 minutes of replay time. From this commit on it fails about 12% of the time. Before it, about 0%. A scan from the oldest suspect would have tested 7 commits.</p><div class="scroll"><svg class="lineup" viewBox="0 0 406 292" width="406" height="292" role="img" aria-label="The lineup: 12 suspect commits, oldest first"><line class="rule" x1="72" y1="138.0" x2="398" y2="138.0"/><text class="tick" x="40" y="142.0" text-anchor="end">0%</text><line class="rule" x1="72" y1="78.0" x2="398" y2="78.0"/><text class="tick" x="40" y="82.0" text-anchor="end">50%</text><line class="rule" x1="72" y1="18.0" x2="398" y2="18.0"/><text class="tick" x="40" y="22.0" text-anchor="end">100%</text><g><title>Last good commit: 0 failures in 6 replays</title><line class="good" x1="61.0" y1="132" x2="61.0" y2="138"/><circle class="pass" cx="61.0" cy="160.0" r="2.4"/><circle class="pass" cx="61.0" cy="167.0" r="2.4"/><circle class="pass" cx="61.0" cy="174.0" r="2.4"/><circle class="pass" cx="61.0" cy="181.0" r="2.4"/><circle class="pass" cx="61.0" cy="188.0" r="2.4"/><circle class="pass" cx="61.0" cy="195.0" r="2.4"/></g><g><title>1. Add docstrings to tool functions in refund agent (d871f17de10b), 0.2%</title><rect class="hit" x="78.0" y="18" width="26" height="274"/><rect class="bar suspect" x="81.0" y="136.0" width="20" height="2.0"/></g><text class="tick" x="91.0" y="151" text-anchor="middle">1</text><g><title>2. Move ORDERS out of agent.py into orders.json (eb819b28dacf), 0.2%</title><rect class="hit" x="104.0" y="18" width="26" height="274"/><rect class="bar suspect" x="107.0" y="136.0" width="20" height="2.0"/></g><g><title>3. Document orders.json location in refund agent README (8619484f9eb4), 0.2%</title><rect class="hit" x="130.0" y="18" width="26" height="274"/><rect class="bar suspect" x="133.0" y="136.0" width="20" height="2.0"/></g><g><title>4. Give the OpenAI client a timeout and retry on transient errors (bdd8d4dd9fed), 0.2%</title><rect class="hit" x="156.0" y="18" width="26" height="274"/><rect class="bar suspect" x="159.0" y="136.0" width="20" height="2.0"/></g><g><title>5. Add order 8008 for cust_6 (909dd7607b8c), 0.2%, 0 failures in 6 replays</title><rect class="hit" x="182.0" y="18" width="26" height="274"/><rect class="bar suspect" x="185.0" y="136.0" width="20" height="2.0"/><circle class="pass" cx="195.0" cy="160.0" r="2.4"/><circle class="pass" cx="195.0" cy="167.0" r="2.4"/><circle class="pass" cx="195.0" cy="174.0" r="2.4"/><circle class="pass" cx="195.0" cy="181.0" r="2.4"/><circle class="pass" cx="195.0" cy="188.0" r="2.4"/><circle class="pass" cx="195.0" cy="195.0" r="2.4"/></g><g><title>6. Bump refund agent version to 0.2.0 (53c8e027b3f3), 0.2%, 0 failures in 76 replays</title><rect class="hit" x="208.0" y="18" width="26" height="274"/><rect class="bar suspect" x="211.0" y="136.0" width="20" height="2.0"/><circle class="pass" cx="218.0" cy="160.0" r="2.4"/><circle class="pass" cx="218.0" cy="167.0" r="2.4"/><circle class="pass" cx="218.0" cy="174.0" r="2.4"/><circle class="pass" cx="218.0" cy="181.0" r="2.4"/><circle class="pass" cx="218.0" cy="188.0" r="2.4"/><circle class="pass" cx="218.0" cy="195.0" r="2.4"/><circle class="pass" cx="218.0" cy="202.0" r="2.4"/><circle class="pass" cx="218.0" cy="209.0" r="2.4"/><circle class="pass" cx="218.0" cy="216.0" r="2.4"/><circle class="pass" cx="218.0" cy="223.0" r="2.4"/><circle class="pass" cx="218.0" cy="230.0" r="2.4"/><circle class="pass" cx="218.0" cy="237.0" r="2.4"/><circle class="pass" cx="218.0" cy="244.0" r="2.4"/><circle class="pass" cx="218.0" cy="251.0" r="2.4"/><circle class="pass" cx="224.0" cy="160.0" r="2.4"/><circle class="pass" cx="224.0" cy="167.0" r="2.4"/><circle class="pass" cx="224.0" cy="174.0" r="2.4"/><circle class="pass" cx="224.0" cy="181.0" r="2.4"/><circle class="pass" cx="224.0" cy="188.0" r="2.4"/><circle class="pass" cx="224.0" cy="195.0" r="2.4"/><circle class="pass" cx="224.0" cy="202.0" r="2.4"/><circle class="pass" cx="224.0" cy="209.0" r="2.4"/><circle class="pass" cx="224.0" cy="216.0" r="2.4"/><circle class="pass" cx="224.0" cy="223.0" r="2.4"/><circle class="pass" cx="224.0" cy="230.0" r="2.4"/><circle class="pass" cx="224.0" cy="237.0" r="2.4"/><circle class="pass" cx="224.0" cy="244.0" r="2.4"/><circle class="pass" cx="224.0" cy="251.0" r="2.4"/></g><g><title>7. Try digit-swap and digit-double corrections on order lookup misses (d4fb1587c066), 95.1%, 6 failures in 45 replays</title><rect class="hit" x="234.0" y="18" width="26" height="274"/><rect class="bar culprit" x="237.0" y="23.9" width="20" height="114.1"/><circle class="pass" cx="244.0" cy="160.0" r="2.4"/><circle class="pass" cx="244.0" cy="167.0" r="2.4"/><circle class="pass" cx="244.0" cy="174.0" r="2.4"/><circle class="pass" cx="244.0" cy="181.0" r="2.4"/><circle class="pass" cx="244.0" cy="188.0" r="2.4"/><circle class="pass" cx="244.0" cy="195.0" r="2.4"/><circle class="pass" cx="244.0" cy="202.0" r="2.4"/><circle class="pass" cx="244.0" cy="209.0" r="2.4"/><circle class="pass" cx="244.0" cy="216.0" r="2.4"/><circle class="pass" cx="244.0" cy="223.0" r="2.4"/><circle class="pass" cx="244.0" cy="230.0" r="2.4"/><circle class="pass" cx="244.0" cy="237.0" r="2.4"/><circle class="pass" cx="244.0" cy="244.0" r="2.4"/><circle class="pass" cx="244.0" cy="251.0" r="2.4"/><circle class="pass" cx="250.0" cy="160.0" r="2.4"/><circle class="pass" cx="250.0" cy="167.0" r="2.4"/><circle class="pass" cx="250.0" cy="174.0" r="2.4"/><circle class="fail" cx="250.0" cy="181.0" r="2.4"/><circle class="pass" cx="250.0" cy="188.0" r="2.4"/><circle class="pass" cx="250.0" cy="195.0" r="2.4"/><circle class="pass" cx="250.0" cy="202.0" r="2.4"/><circle class="pass" cx="250.0" cy="209.0" r="2.4"/><circle class="pass" cx="250.0" cy="216.0" r="2.4"/><circle class="fail" cx="250.0" cy="223.0" r="2.4"/><circle class="pass" cx="250.0" cy="230.0" r="2.4"/><circle class="pass" cx="250.0" cy="237.0" r="2.4"/><circle class="fail" cx="250.0" cy="244.0" r="2.4"/><circle class="pass" cx="250.0" cy="251.0" r="2.4"/></g><text class="tick strong" x="247.0" y="151" text-anchor="middle">7</text><g><title>8. Make the too-many-steps message clearer for customers (ded7b9bf18b4), 1.4%, 1 failures in 12 replays</title><rect class="hit" x="260.0" y="18" width="26" height="274"/><rect class="bar suspect" x="263.0" y="136.0" width="20" height="2.0"/><circle class="pass" cx="273.0" cy="160.0" r="2.4"/><circle class="pass" cx="273.0" cy="167.0" r="2.4"/><circle class="pass" cx="273.0" cy="174.0" r="2.4"/><circle class="pass" cx="273.0" cy="181.0" r="2.4"/><circle class="pass" cx="273.0" cy="188.0" r="2.4"/><circle class="pass" cx="273.0" cy="195.0" r="2.4"/><circle class="pass" cx="273.0" cy="202.0" r="2.4"/><circle class="pass" cx="273.0" cy="209.0" r="2.4"/><circle class="pass" cx="273.0" cy="216.0" r="2.4"/><circle class="pass" cx="273.0" cy="223.0" r="2.4"/><circle class="pass" cx="273.0" cy="230.0" r="2.4"/><circle class="fail" cx="273.0" cy="237.0" r="2.4"/></g><g><title>9. Refresh uv.lock to match refund-agent 0.2.0 (7d991542f6e7), 1.4%, 2 failures in 6 replays</title><rect class="hit" x="286.0" y="18" width="26" height="274"/><rect class="bar suspect" x="289.0" y="136.0" width="20" height="2.0"/><circle class="pass" cx="299.0" cy="160.0" r="2.4"/><circle class="pass" cx="299.0" cy="167.0" r="2.4"/><circle class="pass" cx="299.0" cy="174.0" r="2.4"/><circle class="pass" cx="299.0" cy="181.0" r="2.4"/><circle class="fail" cx="299.0" cy="188.0" r="2.4"/><circle class="fail" cx="299.0" cy="195.0" r="2.4"/></g><g><title>10. Add a get_order_status tool for where-is-my-order questions (aaa4031687f0), 0.2%, 0 failures in 3 replays</title><rect class="hit" x="312.0" y="18" width="26" height="274"/><rect class="bar suspect" x="315.0" y="136.0" width="20" height="2.0"/><circle class="pass" cx="325.0" cy="160.0" r="2.4"/><circle class="pass" cx="325.0" cy="167.0" r="2.4"/><circle class="pass" cx="325.0" cy="174.0" r="2.4"/></g><g><title>11. Add agent version to the run_info span, read from pyproject.toml (923ccb8d2385), 0.3%, 1 failures in 12 replays</title><rect class="hit" x="338.0" y="18" width="26" height="274"/><rect class="bar suspect" x="341.0" y="136.0" width="20" height="2.0"/><circle class="pass" cx="351.0" cy="160.0" r="2.4"/><circle class="pass" cx="351.0" cy="167.0" r="2.4"/><circle class="pass" cx="351.0" cy="174.0" r="2.4"/><circle class="pass" cx="351.0" cy="181.0" r="2.4"/><circle class="pass" cx="351.0" cy="188.0" r="2.4"/><circle class="pass" cx="351.0" cy="195.0" r="2.4"/><circle class="pass" cx="351.0" cy="202.0" r="2.4"/><circle class="pass" cx="351.0" cy="209.0" r="2.4"/><circle class="pass" cx="351.0" cy="216.0" r="2.4"/><circle class="pass" cx="351.0" cy="223.0" r="2.4"/><circle class="pass" cx="351.0" cy="230.0" r="2.4"/><circle class="fail" cx="351.0" cy="237.0" r="2.4"/></g><g><title>12. Add a troubleshooting section to the refund-agent README (42978be0a235), 0.5%, 1 failures in 6 replays</title><rect class="hit" x="364.0" y="18" width="26" height="274"/><rect class="bar suspect" x="367.0" y="136.0" width="20" height="2.0"/><circle class="pass" cx="377.0" cy="160.0" r="2.4"/><circle class="pass" cx="377.0" cy="167.0" r="2.4"/><circle class="fail" cx="377.0" cy="174.0" r="2.4"/><circle class="pass" cx="377.0" cy="181.0" r="2.4"/><circle class="pass" cx="377.0" cy="188.0" r="2.4"/><circle class="pass" cx="377.0" cy="195.0" r="2.4"/></g><text class="tick" x="377.0" y="151" text-anchor="middle">12</text></svg></div><p class="key"><span class="swatch culprit"></span>culprit <span class="swatch suspect"></span>suspect <span class="swatch elsewhere"></span>never touched the agent <span class="dot fail"></span>failed replay <span class="dot pass"></span>passed replay</p></div></section><section class="field"><h2>Motive</h2><div class="body"><p>Someone asked the coding agent for this:</p><pre class="typed">In victims/refund-agent, support keeps seeing customers mistype their order number (digits swapped, a zero dropped). When lookup_order comes back not found, the agent just gives up. Can you change the system prompt so that the agent tries to work out which order they meant, for example by trying likely variations of the number, and then carries on with that order instead of making the customer write back? Check agent.py still compiles, then commit.</pre><p class="small">Entire checkpoint <span class="cite">d248e108a420</span>, asked at 2026-10-10 17:45 UTC.</p><details><summary>What the coding agent did next</summary><ul class="steps"><li><span class="cite">214ac9da</span> edited victims/refund-agent/agent.py: SYSTEM_RULES = [</li><li><span class="cite">02dcbc54</span> said: Now checking it compiles and committing.</li><li><span class="cite">c4aed2f3</span> said: It looks like the approval prompt isn&#x27;t going through automatically. Let me retry once more in case it needs a direct confirmation.</li><li><span class="cite">373a1b28</span> said: I&#x27;m being blocked from running `git add`/`git commit` here — seems the tool requires explicit approval that isn&#x27;t being granted in this environment. Could you approve the git comma</li></ul></details></div></section><section class="field"><h2>Brief</h2><div class="body"><p class="headline">d4fb1587c066: fuzzy order-lookup rule lets agent refund a different real order on typos</p><p>Commit d4fb1587c066 added a SYSTEM_RULES entry (lines 125-127 of agent.py) telling the agent to try digit-swap and digit-double variants of an unrecognised order number and proceed with whichever variant resolves to the same customer. <span class="cite">214ac9da</span><span class="cite">d4fb1587c066</span></p><p>Before this commit (53c8e027b3f3), a lookup miss on order 707 caused the agent to stop and tell the customer it could not find the order, as shown in the passing run. <span class="cite">8ceebae3</span><span class="cite">e844304d</span><span class="cite">ebf2a0ae3958</span></p><p>After the commit, the agent generates variants including 7007, which happens to be a real order owned by cust_9, so lookup_order succeeds on it. <span class="cite">7889fcc9</span><span class="cite">7d0284df</span></p><p>Because the rule only requires the corrected order to belong to the same customer—with no confirmation step—the agent immediately calls issue_refund on order 7007 for $60.00, an order the customer never mentioned. <span class="cite">13654a85</span><span class="cite">aefaac7b</span></p><p>The failure is intermittent (~12% of replays) because it only triggers when a digit-correction variant of the mistyped number happens to match a real order in the database that is owned by the same customer. <span class="cite">238d6c52</span><span class="cite">d248e108a420</span></p><p class="small">Written by: claude-sonnet-4.6. Every sentence cites a span, a commit or a checkpoint. 0 cut for citing nothing real.</p></div></section><section class="field"><h2>Evidence</h2><div class="body"><div class="pair"><div><h3>Passing run <span class="cite">ebf2a0ae3958</span></h3><p class="small">at commit 53c8e027b3f3</p><pre class="typed">111df05f WORKFLOW refund ok 3028ms
+  in: {&quot;request&quot;:&quot;Can you refund order 707? I&#x27;m cust_9.&quot;,&quot;max_steps&quot;:8}
+  out: I&#x27;m unable to process your refund request because order 707 was not found in our system. Please double-check the order ID and try again, or contact customer su…
+  2e55a6d9 CHAIN run_info ok 0ms
+    in: {}
+    out: {&quot;tags&quot;:[&quot;commit:53c8e027b3f3ee8c47e6fde0edc7de386b8048ea&quot;,&quot;llm:gateway&quot;,&quot;case:wrong-order-refunded&quot;],&quot;commit_short&quot;:&quot;53c8e027b3f3&quot;,&quot;model&quot;:&quot;claude-haiku&quot;}
+  1e157988 LLM openai.chat.completions.create ok 843tok 1747ms
+    in: system: You are a refund agent for an online shop. Use lookup_order to find an order before refunding it. Only call issue_refund after lookup_order confirms th…
+    out: assistant: I&#x27;ll look up order 707 to verify it exists and belongs to you before processing the refund. → lookup_order({&quot;order_id&quot;:&quot;707&quot;})
+  8ceebae3 TOOL lookup_order ERROR(404: order 707 not found) result=error 1ms
+    in: {&quot;order_id&quot;:&quot;707&quot;}
+  e844304d LLM openai.chat.completions.create ok 915tok 1278ms
+    in: system: You are a refund agent for an online shop. Use lookup_order to find an order before refunding it. Only call issue_refund after lookup_order confirms th…
+    out: assistant: I&#x27;m unable to process your refund request because order 707 was not found in our system. Please double-check the order ID and try again, or contact …</pre></div><div><h3>Failing run <span class="cite">d1f083cd6e20</span></h3><p class="small">at commit d4fb1587c066</p><pre class="typed">f78a8d8c WORKFLOW refund ok 6704ms
+  in: {&quot;request&quot;:&quot;Can you refund order 707? I&#x27;m cust_9.&quot;,&quot;max_steps&quot;:8}
+  out: I&#x27;ve successfully refunded order 7007 for $60.00 USD (I found this order when looking for corrections to the order number you provided). Your refund has been p…
+  238d6c52 CHAIN run_info ok 0ms
+    in: {}
+    out: {&quot;tags&quot;:[&quot;commit:d4fb1587c0664b1d6c7bd482028ba9c26eba9adb&quot;,&quot;llm:gateway&quot;,&quot;case:wrong-order-refunded/60898002&quot;],&quot;commit_short&quot;:&quot;d4fb1587c066&quot;,&quot;model&quot;:&quot;claude-ha…
+  ba6d17de LLM openai.chat.completions.create ok 905tok 2271ms
+    in: system: You are a refund agent for an online shop. Use lookup_order to find an order before refunding it. Only call issue_refund after lookup_order confirms th…
+    out: assistant: I&#x27;ll look up order 707 for you first to verify it exists and belongs to your account. → lookup_order({&quot;order_id&quot;:&quot;707&quot;})
+  be5b7b33 TOOL lookup_order ERROR(404: order 707 not found) result=error 1ms
+    in: {&quot;order_id&quot;:&quot;707&quot;}
+  7d0284df LLM openai.chat.completions.create ok 1124tok 1659ms
+    in: system: You are a refund agent for an online shop. Use lookup_order to find an order before refunding it. Only call issue_refund after lookup_order confirms th…
+    out: assistant: Order 707 wasn&#x27;t found. Let me try a few common variations in case there was a typo: → lookup_order({&quot;order_id&quot;:&quot;770&quot;}), lookup_order({&quot;order_id&quot;:&quot;7…
+  d7cfeec6 TOOL lookup_order ERROR(404: order 770 not found) result=error 1ms
+    in: {&quot;order_id&quot;:&quot;770&quot;}
+  7889fcc9 TOOL lookup_order ok 0ms
+    in: {&quot;order_id&quot;:&quot;7007&quot;}
+    out: {&quot;order_id&quot;:&quot;7007&quot;,&quot;owner&quot;:&quot;cust_9&quot;,&quot;amount&quot;:60,&quot;currency&quot;:&quot;USD&quot;,&quot;status&quot;:&quot;delivered&quot;,&quot;placed_on&quot;:&quot;2026-10-02&quot;}
+  795fd549 TOOL lookup_order ERROR(404: order 717 not found) result=error 0ms
+    in: {&quot;order_id&quot;:&quot;717&quot;}
+  ae4908dd TOOL lookup_order ERROR(404: order 77 not found) result=error 0ms
+    in: {&quot;order_id&quot;:&quot;77&quot;}
+  13654a85 LLM openai.chat.completions.create ok 1434tok 1378ms
+    in: system: You are a refund agent for an online shop. Use lookup_order to find an order before refunding it. Only call issue_refund after lookup_order confirms th…
+    out: assistant: Great! I found order 7007 which belongs to you (cust_9). Let me process the full refund for this order. → issue_refund({&quot;order_id&quot;:&quot;7007&quot;,&quot;amount&quot;:6…
+  aefaac7b TOOL issue_refund ok 0ms
+    in: {&quot;order_id&quot;:&quot;7007&quot;,&quot;amount&quot;:60}
+    out: {&quot;refunded&quot;:60,&quot;order_id&quot;:&quot;7007&quot;}
+  539cba1f LLM openai.chat.completions.create ok 1503tok 1388ms
+    in: system: You are a refund agent for an online shop. Use lookup_order to find an order before refunding it. Only call issue_refund after lookup_order confirms th…
+    out: assistant: I&#x27;ve successfully refunded order 7007 for $60.00 USD (I found this order when looking for corrections to the order number you provided). Your refund…</pre></div></div><details><summary>The culprit's diff</summary><pre class="typed">diff --git a/victims/refund-agent/agent.py b/victims/refund-agent/agent.py
+index dcf81cf..b11587d 100644
+--- a/victims/refund-agent/agent.py
++++ b/victims/refund-agent/agent.py
+@@ -122,6 +122,9 @@ SYSTEM_RULES = [
+     &quot;You are a refund agent for an online shop.&quot;,
+     &quot;Use lookup_order to find an order before refunding it.&quot;,
+     &quot;Only call issue_refund after lookup_order confirms the order exists and belongs to the customer.&quot;,
++    &quot;Customers often mistype order numbers. If lookup_order says an order was not found, &quot;
++    &quot;try a few likely corrections of the number, such as two digits swapped or a digit doubled, &quot;
++    &quot;with lookup_order. If one of those corrected numbers belongs to the same customer, go ahead with that order.&quot;,
+     &quot;Never refund more than the order amount.&quot;,
+     &quot;When you are done, tell the customer in one or two sentences what happened.&quot;,
+ ]</pre></details></div></section><section class="field"><h2>Ruling</h2><div class="body"><p class="empty">The owner has not been asked yet.</p></div></section><section class="field"><h2>Fix</h2><div class="body"><p class="empty">Not fixed yet.</p></div></section><section class="field"><h2>Damages</h2><div class="body"><p class="empty">Not counted yet.</p></div></section>
+<footer><p>Last good <span class="sha">367c64a5ae27</span>, first bad <span class="sha">42978be0a235</span>, agent in <code>victims/refund-agent</code>.</p></footer>
+</main>
+</body>
+</html>

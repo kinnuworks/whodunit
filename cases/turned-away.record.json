@@ -344,7 +344,7 @@
    {
     "id": "cc7d267a",
     "kind": "ran",
-    "text": "cd /Users/kinnu/neathack/victims/refund-agent && grep -n \"shipped\\|blunt\\|still on its way\\|not arrived\\|SYSTEM_RULES\" agent.py | head -60",
+    "text": "cd victims/refund-agent && grep -n \"shipped\\|blunt\\|still on its way\\|not arrived\\|SYSTEM_RULES\" agent.py | head -60",
     "file": null
    },
    {
@@ -416,7 +416,7 @@
    {
     "id": "251acb62",
     "kind": "ran",
-    "text": "cd /Users/kinnu/neathack && git add victims/refund-agent/agent.py && git commit -m \"Reassure customers instead of refunding orders still in transit\n\nWhen a refund request comes in for an order that's shipped but not yet\ndelivered, the agent now checks its status, reassures the customer it's\non the w",
+    "text": "cd . && git add victims/refund-agent/agent.py && git commit -m \"Reassure customers instead of refunding orders still in transit\n\nWhen a refund request comes in for an order that's shipped but not yet\ndelivered, the agent now checks its status, reassures the customer it's\non the w",
     "file": null
    },
    {
@@ -428,7 +428,7 @@
    {
     "id": "a4215d0f",
     "kind": "said",
-    "text": "Good, the repo root is `/Users/kinnu/neathack` and the cwd is already inside it, so no `cd` is needed.",
+    "text": "Good, the repo root is `.` and the cwd is already inside it, so no `cd` is needed.",
     "file": null
    }
   ],
@@ -447,7 +447,7 @@
    {
     "id": "cc7d267a",
     "kind": "ran",
-    "text": "cd /Users/kinnu/neathack/victims/refund-agent && grep -n \"shipped\\|blunt\\|still on its way\\|not arrived\\|SYSTEM_RULES\" agent.py | head -60",
+    "text": "cd victims/refund-agent && grep -n \"shipped\\|blunt\\|still on its way\\|not arrived\\|SYSTEM_RULES\" agent.py | head -60",
     "file": null
    },
    {
@@ -519,7 +519,7 @@
    {
     "id": "251acb62",
     "kind": "ran",
-    "text": "cd /Users/kinnu/neathack && git add victims/refund-agent/agent.py && git commit -m \"Reassure customers instead of refunding orders still in transit\n\nWhen a refund request comes in for an order that's shipped but not yet\ndelivered, the agent now checks its status, reassures the customer it's\non the w",
+    "text": "cd . && git add victims/refund-agent/agent.py && git commit -m \"Reassure customers instead of refunding orders still in transit\n\nWhen a refund request comes in for an order that's shipped but not yet\ndelivered, the agent now checks its status, reassures the customer it's\non the w",
     "file": null
    },
    {
@@ -531,7 +531,7 @@
    {
     "id": "a4215d0f",
     "kind": "said",
-    "text": "Good, the repo root is `/Users/kinnu/neathack` and the cwd is already inside it, so no `cd` is needed.",
+    "text": "Good, the repo root is `.` and the cwd is already inside it, so no `cd` is needed.",
     "file": null
    }
   ],

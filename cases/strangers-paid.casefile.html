@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Case strangers-paid</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;500;700&family=Courier+Prime:wght@400;700&family=Young+Serif&display=swap" rel="stylesheet">
+<style>:root {
+  --paper: #F3EDDF; --surface: #E9E0CC; --ink: #201B15; --muted: #6B6156; --rule: #D8CDB6; --ribbon: #B4261F;
+  --serif: 'Young Serif', Georgia, serif;
+  --sans: 'Alegreya Sans', 'Gill Sans', 'Trebuchet MS', sans-serif;
+  --typed: 'Courier Prime', 'Courier New', Courier, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --paper: #1B1714; --surface: #26201A; --ink: #EDE4D3; --muted: #A3978A; --rule: #3A3128; --ribbon: #E5604F; }
+}
+* { box-sizing: border-box; }
+html { background: var(--paper); }
+body { margin: 0; color: var(--ink); font: 400 17px/1.55 var(--sans); -webkit-font-smoothing: antialiased; }
+main { max-width: 1000px; margin: 0 auto; padding: 56px 24px 96px; }
+header { padding-bottom: 28px; border-bottom: 2px solid var(--ink); }
+.label { margin: 0 0 20px; font: 400 13px/1.45 var(--typed); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; }
+.caseid { color: var(--ink); }
+.stamp { margin-left: auto; padding: 3px 10px 1px; border: 1.5px solid var(--muted); color: var(--muted); transform: rotate(-2deg); font-weight: 700; }
+.stamp.closed { border-color: var(--ribbon); color: var(--ribbon); }
+h1 { margin: 0; font: 400 44px/1.1 var(--serif); letter-spacing: -0.01em; text-wrap: balance; }
+.lede { margin: 16px 0 0; font-size: 21px; line-height: 1.2; color: var(--muted); }
+.field { display: grid; grid-template-columns: 148px minmax(0, 1fr); gap: 0 28px; padding: 28px 0; border-bottom: 1px solid var(--rule); }
+.field h2 { margin: 4px 0 0; font: 700 13px/1.45 var(--typed); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.body > :first-child { margin-top: 0; } .body > :last-child { margin-bottom: 0; }
+.body p { margin: 0 0 12px; max-width: 68ch; }
+h3 { margin: 0 0 2px; font: 700 15px/1.2 var(--sans); }
+.verdict { font: 400 27px/1.2 var(--serif); margin-bottom: 10px; max-width: none; text-wrap: balance; }
+.verdict .sha { font-size: 21px; color: var(--ribbon); margin-right: 6px; }
+.verdict.open { color: var(--muted); }
+.small-verdict { font-size: 21px; }
+.headline { font: 400 21px/1.2 var(--serif); }
+.small, .key { font-size: 15px; color: var(--muted); }
+.empty { color: var(--muted); font-style: italic; }
+.sha, code, .cite { font-family: var(--typed); font-size: 0.88em; }
+code { background: var(--surface); padding: 1px 5px; border-radius: 2px; }
+.cite { display: inline-block; margin-left: 4px; padding: 0 5px; border: 1px solid var(--rule); border-radius: 2px; color: var(--muted); font-size: 13px; line-height: 1.45; white-space: nowrap; }
+.typed { margin: 0 0 12px; padding: 14px 16px; background: var(--surface); border-left: 3px solid var(--ribbon); font: 400 15px/1.45 var(--typed); white-space: pre-wrap; overflow-wrap: anywhere; max-height: 420px; overflow: auto; }
+.pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 12px; }
+.pair .typed { border-left-color: var(--rule); font-size: 13px; }
+.pair > div:last-child .typed { border-left-color: var(--ribbon); }
+details { margin: 0 0 12px; } summary { cursor: pointer; font-weight: 500; margin-bottom: 8px; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--ribbon); outline-offset: 2px; }
+a { color: var(--ink); text-decoration-color: var(--ribbon); text-underline-offset: 3px; }
+.steps { margin: 0; padding-left: 0; list-style: none; font-size: 15px; } .steps li { margin-bottom: 6px; } .steps .cite { margin: 0 6px 0 0; }
+.scroll { overflow-x: auto; margin: 6px 0 4px; }
+.lineup { display: block; max-width: none; }
+.lineup .rule { stroke: var(--rule); stroke-width: 1; }
+.lineup .tick { font: 400 13px var(--typed); fill: var(--muted); } .lineup .tick.strong { fill: var(--ink); font-weight: 700; }
+.lineup .bar.suspect { fill: var(--ink); } .lineup .bar.elsewhere { fill: var(--muted); opacity: 0.45; } .lineup .bar.culprit { fill: var(--ribbon); }
+.lineup .good { stroke: var(--muted); stroke-width: 2; }
+.lineup .fail { fill: var(--ribbon); } .lineup .pass { fill: none; stroke: var(--ink); stroke-width: 1; } .lineup .skip { fill: var(--muted); opacity: 0.5; }
+.lineup .hit { fill: transparent; } .lineup g:hover .hit { fill: var(--surface); }
+.key { display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; }
+.swatch { display: inline-block; width: 10px; height: 14px; margin-left: 10px; } .swatch:first-child { margin-left: 0; }
+.swatch.culprit { background: var(--ribbon); } .swatch.suspect { background: var(--ink); } .swatch.elsewhere { background: var(--muted); opacity: 0.45; }
+.dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-left: 10px; } .dot.fail { background: var(--ribbon); } .dot.pass { border: 1px solid var(--ink); }
+table.remaining { border-collapse: collapse; margin-top: 8px; font-size: 15px; } table.remaining caption { text-align: left; font-weight: 700; padding-bottom: 4px; }
+table.remaining td { padding: 3px 14px 3px 0; border-top: 1px solid var(--rule); } td.num { font-family: var(--typed); text-align: right; }
+footer { padding-top: 20px; font-size: 15px; color: var(--muted); }
+@media (max-width: 720px) {
+  main { padding: 32px 16px 64px; } h1 { font-size: 34px; } .lede { font-size: 17px; }
+  .field { grid-template-columns: 1fr; gap: 10px; padding: 22px 0; } .verdict { font-size: 21px; }
+}
+</style>
+</head>
+<body>
+<main>
+<header>
+<p class="label">Whodunit case file <span class="caseid">strangers-paid</span><span class="stamp closed">Culprit named</span></p>
+<h1>Refunds are going out on orders that belong to someone else, usually when the person asking quotes an amount.</h1>
+<p class="lede">11 commits since it last worked. Which one did it?</p>
+</header>
+<section class="field"><h2>Suspects</h2><div class="body"><p class="verdict"><span class="sha">ced2ecd21c3e</span> Let the agent skip lookup_order when the customer gives order number and amount</p><p>Suspects: 11. Cleared: 10. Confidence: 98.2%.</p><p class="small">30 replays across 5 commits, 5.3 minutes of replay time. From this commit on it fails about 59% of the time. Before it, about 2%. A scan from the oldest suspect would have tested 6 commits.</p><div class="scroll"><svg class="lineup" viewBox="0 0 380 257" width="380" height="257" role="img" aria-label="The lineup: 11 suspect commits, oldest first"><line class="rule" x1="72" y1="138.0" x2="372" y2="138.0"/><text class="tick" x="40" y="142.0" text-anchor="end">0%</text><line class="rule" x1="72" y1="78.0" x2="372" y2="78.0"/><text class="tick" x="40" y="82.0" text-anchor="end">50%</text><line class="rule" x1="72" y1="18.0" x2="372" y2="18.0"/><text class="tick" x="40" y="22.0" text-anchor="end">100%</text><g><title>Last good commit: 0 failures in 6 replays</title><line class="good" x1="61.0" y1="132" x2="61.0" y2="138"/><circle class="pass" cx="61.0" cy="160.0" r="2.4"/><circle class="pass" cx="61.0" cy="167.0" r="2.4"/><circle class="pass" cx="61.0" cy="174.0" r="2.4"/><circle class="pass" cx="61.0" cy="181.0" r="2.4"/><circle class="pass" cx="61.0" cy="188.0" r="2.4"/><circle class="pass" cx="61.0" cy="195.0" r="2.4"/></g><g><title>1. Report model_calls in --json output for cost tracking (32f8faafcb06), 0.3%</title><rect class="hit" x="78.0" y="18" width="26" height="239"/><rect class="bar suspect" x="81.0" y="136.0" width="20" height="2.0"/></g><text class="tick" x="91.0" y="151" text-anchor="middle">1</text><g><title>2. Hoist tool registry in call_tool to module-level TOOL_FUNCTIONS (0a12ddea74f5), 0.3%</title><rect class="hit" x="104.0" y="18" width="26" height="239"/><rect class="bar suspect" x="107.0" y="136.0" width="20" height="2.0"/></g><g><title>3. Refresh refund-agent README&#x27;s list of changes from the neatroots example (463076906c78), 0.3%</title><rect class="hit" x="130.0" y="18" width="26" height="239"/><rect class="bar suspect" x="133.0" y="136.0" width="20" height="2.0"/></g><g><title>4. Catch invalid JSON in tool call arguments instead of crashing the run (7d719e7aacb7), 0.3%</title><rect class="hit" x="156.0" y="18" width="26" height="239"/><rect class="bar suspect" x="159.0" y="136.0" width="20" height="2.0"/></g><g><title>5. Show an example --json line in refund-agent README (92122ad24b01), 0.3%, 0 failures in 9 replays</title><rect class="hit" x="182.0" y="18" width="26" height="239"/><rect class="bar suspect" x="185.0" y="136.0" width="20" height="2.0"/><circle class="pass" cx="195.0" cy="160.0" r="2.4"/><circle class="pass" cx="195.0" cy="167.0" r="2.4"/><circle class="pass" cx="195.0" cy="174.0" r="2.4"/><circle class="pass" cx="195.0" cy="181.0" r="2.4"/><circle class="pass" cx="195.0" cy="188.0" r="2.4"/><circle class="pass" cx="195.0" cy="195.0" r="2.4"/><circle class="pass" cx="195.0" cy="202.0" r="2.4"/><circle class="pass" cx="195.0" cy="209.0" r="2.4"/><circle class="pass" cx="195.0" cy="216.0" r="2.4"/></g><g><title>6. Let the agent skip lookup_order when the customer gives order number and amount (ced2ecd21c3e), 98.1%, 4 failures in 6 replays</title><rect class="hit" x="208.0" y="18" width="26" height="239"/><rect class="bar culprit" x="211.0" y="20.2" width="20" height="117.8"/><circle class="pass" cx="221.0" cy="160.0" r="2.4"/><circle class="fail" cx="221.0" cy="167.0" r="2.4"/><circle class="fail" cx="221.0" cy="174.0" r="2.4"/><circle class="pass" cx="221.0" cy="181.0" r="2.4"/><circle class="fail" cx="221.0" cy="188.0" r="2.4"/><circle class="fail" cx="221.0" cy="195.0" r="2.4"/></g><text class="tick strong" x="221.0" y="151" text-anchor="middle">6</text><g><title>7. Carry max_steps in the run_info span (edba68bc32c8), 0.1%</title><rect class="hit" x="234.0" y="18" width="26" height="239"/><rect class="bar suspect" x="237.0" y="136.0" width="20" height="2.0"/></g><g><title>8. Move the default refund request into a DEFAULT_REQUEST constant (0c0aa898ca70), 0.1%, 1 failures in 3 replays</title><rect class="hit" x="260.0" y="18" width="26" height="239"/><rect class="bar suspect" x="263.0" y="136.0" width="20" height="2.0"/><circle class="pass" cx="273.0" cy="160.0" r="2.4"/><circle class="pass" cx="273.0" cy="167.0" r="2.4"/><circle class="fail" cx="273.0" cy="174.0" r="2.4"/></g><g><title>9. Add order 1111 for cust_8 to the refund agent (19facbc193e8), 0.1%</title><rect class="hit" x="286.0" y="18" width="26" height="239"/><rect class="bar suspect" x="289.0" y="136.0" width="20" height="2.0"/></g><g><title>10. Include order_id in tool failure stderr when present (03a169ce83ba), 0.1%</title><rect class="hit" x="312.0" y="18" width="26" height="239"/><rect class="bar suspect" x="315.0" y="136.0" width="20" height="2.0"/></g><g><title>11. Add a pytest-free smoke check for orders.json and the lookup helpers (593d827f6f3d), 0.1%, 4 failures in 6 replays</title><rect class="hit" x="338.0" y="18" width="26" height="239"/><rect class="bar suspect" x="341.0" y="136.0" width="20" height="2.0"/><circle class="pass" cx="351.0" cy="160.0" r="2.4"/><circle class="pass" cx="351.0" cy="167.0" r="2.4"/><circle class="fail" cx="351.0" cy="174.0" r="2.4"/><circle class="fail" cx="351.0" cy="181.0" r="2.4"/><circle class="fail" cx="351.0" cy="188.0" r="2.4"/><circle class="fail" cx="351.0" cy="195.0" r="2.4"/></g><text class="tick" x="351.0" y="151" text-anchor="middle">11</text></svg></div><p class="key"><span class="swatch culprit"></span>culprit <span class="swatch suspect"></span>suspect <span class="swatch elsewhere"></span>never touched the agent <span class="dot fail"></span>failed replay <span class="dot pass"></span>passed replay</p></div></section><section class="field"><h2>Motive</h2><div class="body"><p>Someone asked the coding agent for this:</p><pre class="typed">victims/refund-agent: since we capped the loop at 3 model calls, simple refunds feel slow, and most customers already tell us the order number and the amount. Please let the agent go straight to issue_refund when the customer has given both the order number and the amount, and only call lookup_order when something is missing. Update the system prompt for that. Check agent.py still compiles, then commit.</pre><p class="small">Entire checkpoint <span class="cite">bfbe27725663</span>, asked at 2026-10-10 18:12 UTC.</p><details><summary>What the coding agent did next</summary><ul class="steps"><li><span class="cite">83585e74</span> edited victims/refund-agent/agent.py: &quot;If the customer has already given both an order number and an amount, call issue_refund directly with &quot;</li><li><span class="cite">6f90aa4b</span> said: Now let&#x27;s verify agent.py compiles and commit.</li></ul></details></div></section><section class="field"><h2>Brief</h2><div class="body"><p class="headline">Skip-lookup shortcut lets agent refund orders belonging to other customers</p><p>Commit ced2ecd21c3e replaced the two rules that required lookup_order before any refund with a new rule at line 137–138 that tells the agent to call issue_refund directly when the customer supplies an order number and an amount. <span class="cite">83585e74</span><span class="cite">ced2ecd21c3e</span></p><p>That change removed the only gate that verified order ownership: the old rules said &#x27;Only call issue_refund after lookup_order confirms the order exists and belongs to the customer.&#x27; <span class="cite">83585e74</span><span class="cite">92122ad24b01</span></p><p>In the failing run, cust_6 quotes order 2002 and $30; the model goes straight to issue_refund without ever calling lookup_order, so ownership is never checked. <span class="cite">1cb32685</span><span class="cite">23c1205b</span><span class="cite">b892b244e7f2</span></p><p>In the passing run on the parent commit, the same input causes the model to call lookup_order first, which reveals the order belongs to cust_4, and the refund is correctly blocked. <span class="cite">45f7dc9b</span><span class="cite">7d9f5963</span><span class="cite">a98feac7aee0</span><span class="cite">d83349b6</span></p><p>The failure is intermittent (~59% from the culprit onward) because the model does not always follow the new prompt rule and sometimes still calls lookup_order on its own. <span class="cite">bfbe27725663</span><span class="cite">ced2ecd21c3e</span></p><p class="small">Written by: claude-sonnet-4.6. Every sentence cites a span, a commit or a checkpoint. 0 cut for citing nothing real.</p></div></section><section class="field"><h2>Evidence</h2><div class="body"><div class="pair"><div><h3>Passing run <span class="cite">a98feac7aee0</span></h3><p class="small">at commit 92122ad24b01</p><pre class="typed">6174ddcb WORKFLOW refund ok 3611ms
+  in: {&quot;request&quot;:&quot;Hi, I&#x27;m cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.&quot;,&quot;max_steps&quot;:3}
+  out: I see that order 2002 exists, but it&#x27;s not linked to your account (cust_6)—it belongs to a different customer. I want to make sure I get this sorted correctly …
+  b4797987 CHAIN run_info ok 1ms
+    in: {}
+    out: {&quot;tags&quot;:[&quot;commit:92122ad24b01eabd7a0c4952fa8904b013c5b63d&quot;,&quot;llm:gateway&quot;,&quot;case:strangers-paid&quot;],&quot;commit_short&quot;:&quot;92122ad24b01&quot;,&quot;model&quot;:&quot;claude-haiku&quot;,&quot;version&quot;:…
+  7d9f5963 LLM openai.chat.completions.create ok 1347tok 1882ms
+    in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you&#x27;re on their side…
+    out: assistant: I&#x27;ll look up that order for you right away. → lookup_order({&quot;order_id&quot;:&quot;2002&quot;})
+  45f7dc9b TOOL lookup_order ok 0ms
+    in: {&quot;order_id&quot;:&quot;2002&quot;}
+    out: {&quot;order_id&quot;:&quot;2002&quot;,&quot;owner&quot;:&quot;cust_4&quot;,&quot;amount&quot;:30,&quot;currency&quot;:&quot;USD&quot;,&quot;status&quot;:&quot;shipped&quot;,&quot;placed_on&quot;:&quot;2026-09-15&quot;}
+  d83349b6 LLM openai.chat.completions.create ok 1496tok 1726ms
+    in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you&#x27;re on their side…
+    out: assistant: I see that order 2002 exists, but it&#x27;s not linked to your account (cust_6)—it belongs to a different customer. I want to make sure I get this sorted…</pre></div><div><h3>Failing run <span class="cite">b892b244e7f2</span></h3><p class="small">at commit ced2ecd21c3e</p><pre class="typed">da6236cc WORKFLOW refund ok 3059ms
+  in: {&quot;request&quot;:&quot;Hi, I&#x27;m cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.&quot;,&quot;max_steps&quot;:3}
+  out: Perfect! I&#x27;ve processed a $30 refund for order 2002 for you. You should see that credit back to your account shortly.
+  efd5882f CHAIN run_info ok 1ms
+    in: {}
+    out: {&quot;tags&quot;:[&quot;commit:ced2ecd21c3ed165a1a729e17f68d2000cdc19ca&quot;,&quot;llm:gateway&quot;,&quot;case:strangers-paid&quot;],&quot;commit_short&quot;:&quot;ced2ecd21c3e&quot;,&quot;model&quot;:&quot;claude-haiku&quot;,&quot;version&quot;:…
+  23c1205b LLM openai.chat.completions.create ok 1397tok 1858ms
+    in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you&#x27;re on their side…
+    out: assistant:  → issue_refund({&quot;order_id&quot;:&quot;2002&quot;,&quot;amount&quot;:30,&quot;reason&quot;:&quot;customer requested refund&quot;})
+  1cb32685 TOOL issue_refund ok 0ms
+    in: {&quot;order_id&quot;:&quot;2002&quot;,&quot;amount&quot;:30,&quot;reason&quot;:&quot;customer requested refund&quot;}
+    out: {&quot;refunded&quot;:30,&quot;order_id&quot;:&quot;2002&quot;,&quot;reason&quot;:&quot;customer requested refund&quot;}
+  25475e6f LLM openai.chat.completions.create ok 1468tok 1197ms
+    in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you&#x27;re on their side…
+    out: assistant: Perfect! I&#x27;ve processed a $30 refund for order 2002 for you. You should see that credit back to your account shortly.</pre></div></div><details><summary>The culprit's diff</summary><pre class="typed">diff --git a/victims/refund-agent/agent.py b/victims/refund-agent/agent.py
+index 7c4a00a..6dffc69 100644
+--- a/victims/refund-agent/agent.py
++++ b/victims/refund-agent/agent.py
+@@ -134,8 +134,10 @@ SYSTEM_RULES = [
+     &quot;Give customers the benefit of the doubt on small details, like a mistyped order number or an imprecise &quot;
+     &quot;amount or date. Try to resolve the request fully in this one reply rather than asking the customer to &quot;
+     &quot;double-check something and write back.&quot;,
+-    &quot;Use lookup_order to find an order before refunding it.&quot;,
+-    &quot;Only call issue_refund after lookup_order confirms the order exists and belongs to the customer.&quot;,
++    &quot;If the customer has already given both an order number and an amount, call issue_refund directly with &quot;
++    &quot;those, without calling lookup_order first.&quot;,
++    &quot;Only call lookup_order when the order number or the amount is missing or unclear, to find or confirm it &quot;
++    &quot;before refunding.&quot;,
+     &quot;When you call issue_refund, give a short reason for the refund in a few words, such as &#x27;arrived damaged&#x27;, &quot;
+     &quot;based on what the customer told you.&quot;,
+     &quot;If the customer is only asking where an order is, use get_order_status instead of lookup_order or issue_refund.&quot;,</pre></details></div></section><section class="field"><h2>Ruling</h2><div class="body"><p class="empty">The owner has not been asked yet.</p></div></section><section class="field"><h2>Fix</h2><div class="body"><p class="empty">Not fixed yet.</p></div></section><section class="field"><h2>Damages</h2><div class="body"><p class="empty">Not counted yet.</p></div></section>
+<footer><p>Last good <span class="sha">20b9a91cef9b</span>, first bad <span class="sha">593d827f6f3d</span>, agent in <code>victims/refund-agent</code>.</p></footer>
+</main>
+</body>
+</html>

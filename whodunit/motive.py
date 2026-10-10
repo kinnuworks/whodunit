@@ -36,6 +36,7 @@ class Motive:
     agent: str | None = None
     model: str | None = None
     request: str | None = None  # the prompt that led to the commit
+    message: str = ""  # the commit message body, which is all there is when no session can be read
     request_id: str | None = None
     request_time: str | None = None
     earlier_requests: list[str] = field(default_factory=list)  # prompts before it in the same session, oldest first
@@ -144,14 +145,16 @@ def find_motive(repo: str | Path, sha: str) -> Motive:
     full, subject, stamp, trailer = git(
         repo, "show", "-s", "--format=%H%x00%s%x00%cI%x00%(trailers:key=Entire-Checkpoint,valueonly,separator=%x20)", sha
     ).strip().split("\x00")
-    motive = Motive(sha=full, subject=subject, link=checkpoint_link(repo, full))
+    body = git(repo, "show", "-s", "--format=%b", full)
+    body = "\n".join(line for line in body.splitlines() if not re.match(r"^[A-Za-z-]+: ", line)).strip()  # drop trailers
+    motive = Motive(sha=full, subject=subject, link=checkpoint_link(repo, full), message=body)
     if not trailer.strip():
         motive.note = "This commit has no Entire checkpoint, so there is no recorded request behind it."
         return motive
     motive.checkpoint = trailer.split()[0]
     meta = entire(repo, "checkpoint", "explain", "--checkpoint", motive.checkpoint, "--json")
     if meta is None:
-        motive.note = "The Entire CLI could not read this checkpoint."
+        motive.note = f"The commit names Entire checkpoint {motive.checkpoint}, and Entire cannot find it, so the request behind this commit is not on record."
         return motive
     sessions = json.loads(meta).get("sessions") or [{}]
     motive.session, motive.agent, motive.model = (sessions[0].get(k) for k in ("session_id", "agent", "model"))
@@ -172,4 +175,14 @@ def find_motive(repo: str | Path, sha: str) -> Motive:
         return motive
     for key, value in found.items():
         setattr(motive, key, value)
+    # A session transcript is full of absolute paths. The case file is public, so they go.
+    here, home = str(Path(repo).resolve()), str(Path.home())
+
+    def scrub(text: str) -> str:
+        return text.replace(here + "/", "").replace(here, ".").replace(home, "~")
+
+    motive.request = scrub(motive.request)
+    motive.earlier_requests = [scrub(t) for t in motive.earlier_requests]
+    for step in motive.steps:
+        step.text = scrub(step.text)
     return motive

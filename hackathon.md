@@ -160,3 +160,29 @@ What it cost, as the second session reported it: about $18.40 for the 60 coding 
 One thing to fix was found on the first test commit: the headless session added a co-author trailer naming its model. `eval/ask.sh` now turns that off and strips any that slip through.
 
 The judging criteria were read from the public hackathon page and added to `AGENTS.md`. Two things stand out. cfo.ai is required and nothing exists for it yet. And neatroots, where most of the tracing work has gone, is not named on the page, so the evidence needs to show up in neatlogs cloud.
+
+### 1:06 AM, the sealed eval: five planted regressions, none wrongly accused
+
+Whodunit ran on the five sealed cases with replays on the gateway's small model. The answer key stayed unopened until every case had run. `eval/sealed/README.md` has the table.
+
+- With 120 replays allowed per case: 3 of 5 solved, 0 wrong accusations, 2 where nobody was named.
+- The two open cases were resumed from their own replays with more allowed, and both were then named correctly at 168 replays each. So 5 of 5 in the end, still with no wrong accusation.
+- The two slow ones are the bugs that fail least often, about 12% and 14% of the time. On one of them the top suspect at 120 replays was the wrong commit, at 53%, and Whodunit named nobody.
+- Replay spend was about $1.91 for all five cases.
+- The ranges are short, 11 to 15 suspects, so this says little about savings against a scan on a long history.
+
+For the first time the cases have motives. Three of them, in the words that were typed:
+
+- `turned-away`: "one more for friendlier replies. When someone asks for a refund on an order that's still shipped and hasn't arrived yet, the agent is a bit blunt about it."
+- `strangers-paid`: "since we capped the loop at 3 model calls, simple refunds feel slow, and most customers already tell us the order number and the amount."
+- `cents-off`: "our new payments provider only accepts refund amounts in whole currency units".
+
+Things that went wrong, and what was done:
+
+- 6 of the 53 new commits carry an `Entire-Checkpoint` trailer that Entire cannot resolve. Its log shows "condensation failed: failed to get commit object: object not found" for those sessions, and `entire doctor` finds nothing to repair. One of the six is the culprit of `half-done-batch`, so that case has no recorded request. Whodunit now says so and falls back to the commit's own message.
+- Replays that ran side by side on one commit with one input could not be matched to their runs in neatroots, so one brief was first written without a failing run to look at. Each replay now carries its own tag in the trace, and the brief step makes a few tagged replays when it has no matched failing run.
+- Three prompt changes were classed as agent-code, because the prompt is now a list called `SYSTEM_RULES`. Fixed.
+- Two model-written briefs were overwritten with the no-model template during testing and had to be written again. That brings the count of model-written briefs and patches to 12, against a guideline of about 10 before Sunday 4:30 PM.
+- Session transcripts are full of absolute paths, and those were landing in the case records. The motive step now strips them.
+
+Not done: no ruling has been given for any of the five, because that is the owner's question to answer. The culprits fall into three kinds: prompt (`strangers-paid`, `wrong-order-refunded`), tool code (`cents-off`), and model settings (`half-done-batch`). `turned-away` is classed as agent code and reads like a prompt change, which is one more thing the classifier gets wrong.

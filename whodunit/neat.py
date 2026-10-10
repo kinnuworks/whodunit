@@ -94,5 +94,6 @@ def replay_runs(mcp: Mcp, case_id: str, sha: str | None = None, limit: int = 200
         except (json.JSONDecodeError, AttributeError):
             pass
         row["commit"] = next((t.split(":", 1)[1] for t in tags if t.startswith("commit:")), None)
+        row["case"] = next((t.split(":", 1)[1] for t in tags if t.startswith("case:")), None)
         out.append(row)
     return out

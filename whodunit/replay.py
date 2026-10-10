@@ -23,7 +23,8 @@ class Replay:
     verdict: str  # pass, fail or skip
     reason: str
     seconds: float
-    started: float = 0.0  # wall clock, seconds since the epoch, for matching the run in neatroots
+    started: float = 0.0  # wall clock, seconds since the epoch
+    tag: str = ""  # the case tag this replay's run carries in its trace, unique to the replay
 
 
 def run_command(command: list[str], cwd: Path, env: dict, timeout: float) -> subprocess.CompletedProcess:
@@ -57,6 +58,8 @@ class Runner:
         self.replays: list[Replay] = []
         self._locks: dict[str, threading.Lock] = defaultdict(threading.Lock)  # one build at a time per commit
         self._turn: dict[str, int] = defaultdict(int)  # which input a commit gets next
+        self._count = 0
+        self._first = int(time.time()) % 100000 * 1000  # so tags from separate runs of one case never collide
         subprocess.run(["git", "-C", str(self.repo), "worktree", "prune"], capture_output=True)
 
     def __enter__(self):
@@ -80,12 +83,12 @@ class Runner:
                 subprocess.run(["git", "-C", str(self.repo), "worktree", "remove", "--force", str(path)], capture_output=True)
         self.built.clear()
 
-    def _env(self, sha: str) -> dict:
+    def _env(self, sha: str, tag: str = "") -> dict:
         env = {k: v for k, v in os.environ.items() if k != "VIRTUAL_ENV"}
         env.update(self.case.env)
         env["WHODUNIT_COMMIT"] = sha
         if self.case.id:
-            env["WHODUNIT_CASE"] = self.case.id
+            env["WHODUNIT_CASE"] = tag or self.case.id
         else:
             env.pop("WHODUNIT_CASE", None)  # ordinary traffic carries no case tag
         lock = self.root / sha[:12] / self.case.target / "uv.lock"
@@ -125,6 +128,11 @@ class Runner:
         """Run the agent once at this commit with this input and judge the result."""
         sha = resolve(self.repo, ref)
         started, clock = time.monotonic(), time.time()
+        with self._locks["#"]:
+            self._count += 1
+            # The agent writes WHODUNIT_CASE into its trace, so a number after the case id lets
+            # one replay be matched to exactly one run afterwards.
+            tag = f"{self.case.id}/{self._first + self._count}" if self.case.id else ""
         problem = self.build(sha)
         if problem:
             verdict, reason = SKIP, problem
@@ -132,14 +140,14 @@ class Runner:
             cwd = self.worktree(sha) / self.case.target
             command = [part.replace("{input}", case_input.text) for part in self.case.run]
             try:
-                done = run_command(command, cwd, self._env(sha), self.case.timeout)
+                done = run_command(command, cwd, self._env(sha, tag), self.case.timeout)
                 passed, reason = judge(self.case, case_input, done.stdout, cwd)
                 if not passed and done.returncode != 0:
                     reason = f"exit {done.returncode}: " + ((done.stderr.strip().splitlines() or [reason])[-1])
                 verdict = PASS if passed else FAIL
             except subprocess.TimeoutExpired:
                 verdict, reason = FAIL, f"timed out after {self.case.timeout:.0f}s"
-        result = Replay(sha=sha, input=case_input.text, verdict=verdict, reason=reason, seconds=time.monotonic() - started, started=clock)
+        result = Replay(sha=sha, input=case_input.text, verdict=verdict, reason=reason, seconds=time.monotonic() - started, started=clock, tag=tag)
         self.replays.append(result)
         return result
 

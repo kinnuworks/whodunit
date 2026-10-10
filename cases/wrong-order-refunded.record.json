@@ -1465,6 +1465,298 @@
    "reason": "refunds match: []",
    "seconds": 4.359395666979253,
    "started": 1791660347.9151309
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 6.3575947920035105,
+   "started": 1791660898.090274,
+   "tag": "wrong-order-refunded/60898001"
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 60, \"order_id\": \"7007\"}], expected []",
+   "seconds": 8.282393875007983,
+   "started": 1791660898.0903811,
+   "tag": "wrong-order-refunded/60898002"
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 60, \"order_id\": \"7007\"}], expected []",
+   "seconds": 8.338761249993695,
+   "started": 1791660898.091709,
+   "tag": "wrong-order-refunded/60898003"
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.7238779999897815,
+   "started": 1791660906.44894,
+   "tag": "wrong-order-refunded/60898004"
   }
- ]
+ ],
+ "motive": {
+  "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+  "subject": "Try digit-swap and digit-double corrections on order lookup misses",
+  "checkpoint": "d248e108a420",
+  "session": "4a8443be-4076-40a1-a0c5-11643f5454eb",
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5",
+  "request": "In victims/refund-agent, support keeps seeing customers mistype their order number (digits swapped, a zero dropped). When lookup_order comes back not found, the agent just gives up. Can you change the system prompt so that the agent tries to work out which order they meant, for example by trying likely variations of the number, and then carries on with that order instead of making the customer write back? Check agent.py still compiles, then commit.",
+  "message": "Customers often mistype order numbers; the agent now retries lookup_order\nwith a few likely corrections before giving up, and proceeds if a\ncorrection belongs to the same customer.",
+  "request_id": "542bb41c",
+  "request_time": "2026-10-10T17:45:32.583000+00:00",
+  "earlier_requests": [],
+  "steps": [
+   {
+    "id": "3a5c728f",
+    "kind": "ran",
+    "text": "List refund-agent files excluding venv/git",
+    "file": null
+   },
+   {
+    "id": "21c9d93d",
+    "kind": "read",
+    "text": "victims/refund-agent/agent.py",
+    "file": "victims/refund-agent/agent.py"
+   },
+   {
+    "id": "214ac9da",
+    "kind": "edited",
+    "text": "SYSTEM_RULES = [\n    \"You are a refund agent for an online shop.\",\n    \"Use lookup_order to find an order before refunding it.\",\n    \"If lookup_order says the order id was not found, the customer likely mistyped it: try likely variations, \"\n    \"such as swapping two adjacent digits, adding or dropping a leading zero, or correcting a single digit, \"\n    \"before telling the customer you could not find their order.\",\n    \"If one of those variations is found and belongs to the customer who is asking, proceed with that order \"\n    \"and mention in your final reply which order number you used.\",\n    \"Only ask the customer to double check their order number if none of the variations you tried were found.\",\n    \"Only call issue_refund after lookup_order confirms the order exists and belongs to the customer.\",\n    \"Never refund more than the order amount.\",\n    \"When you are done, tell the customer in one or two sentences what happened.\",\n]",
+    "file": "victims/refund-agent/agent.py"
+   },
+   {
+    "id": "02dcbc54",
+    "kind": "said",
+    "text": "Now checking it compiles and committing.",
+    "file": null
+   },
+   {
+    "id": "74f53290",
+    "kind": "ran",
+    "text": "Compile-check agent.py",
+    "file": null
+   },
+   {
+    "id": "cdfc188a",
+    "kind": "ran",
+    "text": "Stage agent.py change and check status",
+    "file": null
+   },
+   {
+    "id": "55c94129",
+    "kind": "ran",
+    "text": "Stage agent.py change and check status",
+    "file": null
+   },
+   {
+    "id": "e01d8bf7",
+    "kind": "ran",
+    "text": "Stage agent.py change",
+    "file": null
+   },
+   {
+    "id": "a96e81a7",
+    "kind": "ran",
+    "text": "Stage agent.py change",
+    "file": null
+   },
+   {
+    "id": "cedda2c2",
+    "kind": "ran",
+    "text": "Commit the system prompt change",
+    "file": null
+   },
+   {
+    "id": "28b74ca1",
+    "kind": "ran",
+    "text": "Stage agent.py change for commit",
+    "file": null
+   },
+   {
+    "id": "c4aed2f3",
+    "kind": "said",
+    "text": "It looks like the approval prompt isn't going through automatically. Let me retry once more in case it needs a direct confirmation.",
+    "file": null
+   },
+   {
+    "id": "7327d8c7",
+    "kind": "ran",
+    "text": "Stage agent.py change for commit",
+    "file": null
+   },
+   {
+    "id": "373a1b28",
+    "kind": "said",
+    "text": "I'm being blocked from running `git add`/`git commit` here \u2014 seems the tool requires explicit approval that isn't being granted in this environment. Could you approve the git command, or let me know if you'd like to stage/commit it yourself?\n\nThe code change itself is done and verified: `agent.py` now compiles cleanly, and `SYSTEM_RULES` (agent.py:121) instructs the agent to try likely typo variations (adjacent-digit swap, dropped/added leading zero, single-digit correction) when `lookup_order` reports an order not found, proceed with a match that belongs to the customer, mention which order number it used, and only ask the customer to double-check if no variation matches.",
+    "file": null
+   }
+  ],
+  "link": null,
+  "note": ""
+ },
+ "evidence": {
+  "culprit": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+  "parent": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+  "subject": "Try digit-swap and digit-double corrections on order lookup misses",
+  "diff": "diff --git a/victims/refund-agent/agent.py b/victims/refund-agent/agent.py\nindex dcf81cf..b11587d 100644\n--- a/victims/refund-agent/agent.py\n+++ b/victims/refund-agent/agent.py\n@@ -122,6 +122,9 @@ SYSTEM_RULES = [\n     \"You are a refund agent for an online shop.\",\n     \"Use lookup_order to find an order before refunding it.\",\n     \"Only call issue_refund after lookup_order confirms the order exists and belongs to the customer.\",\n+    \"Customers often mistype order numbers. If lookup_order says an order was not found, \"\n+    \"try a few likely corrections of the number, such as two digits swapped or a digit doubled, \"\n+    \"with lookup_order. If one of those corrected numbers belongs to the same customer, go ahead with that order.\",\n     \"Never refund more than the order amount.\",\n     \"When you are done, tell the customer in one or two sentences what happened.\",\n ]\n",
+  "after": "victims/refund-agent/agent.py, lines 115 to 138 after the commit:\n 115  )\n 116  \n 117  from openai import OpenAI  # noqa: E402  (import after neatlogs.init)\n 118  \n 119  client = OpenAI(base_url=LLM_BASE_URL, api_key=LLM_API_KEY, timeout=30.0, max_retries=2)\n 120  \n 121  SYSTEM_RULES = [\n 122      \"You are a refund agent for an online shop.\",\n 123      \"Use lookup_order to find an order before refunding it.\",\n 124      \"Only call issue_refund after lookup_order confirms the order exists and belongs to the customer.\",\n 125      \"Customers often mistype order numbers. If lookup_order says an order was not found, \"\n 126      \"try a few likely corrections of the number, such as two digits swapped or a digit doubled, \"\n 127      \"with lookup_order. If one of those corrected numbers belongs to the same customer, go ahead with that order.\",\n 128      \"Never refund more than the order amount.\",\n 129      \"When you are done, tell the customer in one or two sentences what happened.\",\n 130  ]\n 131  SYSTEM = \" \".join(SYSTEM_RULES)\n 132  TOOLS = [\n 133      {\"type\": \"function\", \"function\": {\"name\": \"lookup_order\",\n 134       \"description\": \"Look up an order by id. Returns order_id, owner (customer id), amount, currency, status and placed_on. \"\n 135                       \"If the order id does not exist, returns an error instead.\",\n 136       \"parameters\": {\"type\": \"object\", \"properties\": {\"order_id\": {\"type\": \"string\"}}, \"required\": [\"order_id\"]}}},\n 137      {\"type\": \"function\", \"function\": {\"name\": \"issue_refund\",\n 138       \"description\": \"Refund an order for the given amount. Returns the order_id and the amount refunded.\",",
+  "checkpoint": "d248e108a420",
+  "request": "In victims/refund-agent, support keeps seeing customers mistype their order number (digits swapped, a zero dropped). When lookup_order comes back not found, the agent just gives up. Can you change the system prompt so that the agent tries to work out which order they meant, for example by trying likely variations of the number, and then carries on with that order instead of making the customer write back? Check agent.py still compiles, then commit.",
+  "message": "Customers often mistype order numbers; the agent now retries lookup_order\nwith a few likely corrections before giving up, and proceeds if a\ncorrection belongs to the same customer.",
+  "steps": [
+   {
+    "id": "3a5c728f",
+    "kind": "ran",
+    "text": "List refund-agent files excluding venv/git",
+    "file": null
+   },
+   {
+    "id": "21c9d93d",
+    "kind": "read",
+    "text": "victims/refund-agent/agent.py",
+    "file": "victims/refund-agent/agent.py"
+   },
+   {
+    "id": "214ac9da",
+    "kind": "edited",
+    "text": "SYSTEM_RULES = [\n    \"You are a refund agent for an online shop.\",\n    \"Use lookup_order to find an order before refunding it.\",\n    \"If lookup_order says the order id was not found, the customer likely mistyped it: try likely variations, \"\n    \"such as swapping two adjacent digits, adding or dropping a leading zero, or correcting a single digit, \"\n    \"before telling the customer you could not find their order.\",\n    \"If one of those variations is found and belongs to the customer who is asking, proceed with that order \"\n    \"and mention in your final reply which order number you used.\",\n    \"Only ask the customer to double check their order number if none of the variations you tried were found.\",\n    \"Only call issue_refund after lookup_order confirms the order exists and belongs to the customer.\",\n    \"Never refund more than the order amount.\",\n    \"When you are done, tell the customer in one or two sentences what happened.\",\n]",
+    "file": "victims/refund-agent/agent.py"
+   },
+   {
+    "id": "02dcbc54",
+    "kind": "said",
+    "text": "Now checking it compiles and committing.",
+    "file": null
+   },
+   {
+    "id": "74f53290",
+    "kind": "ran",
+    "text": "Compile-check agent.py",
+    "file": null
+   },
+   {
+    "id": "cdfc188a",
+    "kind": "ran",
+    "text": "Stage agent.py change and check status",
+    "file": null
+   },
+   {
+    "id": "55c94129",
+    "kind": "ran",
+    "text": "Stage agent.py change and check status",
+    "file": null
+   },
+   {
+    "id": "e01d8bf7",
+    "kind": "ran",
+    "text": "Stage agent.py change",
+    "file": null
+   },
+   {
+    "id": "a96e81a7",
+    "kind": "ran",
+    "text": "Stage agent.py change",
+    "file": null
+   },
+   {
+    "id": "cedda2c2",
+    "kind": "ran",
+    "text": "Commit the system prompt change",
+    "file": null
+   },
+   {
+    "id": "28b74ca1",
+    "kind": "ran",
+    "text": "Stage agent.py change for commit",
+    "file": null
+   },
+   {
+    "id": "c4aed2f3",
+    "kind": "said",
+    "text": "It looks like the approval prompt isn't going through automatically. Let me retry once more in case it needs a direct confirmation.",
+    "file": null
+   },
+   {
+    "id": "7327d8c7",
+    "kind": "ran",
+    "text": "Stage agent.py change for commit",
+    "file": null
+   },
+   {
+    "id": "373a1b28",
+    "kind": "said",
+    "text": "I'm being blocked from running `git add`/`git commit` here \u2014 seems the tool requires explicit approval that isn't being granted in this environment. Could you approve the git command, or let me know if you'd like to stage/commit it yourself?\n\nThe code change itself is done and verified: `agent.py` now compiles cleanly, and `SYSTEM_RULES` (agent.py:121) instructs the agent to try likely typo variations (adjacent-digit swap, dropped/added leading zero, single-digit correction) when `lookup_order` reports an order not found, proceed with a match that belongs to the customer, mention which order number it used, and only ask the customer to double-check if no variation matches.",
+    "file": null
+   }
+  ],
+  "failing_run": {
+   "trace_id": "d1f083cd6e20998a8d8b3c53593318ae",
+   "commit": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "reason": "refunds were [{\"refunded\": 60, \"order_id\": \"7007\"}], expected []",
+   "outline": "f78a8d8c WORKFLOW refund ok 6704ms\n  in: {\"request\":\"Can you refund order 707? I'm cust_9.\",\"max_steps\":8}\n  out: I've successfully refunded order 7007 for $60.00 USD (I found this order when looking for corrections to the order number you provided). Your refund has been p\u2026\n  238d6c52 CHAIN run_info ok 0ms\n    in: {}\n    out: {\"tags\":[\"commit:d4fb1587c0664b1d6c7bd482028ba9c26eba9adb\",\"llm:gateway\",\"case:wrong-order-refunded/60898002\"],\"commit_short\":\"d4fb1587c066\",\"model\":\"claude-ha\u2026\n  ba6d17de LLM openai.chat.completions.create ok 905tok 2271ms\n    in: system: You are a refund agent for an online shop. Use lookup_order to find an order before refunding it. Only call issue_refund after lookup_order confirms th\u2026\n    out: assistant: I'll look up order 707 for you first to verify it exists and belongs to your account. \u2192 lookup_order({\"order_id\":\"707\"})\n  be5b7b33 TOOL lookup_order ERROR(404: order 707 not found) result=error 1ms\n    in: {\"order_id\":\"707\"}\n  7d0284df LLM openai.chat.completions.create ok 1124tok 1659ms\n    in: system: You are a refund agent for an online shop. Use lookup_order to find an order before refunding it. Only call issue_refund after lookup_order confirms th\u2026\n    out: assistant: Order 707 wasn't found. Let me try a few common variations in case there was a typo: \u2192 lookup_order({\"order_id\":\"770\"}), lookup_order({\"order_id\":\"7\u2026\n  d7cfeec6 TOOL lookup_order ERROR(404: order 770 not found) result=error 1ms\n    in: {\"order_id\":\"770\"}\n  7889fcc9 TOOL lookup_order ok 0ms\n    in: {\"order_id\":\"7007\"}\n    out: {\"order_id\":\"7007\",\"owner\":\"cust_9\",\"amount\":60,\"currency\":\"USD\",\"status\":\"delivered\",\"placed_on\":\"2026-10-02\"}\n  795fd549 TOOL lookup_order ERROR(404: order 717 not found) result=error 0ms\n    in: {\"order_id\":\"717\"}\n  ae4908dd TOOL lookup_order ERROR(404: order 77 not found) result=error 0ms\n    in: {\"order_id\":\"77\"}\n  13654a85 LLM openai.chat.completions.create ok 1434tok 1378ms\n    in: system: You are a refund agent for an online shop. Use lookup_order to find an order before refunding it. Only call issue_refund after lookup_order confirms th\u2026\n    out: assistant: Great! I found order 7007 which belongs to you (cust_9). Let me process the full refund for this order. \u2192 issue_refund({\"order_id\":\"7007\",\"amount\":6\u2026\n  aefaac7b TOOL issue_refund ok 0ms\n    in: {\"order_id\":\"7007\",\"amount\":60}\n    out: {\"refunded\":60,\"order_id\":\"7007\"}\n  539cba1f LLM openai.chat.completions.create ok 1503tok 1388ms\n    in: system: You are a refund agent for an online shop. Use lookup_order to find an order before refunding it. Only call issue_refund after lookup_order confirms th\u2026\n    out: assistant: I've successfully refunded order 7007 for $60.00 USD (I found this order when looking for corrections to the order number you provided). Your refund\u2026"
+  },
+  "passing_run": {
+   "trace_id": "ebf2a0ae39584eee2d26ee599eee0672",
+   "commit": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "outline": "111df05f WORKFLOW refund ok 3028ms\n  in: {\"request\":\"Can you refund order 707? I'm cust_9.\",\"max_steps\":8}\n  out: I'm unable to process your refund request because order 707 was not found in our system. Please double-check the order ID and try again, or contact customer su\u2026\n  2e55a6d9 CHAIN run_info ok 0ms\n    in: {}\n    out: {\"tags\":[\"commit:53c8e027b3f3ee8c47e6fde0edc7de386b8048ea\",\"llm:gateway\",\"case:wrong-order-refunded\"],\"commit_short\":\"53c8e027b3f3\",\"model\":\"claude-haiku\"}\n  1e157988 LLM openai.chat.completions.create ok 843tok 1747ms\n    in: system: You are a refund agent for an online shop. Use lookup_order to find an order before refunding it. Only call issue_refund after lookup_order confirms th\u2026\n    out: assistant: I'll look up order 707 to verify it exists and belongs to you before processing the refund. \u2192 lookup_order({\"order_id\":\"707\"})\n  8ceebae3 TOOL lookup_order ERROR(404: order 707 not found) result=error 1ms\n    in: {\"order_id\":\"707\"}\n  e844304d LLM openai.chat.completions.create ok 915tok 1278ms\n    in: system: You are a refund agent for an online shop. Use lookup_order to find an order before refunding it. Only call issue_refund after lookup_order confirms th\u2026\n    out: assistant: I'm unable to process your refund request because order 707 was not found in our system. Please double-check the order ID and try again, or contact \u2026"
+  },
+  "comparison": "{\n \"a\": {\n  \"summary\": {\n   \"trace_id\": \"ebf2a0ae39584eee2d26ee599eee0672\",\n   \"session_id\": null,\n   \"project\": \"refund-agent\",\n   \"workflow\": \"refund-agent\",\n   \"root_span_id\": \"111df05f52e2425d\",\n   \"root_name\": \"refund\",\n   \"status\": \"ok\",\n   \"complete\": 1,\n   \"root_ended\": 1,\n   \"started_ms\": 1791659812638.531,\n   \"ended_ms\": 1791659815666.962,\n   \"last_span_ms\": 1791659815675.705,\n   \"span_count\": 5,\n   \"llm_calls\": 2,\n   \"tool_calls\": 1,\n   \"error_count\": 1,\n   \"prompt_tokens\": 1633,\n   \"completion_tokens\": 125,\n   \"total_tokens\": 1758,\n   \"input_preview\": \"Can you refund order 707? I'm cust_9.\",\n   \"output_preview\": \"I'm unable to process your refund request because order 707 was not found in our system. Please double-check the order ID and try again, or contact customer support if you believe this is an error.\",\n   \"interrupted\": 0,\n   \"termination_reason\": null,\n   \"finding_count\": 0,\n   \"open_finding_count\": 0,\n   \"pinned\": 0,\n   \"doctor\": 0,\n   \"plan_id\": \"plan_1m4kf5nh7w7g9bfk7\",\n   \"received_ms\": 1791659812705,\n   \"updated_ms\": 1791659815676,\n   \"duration_ms\": 3028.430908203125,\n   \"summary\": null,\n   \"top_finding\": null,\n   \"steering\": \"off\"\n  },\n  \"tools\": [\n   \"lookup_order (failed)\"\n  ],\n  \"output\": \"I'm unable to process your refund request because order 707 was not found in our system. Please double-check the order ID and try again, or contact customer support if you believe this is an error.\",\n  \"problems\": []\n },\n \"b\": {\n  \"summary\": {\n   \"trace_id\": \"d1f083cd6e20998a8d8b3c53593318ae\",\n   \"session_id\": null,\n   \"project\": \"refund-agent\",\n   \"workflow\": \"refund-agent\",\n   \"root_span_id\": \"f78a8d8c48be8d6f\",\n   \"root_name\": \"refund\",\n   \"status\": \"ok\",\n   \"complete\": 1,\n   \"root_ended\": 1,\n   \"started_ms\": 1791660899534.225,\n   \"ended_ms\": 1791660906238.291,\n   \"last_span_ms\": 1791660906249.32,\n   \"span_count\": 12,\n   \"llm_calls\": 4,\n   \"tool_calls\": 6,\n   \"error_count\": 4,\n   \"prompt_tokens\": 4545,\n   \"completion_tokens\": 421,\n   \"total_tokens\": 4966,\n   \"input_preview\": \"Can you refund order 707? I'm cust_9.\",\n   \"output_preview\": \"I've successfully refunded order 7007 for $60.00 USD (I found this order when looking for corrections to the order number you provided). Your refund has been processed.\",\n   \"interrupted\": 0,\n   \"termination_reason\": null,\n   \"finding_count\": 0,\n   \"open_finding_count\": 0,\n   \"pinned\": 0,\n   \"doctor\": 0,\n   \"plan_id\": \"plan_1m4kf5nh7w7g9bfk7\",\n   \"received_ms\": 1791660899581,\n   \"updated_ms\": 1791660906250,\n   \"duration_ms\": 6704.06591796875,\n   \"summary\": null,\n   \"top_finding\": null,\n   \"steering\": \"off\"\n  },\n  \"tools\": [\n   \"lookup_order (failed)\",\n   \"lookup_order (failed)\",\n   \"lookup_order\",\n   \"lookup_order (failed)\",\n   \"lookup_order (failed)\",\n   \"issue_refund\"\n  ],\n  \"output\": \"I've successfully refunded order 7007 for $60.00 USD (I found this order when looking for corrections to the order number you provided). Your refund has been processed.\",\n  \"problems\": []\n },\n \"fixed\": [],\n \"new_p",
+  "measured": "168 replays across 9 commits. Replays fail about 12% of the time from the culprit on and 0% before it.",
+  "notes": []
+ },
+ "brief": {
+  "headline": "d4fb1587c066: fuzzy order-lookup rule lets agent refund a different real order on typos",
+  "sentences": [
+   {
+    "text": "Commit d4fb1587c066 added a SYSTEM_RULES entry (lines 125-127 of agent.py) telling the agent to try digit-swap and digit-double variants of an unrecognised order number and proceed with whichever variant resolves to the same customer.",
+    "cites": [
+     "214ac9da",
+     "d4fb1587c066"
+    ]
+   },
+   {
+    "text": "Before this commit (53c8e027b3f3), a lookup miss on order 707 caused the agent to stop and tell the customer it could not find the order, as shown in the passing run.",
+    "cites": [
+     "8ceebae3",
+     "e844304d",
+     "ebf2a0ae3958"
+    ]
+   },
+   {
+    "text": "After the commit, the agent generates variants including 7007, which happens to be a real order owned by cust_9, so lookup_order succeeds on it.",
+    "cites": [
+     "7889fcc9",
+     "7d0284df"
+    ]
+   },
+   {
+    "text": "Because the rule only requires the corrected order to belong to the same customer\u2014with no confirmation step\u2014the agent immediately calls issue_refund on order 7007 for $60.00, an order the customer never mentioned.",
+    "cites": [
+     "13654a85",
+     "aefaac7b"
+    ]
+   },
+   {
+    "text": "The failure is intermittent (~12% of replays) because it only triggers when a digit-correction variant of the mistyped number happens to match a real order in the database that is owned by the same customer.",
+    "cites": [
+     "238d6c52",
+     "d248e108a420"
+    ]
+   }
+  ],
+  "dropped": [],
+  "model": "claude-sonnet-4.6"
+ }
 }

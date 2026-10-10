@@ -24,6 +24,12 @@ The checkpoint links will take the form `https://entire.io/gh/OWNER/REPO/commit/
 
 - `casefile-v1-planted-friendly-prompt.png` and `planted-friendly-prompt.record.json`: a prompt regression on the gateway's small model. Before the fix, 57% of replays refunded another customer's order from the culprit on (32 replays across 9 commits). After a model-written patch that kept the friendlier wording, 0 failures in 6 replays, 98.2% likely fixed. Failing run `b5aa7b890c48`, passing run `d0cdabcc261a`.
 
+- `casefile-turned-away.png`: the first case with a real motive. The culprit came from a request for friendlier replies, and the page quotes it from the Entire checkpoint `6b2050de3c0b`. The five case files from the sealed eval are in `../cases/` as `.casefile.html`, with their records beside them.
+
+## Sealed eval
+
+- `../eval/sealed/README.md`: five planted regressions on a history grown by a second session. 3 of 5 named inside 120 replays, 5 of 5 after more, no wrong accusations. The answer key's hash was committed in 4c45f7f before any case ran.
+
 ## Simulator
 
 - `../eval/simulator/accuracy-clean-baseline.svg` and `accuracy-flaky-baseline.svg`: accuracy against replay budget, next to plain bisect, at failure rates from 100% down to 20%.
@@ -37,4 +43,3 @@ The checkpoint links will take the form `https://entire.io/gh/OWNER/REPO/commit/
 
 - Links to the #neatHack posts.
 - The cfo.ai plan.
-- A case on the genuine history, with a motive from a real request. Both cases so far are on planted histories.

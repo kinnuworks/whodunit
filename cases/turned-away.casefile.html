@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Case turned-away</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;500;700&family=Courier+Prime:wght@400;700&family=Young+Serif&display=swap" rel="stylesheet">
+<style>:root {
+  --paper: #F3EDDF; --surface: #E9E0CC; --ink: #201B15; --muted: #6B6156; --rule: #D8CDB6; --ribbon: #B4261F;
+  --serif: 'Young Serif', Georgia, serif;
+  --sans: 'Alegreya Sans', 'Gill Sans', 'Trebuchet MS', sans-serif;
+  --typed: 'Courier Prime', 'Courier New', Courier, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --paper: #1B1714; --surface: #26201A; --ink: #EDE4D3; --muted: #A3978A; --rule: #3A3128; --ribbon: #E5604F; }
+}
+* { box-sizing: border-box; }
+html { background: var(--paper); }
+body { margin: 0; color: var(--ink); font: 400 17px/1.55 var(--sans); -webkit-font-smoothing: antialiased; }
+main { max-width: 1000px; margin: 0 auto; padding: 56px 24px 96px; }
+header { padding-bottom: 28px; border-bottom: 2px solid var(--ink); }
+.label { margin: 0 0 20px; font: 400 13px/1.45 var(--typed); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; }
+.caseid { color: var(--ink); }
+.stamp { margin-left: auto; padding: 3px 10px 1px; border: 1.5px solid var(--muted); color: var(--muted); transform: rotate(-2deg); font-weight: 700; }
+.stamp.closed { border-color: var(--ribbon); color: var(--ribbon); }
+h1 { margin: 0; font: 400 44px/1.1 var(--serif); letter-spacing: -0.01em; text-wrap: balance; }
+.lede { margin: 16px 0 0; font-size: 21px; line-height: 1.2; color: var(--muted); }
+.field { display: grid; grid-template-columns: 148px minmax(0, 1fr); gap: 0 28px; padding: 28px 0; border-bottom: 1px solid var(--rule); }
+.field h2 { margin: 4px 0 0; font: 700 13px/1.45 var(--typed); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.body > :first-child { margin-top: 0; } .body > :last-child { margin-bottom: 0; }
+.body p { margin: 0 0 12px; max-width: 68ch; }
+h3 { margin: 0 0 2px; font: 700 15px/1.2 var(--sans); }
+.verdict { font: 400 27px/1.2 var(--serif); margin-bottom: 10px; max-width: none; text-wrap: balance; }
+.verdict .sha { font-size: 21px; color: var(--ribbon); margin-right: 6px; }
+.verdict.open { color: var(--muted); }
+.small-verdict { font-size: 21px; }
+.headline { font: 400 21px/1.2 var(--serif); }
+.small, .key { font-size: 15px; color: var(--muted); }
+.empty { color: var(--muted); font-style: italic; }
+.sha, code, .cite { font-family: var(--typed); font-size: 0.88em; }
+code { background: var(--surface); padding: 1px 5px; border-radius: 2px; }
+.cite { display: inline-block; margin-left: 4px; padding: 0 5px; border: 1px solid var(--rule); border-radius: 2px; color: var(--muted); font-size: 13px; line-height: 1.45; white-space: nowrap; }
+.typed { margin: 0 0 12px; padding: 14px 16px; background: var(--surface); border-left: 3px solid var(--ribbon); font: 400 15px/1.45 var(--typed); white-space: pre-wrap; overflow-wrap: anywhere; max-height: 420px; overflow: auto; }
+.pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 12px; }
+.pair .typed { border-left-color: var(--rule); font-size: 13px; }
+.pair > div:last-child .typed { border-left-color: var(--ribbon); }
+details { margin: 0 0 12px; } summary { cursor: pointer; font-weight: 500; margin-bottom: 8px; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--ribbon); outline-offset: 2px; }
+a { color: var(--ink); text-decoration-color: var(--ribbon); text-underline-offset: 3px; }
+.steps { margin: 0; padding-left: 0; list-style: none; font-size: 15px; } .steps li { margin-bottom: 6px; } .steps .cite { margin: 0 6px 0 0; }
+.scroll { overflow-x: auto; margin: 6px 0 4px; }
+.lineup { display: block; max-width: none; }
+.lineup .rule { stroke: var(--rule); stroke-width: 1; }
+.lineup .tick { font: 400 13px var(--typed); fill: var(--muted); } .lineup .tick.strong { fill: var(--ink); font-weight: 700; }
+.lineup .bar.suspect { fill: var(--ink); } .lineup .bar.elsewhere { fill: var(--muted); opacity: 0.45; } .lineup .bar.culprit { fill: var(--ribbon); }
+.lineup .good { stroke: var(--muted); stroke-width: 2; }
+.lineup .fail { fill: var(--ribbon); } .lineup .pass { fill: none; stroke: var(--ink); stroke-width: 1; } .lineup .skip { fill: var(--muted); opacity: 0.5; }
+.lineup .hit { fill: transparent; } .lineup g:hover .hit { fill: var(--surface); }
+.key { display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; }
+.swatch { display: inline-block; width: 10px; height: 14px; margin-left: 10px; } .swatch:first-child { margin-left: 0; }
+.swatch.culprit { background: var(--ribbon); } .swatch.suspect { background: var(--ink); } .swatch.elsewhere { background: var(--muted); opacity: 0.45; }
+.dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-left: 10px; } .dot.fail { background: var(--ribbon); } .dot.pass { border: 1px solid var(--ink); }
+table.remaining { border-collapse: collapse; margin-top: 8px; font-size: 15px; } table.remaining caption { text-align: left; font-weight: 700; padding-bottom: 4px; }
+table.remaining td { padding: 3px 14px 3px 0; border-top: 1px solid var(--rule); } td.num { font-family: var(--typed); text-align: right; }
+footer { padding-top: 20px; font-size: 15px; color: var(--muted); }
+@media (max-width: 720px) {
+  main { padding: 32px 16px 64px; } h1 { font-size: 34px; } .lede { font-size: 17px; }
+  .field { grid-template-columns: 1fr; gap: 10px; padding: 22px 0; } .verdict { font-size: 21px; }
+}
+</style>
+</head>
+<body>
+<main>
+<header>
+<p class="label">Whodunit case file <span class="caseid">turned-away</span><span class="stamp closed">Culprit named</span></p>
+<h1>Customers asking for a refund on an order that has shipped get a kind reply and no refund.</h1>
+<p class="lede">14 commits since it last worked. Which one did it?</p>
+</header>
+<section class="field"><h2>Suspects</h2><div class="body"><p class="verdict"><span class="sha">ca0a2d6288aa</span> Reassure customers instead of refunding orders still in transit</p><p>Suspects: 14. Cleared: 13. Confidence: 99.58%.</p><p class="small">24 replays across 6 commits, 5.3 minutes of replay time. From this commit on it fails about 93% of the time. Before it, about 2%. A scan from the oldest suspect would have tested 6 commits.</p><div class="scroll"><svg class="lineup" viewBox="0 0 458 236" width="458" height="236" role="img" aria-label="The lineup: 14 suspect commits, oldest first"><line class="rule" x1="72" y1="138.0" x2="450" y2="138.0"/><text class="tick" x="40" y="142.0" text-anchor="end">0%</text><line class="rule" x1="72" y1="78.0" x2="450" y2="78.0"/><text class="tick" x="40" y="82.0" text-anchor="end">50%</text><line class="rule" x1="72" y1="18.0" x2="450" y2="18.0"/><text class="tick" x="40" y="22.0" text-anchor="end">100%</text><g><title>Last good commit: 0 failures in 6 replays</title><line class="good" x1="61.0" y1="132" x2="61.0" y2="138"/><circle class="pass" cx="61.0" cy="160.0" r="2.4"/><circle class="pass" cx="61.0" cy="167.0" r="2.4"/><circle class="pass" cx="61.0" cy="174.0" r="2.4"/><circle class="pass" cx="61.0" cy="181.0" r="2.4"/><circle class="pass" cx="61.0" cy="188.0" r="2.4"/><circle class="pass" cx="61.0" cy="195.0" r="2.4"/></g><g><title>1. Check currency codes and positive amounts in smoke.py (fedf89729b98), 0.0%</title><rect class="hit" x="78.0" y="18" width="26" height="218"/><rect class="bar suspect" x="81.0" y="136.0" width="20" height="2.0"/></g><text class="tick" x="91.0" y="151" text-anchor="middle">1</text><g><title>2. Mention smoke.py in the refund agent README (5cfdd5acf608), 0.0%</title><rect class="hit" x="104.0" y="18" width="26" height="218"/><rect class="bar suspect" x="107.0" y="136.0" width="20" height="2.0"/></g><g><title>3. Label SYSTEM_RULES groups with one-line comments (e4a3e567223e), 0.0%, 0 failures in 3 replays</title><rect class="hit" x="130.0" y="18" width="26" height="218"/><rect class="bar suspect" x="133.0" y="136.0" width="20" height="2.0"/><circle class="pass" cx="143.0" cy="160.0" r="2.4"/><circle class="pass" cx="143.0" cy="167.0" r="2.4"/><circle class="pass" cx="143.0" cy="174.0" r="2.4"/></g><g><title>4. Cache agent_version so it doesn&#x27;t reread pyproject.toml every call (c0fb4a11007e), 0.2%</title><rect class="hit" x="156.0" y="18" width="26" height="218"/><rect class="bar suspect" x="159.0" y="136.0" width="20" height="2.0"/></g><g><title>5. Add order 1212 for cust_4 (38d1b4f23bfc), 0.2%, 0 failures in 3 replays</title><rect class="hit" x="182.0" y="18" width="26" height="218"/><rect class="bar suspect" x="185.0" y="136.0" width="20" height="2.0"/><circle class="pass" cx="195.0" cy="160.0" r="2.4"/><circle class="pass" cx="195.0" cy="167.0" r="2.4"/><circle class="pass" cx="195.0" cy="174.0" r="2.4"/></g><g><title>6. Reassure customers instead of refunding orders still in transit (ca0a2d6288aa), 99.58%, 3 failures in 3 replays</title><rect class="hit" x="208.0" y="18" width="26" height="218"/><rect class="bar culprit" x="211.0" y="18.5" width="20" height="119.5"/><circle class="fail" cx="221.0" cy="160.0" r="2.4"/><circle class="fail" cx="221.0" cy="167.0" r="2.4"/><circle class="fail" cx="221.0" cy="174.0" r="2.4"/></g><text class="tick strong" x="221.0" y="151" text-anchor="middle">6</text><g><title>7. Turn the refund-agent order list into a table (a7b2b34584f0), 0.0%, 3 failures in 3 replays</title><rect class="hit" x="234.0" y="18" width="26" height="218"/><rect class="bar suspect" x="237.0" y="136.0" width="20" height="2.0"/><circle class="fail" cx="247.0" cy="160.0" r="2.4"/><circle class="fail" cx="247.0" cy="167.0" r="2.4"/><circle class="fail" cx="247.0" cy="174.0" r="2.4"/></g><g><title>8. Fail smoke.py on duplicate order_id keys or key/field mismatches (95b3ca73b1fd), 0.0%</title><rect class="hit" x="260.0" y="18" width="26" height="218"/><rect class="bar suspect" x="263.0" y="136.0" width="20" height="2.0"/></g><g><title>9. Warn on stderr when WHODUNIT_ENV points to a missing file (fe9564a05b58), 0.0%</title><rect class="hit" x="286.0" y="18" width="26" height="218"/><rect class="bar suspect" x="289.0" y="136.0" width="20" height="2.0"/></g><g><title>10. Update agent.py docstring: document --json and orders.json (c1f5a526ee76), 0.0%</title><rect class="hit" x="312.0" y="18" width="26" height="218"/><rect class="bar suspect" x="315.0" y="136.0" width="20" height="2.0"/></g><g><title>11. Bump refund-agent version to 0.3.0 (6a4e48905812), 0.0%</title><rect class="hit" x="338.0" y="18" width="26" height="218"/><rect class="bar suspect" x="341.0" y="136.0" width="20" height="2.0"/></g><g><title>12. refund-agent: add How refunds are decided section to README (f7b69ac79ec3), 0.0%</title><rect class="hit" x="364.0" y="18" width="26" height="218"/><rect class="bar suspect" x="367.0" y="136.0" width="20" height="2.0"/></g><g><title>13. refund-agent: ignore __pycache__ and .venv (216855eccf7c), 0.0%</title><rect class="hit" x="390.0" y="18" width="26" height="218"/><rect class="bar suspect" x="393.0" y="136.0" width="20" height="2.0"/></g><g><title>14. refund-agent: print a one-line summary on smoke.py success (df4f4fa601c6), 0.0%, 6 failures in 6 replays</title><rect class="hit" x="416.0" y="18" width="26" height="218"/><rect class="bar suspect" x="419.0" y="136.0" width="20" height="2.0"/><circle class="fail" cx="429.0" cy="160.0" r="2.4"/><circle class="fail" cx="429.0" cy="167.0" r="2.4"/><circle class="fail" cx="429.0" cy="174.0" r="2.4"/><circle class="fail" cx="429.0" cy="181.0" r="2.4"/><circle class="fail" cx="429.0" cy="188.0" r="2.4"/><circle class="fail" cx="429.0" cy="195.0" r="2.4"/></g><text class="tick" x="429.0" y="151" text-anchor="middle">14</text></svg></div><p class="key"><span class="swatch culprit"></span>culprit <span class="swatch suspect"></span>suspect <span class="swatch elsewhere"></span>never touched the agent <span class="dot fail"></span>failed replay <span class="dot pass"></span>passed replay</p></div></section><section class="field"><h2>Motive</h2><div class="body"><p>Someone asked the coding agent for this:</p><pre class="typed">victims/refund-agent: one more for friendlier replies. When someone asks for a refund on an order that&#x27;s still shipped and hasn&#x27;t arrived yet, the agent is a bit blunt about it. Customers in that spot are usually just anxious it&#x27;s lost. Make the agent warmer there: reassure them the order is on its way, tell them when it was placed, and let them know they&#x27;re welcome to come back for a refund if it doesn&#x27;t turn up or they still don&#x27;t want it once it arrives. Check agent.py still compiles, then commit.</pre><p class="small">Entire checkpoint <span class="cite">6b2050de3c0b</span>, asked at 2026-10-10 18:30 UTC.</p><details><summary>What the coding agent did next</summary><ul class="steps"><li><span class="cite">70fa4267</span> said: Now I&#x27;ll add the new rule to `SYSTEM_RULES` so shipped (not yet delivered) orders get a warmer, reassuring reply instead of a blunt refund.</li><li><span class="cite">f511062a</span> edited victims/refund-agent/agent.py: # Lookups and ownership: when to call lookup_order vs issue_refund, and whose order it is</li><li><span class="cite">42b9b357</span> edited victims/refund-agent/agent.py: # Shipped orders: a refund request before the order has even arrived</li><li><span class="cite">ded41f9e</span> said: Now let&#x27;s check that agent.py still compiles.</li><li><span class="cite">a34065e6</span> said: Compiles fine. Now committing.</li><li><span class="cite">a4215d0f</span> said: Good, the repo root is `.` and the cwd is already inside it, so no `cd` is needed.</li></ul></details></div></section><section class="field"><h2>Brief</h2><div class="body"><p class="headline">ca0a2d6288aa blocks refunds on shipped orders even when customer&#x27;s reason is unrelated to delivery</p><p>Commit ca0a2d6288aa added a SYSTEM_RULES entry at line 166 that tells the agent never to issue a refund if the order status is &#x27;shipped&#x27;, regardless of the customer&#x27;s reason. <span class="cite">42b9b357</span><span class="cite">ca0a2d6288aa</span></p><p>The rule was intended for anxious customers who might just be worried the order is lost, but it also fires when the customer explicitly states a different reason, such as ordering the wrong item. <span class="cite">42b9b357</span><span class="cite">f511062a</span></p><p>In the failing run, the agent called lookup_order, saw status &#x27;shipped&#x27;, then applied the new rule and sent a reassurance reply instead of calling issue_refund. <span class="cite">10f52c0ae2b3</span><span class="cite">535cf3f2</span><span class="cite">bf73aa74</span></p><p>The passing run on parent commit 38d1b4f23bfc shows the same lookup returning the same &#x27;shipped&#x27; status, after which the agent correctly called issue_refund and completed the refund. <span class="cite">38c49d062086</span><span class="cite">7221dbea</span><span class="cite">84739d64</span></p><p>The comparison confirms the failing run made only one tool call (lookup_order) while the passing run made two (lookup_order and issue_refund). <span class="cite">35a29c86</span><span class="cite">94e7c7db</span></p><p>The rule added in ca0a2d6288aa contains no carve-out for cases where the customer&#x27;s stated reason has nothing to do with delivery anxiety, making the block unconditional on order status alone. <span class="cite">42b9b357</span><span class="cite">6b2050de3c0b</span></p><p class="small">Written by: claude-sonnet-4.6. Every sentence cites a span, a commit or a checkpoint. 0 cut for citing nothing real.</p></div></section><section class="field"><h2>Evidence</h2><div class="body"><div class="pair"><div><h3>Passing run <span class="cite">38c49d062086</span></h3><p class="small">at commit 38d1b4f23bfc</p><pre class="typed">35a29c86 WORKFLOW refund ok 4140ms
+  in: {&quot;request&quot;:&quot;Hi, I&#x27;m cust_4. Please refund order 2002, I ordered the wrong item by mistake.&quot;,&quot;max_steps&quot;:3}
+  out: Perfect—I&#x27;ve refunded the full $30 to your account for order 2002. You should see that money back within a few business days depending on your bank.
+  cbed3529 CHAIN run_info ok 1ms
+    in: {&quot;max_steps&quot;:3}
+    out: {&quot;tags&quot;:[&quot;commit:38d1b4f23bfcdcc9756fcf59dd23407c3e36df0f&quot;,&quot;llm:gateway&quot;,&quot;case:turned-away&quot;],&quot;commit_short&quot;:&quot;38d1b4f23bfc&quot;,&quot;model&quot;:&quot;claude-haiku&quot;,&quot;version&quot;:&quot;0.…
+  294cc38b LLM openai.chat.completions.create ok 1435tok 1566ms
+    in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you&#x27;re on their side…
+    out: assistant:  → lookup_order({&quot;order_id&quot;:&quot;2002&quot;})
+  7221dbea TOOL lookup_order ok 0ms
+    in: {&quot;order_id&quot;:&quot;2002&quot;}
+    out: {&quot;order_id&quot;:&quot;2002&quot;,&quot;owner&quot;:&quot;cust_4&quot;,&quot;amount&quot;:30,&quot;currency&quot;:&quot;USD&quot;,&quot;status&quot;:&quot;shipped&quot;,&quot;placed_on&quot;:&quot;2026-09-15&quot;}
+  0f9d0d48 LLM openai.chat.completions.create ok 1629tok 1368ms
+    in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you&#x27;re on their side…
+    out: assistant: I totally understand—ordering the wrong item is frustrating! I&#x27;m glad you caught it and reached out. Let me process that refund for you right away. …
+  84739d64 TOOL issue_refund ok 0ms
+    in: {&quot;order_id&quot;:&quot;2002&quot;,&quot;amount&quot;:30,&quot;reason&quot;:&quot;ordered wrong item by mistake&quot;}
+    out: {&quot;refunded&quot;:30,&quot;order_id&quot;:&quot;2002&quot;,&quot;reason&quot;:&quot;ordered wrong item by mistake&quot;}
+  34fa4ae4 LLM openai.chat.completions.create ok 1704tok 1202ms
+    in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you&#x27;re on their side…
+    out: assistant: Perfect—I&#x27;ve refunded the full $30 to your account for order 2002. You should see that money back within a few business days depending on your bank.</pre></div><div><h3>Failing run <span class="cite">10f52c0ae2b3</span></h3><p class="small">at commit ca0a2d6288aa</p><pre class="typed">94e7c7db WORKFLOW refund ok 4073ms
+  in: {&quot;request&quot;:&quot;Hi, I&#x27;m cust_4. Please refund order 2002, I ordered the wrong item by mistake.&quot;,&quot;max_steps&quot;:3}
+  out: I can see your order is on its way to you – it was placed on September 15th and is currently shipped. Here&#x27;s what I&#x27;d suggest: since it&#x27;s still in transit, let…
+  ed7e2b57 CHAIN run_info ok 1ms
+    in: {&quot;max_steps&quot;:3}
+    out: {&quot;tags&quot;:[&quot;commit:ca0a2d6288aad40896ccd6d015ef5bd43c4e56fd&quot;,&quot;llm:gateway&quot;,&quot;case:turned-away&quot;],&quot;commit_short&quot;:&quot;ca0a2d6288aa&quot;,&quot;model&quot;:&quot;claude-haiku&quot;,&quot;version&quot;:&quot;0.…
+  fa3dfdcc LLM openai.chat.completions.create ok 1571tok 1909ms
+    in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you&#x27;re on their side…
+    out: assistant: I understand – it&#x27;s so easy to order the wrong thing by mistake! Let me sort that refund out for you right away. → lookup_order({&quot;order_id&quot;:&quot;2002&quot;})
+  bf73aa74 TOOL lookup_order ok 0ms
+    in: {&quot;order_id&quot;:&quot;2002&quot;}
+    out: {&quot;order_id&quot;:&quot;2002&quot;,&quot;owner&quot;:&quot;cust_4&quot;,&quot;amount&quot;:30,&quot;currency&quot;:&quot;USD&quot;,&quot;status&quot;:&quot;shipped&quot;,&quot;placed_on&quot;:&quot;2026-09-15&quot;}
+  535cf3f2 LLM openai.chat.completions.create ok 1746tok 2160ms
+    in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you&#x27;re on their side…
+    out: assistant: I can see your order is on its way to you – it was placed on September 15th and is currently shipped. Here&#x27;s what I&#x27;d suggest: since it&#x27;s still in t…</pre></div></div><details><summary>The culprit's diff</summary><pre class="typed">diff --git a/victims/refund-agent/agent.py b/victims/refund-agent/agent.py
+index b3de501..0f0bb1a 100644
+--- a/victims/refund-agent/agent.py
++++ b/victims/refund-agent/agent.py
+@@ -143,9 +143,10 @@ SYSTEM_RULES = [
+     &quot;double-check something and write back.&quot;,
+     # Lookups and ownership: when to call lookup_order vs issue_refund, and whose order it is
+     &quot;If the customer has already given both an order number and an amount, call issue_refund directly with &quot;
+-    &quot;those, without calling lookup_order first.&quot;,
+-    &quot;Only call lookup_order when the order number or the amount is missing or unclear, to find or confirm it &quot;
+-    &quot;before refunding.&quot;,
++    &quot;those, without calling lookup_order first, unless you still need to check whether the order has been &quot;
++    &quot;delivered yet.&quot;,
++    &quot;Only call lookup_order when the order number or the amount is missing or unclear, or when you need to &quot;
++    &quot;check whether the order has been delivered yet, to find or confirm it before refunding.&quot;,
+     &quot;When you call issue_refund, give a short reason for the refund in a few words, such as &#x27;arrived damaged&#x27;, &quot;
+     &quot;based on what the customer told you.&quot;,
+     &quot;If the customer is only asking where an order is, use get_order_status instead of lookup_order or issue_refund.&quot;,
+@@ -161,6 +162,11 @@ SYSTEM_RULES = [
+     &quot;another customer or any internal id. Don&#x27;t suggest the customer did anything wrong. Just let them know you &quot;
+     &quot;can&#x27;t apply it to their account and that you&#x27;ll get them sorted, and ask for whatever you need to find the &quot;
+     &quot;right order.&quot;,
++    # Shipped orders: a refund request before the order has even arrived
++    &quot;If a refund request is for an order that&#x27;s still shipped, not yet delivered, don&#x27;t issue the refund yet. &quot;
++    &quot;Reassure the customer it&#x27;s on its way, tell them when it was placed (the placed_on date), and let them &quot;
++    &quot;know they&#x27;re welcome to come back for a refund if it doesn&#x27;t turn up or they still don&#x27;t want it once it &quot;
++    &quot;arrives.&quot;,
+     # Refunds: what issue_refund can and can&#x27;t do
+     &quot;Never refund more than the order amount.&quot;,
+     &quot;You can only issue a refund, not send a replacement. If a replacement would make sense for what the &quot;</pre></details></div></section><section class="field"><h2>Ruling</h2><div class="body"><p class="empty">The owner has not been asked yet.</p></div></section><section class="field"><h2>Fix</h2><div class="body"><p class="empty">Not fixed yet.</p></div></section><section class="field"><h2>Damages</h2><div class="body"><p class="empty">Not counted yet.</p></div></section>
+<footer><p>Last good <span class="sha">4c5adbcc2b96</span>, first bad <span class="sha">df4f4fa601c6</span>, agent in <code>victims/refund-agent</code>.</p></footer>
+</main>
+</body>
+</html>

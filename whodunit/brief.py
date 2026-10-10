@@ -27,6 +27,7 @@ class Evidence:
     after: str = ""  # the changed code as it reads after the commit, with line numbers
     checkpoint: str | None = None
     request: str | None = None
+    message: str = ""  # the body of the culprit's commit message
     steps: list[dict] = field(default_factory=list)
     failing_run: dict | None = None  # {"trace_id", "commit", "input", "outline"}
     passing_run: dict | None = None
@@ -47,11 +48,29 @@ class Evidence:
         return ids
 
 
-def _match_run(runs: list[dict], replay: dict) -> dict | None:
-    """The neatroots run a replay produced: same commit, same input, started while the replay ran."""
+def _match_run(runs: list[dict], replay: dict, replays: list[dict] = ()) -> dict | None:
+    """The neatroots run a replay produced, by the replay's own tag when it has one.
+
+    Older records have no tags, and for those: same commit, same input, started while the replay
+    ran. Replays that ran side by side on one commit and one input cannot be told apart by time. If
+    they all ended the same way it does not matter which is which, and the closest one is taken.
+    """
+    if replay.get("tag"):
+        return next((r for r in runs if r.get("case") == replay["tag"]), None)
     start, end = replay["started"] * 1000 - 1500, (replay["started"] + replay["seconds"]) * 1000 + 1500
     hits = [r for r in runs if r["commit"] == replay["sha"] and r["input_preview"] == replay["input"] and start <= r["started_ms"] <= end]
-    return hits[0] if len(hits) == 1 else None
+    if len(hits) == 1:
+        return hits[0]
+    if not hits:
+        return None
+    beside = [
+        r for r in replays
+        if r["sha"] == replay["sha"] and r["input"] == replay["input"]
+        and r["started"] < replay["started"] + replay["seconds"] and replay["started"] < r["started"] + r["seconds"]
+    ]
+    if all(r["verdict"] == replay["verdict"] for r in beside):
+        return min(hits, key=lambda r: abs(r["started_ms"] - replay["started"] * 1000))
+    return None
 
 
 def gather(repo: str | Path, case_id: str, culprit: str, target: str, replays: list[dict], motive: Motive | None, mcp: Mcp | None, order: list[str] | None = None) -> Evidence:
@@ -68,7 +87,7 @@ def gather(repo: str | Path, case_id: str, culprit: str, target: str, replays: l
         diff = diff[:MAX_DIFF] + "\n[diff cut here]\n"
     evidence = Evidence(culprit=full, parent=parent, subject=subject, diff=diff, after=code_after(repo, full, target))
     if motive:
-        evidence.checkpoint, evidence.request = motive.checkpoint, motive.request
+        evidence.checkpoint, evidence.request, evidence.message = motive.checkpoint, motive.request, motive.message
         evidence.steps = [asdict(s) for s in motive.steps]
     if mcp is None:
         evidence.notes.append("neatroots was not asked for runs.")
@@ -81,14 +100,14 @@ def gather(repo: str | Path, case_id: str, culprit: str, target: str, replays: l
         rank.setdefault(parent, -1)
         failing = sorted((r for r in replays if r["verdict"] == "fail" and rank.get(r["sha"], -9) >= at), key=lambda r: rank[r["sha"]])
         for replay in failing:
-            run = _match_run(runs, replay)
+            run = _match_run(runs, replay, replays)
             if run is None:
                 continue
             passing = sorted(
                 (r for r in replays if r["verdict"] == "pass" and r["input"] == replay["input"] and -1 <= rank.get(r["sha"], -9) < at),
                 key=lambda r: -rank[r["sha"]],
             )
-            other = next((m for m in (_match_run(runs, r) for r in passing) if m), None)
+            other = next((m for m in (_match_run(runs, r, replays) for r in passing) if m), None)
             evidence.failing_run = {"trace_id": run["trace_id"], "commit": run["commit"], "input": replay["input"], "reason": replay["reason"],
                                     "outline": mcp.call("get_run_outline", trace_id=run["trace_id"])["outline"]}
             if other:
@@ -146,6 +165,7 @@ def prompt_for(evidence: Evidence, symptom: str) -> str:
         f"What the bisect measured: {evidence.measured or 'not recorded'}",
         f"Entire checkpoint: {evidence.checkpoint or 'none'}",
         f"What the coding agent was asked: {evidence.request or 'not recorded'}",
+        f"What the commit message says: {evidence.message or 'nothing beyond the subject'}",
         "Session steps between that request and the commit:\n" + ("\n".join(
             f"[{s['id']}] {s['kind']}{' ' + s['file'] if s.get('file') else ''}: {s['text'][:400]}" for s in evidence.steps[-25:]) or "none recorded"),
         "Diff of the culprit commit:\n" + evidence.diff,
@@ -184,6 +204,8 @@ def template_brief(evidence: Evidence, symptom: str) -> dict:
     if evidence.request and evidence.checkpoint:
         asked = evidence.request.strip().splitlines()[0][:200]
         sentences.append({"text": f"That commit came from a coding session that was asked: \"{asked}\"", "cites": [evidence.checkpoint]})
+    elif evidence.message:
+        sentences.append({"text": f"No coding session could be read for that commit. Its own message says: \"{evidence.message.splitlines()[0][:200]}\"", "cites": [culprit]})
     else:
         sentences.append({"text": "No coding session is recorded for that commit, so the request behind it is unknown.", "cites": [culprit]})
     if evidence.failing_run:

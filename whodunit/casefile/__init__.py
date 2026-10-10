@@ -130,9 +130,8 @@ def render(record: dict) -> str:
 
     # Motive
     if motive.get("request"):
-        who = escape(" ".join(x for x in (motive.get("agent"), f'({motive["model"]})' if motive.get("model") else "") if x) or "the coding agent")
         link = f' <a href="{escape(motive["link"])}">Open the checkpoint</a>' if motive.get("link") else ""
-        body = (f'<p>Someone asked {who} for this:</p>{_typed(motive["request"])}'
+        body = (f'<p>Someone asked the coding agent for this:</p>{_typed(motive["request"])}'
                 f'<p class="small">Entire checkpoint <span class="cite">{escape(motive.get("checkpoint") or "")}</span>, asked at {escape((motive.get("request_time") or "")[:16].replace("T", " "))} UTC.{link}</p>')
         steps = [s for s in motive.get("steps", []) if s["kind"] in ("said", "edited")][-6:]
         if steps:
@@ -142,6 +141,8 @@ def render(record: dict) -> str:
             body += f'<details><summary>What the coding agent did next</summary><ul class="steps">{lines}</ul></details>'
     elif motive:
         body = f'<p class="empty">{escape(motive.get("note") or "No request is recorded for this commit.")}</p>'
+        if motive.get("message"):
+            body += f'<p>All that is left is the commit\'s own message:</p>{_typed(motive["message"])}'
     else:
         body = '<p class="empty">Not looked up yet.</p>'
     parts.append(_field("Motive", body))
