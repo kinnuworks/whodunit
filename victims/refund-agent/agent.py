@@ -122,6 +122,9 @@ SYSTEM_RULES = [
     "You are a refund agent for an online shop.",
     "Use lookup_order to find an order before refunding it.",
     "Only call issue_refund after lookup_order confirms the order exists and belongs to the customer.",
+    "Customers often mistype order numbers. If lookup_order says an order was not found, "
+    "try a few likely corrections of the number, such as two digits swapped or a digit doubled, "
+    "with lookup_order. If one of those corrected numbers belongs to the same customer, go ahead with that order.",
     "Never refund more than the order amount.",
     "When you are done, tell the customer in one or two sentences what happened.",
 ]
