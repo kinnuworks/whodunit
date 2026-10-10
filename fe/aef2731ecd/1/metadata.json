@@ -1,0 +1,65 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "feaef2731ecd",
+  "session_id": "ab623eaf-f207-4102-9002-9ee611c73914",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-10T19:48:11.079936Z",
+  "branch": "whodunit/strangers-paid",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "victims/refund-agent/agent.py"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "af27dffb7d0d",
+  "checkpoint_transcript_start": 98,
+  "transcript_lines_at_start": 98,
+  "compact_transcript_start": 10,
+  "token_usage": {
+    "input_tokens": 6,
+    "cache_creation_tokens": 17678,
+    "cache_read_tokens": 426962,
+    "output_tokens": 4924,
+    "api_call_count": 3,
+    "subagent_tokens": {
+      "input_tokens": 26,
+      "cache_creation_tokens": 207448,
+      "cache_read_tokens": 834651,
+      "output_tokens": 5302,
+      "api_call_count": 13
+    }
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-10T19:48:10.755478Z",
+    "agent_lines": 2,
+    "agent_removed": 26,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 2,
+    "total_lines_changed": 28,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 180,
+      "user_lines_removed": 29,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "CLAUDE.md": 1,
+        "tests/test_closing.py": 41,
+        "whodunit/casefile/__init__.py": 14,
+        "whodunit/cli.py": 121,
+        "whodunit/fix.py": 3
+      },
+      "user_removed_per_file": {
+        "tests/test_closing.py": 1,
+        "whodunit/cli.py": 27,
+        "whodunit/fix.py": 1
+      }
+    }
+  ]
+}
