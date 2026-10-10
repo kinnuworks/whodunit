@@ -1,0 +1,1 @@
+Hey, in victims/refund-agent the orders live in a dict right inside agent.py. Could you move ORDERS out into an orders.json file next to agent.py and load it at startup? Keep the same data and keep lookup_order working the same. Check agent.py still compiles and that a quick import works, then commit.
