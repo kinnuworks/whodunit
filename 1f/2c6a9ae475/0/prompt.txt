@@ -1,0 +1,1 @@
+victims/refund-agent: add a .gitignore in the folder for __pycache__/ and .venv/ so they stop showing up. Commit.
