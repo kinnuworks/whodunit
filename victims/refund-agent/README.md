@@ -13,7 +13,11 @@ neatroots mock-llm                                              # in another ter
 uv run agent.py "Please refund order 1001 for customer cust_9."
 ```
 
-Open http://localhost:4100 to see the run. Add `--json` to get the reply and the refunds paid out as one line of JSON.
+Open http://localhost:4100 to see the run. Add `--json` to get the reply and the refunds paid out as one line of JSON. With `REFUND_LLM=fake` and the command above:
+
+```json
+{"request": "Please refund order 1001 for customer cust_9.", "reply": "Order 1001 has been refunded in full: 42.00.", "refunds": [{"refunded": 42, "order_id": "1001", "reason": "customer request"}], "model": "fake", "model_calls": 3}
+```
 
 The orders live in `orders.json`, keyed by order id. It currently has 1001, 1002, 6006 and 7007 (customer `cust_9`), 2002 (`cust_4`), 3003 (`cust_7`), 4004 (`cust_2`, EUR), 5005 (`cust_3`), 8008 (`cust_6`) and 9009 (`cust_5`). Each order has an id, owner, amount, currency, status, and placed_on date. Any other order id comes back as a 404 from the lookup tool.
 
