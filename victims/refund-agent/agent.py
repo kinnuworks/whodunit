@@ -5,7 +5,7 @@ original: steering is removed, the model and the trace destination are each one
 setting, replays read their input from neatroots, and every run is tagged with
 the commit it ran on.
 
-    uv run agent.py "Please refund order 1001 for customer cust_9."
+    uv run agent.py "{example}"
     REFUND_LLM=gateway uv run agent.py "..."     # the hackathon gateway
     TRACE_TO=neatlogs uv run agent.py "..."      # send the trace to neatlogs cloud
     uv run agent.py "..." --quiet                # skip printing the reply, keep only the trace
@@ -25,6 +25,10 @@ import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
+
+DEFAULT_REQUEST = "Please refund order 1001 for customer cust_9."
+
+__doc__ = __doc__.format(example=DEFAULT_REQUEST)
 
 HERE = Path(__file__).resolve().parent
 
@@ -259,7 +263,7 @@ def run(request: str, max_steps: int = 3):
 
 if __name__ == "__main__":
     args = [a for a in sys.argv[1:] if a not in ("--json", "--quiet")]
-    request = os.environ.get("NEATROOTS_REPLAY_INPUT") or " ".join(args) or "Please refund order 1001 for customer cust_9."
+    request = os.environ.get("NEATROOTS_REPLAY_INPUT") or " ".join(args) or DEFAULT_REQUEST
     try:
         reply = run(request)
         if "--json" in sys.argv:
