@@ -1,0 +1,132 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "479d67dabb25",
+  "session_id": "d1722531-fd19-41ec-9e89-c3cbe406e10c",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-10T15:36:46.344536Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "README.md"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "cec4efa22fc0",
+  "checkpoint_transcript_start": 742,
+  "transcript_lines_at_start": 742,
+  "compact_transcript_start": 114,
+  "token_usage": {
+    "input_tokens": 46,
+    "cache_creation_tokens": 39463,
+    "cache_read_tokens": 8381592,
+    "output_tokens": 27814,
+    "api_call_count": 23
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_018Qm4kKricuddnfpEDqLYrr",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "neatroots-instrument-agent"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "2ede71b9f85a",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 59,
+        "end": 60,
+        "entry_ids": [
+          "7405c011-ac34-45bb-9eab-bb95fdcd1047"
+        ],
+        "tool_use_id": "toolu_018Qm4kKricuddnfpEDqLYrr"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_018Qm4kKricuddnfpEDqLYrr"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: neatroots-instrument-agent",
+        "default_collapsed": true
+      }
+    },
+    {
+      "id": "claude-skill-toolu_01DU3BU8hUEJGXDtcwmK2qR2",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "dataviz"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "a0c1a1c38787",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 398,
+        "end": 399,
+        "entry_ids": [
+          "1079c495-783d-4e73-a10d-f4285b28c51c"
+        ],
+        "tool_use_id": "toolu_01DU3BU8hUEJGXDtcwmK2qR2"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01DU3BU8hUEJGXDtcwmK2qR2"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: dataviz",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 4
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-10T15:36:44.953193Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 899,
+    "human_modified": 5,
+    "human_removed": 0,
+    "total_committed": 899,
+    "total_lines_changed": 930,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 375,
+      "user_lines_removed": 5,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "CLAUDE.md": 1,
+        "README.md": 80,
+        "eval/score.py": 85,
+        "hackathon.md": 1,
+        "tests/test_closing.py": 1,
+        "tests/test_onset.py": 43,
+        "whodunit/brief.py": 25,
+        "whodunit/cli.py": 38,
+        "whodunit/onset.py": 99,
+        "whodunit/ruling.py": 2
+      },
+      "user_removed_per_file": {
+        "hackathon.md": 1,
+        "tests/test_closing.py": 1,
+        "whodunit/brief.py": 1,
+        "whodunit/ruling.py": 2
+      }
+    }
+  ]
+}

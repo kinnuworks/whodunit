@@ -1,0 +1,17 @@
+<task-notification>
+<task-id>b3xxn4pub</task-id>
+<tool-use-id>toolu_015KrWsHDizqsg8tR46WGPTb</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-kinnu-neathack/d1722531-fd19-41ec-9e89-c3cbe406e10c/tasks/b3xxn4pub.output</output-file>
+<status>completed</status>
+<summary>Background command "Restart the flaky-bug run with shared environments across worktrees" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>b9ru2czgh</task-id>
+<tool-use-id>toolu_01DbjBAPqzfBJokBQsy2v98X</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-kinnu-neathack/d1722531-fd19-41ec-9e89-c3cbe406e10c/tasks/b9ru2czgh.output</output-file>
+<status>completed</status>
+<summary>Background command "Render the case file page to an image with headless Chrome" completed (exit code 0)</summary>
+</task-notification>
