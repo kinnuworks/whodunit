@@ -1,0 +1,66 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "feaef2731ecd",
+  "session_id": "6773d5e2-ac09-4fd1-bef6-6c2f9e998b41",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-10T19:48:02.020686Z",
+  "branch": "whodunit/strangers-paid",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "victims/refund-agent/agent.py"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "86b052235406",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 0,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 0,
+    "api_call_count": 0
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-10T19:48:01.847301Z",
+    "agent_lines": 2,
+    "agent_removed": 26,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 2,
+    "total_lines_changed": 28,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 308,
+      "user_lines_removed": 35,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "CLAUDE.md": 1,
+        "cases/strangers-paid.record.json": 21,
+        "cases/turned-away.casefile.html": 1,
+        "cases/turned-away.record.json": 80,
+        "cases/turned-away.toml": 2,
+        "rulings/prompt.json": 8,
+        "tests/test_closing.py": 41,
+        "whodunit/casefile/__init__.py": 14,
+        "whodunit/cli.py": 128,
+        "whodunit/fix.py": 3,
+        "whodunit/replay.py": 6,
+        "whodunit/ruling.py": 3
+      },
+      "user_removed_per_file": {
+        "cases/turned-away.casefile.html": 1,
+        "tests/test_closing.py": 1,
+        "whodunit/cli.py": 28,
+        "whodunit/fix.py": 1,
+        "whodunit/replay.py": 1,
+        "whodunit/ruling.py": 3
+      }
+    }
+  ]
+}
