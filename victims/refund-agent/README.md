@@ -51,6 +51,14 @@ neatroots replay <trace-id> --input "Please refund order 1002 for customer cust_
 
 During a replay neatroots sets `NEATROOTS_REPLAY_INPUT`, and the agent uses it in place of the command line.
 
+## Troubleshooting
+
+**Connection refused on port 4100.** neatroots is not running. Start it with `neatroots start` in another terminal before running the agent or a replay.
+
+**Missing LITELLM keys.** `REFUND_LLM=gateway` needs `LITELLM_BASE_URL` and `LITELLM_API_KEY` in `.env` at the repo root. Without them the gateway call fails before it reaches the model. Check the keys are in `.env`, not the shell that launches the agent, since `.env` is read from the repo root by the agent itself.
+
+**The mock LLM ignores the refund rules.** This is expected, not a bug. `REFUND_LLM=mock` calls a tool by keyword and does not check that the order belongs to the customer or exists at all. Use `REFUND_LLM=fake` (`uv run python fake_llm.py`) for a model that follows the rules the same way every time, or `gateway`/`own` for a real model.
+
 ## Changes from the neatroots example
 
 - Steering (`neatroots_steer`) is removed, so nothing alters what the model receives between runs.
