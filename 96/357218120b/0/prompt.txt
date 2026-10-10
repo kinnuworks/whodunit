@@ -1,0 +1,1 @@
+victims/refund-agent: the model call has no timeout, so if the gateway hangs a run just sits there. Give the OpenAI client a sensible timeout and let it retry a couple of times on transient errors. Check agent.py still compiles, then commit.
