@@ -1,11 +1,13 @@
 """The lineup: narrowing the suspects down to one commit.
 
-For now this holds plain bisect, which is right when the bug fails every time. It is also the
-baseline the statistical bisect gets compared against.
+Plain bisect is right when the bug fails every time, and is the baseline. The statistical
+bisect further down is for bugs that fail only some of the time.
 """
 
+import math
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass, field
-from typing import Callable
+from typing import Callable, Sequence
 
 PASS, FAIL, SKIP = "pass", "fail", "skip"
 
@@ -15,6 +17,10 @@ class Lineup:
     culprit: int | None  # index into the suspects, or None if skips left more than one
     remaining: list[int]  # the suspects that could still be the first bad commit
     tested: list[tuple[int, str]] = field(default_factory=list)  # (index, verdict) in the order they ran
+    posterior: list[float] | None = None  # P(first bad) per suspect, from the statistical bisect
+    replays: int | None = None  # replays that returned a verdict
+    rates: tuple[float, float] | None = None  # estimated failure rate before and from the top suspect
+    note: str = ""  # why nobody was named, when the evidence itself was the problem
 
 
 def plain_bisect(count: int, test: Callable[[int], str]) -> Lineup:
@@ -52,3 +58,188 @@ def linear_scan_cost(culprit: int) -> int:
     """How many commits a scan from the oldest suspect tests before it meets the culprit."""
     return culprit + 1
 
+
+
+# The statistical bisect, for bugs that fail only some of the time.
+#
+# One change point c: every suspect before c fails at rate p_good, and c and everything after
+# it fails at rate p_bad. Neither rate is known. Both get a Beta prior, and because a Beta prior
+# with pass and fail counts integrates in closed form, the probability of the evidence under
+# "c is the first bad commit" is exact. No sampling and no model.
+
+GOOD_PRIOR = (0.5, 9.5)  # Beta prior on the failure rate before the change: about 5%, loosely held
+BAD_PRIOR = (1.0, 1.0)  # and from the change onward: anything from rare to always
+
+
+def _log_beta(a: float, b: float) -> float:
+    return math.lgamma(a) + math.lgamma(b) - math.lgamma(a + b)
+
+
+def _entropy(q: float) -> float:
+    return 0.0 if q <= 0.0 or q >= 1.0 else -(q * math.log(q) + (1.0 - q) * math.log(1.0 - q))
+
+
+class ChangePoint:
+    """What the replays so far say about which suspect is the first bad one.
+
+    Position -1 is the last good ref. Positions 0 to count-1 are the suspects, oldest first,
+    and the last of them is the bad ref.
+    """
+
+    def __init__(self, count: int, priors: Sequence[float] | None = None, good_prior=GOOD_PRIOR, bad_prior=BAD_PRIOR):
+        self.good_prior, self.bad_prior = good_prior, bad_prior
+        if count < 1:
+            raise ValueError("there are no suspects")
+        self.count = count
+        weights = list(priors) if priors is not None else [1.0] * count
+        if len(weights) != count or min(weights) < 0 or sum(weights) <= 0:
+            raise ValueError("priors must be one weight per suspect, none negative")
+        self.log_prior = [math.log(w) if w > 0 else -math.inf for w in weights]
+        self.fails = [0] * (count + 1)  # slot 0 is the good ref
+        self.passes = [0] * (count + 1)
+
+    def observe(self, position: int, failed: bool) -> None:
+        (self.fails if failed else self.passes)[position + 1] += 1
+
+    @property
+    def replays(self) -> int:
+        return sum(self.fails) + sum(self.passes)
+
+    def _sides(self):
+        """For each suspect c: fails and passes on the good side and on the bad side, if c is the first bad one."""
+        total_f, total_p = sum(self.fails), sum(self.passes)
+        good_f, good_p = self.fails[0], self.passes[0]
+        for c in range(self.count):
+            yield good_f, good_p, total_f - good_f, total_p - good_p
+            good_f += self.fails[c + 1]
+            good_p += self.passes[c + 1]
+
+    def posterior(self) -> list[float]:
+        """P(suspect i is the first bad commit), for each suspect."""
+        (ga, gb), (ba, bb) = self.good_prior, self.bad_prior
+        logs = [
+            self.log_prior[c] + _log_beta(ga + gf, gb + gp) + _log_beta(ba + bf, bb + bp)
+            for c, (gf, gp, bf, bp) in enumerate(self._sides())
+        ]
+        top = max(logs)
+        weights = [math.exp(v - top) for v in logs]
+        norm = sum(weights)
+        return [w / norm for w in weights]
+
+    def rates(self, culprit: int | None = None) -> list[tuple[float, float]] | tuple[float, float]:
+        """Posterior mean failure rate (before, from) each suspect, or for one suspect."""
+        (ga, gb), (ba, bb) = self.good_prior, self.bad_prior
+        every = [((ga + gf) / (ga + gb + gf + gp), (ba + bf) / (ba + bb + bf + bp)) for gf, gp, bf, bp in self._sides()]
+        return every if culprit is None else every[culprit]
+
+    def pick(self, posterior: Sequence[float], skipped: set[int] = frozenset(), how: str = "gain") -> int | None:
+        """Which suspect to replay next. The last suspect is never picked, since it is bad either way.
+
+        "gain" picks the replay expected to tell us the most about which suspect is the first bad
+        one (the mutual information between its outcome and c). "split" picks the suspect that
+        divides the posterior mass most evenly, as plain bisect does. A pass at a commit that
+        fails 30% of the time says little and a failure says a lot, which "gain" accounts for.
+        In simulation the two end up close; see eval/simulator/README.md.
+        """
+        if how == "split":
+            best, best_gap, mass = None, None, 0.0
+            for i in range(self.count - 1):
+                mass += posterior[i]
+                if i in skipped:
+                    continue
+                gap = abs(mass - 0.5)
+                if best_gap is None or gap < best_gap:
+                    best, best_gap = i, gap
+            return best
+        rates = self.rates()
+        # Replaying suspect i fails at the bad rate if c <= i and at the good rate if c > i.
+        later_q = [0.0] * (self.count + 1)  # sum over c > i of P(c) * good rate
+        later_h = [0.0] * (self.count + 1)
+        for c in range(self.count - 1, -1, -1):
+            later_q[c] = later_q[c + 1] + posterior[c] * rates[c][0]
+            later_h[c] = later_h[c + 1] + posterior[c] * _entropy(rates[c][0])
+        best, best_gain, q, h = None, -1.0, 0.0, 0.0
+        for i in range(self.count - 1):
+            q += posterior[i] * rates[i][1]
+            h += posterior[i] * _entropy(rates[i][1])
+            if i in skipped:
+                continue
+            gain = _entropy(q + later_q[i + 1]) - (h + later_h[i + 1])
+            if gain > best_gain:
+                best, best_gain = i, gain
+        return best
+
+def statistical_bisect(
+    count: int,
+    trial: Callable[[int], str],
+    budget: int,
+    priors: Sequence[float] | None = None,
+    confidence: float = 0.95,
+    warmup: int = 6,
+    parallel: int = 1,
+    how: str = "gain",
+    good_prior: tuple[float, float] = GOOD_PRIOR,
+    bad_prior: tuple[float, float] = BAD_PRIOR,
+    on_round: Callable[[list[int], list[str], list[float]], None] | None = None,
+) -> Lineup:
+    """Find the first bad suspect when a bad commit only fails some of the time.
+
+    `trial(position)` runs one replay and returns pass, fail or skip. Position -1 is the good
+    ref. `budget` is the most replays to spend, counting the warm-up runs at both ends. Stops
+    when one suspect holds `confidence` of the posterior, or when the budget is gone, in which
+    case `remaining` lists the suspects still in play, most likely first.
+    """
+    state = ChangePoint(count, priors, good_prior, bad_prior)
+    tested: list[tuple[int, str]] = []
+    skipped: set[int] = set()
+    bad = count - 1
+
+    def run(positions: list[int]) -> list[str]:
+        positions = positions[: max(0, budget - state.replays)]
+        if parallel > 1 and len(positions) > 1:
+            with ThreadPoolExecutor(max_workers=parallel) as pool:
+                verdicts = list(pool.map(trial, positions))
+        else:
+            verdicts = [trial(p) for p in positions]
+        for position, verdict in zip(positions, verdicts):
+            tested.append((position, verdict))
+            if verdict == SKIP:
+                skipped.add(position)
+            else:
+                state.observe(position, verdict == FAIL)
+        if on_round and positions:
+            on_round(positions, verdicts, state.posterior())
+        return verdicts
+
+    def finish(note: str = "") -> Lineup:
+        posterior = state.posterior()
+        ranked = sorted(range(count), key=lambda i: -posterior[i])
+        top = ranked[0]
+        named = top if posterior[top] >= confidence and not note else None
+        remaining = [top] if named is not None else [i for i in ranked if posterior[i] >= 0.01]
+        return Lineup(
+            culprit=named, remaining=remaining, tested=tested, posterior=posterior,
+            replays=state.replays, rates=state.rates(top), note=note,
+        )
+
+    # Warm up at both ends, so the two failure rates start from evidence.
+    warmup = max(1, min(warmup, budget // 4))
+    run([-1, bad] * warmup)
+    if -1 in skipped or bad in skipped:
+        return finish("the good ref or the bad ref will not build")
+    extra = 0
+    while state.fails[bad + 1] == 0 and extra < 2 * warmup and state.replays < budget:
+        run([bad] * max(1, parallel))  # a rare failure may simply not have shown yet
+        extra += max(1, parallel)
+    if state.fails[bad + 1] == 0:
+        return finish(f"the bad ref passed all {state.passes[bad + 1]} of its replays")
+
+    while state.replays < budget:
+        posterior = state.posterior()
+        if max(posterior) >= confidence:
+            break
+        position = state.pick(posterior, skipped, how)
+        if position is None:
+            break
+        run([position] * max(1, parallel))
+    return finish()

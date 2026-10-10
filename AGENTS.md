@@ -43,7 +43,7 @@ Python 3.12 through uv, in one repo.
 
 ### The statistical bisect
 
-Model a single change point c. The failure rate is p_good before c and p_bad from c onward. Estimate both rates by running the two endpoints several times and keeping Beta posteriors. Hold a posterior over c. Each round, test the commit that splits the posterior mass most evenly and update with the Bernoulli outcome. Stop at 95% on one commit or when the replay budget runs out, and in the second case report the remaining suspects with their probabilities.
+Model a single change point c. The failure rate is p_good before c and p_bad from c onward. Estimate both rates by running the two endpoints several times and keeping Beta posteriors. Hold a posterior over c. Each round, replay the commit with the highest expected information gain and update with the Bernoulli outcome. The even split is kept as an option and does about as well. The prior on the good rate is about 5%, loosely held, which matters far more than the choice of picker. Stop at 95% on one commit or when the replay budget runs out, and in the second case report the remaining suspects with their probabilities.
 
 Unit-test it against a simulator. Publish the curve of accuracy against replay budget, next to plain bisect, at failure rates from 100% down to 20%.
 
@@ -54,7 +54,7 @@ Unit-test it against a simulator. Publish the curve of accuracy against replay b
 Version 0.2.6 is installed at `~/.local/bin/neatroots` and serves on port 4100. It is a local collector with checks and replay, and its MCP endpoint is `http://localhost:4100/mcp`.
 
 - Whole-agent replay: `neatroots rerun add <project> "<command>" --cwd <dir>`, then `neatroots replay <trace-id> [--input ...]`. The agent receives `NEATROOTS_REPLAY_INPUT`, `NEATROOTS_REPLAY_ID` and `NEATLOGS_ENDPOINT`.
-- Checks are YAML files in `.neatroots/checks/`. The `rule` kinds (repeat, errors, count, threshold, match, run_end) need no model. `yes_no` questions return a probability and need neatroots' local model, which is not installed on this machine, so use rule checks.
+- Checks are YAML files in `.neatroots/checks/`. The `rule` kinds (repeat, errors, count, threshold, match, run_end) need no model. `yes_no` questions return a probability and need neatroots' local model. On the evening of 10 October that model was found switched on (`qwen2.5:3b-16k` through Ollama on port 11434), and the built-in `ignored-tool-error` check now runs it on incoming runs. A burst of replays therefore queues model work on this machine, so keep replays to two or three at a time while it is on.
 - `neatroots mock-llm` is a key-free stand-in LLM on port 4110.
 - `neatroots status` reports "cloud no key", so importing cloud traces needs the project key configured first.
 - MCP tools used here: `search_runs`, `get_run_outline`, `list_findings`, `compare_runs`, `rerun`, `replay`, `query_sql`, `import_cloud_trace`.

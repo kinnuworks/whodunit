@@ -1,0 +1,430 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1056 598" width="1056" height="598" role="img" aria-label="How often the right commit is named. 40 suspects, 500 simulated cases per point. Good commits fail 5% of the time on their own.">
+<style>
+  .paper { fill: #F3EDDF; } .ink { fill: #201B15; } .muted { fill: #6B6156; }
+  .rule { stroke: #D8CDB6; stroke-width: 1; } .axis { stroke: #6B6156; stroke-width: 1; }
+  .title { font: 400 27px 'Young Serif', Georgia, serif; }
+  .sub, .panel, .tick, .legend { font-family: 'Alegreya Sans', 'Gill Sans', 'Trebuchet MS', sans-serif; }
+  .sub { font-size: 15px; } .panel { font-size: 15px; font-weight: 700; } .tick { font-size: 13px; } .legend { font-size: 15px; }
+  .line { fill: none; stroke-linejoin: round; stroke-linecap: round; }
+  .s-named { stroke: #B4261F; stroke-width: 2.5; }
+  .s-top { stroke: #B4261F; stroke-width: 1.5; stroke-dasharray: 5 4; }
+  .s-repeat { stroke: #201B15; stroke-width: 2; }
+  .s-once { stroke: #6B6156; stroke-width: 2; stroke-dasharray: 1 5; }
+  .hit { fill: transparent; }
+  @media (prefers-color-scheme: dark) {
+    .paper { fill: #1B1714; } .ink { fill: #EDE4D3; } .muted { fill: #A3978A; }
+    .rule { stroke: #3A3128; } .axis { stroke: #A3978A; }
+    .s-named, .s-top { stroke: #E5604F; } .s-repeat { stroke: #EDE4D3; } .s-once { stroke: #A3978A; }
+  }
+</style>
+<rect class="paper" width="1056" height="598"/>
+<text class="title ink" x="64" y="48">How often the right commit is named</text>
+<text class="sub muted" x="64" y="74">40 suspects, 500 simulated cases per point. Good commits fail 5% of the time on their own.</text>
+<line class="line s-named" x1="64" y1="100" x2="98" y2="100"/>
+<text class="legend ink" x="108" y="105">Statistical bisect, named at 95% and right</text>
+<line class="line s-top" x1="534" y1="100" x2="568" y2="100"/>
+<text class="legend ink" x="578" y="105">Statistical bisect, top suspect is right</text>
+<line class="line s-repeat" x1="64" y1="124" x2="98" y2="124"/>
+<text class="legend ink" x="108" y="129">Plain bisect, repeats to fill the budget</text>
+<line class="line s-once" x1="534" y1="124" x2="568" y2="124"/>
+<text class="legend ink" x="578" y="129">Plain bisect, one replay per commit</text>
+<g transform="translate(64,180)">
+<text class="panel ink" x="0" y="-14">The bug fails 100% of the time</text>
+<line class="rule" x1="0" y1="150.0" x2="280" y2="150.0"/>
+<text class="tick muted" x="-8" y="154.0" text-anchor="end">0%</text>
+<line class="rule" x1="0" y1="75.0" x2="280" y2="75.0"/>
+<text class="tick muted" x="-8" y="79.0" text-anchor="end">50%</text>
+<line class="rule" x1="0" y1="0.0" x2="280" y2="0.0"/>
+<text class="tick muted" x="-8" y="4.0" text-anchor="end">100%</text>
+<line class="axis" x1="0" y1="150" x2="280" y2="150"/>
+<line class="axis" x1="0.0" y1="150" x2="0.0" y2="154"/>
+<text class="tick muted" x="0.0" y="169" text-anchor="middle">10</text>
+<line class="axis" x1="56.0" y1="150" x2="56.0" y2="154"/>
+<text class="tick muted" x="56.0" y="169" text-anchor="middle">20</text>
+<line class="axis" x1="112.0" y1="150" x2="112.0" y2="154"/>
+<text class="tick muted" x="112.0" y="169" text-anchor="middle">40</text>
+<line class="axis" x1="168.0" y1="150" x2="168.0" y2="154"/>
+<text class="tick muted" x="168.0" y="169" text-anchor="middle">80</text>
+<line class="axis" x1="224.0" y1="150" x2="224.0" y2="154"/>
+<text class="tick muted" x="224.0" y="169" text-anchor="middle">160</text>
+<line class="axis" x1="280.0" y1="150" x2="280.0" y2="154"/>
+<text class="tick muted" x="280.0" y="169" text-anchor="middle">320</text>
+<path class="line s-once" d="M0.0,19.5 L56.0,20.4 L88.8,21.0 L112.0,22.8 L144.8,24.0 L168.0,24.0 L200.8,21.9 L224.0,21.3 L256.8,20.4 L280.0,19.5"/>
+<path class="line s-repeat" d="M0.0,22.2 L56.0,54.3 L88.8,75.0 L112.0,80.4 L144.8,109.5 L168.0,117.0 L200.8,134.1 L224.0,137.1 L256.8,141.9 L280.0,145.2"/>
+<path class="line s-top" d="M0.0,33.6 L56.0,11.7 L88.8,1.5 L112.0,2.1 L144.8,0.6 L168.0,0.6 L200.8,2.7 L224.0,0.9 L256.8,0.9 L280.0,2.4"/>
+<path class="line s-named" d="M0.0,146.1 L56.0,37.5 L88.8,4.8 L112.0,2.1 L144.8,0.6 L168.0,0.6 L200.8,2.7 L224.0,0.9 L256.8,0.9 L280.0,2.4"/>
+<circle class="hit" cx="0.0" cy="146.1" r="7"><title>Statistical bisect, named at 95% and right: 3% at 10 replays, 0% wrong accusations</title></circle>
+<circle class="hit" cx="56.0" cy="37.5" r="7"><title>Statistical bisect, named at 95% and right: 75% at 20 replays, 0% wrong accusations</title></circle>
+<circle class="hit" cx="88.8" cy="4.8" r="7"><title>Statistical bisect, named at 95% and right: 97% at 30 replays, 1% wrong accusations</title></circle>
+<circle class="hit" cx="112.0" cy="2.1" r="7"><title>Statistical bisect, named at 95% and right: 99% at 40 replays, 1% wrong accusations</title></circle>
+<circle class="hit" cx="144.8" cy="0.6" r="7"><title>Statistical bisect, named at 95% and right: 100% at 60 replays, 0% wrong accusations</title></circle>
+<circle class="hit" cx="168.0" cy="0.6" r="7"><title>Statistical bisect, named at 95% and right: 100% at 80 replays, 0% wrong accusations</title></circle>
+<circle class="hit" cx="200.8" cy="2.7" r="7"><title>Statistical bisect, named at 95% and right: 98% at 120 replays, 2% wrong accusations</title></circle>
+<circle class="hit" cx="224.0" cy="0.9" r="7"><title>Statistical bisect, named at 95% and right: 99% at 160 replays, 1% wrong accusations</title></circle>
+<circle class="hit" cx="256.8" cy="0.9" r="7"><title>Statistical bisect, named at 95% and right: 99% at 240 replays, 1% wrong accusations</title></circle>
+<circle class="hit" cx="280.0" cy="2.4" r="7"><title>Statistical bisect, named at 95% and right: 98% at 320 replays, 2% wrong accusations</title></circle>
+<circle class="hit" cx="0.0" cy="33.6" r="7"><title>Statistical bisect, top suspect is right: 78% at 10 replays</title></circle>
+<circle class="hit" cx="56.0" cy="11.7" r="7"><title>Statistical bisect, top suspect is right: 92% at 20 replays</title></circle>
+<circle class="hit" cx="88.8" cy="1.5" r="7"><title>Statistical bisect, top suspect is right: 99% at 30 replays</title></circle>
+<circle class="hit" cx="112.0" cy="2.1" r="7"><title>Statistical bisect, top suspect is right: 99% at 40 replays</title></circle>
+<circle class="hit" cx="144.8" cy="0.6" r="7"><title>Statistical bisect, top suspect is right: 100% at 60 replays</title></circle>
+<circle class="hit" cx="168.0" cy="0.6" r="7"><title>Statistical bisect, top suspect is right: 100% at 80 replays</title></circle>
+<circle class="hit" cx="200.8" cy="2.7" r="7"><title>Statistical bisect, top suspect is right: 98% at 120 replays</title></circle>
+<circle class="hit" cx="224.0" cy="0.9" r="7"><title>Statistical bisect, top suspect is right: 99% at 160 replays</title></circle>
+<circle class="hit" cx="256.8" cy="0.9" r="7"><title>Statistical bisect, top suspect is right: 99% at 240 replays</title></circle>
+<circle class="hit" cx="280.0" cy="2.4" r="7"><title>Statistical bisect, top suspect is right: 98% at 320 replays</title></circle>
+<circle class="hit" cx="0.0" cy="22.2" r="7"><title>Plain bisect, repeats to fill the budget: 85% at 10 replays, 15% wrong accusations</title></circle>
+<circle class="hit" cx="56.0" cy="54.3" r="7"><title>Plain bisect, repeats to fill the budget: 64% at 20 replays, 36% wrong accusations</title></circle>
+<circle class="hit" cx="88.8" cy="75.0" r="7"><title>Plain bisect, repeats to fill the budget: 50% at 30 replays, 50% wrong accusations</title></circle>
+<circle class="hit" cx="112.0" cy="80.4" r="7"><title>Plain bisect, repeats to fill the budget: 46% at 40 replays, 54% wrong accusations</title></circle>
+<circle class="hit" cx="144.8" cy="109.5" r="7"><title>Plain bisect, repeats to fill the budget: 27% at 60 replays, 73% wrong accusations</title></circle>
+<circle class="hit" cx="168.0" cy="117.0" r="7"><title>Plain bisect, repeats to fill the budget: 22% at 80 replays, 78% wrong accusations</title></circle>
+<circle class="hit" cx="200.8" cy="134.1" r="7"><title>Plain bisect, repeats to fill the budget: 11% at 120 replays, 89% wrong accusations</title></circle>
+<circle class="hit" cx="224.0" cy="137.1" r="7"><title>Plain bisect, repeats to fill the budget: 9% at 160 replays, 91% wrong accusations</title></circle>
+<circle class="hit" cx="256.8" cy="141.9" r="7"><title>Plain bisect, repeats to fill the budget: 5% at 240 replays, 95% wrong accusations</title></circle>
+<circle class="hit" cx="280.0" cy="145.2" r="7"><title>Plain bisect, repeats to fill the budget: 3% at 320 replays, 97% wrong accusations</title></circle>
+<circle class="hit" cx="0.0" cy="19.5" r="7"><title>Plain bisect, one replay per commit: 87% at 10 replays, 13% wrong accusations</title></circle>
+<circle class="hit" cx="56.0" cy="20.4" r="7"><title>Plain bisect, one replay per commit: 86% at 20 replays, 14% wrong accusations</title></circle>
+<circle class="hit" cx="88.8" cy="21.0" r="7"><title>Plain bisect, one replay per commit: 86% at 30 replays, 14% wrong accusations</title></circle>
+<circle class="hit" cx="112.0" cy="22.8" r="7"><title>Plain bisect, one replay per commit: 85% at 40 replays, 15% wrong accusations</title></circle>
+<circle class="hit" cx="144.8" cy="24.0" r="7"><title>Plain bisect, one replay per commit: 84% at 60 replays, 16% wrong accusations</title></circle>
+<circle class="hit" cx="168.0" cy="24.0" r="7"><title>Plain bisect, one replay per commit: 84% at 80 replays, 16% wrong accusations</title></circle>
+<circle class="hit" cx="200.8" cy="21.9" r="7"><title>Plain bisect, one replay per commit: 85% at 120 replays, 15% wrong accusations</title></circle>
+<circle class="hit" cx="224.0" cy="21.3" r="7"><title>Plain bisect, one replay per commit: 86% at 160 replays, 14% wrong accusations</title></circle>
+<circle class="hit" cx="256.8" cy="20.4" r="7"><title>Plain bisect, one replay per commit: 86% at 240 replays, 14% wrong accusations</title></circle>
+<circle class="hit" cx="280.0" cy="19.5" r="7"><title>Plain bisect, one replay per commit: 87% at 320 replays, 13% wrong accusations</title></circle>
+</g>
+<g transform="translate(400,180)">
+<text class="panel ink" x="0" y="-14">The bug fails 80% of the time</text>
+<line class="rule" x1="0" y1="150.0" x2="280" y2="150.0"/>
+<text class="tick muted" x="-8" y="154.0" text-anchor="end">0%</text>
+<line class="rule" x1="0" y1="75.0" x2="280" y2="75.0"/>
+<text class="tick muted" x="-8" y="79.0" text-anchor="end">50%</text>
+<line class="rule" x1="0" y1="0.0" x2="280" y2="0.0"/>
+<text class="tick muted" x="-8" y="4.0" text-anchor="end">100%</text>
+<line class="axis" x1="0" y1="150" x2="280" y2="150"/>
+<line class="axis" x1="0.0" y1="150" x2="0.0" y2="154"/>
+<text class="tick muted" x="0.0" y="169" text-anchor="middle">10</text>
+<line class="axis" x1="56.0" y1="150" x2="56.0" y2="154"/>
+<text class="tick muted" x="56.0" y="169" text-anchor="middle">20</text>
+<line class="axis" x1="112.0" y1="150" x2="112.0" y2="154"/>
+<text class="tick muted" x="112.0" y="169" text-anchor="middle">40</text>
+<line class="axis" x1="168.0" y1="150" x2="168.0" y2="154"/>
+<text class="tick muted" x="168.0" y="169" text-anchor="middle">80</text>
+<line class="axis" x1="224.0" y1="150" x2="224.0" y2="154"/>
+<text class="tick muted" x="224.0" y="169" text-anchor="middle">160</text>
+<line class="axis" x1="280.0" y1="150" x2="280.0" y2="154"/>
+<text class="tick muted" x="280.0" y="169" text-anchor="middle">320</text>
+<path class="line s-once" d="M0.0,75.6 L56.0,74.7 L88.8,77.1 L112.0,77.4 L144.8,77.7 L168.0,76.8 L200.8,81.3 L224.0,78.9 L256.8,75.0 L280.0,77.1"/>
+<path class="line s-repeat" d="M0.0,73.8 L56.0,57.3 L88.8,73.2 L112.0,83.7 L144.8,105.3 L168.0,115.2 L200.8,129.9 L224.0,136.5 L256.8,142.5 L280.0,144.3"/>
+<path class="line s-top" d="M0.0,82.2 L56.0,42.9 L88.8,12.6 L112.0,3.6 L144.8,6.0 L168.0,2.4 L200.8,1.8 L224.0,2.7 L256.8,2.7 L280.0,3.0"/>
+<path class="line s-named" d="M0.0,148.5 L56.0,120.6 L88.8,47.4 L112.0,15.9 L144.8,8.7 L168.0,2.7 L200.8,1.8 L224.0,3.6 L256.8,3.0 L280.0,3.0"/>
+<circle class="hit" cx="0.0" cy="148.5" r="7"><title>Statistical bisect, named at 95% and right: 1% at 10 replays, 0% wrong accusations</title></circle>
+<circle class="hit" cx="56.0" cy="120.6" r="7"><title>Statistical bisect, named at 95% and right: 20% at 20 replays, 0% wrong accusations</title></circle>
+<circle class="hit" cx="88.8" cy="47.4" r="7"><title>Statistical bisect, named at 95% and right: 68% at 30 replays, 1% wrong accusations</title></circle>
+<circle class="hit" cx="112.0" cy="15.9" r="7"><title>Statistical bisect, named at 95% and right: 89% at 40 replays, 1% wrong accusations</title></circle>
+<circle class="hit" cx="144.8" cy="8.7" r="7"><title>Statistical bisect, named at 95% and right: 94% at 60 replays, 3% wrong accusations</title></circle>
+<circle class="hit" cx="168.0" cy="2.7" r="7"><title>Statistical bisect, named at 95% and right: 98% at 80 replays, 2% wrong accusations</title></circle>
+<circle class="hit" cx="200.8" cy="1.8" r="7"><title>Statistical bisect, named at 95% and right: 99% at 120 replays, 1% wrong accusations</title></circle>
+<circle class="hit" cx="224.0" cy="3.6" r="7"><title>Statistical bisect, named at 95% and right: 98% at 160 replays, 2% wrong accusations</title></circle>
+<circle class="hit" cx="256.8" cy="3.0" r="7"><title>Statistical bisect, named at 95% and right: 98% at 240 replays, 2% wrong accusations</title></circle>
+<circle class="hit" cx="280.0" cy="3.0" r="7"><title>Statistical bisect, named at 95% and right: 98% at 320 replays, 2% wrong accusations</title></circle>
+<circle class="hit" cx="0.0" cy="82.2" r="7"><title>Statistical bisect, top suspect is right: 45% at 10 replays</title></circle>
+<circle class="hit" cx="56.0" cy="42.9" r="7"><title>Statistical bisect, top suspect is right: 71% at 20 replays</title></circle>
+<circle class="hit" cx="88.8" cy="12.6" r="7"><title>Statistical bisect, top suspect is right: 92% at 30 replays</title></circle>
+<circle class="hit" cx="112.0" cy="3.6" r="7"><title>Statistical bisect, top suspect is right: 98% at 40 replays</title></circle>
+<circle class="hit" cx="144.8" cy="6.0" r="7"><title>Statistical bisect, top suspect is right: 96% at 60 replays</title></circle>
+<circle class="hit" cx="168.0" cy="2.4" r="7"><title>Statistical bisect, top suspect is right: 98% at 80 replays</title></circle>
+<circle class="hit" cx="200.8" cy="1.8" r="7"><title>Statistical bisect, top suspect is right: 99% at 120 replays</title></circle>
+<circle class="hit" cx="224.0" cy="2.7" r="7"><title>Statistical bisect, top suspect is right: 98% at 160 replays</title></circle>
+<circle class="hit" cx="256.8" cy="2.7" r="7"><title>Statistical bisect, top suspect is right: 98% at 240 replays</title></circle>
+<circle class="hit" cx="280.0" cy="3.0" r="7"><title>Statistical bisect, top suspect is right: 98% at 320 replays</title></circle>
+<circle class="hit" cx="0.0" cy="73.8" r="7"><title>Plain bisect, repeats to fill the budget: 51% at 10 replays, 49% wrong accusations</title></circle>
+<circle class="hit" cx="56.0" cy="57.3" r="7"><title>Plain bisect, repeats to fill the budget: 62% at 20 replays, 38% wrong accusations</title></circle>
+<circle class="hit" cx="88.8" cy="73.2" r="7"><title>Plain bisect, repeats to fill the budget: 51% at 30 replays, 49% wrong accusations</title></circle>
+<circle class="hit" cx="112.0" cy="83.7" r="7"><title>Plain bisect, repeats to fill the budget: 44% at 40 replays, 56% wrong accusations</title></circle>
+<circle class="hit" cx="144.8" cy="105.3" r="7"><title>Plain bisect, repeats to fill the budget: 30% at 60 replays, 70% wrong accusations</title></circle>
+<circle class="hit" cx="168.0" cy="115.2" r="7"><title>Plain bisect, repeats to fill the budget: 23% at 80 replays, 77% wrong accusations</title></circle>
+<circle class="hit" cx="200.8" cy="129.9" r="7"><title>Plain bisect, repeats to fill the budget: 13% at 120 replays, 87% wrong accusations</title></circle>
+<circle class="hit" cx="224.0" cy="136.5" r="7"><title>Plain bisect, repeats to fill the budget: 9% at 160 replays, 91% wrong accusations</title></circle>
+<circle class="hit" cx="256.8" cy="142.5" r="7"><title>Plain bisect, repeats to fill the budget: 5% at 240 replays, 95% wrong accusations</title></circle>
+<circle class="hit" cx="280.0" cy="144.3" r="7"><title>Plain bisect, repeats to fill the budget: 4% at 320 replays, 96% wrong accusations</title></circle>
+<circle class="hit" cx="0.0" cy="75.6" r="7"><title>Plain bisect, one replay per commit: 50% at 10 replays, 50% wrong accusations</title></circle>
+<circle class="hit" cx="56.0" cy="74.7" r="7"><title>Plain bisect, one replay per commit: 50% at 20 replays, 50% wrong accusations</title></circle>
+<circle class="hit" cx="88.8" cy="77.1" r="7"><title>Plain bisect, one replay per commit: 49% at 30 replays, 51% wrong accusations</title></circle>
+<circle class="hit" cx="112.0" cy="77.4" r="7"><title>Plain bisect, one replay per commit: 48% at 40 replays, 52% wrong accusations</title></circle>
+<circle class="hit" cx="144.8" cy="77.7" r="7"><title>Plain bisect, one replay per commit: 48% at 60 replays, 52% wrong accusations</title></circle>
+<circle class="hit" cx="168.0" cy="76.8" r="7"><title>Plain bisect, one replay per commit: 49% at 80 replays, 51% wrong accusations</title></circle>
+<circle class="hit" cx="200.8" cy="81.3" r="7"><title>Plain bisect, one replay per commit: 46% at 120 replays, 54% wrong accusations</title></circle>
+<circle class="hit" cx="224.0" cy="78.9" r="7"><title>Plain bisect, one replay per commit: 47% at 160 replays, 53% wrong accusations</title></circle>
+<circle class="hit" cx="256.8" cy="75.0" r="7"><title>Plain bisect, one replay per commit: 50% at 240 replays, 50% wrong accusations</title></circle>
+<circle class="hit" cx="280.0" cy="77.1" r="7"><title>Plain bisect, one replay per commit: 49% at 320 replays, 51% wrong accusations</title></circle>
+</g>
+<g transform="translate(736,180)">
+<text class="panel ink" x="0" y="-14">The bug fails 60% of the time</text>
+<line class="rule" x1="0" y1="150.0" x2="280" y2="150.0"/>
+<text class="tick muted" x="-8" y="154.0" text-anchor="end">0%</text>
+<line class="rule" x1="0" y1="75.0" x2="280" y2="75.0"/>
+<text class="tick muted" x="-8" y="79.0" text-anchor="end">50%</text>
+<line class="rule" x1="0" y1="0.0" x2="280" y2="0.0"/>
+<text class="tick muted" x="-8" y="4.0" text-anchor="end">100%</text>
+<line class="axis" x1="0" y1="150" x2="280" y2="150"/>
+<line class="axis" x1="0.0" y1="150" x2="0.0" y2="154"/>
+<text class="tick muted" x="0.0" y="169" text-anchor="middle">10</text>
+<line class="axis" x1="56.0" y1="150" x2="56.0" y2="154"/>
+<text class="tick muted" x="56.0" y="169" text-anchor="middle">20</text>
+<line class="axis" x1="112.0" y1="150" x2="112.0" y2="154"/>
+<text class="tick muted" x="112.0" y="169" text-anchor="middle">40</text>
+<line class="axis" x1="168.0" y1="150" x2="168.0" y2="154"/>
+<text class="tick muted" x="168.0" y="169" text-anchor="middle">80</text>
+<line class="axis" x1="224.0" y1="150" x2="224.0" y2="154"/>
+<text class="tick muted" x="224.0" y="169" text-anchor="middle">160</text>
+<line class="axis" x1="280.0" y1="150" x2="280.0" y2="154"/>
+<text class="tick muted" x="280.0" y="169" text-anchor="middle">320</text>
+<path class="line s-once" d="M0.0,111.0 L56.0,106.8 L88.8,103.5 L112.0,105.9 L144.8,104.1 L168.0,107.1 L200.8,111.6 L224.0,107.7 L256.8,111.0 L280.0,108.9"/>
+<path class="line s-repeat" d="M0.0,110.1 L56.0,64.2 L88.8,76.2 L112.0,83.7 L144.8,110.7 L168.0,120.6 L200.8,130.2 L224.0,137.4 L256.8,142.2 L280.0,144.6"/>
+<path class="line s-top" d="M0.0,111.9 L56.0,72.3 L88.8,50.7 L112.0,26.1 L144.8,10.2 L168.0,7.8 L200.8,3.6 L224.0,7.5 L256.8,4.8 L280.0,5.4"/>
+<path class="line s-named" d="M0.0,150.0 L56.0,142.8 L88.8,114.9 L112.0,72.6 L144.8,29.7 L168.0,13.2 L200.8,6.6 L224.0,8.7 L256.8,6.0 L280.0,6.6"/>
+<circle class="hit" cx="0.0" cy="150.0" r="7"><title>Statistical bisect, named at 95% and right: 0% at 10 replays, 0% wrong accusations</title></circle>
+<circle class="hit" cx="56.0" cy="142.8" r="7"><title>Statistical bisect, named at 95% and right: 5% at 20 replays, 1% wrong accusations</title></circle>
+<circle class="hit" cx="88.8" cy="114.9" r="7"><title>Statistical bisect, named at 95% and right: 23% at 30 replays, 2% wrong accusations</title></circle>
+<circle class="hit" cx="112.0" cy="72.6" r="7"><title>Statistical bisect, named at 95% and right: 52% at 40 replays, 3% wrong accusations</title></circle>
+<circle class="hit" cx="144.8" cy="29.7" r="7"><title>Statistical bisect, named at 95% and right: 80% at 60 replays, 3% wrong accusations</title></circle>
+<circle class="hit" cx="168.0" cy="13.2" r="7"><title>Statistical bisect, named at 95% and right: 91% at 80 replays, 3% wrong accusations</title></circle>
+<circle class="hit" cx="200.8" cy="6.6" r="7"><title>Statistical bisect, named at 95% and right: 96% at 120 replays, 2% wrong accusations</title></circle>
+<circle class="hit" cx="224.0" cy="8.7" r="7"><title>Statistical bisect, named at 95% and right: 94% at 160 replays, 5% wrong accusations</title></circle>
+<circle class="hit" cx="256.8" cy="6.0" r="7"><title>Statistical bisect, named at 95% and right: 96% at 240 replays, 3% wrong accusations</title></circle>
+<circle class="hit" cx="280.0" cy="6.6" r="7"><title>Statistical bisect, named at 95% and right: 96% at 320 replays, 3% wrong accusations</title></circle>
+<circle class="hit" cx="0.0" cy="111.9" r="7"><title>Statistical bisect, top suspect is right: 25% at 10 replays</title></circle>
+<circle class="hit" cx="56.0" cy="72.3" r="7"><title>Statistical bisect, top suspect is right: 52% at 20 replays</title></circle>
+<circle class="hit" cx="88.8" cy="50.7" r="7"><title>Statistical bisect, top suspect is right: 66% at 30 replays</title></circle>
+<circle class="hit" cx="112.0" cy="26.1" r="7"><title>Statistical bisect, top suspect is right: 83% at 40 replays</title></circle>
+<circle class="hit" cx="144.8" cy="10.2" r="7"><title>Statistical bisect, top suspect is right: 93% at 60 replays</title></circle>
+<circle class="hit" cx="168.0" cy="7.8" r="7"><title>Statistical bisect, top suspect is right: 95% at 80 replays</title></circle>
+<circle class="hit" cx="200.8" cy="3.6" r="7"><title>Statistical bisect, top suspect is right: 98% at 120 replays</title></circle>
+<circle class="hit" cx="224.0" cy="7.5" r="7"><title>Statistical bisect, top suspect is right: 95% at 160 replays</title></circle>
+<circle class="hit" cx="256.8" cy="4.8" r="7"><title>Statistical bisect, top suspect is right: 97% at 240 replays</title></circle>
+<circle class="hit" cx="280.0" cy="5.4" r="7"><title>Statistical bisect, top suspect is right: 96% at 320 replays</title></circle>
+<circle class="hit" cx="0.0" cy="110.1" r="7"><title>Plain bisect, repeats to fill the budget: 27% at 10 replays, 73% wrong accusations</title></circle>
+<circle class="hit" cx="56.0" cy="64.2" r="7"><title>Plain bisect, repeats to fill the budget: 57% at 20 replays, 43% wrong accusations</title></circle>
+<circle class="hit" cx="88.8" cy="76.2" r="7"><title>Plain bisect, repeats to fill the budget: 49% at 30 replays, 51% wrong accusations</title></circle>
+<circle class="hit" cx="112.0" cy="83.7" r="7"><title>Plain bisect, repeats to fill the budget: 44% at 40 replays, 56% wrong accusations</title></circle>
+<circle class="hit" cx="144.8" cy="110.7" r="7"><title>Plain bisect, repeats to fill the budget: 26% at 60 replays, 74% wrong accusations</title></circle>
+<circle class="hit" cx="168.0" cy="120.6" r="7"><title>Plain bisect, repeats to fill the budget: 20% at 80 replays, 80% wrong accusations</title></circle>
+<circle class="hit" cx="200.8" cy="130.2" r="7"><title>Plain bisect, repeats to fill the budget: 13% at 120 replays, 87% wrong accusations</title></circle>
+<circle class="hit" cx="224.0" cy="137.4" r="7"><title>Plain bisect, repeats to fill the budget: 8% at 160 replays, 92% wrong accusations</title></circle>
+<circle class="hit" cx="256.8" cy="142.2" r="7"><title>Plain bisect, repeats to fill the budget: 5% at 240 replays, 95% wrong accusations</title></circle>
+<circle class="hit" cx="280.0" cy="144.6" r="7"><title>Plain bisect, repeats to fill the budget: 4% at 320 replays, 96% wrong accusations</title></circle>
+<circle class="hit" cx="0.0" cy="111.0" r="7"><title>Plain bisect, one replay per commit: 26% at 10 replays, 74% wrong accusations</title></circle>
+<circle class="hit" cx="56.0" cy="106.8" r="7"><title>Plain bisect, one replay per commit: 29% at 20 replays, 71% wrong accusations</title></circle>
+<circle class="hit" cx="88.8" cy="103.5" r="7"><title>Plain bisect, one replay per commit: 31% at 30 replays, 69% wrong accusations</title></circle>
+<circle class="hit" cx="112.0" cy="105.9" r="7"><title>Plain bisect, one replay per commit: 29% at 40 replays, 71% wrong accusations</title></circle>
+<circle class="hit" cx="144.8" cy="104.1" r="7"><title>Plain bisect, one replay per commit: 31% at 60 replays, 69% wrong accusations</title></circle>
+<circle class="hit" cx="168.0" cy="107.1" r="7"><title>Plain bisect, one replay per commit: 29% at 80 replays, 71% wrong accusations</title></circle>
+<circle class="hit" cx="200.8" cy="111.6" r="7"><title>Plain bisect, one replay per commit: 26% at 120 replays, 74% wrong accusations</title></circle>
+<circle class="hit" cx="224.0" cy="107.7" r="7"><title>Plain bisect, one replay per commit: 28% at 160 replays, 72% wrong accusations</title></circle>
+<circle class="hit" cx="256.8" cy="111.0" r="7"><title>Plain bisect, one replay per commit: 26% at 240 replays, 74% wrong accusations</title></circle>
+<circle class="hit" cx="280.0" cy="108.9" r="7"><title>Plain bisect, one replay per commit: 27% at 320 replays, 73% wrong accusations</title></circle>
+</g>
+<g transform="translate(64,408)">
+<text class="panel ink" x="0" y="-14">The bug fails 40% of the time</text>
+<line class="rule" x1="0" y1="150.0" x2="280" y2="150.0"/>
+<text class="tick muted" x="-8" y="154.0" text-anchor="end">0%</text>
+<line class="rule" x1="0" y1="75.0" x2="280" y2="75.0"/>
+<text class="tick muted" x="-8" y="79.0" text-anchor="end">50%</text>
+<line class="rule" x1="0" y1="0.0" x2="280" y2="0.0"/>
+<text class="tick muted" x="-8" y="4.0" text-anchor="end">100%</text>
+<line class="axis" x1="0" y1="150" x2="280" y2="150"/>
+<line class="axis" x1="0.0" y1="150" x2="0.0" y2="154"/>
+<text class="tick muted" x="0.0" y="169" text-anchor="middle">10</text>
+<line class="axis" x1="56.0" y1="150" x2="56.0" y2="154"/>
+<text class="tick muted" x="56.0" y="169" text-anchor="middle">20</text>
+<line class="axis" x1="112.0" y1="150" x2="112.0" y2="154"/>
+<text class="tick muted" x="112.0" y="169" text-anchor="middle">40</text>
+<line class="axis" x1="168.0" y1="150" x2="168.0" y2="154"/>
+<text class="tick muted" x="168.0" y="169" text-anchor="middle">80</text>
+<line class="axis" x1="224.0" y1="150" x2="224.0" y2="154"/>
+<text class="tick muted" x="224.0" y="169" text-anchor="middle">160</text>
+<line class="axis" x1="280.0" y1="150" x2="280.0" y2="154"/>
+<text class="tick muted" x="280.0" y="169" text-anchor="middle">320</text>
+<text class="tick muted" x="140.0" y="190" text-anchor="middle">replays allowed</text>
+<path class="line s-once" d="M0.0,131.1 L56.0,131.4 L88.8,130.8 L112.0,127.2 L144.8,132.3 L168.0,126.6 L200.8,130.5 L224.0,129.9 L256.8,131.1 L280.0,132.0"/>
+<path class="line s-repeat" d="M0.0,132.3 L56.0,96.6 L88.8,87.0 L112.0,88.5 L144.8,106.5 L168.0,119.7 L200.8,130.5 L224.0,136.8 L256.8,142.5 L280.0,143.7"/>
+<path class="line s-top" d="M0.0,135.3 L56.0,114.0 L88.8,84.3 L112.0,74.4 L144.8,42.9 L168.0,30.6 L200.8,18.9 L224.0,10.2 L256.8,8.1 L280.0,10.5"/>
+<path class="line s-named" d="M0.0,150.0 L56.0,149.4 L88.8,144.3 L112.0,131.4 L144.8,95.1 L168.0,69.0 L200.8,37.2 L224.0,17.4 L256.8,12.6 L280.0,14.4"/>
+<circle class="hit" cx="0.0" cy="150.0" r="7"><title>Statistical bisect, named at 95% and right: 0% at 10 replays, 0% wrong accusations</title></circle>
+<circle class="hit" cx="56.0" cy="149.4" r="7"><title>Statistical bisect, named at 95% and right: 0% at 20 replays, 0% wrong accusations</title></circle>
+<circle class="hit" cx="88.8" cy="144.3" r="7"><title>Statistical bisect, named at 95% and right: 4% at 30 replays, 1% wrong accusations</title></circle>
+<circle class="hit" cx="112.0" cy="131.4" r="7"><title>Statistical bisect, named at 95% and right: 12% at 40 replays, 2% wrong accusations</title></circle>
+<circle class="hit" cx="144.8" cy="95.1" r="7"><title>Statistical bisect, named at 95% and right: 37% at 60 replays, 4% wrong accusations</title></circle>
+<circle class="hit" cx="168.0" cy="69.0" r="7"><title>Statistical bisect, named at 95% and right: 54% at 80 replays, 3% wrong accusations</title></circle>
+<circle class="hit" cx="200.8" cy="37.2" r="7"><title>Statistical bisect, named at 95% and right: 75% at 120 replays, 5% wrong accusations</title></circle>
+<circle class="hit" cx="224.0" cy="17.4" r="7"><title>Statistical bisect, named at 95% and right: 88% at 160 replays, 4% wrong accusations</title></circle>
+<circle class="hit" cx="256.8" cy="12.6" r="7"><title>Statistical bisect, named at 95% and right: 92% at 240 replays, 4% wrong accusations</title></circle>
+<circle class="hit" cx="280.0" cy="14.4" r="7"><title>Statistical bisect, named at 95% and right: 90% at 320 replays, 7% wrong accusations</title></circle>
+<circle class="hit" cx="0.0" cy="135.3" r="7"><title>Statistical bisect, top suspect is right: 10% at 10 replays</title></circle>
+<circle class="hit" cx="56.0" cy="114.0" r="7"><title>Statistical bisect, top suspect is right: 24% at 20 replays</title></circle>
+<circle class="hit" cx="88.8" cy="84.3" r="7"><title>Statistical bisect, top suspect is right: 44% at 30 replays</title></circle>
+<circle class="hit" cx="112.0" cy="74.4" r="7"><title>Statistical bisect, top suspect is right: 50% at 40 replays</title></circle>
+<circle class="hit" cx="144.8" cy="42.9" r="7"><title>Statistical bisect, top suspect is right: 71% at 60 replays</title></circle>
+<circle class="hit" cx="168.0" cy="30.6" r="7"><title>Statistical bisect, top suspect is right: 80% at 80 replays</title></circle>
+<circle class="hit" cx="200.8" cy="18.9" r="7"><title>Statistical bisect, top suspect is right: 87% at 120 replays</title></circle>
+<circle class="hit" cx="224.0" cy="10.2" r="7"><title>Statistical bisect, top suspect is right: 93% at 160 replays</title></circle>
+<circle class="hit" cx="256.8" cy="8.1" r="7"><title>Statistical bisect, top suspect is right: 95% at 240 replays</title></circle>
+<circle class="hit" cx="280.0" cy="10.5" r="7"><title>Statistical bisect, top suspect is right: 93% at 320 replays</title></circle>
+<circle class="hit" cx="0.0" cy="132.3" r="7"><title>Plain bisect, repeats to fill the budget: 12% at 10 replays, 88% wrong accusations</title></circle>
+<circle class="hit" cx="56.0" cy="96.6" r="7"><title>Plain bisect, repeats to fill the budget: 36% at 20 replays, 64% wrong accusations</title></circle>
+<circle class="hit" cx="88.8" cy="87.0" r="7"><title>Plain bisect, repeats to fill the budget: 42% at 30 replays, 58% wrong accusations</title></circle>
+<circle class="hit" cx="112.0" cy="88.5" r="7"><title>Plain bisect, repeats to fill the budget: 41% at 40 replays, 59% wrong accusations</title></circle>
+<circle class="hit" cx="144.8" cy="106.5" r="7"><title>Plain bisect, repeats to fill the budget: 29% at 60 replays, 71% wrong accusations</title></circle>
+<circle class="hit" cx="168.0" cy="119.7" r="7"><title>Plain bisect, repeats to fill the budget: 20% at 80 replays, 80% wrong accusations</title></circle>
+<circle class="hit" cx="200.8" cy="130.5" r="7"><title>Plain bisect, repeats to fill the budget: 13% at 120 replays, 87% wrong accusations</title></circle>
+<circle class="hit" cx="224.0" cy="136.8" r="7"><title>Plain bisect, repeats to fill the budget: 9% at 160 replays, 91% wrong accusations</title></circle>
+<circle class="hit" cx="256.8" cy="142.5" r="7"><title>Plain bisect, repeats to fill the budget: 5% at 240 replays, 95% wrong accusations</title></circle>
+<circle class="hit" cx="280.0" cy="143.7" r="7"><title>Plain bisect, repeats to fill the budget: 4% at 320 replays, 96% wrong accusations</title></circle>
+<circle class="hit" cx="0.0" cy="131.1" r="7"><title>Plain bisect, one replay per commit: 13% at 10 replays, 87% wrong accusations</title></circle>
+<circle class="hit" cx="56.0" cy="131.4" r="7"><title>Plain bisect, one replay per commit: 12% at 20 replays, 88% wrong accusations</title></circle>
+<circle class="hit" cx="88.8" cy="130.8" r="7"><title>Plain bisect, one replay per commit: 13% at 30 replays, 87% wrong accusations</title></circle>
+<circle class="hit" cx="112.0" cy="127.2" r="7"><title>Plain bisect, one replay per commit: 15% at 40 replays, 85% wrong accusations</title></circle>
+<circle class="hit" cx="144.8" cy="132.3" r="7"><title>Plain bisect, one replay per commit: 12% at 60 replays, 88% wrong accusations</title></circle>
+<circle class="hit" cx="168.0" cy="126.6" r="7"><title>Plain bisect, one replay per commit: 16% at 80 replays, 84% wrong accusations</title></circle>
+<circle class="hit" cx="200.8" cy="130.5" r="7"><title>Plain bisect, one replay per commit: 13% at 120 replays, 87% wrong accusations</title></circle>
+<circle class="hit" cx="224.0" cy="129.9" r="7"><title>Plain bisect, one replay per commit: 13% at 160 replays, 87% wrong accusations</title></circle>
+<circle class="hit" cx="256.8" cy="131.1" r="7"><title>Plain bisect, one replay per commit: 13% at 240 replays, 87% wrong accusations</title></circle>
+<circle class="hit" cx="280.0" cy="132.0" r="7"><title>Plain bisect, one replay per commit: 12% at 320 replays, 88% wrong accusations</title></circle>
+</g>
+<g transform="translate(400,408)">
+<text class="panel ink" x="0" y="-14">The bug fails 30% of the time</text>
+<line class="rule" x1="0" y1="150.0" x2="280" y2="150.0"/>
+<text class="tick muted" x="-8" y="154.0" text-anchor="end">0%</text>
+<line class="rule" x1="0" y1="75.0" x2="280" y2="75.0"/>
+<text class="tick muted" x="-8" y="79.0" text-anchor="end">50%</text>
+<line class="rule" x1="0" y1="0.0" x2="280" y2="0.0"/>
+<text class="tick muted" x="-8" y="4.0" text-anchor="end">100%</text>
+<line class="axis" x1="0" y1="150" x2="280" y2="150"/>
+<line class="axis" x1="0.0" y1="150" x2="0.0" y2="154"/>
+<text class="tick muted" x="0.0" y="169" text-anchor="middle">10</text>
+<line class="axis" x1="56.0" y1="150" x2="56.0" y2="154"/>
+<text class="tick muted" x="56.0" y="169" text-anchor="middle">20</text>
+<line class="axis" x1="112.0" y1="150" x2="112.0" y2="154"/>
+<text class="tick muted" x="112.0" y="169" text-anchor="middle">40</text>
+<line class="axis" x1="168.0" y1="150" x2="168.0" y2="154"/>
+<text class="tick muted" x="168.0" y="169" text-anchor="middle">80</text>
+<line class="axis" x1="224.0" y1="150" x2="224.0" y2="154"/>
+<text class="tick muted" x="224.0" y="169" text-anchor="middle">160</text>
+<line class="axis" x1="280.0" y1="150" x2="280.0" y2="154"/>
+<text class="tick muted" x="280.0" y="169" text-anchor="middle">320</text>
+<text class="tick muted" x="140.0" y="190" text-anchor="middle">replays allowed</text>
+<path class="line s-once" d="M0.0,136.5 L56.0,138.3 L88.8,141.0 L112.0,135.0 L144.8,135.9 L168.0,138.0 L200.8,138.3 L224.0,135.9 L256.8,135.9 L280.0,137.4"/>
+<path class="line s-repeat" d="M0.0,137.4 L56.0,120.0 L88.8,108.9 L112.0,103.5 L144.8,110.1 L168.0,119.4 L200.8,132.3 L224.0,138.3 L256.8,141.9 L280.0,144.0"/>
+<path class="line s-top" d="M0.0,138.9 L56.0,126.3 L88.8,111.0 L112.0,96.9 L144.8,76.2 L168.0,60.3 L200.8,36.0 L224.0,29.1 L256.8,14.7 L280.0,13.8"/>
+<path class="line s-named" d="M0.0,150.0 L56.0,150.0 L88.8,148.8 L112.0,146.7 L144.8,133.5 L168.0,116.4 L200.8,79.8 L224.0,59.4 L256.8,35.1 L280.0,23.4"/>
+<circle class="hit" cx="0.0" cy="150.0" r="7"><title>Statistical bisect, named at 95% and right: 0% at 10 replays, 0% wrong accusations</title></circle>
+<circle class="hit" cx="56.0" cy="150.0" r="7"><title>Statistical bisect, named at 95% and right: 0% at 20 replays, 0% wrong accusations</title></circle>
+<circle class="hit" cx="88.8" cy="148.8" r="7"><title>Statistical bisect, named at 95% and right: 1% at 30 replays, 0% wrong accusations</title></circle>
+<circle class="hit" cx="112.0" cy="146.7" r="7"><title>Statistical bisect, named at 95% and right: 2% at 40 replays, 2% wrong accusations</title></circle>
+<circle class="hit" cx="144.8" cy="133.5" r="7"><title>Statistical bisect, named at 95% and right: 11% at 60 replays, 2% wrong accusations</title></circle>
+<circle class="hit" cx="168.0" cy="116.4" r="7"><title>Statistical bisect, named at 95% and right: 22% at 80 replays, 3% wrong accusations</title></circle>
+<circle class="hit" cx="200.8" cy="79.8" r="7"><title>Statistical bisect, named at 95% and right: 47% at 120 replays, 3% wrong accusations</title></circle>
+<circle class="hit" cx="224.0" cy="59.4" r="7"><title>Statistical bisect, named at 95% and right: 60% at 160 replays, 5% wrong accusations</title></circle>
+<circle class="hit" cx="256.8" cy="35.1" r="7"><title>Statistical bisect, named at 95% and right: 77% at 240 replays, 4% wrong accusations</title></circle>
+<circle class="hit" cx="280.0" cy="23.4" r="7"><title>Statistical bisect, named at 95% and right: 84% at 320 replays, 7% wrong accusations</title></circle>
+<circle class="hit" cx="0.0" cy="138.9" r="7"><title>Statistical bisect, top suspect is right: 7% at 10 replays</title></circle>
+<circle class="hit" cx="56.0" cy="126.3" r="7"><title>Statistical bisect, top suspect is right: 16% at 20 replays</title></circle>
+<circle class="hit" cx="88.8" cy="111.0" r="7"><title>Statistical bisect, top suspect is right: 26% at 30 replays</title></circle>
+<circle class="hit" cx="112.0" cy="96.9" r="7"><title>Statistical bisect, top suspect is right: 35% at 40 replays</title></circle>
+<circle class="hit" cx="144.8" cy="76.2" r="7"><title>Statistical bisect, top suspect is right: 49% at 60 replays</title></circle>
+<circle class="hit" cx="168.0" cy="60.3" r="7"><title>Statistical bisect, top suspect is right: 60% at 80 replays</title></circle>
+<circle class="hit" cx="200.8" cy="36.0" r="7"><title>Statistical bisect, top suspect is right: 76% at 120 replays</title></circle>
+<circle class="hit" cx="224.0" cy="29.1" r="7"><title>Statistical bisect, top suspect is right: 81% at 160 replays</title></circle>
+<circle class="hit" cx="256.8" cy="14.7" r="7"><title>Statistical bisect, top suspect is right: 90% at 240 replays</title></circle>
+<circle class="hit" cx="280.0" cy="13.8" r="7"><title>Statistical bisect, top suspect is right: 91% at 320 replays</title></circle>
+<circle class="hit" cx="0.0" cy="137.4" r="7"><title>Plain bisect, repeats to fill the budget: 8% at 10 replays, 92% wrong accusations</title></circle>
+<circle class="hit" cx="56.0" cy="120.0" r="7"><title>Plain bisect, repeats to fill the budget: 20% at 20 replays, 80% wrong accusations</title></circle>
+<circle class="hit" cx="88.8" cy="108.9" r="7"><title>Plain bisect, repeats to fill the budget: 27% at 30 replays, 73% wrong accusations</title></circle>
+<circle class="hit" cx="112.0" cy="103.5" r="7"><title>Plain bisect, repeats to fill the budget: 31% at 40 replays, 69% wrong accusations</title></circle>
+<circle class="hit" cx="144.8" cy="110.1" r="7"><title>Plain bisect, repeats to fill the budget: 27% at 60 replays, 73% wrong accusations</title></circle>
+<circle class="hit" cx="168.0" cy="119.4" r="7"><title>Plain bisect, repeats to fill the budget: 20% at 80 replays, 80% wrong accusations</title></circle>
+<circle class="hit" cx="200.8" cy="132.3" r="7"><title>Plain bisect, repeats to fill the budget: 12% at 120 replays, 88% wrong accusations</title></circle>
+<circle class="hit" cx="224.0" cy="138.3" r="7"><title>Plain bisect, repeats to fill the budget: 8% at 160 replays, 92% wrong accusations</title></circle>
+<circle class="hit" cx="256.8" cy="141.9" r="7"><title>Plain bisect, repeats to fill the budget: 5% at 240 replays, 95% wrong accusations</title></circle>
+<circle class="hit" cx="280.0" cy="144.0" r="7"><title>Plain bisect, repeats to fill the budget: 4% at 320 replays, 96% wrong accusations</title></circle>
+<circle class="hit" cx="0.0" cy="136.5" r="7"><title>Plain bisect, one replay per commit: 9% at 10 replays, 91% wrong accusations</title></circle>
+<circle class="hit" cx="56.0" cy="138.3" r="7"><title>Plain bisect, one replay per commit: 8% at 20 replays, 92% wrong accusations</title></circle>
+<circle class="hit" cx="88.8" cy="141.0" r="7"><title>Plain bisect, one replay per commit: 6% at 30 replays, 94% wrong accusations</title></circle>
+<circle class="hit" cx="112.0" cy="135.0" r="7"><title>Plain bisect, one replay per commit: 10% at 40 replays, 90% wrong accusations</title></circle>
+<circle class="hit" cx="144.8" cy="135.9" r="7"><title>Plain bisect, one replay per commit: 9% at 60 replays, 91% wrong accusations</title></circle>
+<circle class="hit" cx="168.0" cy="138.0" r="7"><title>Plain bisect, one replay per commit: 8% at 80 replays, 92% wrong accusations</title></circle>
+<circle class="hit" cx="200.8" cy="138.3" r="7"><title>Plain bisect, one replay per commit: 8% at 120 replays, 92% wrong accusations</title></circle>
+<circle class="hit" cx="224.0" cy="135.9" r="7"><title>Plain bisect, one replay per commit: 9% at 160 replays, 91% wrong accusations</title></circle>
+<circle class="hit" cx="256.8" cy="135.9" r="7"><title>Plain bisect, one replay per commit: 9% at 240 replays, 91% wrong accusations</title></circle>
+<circle class="hit" cx="280.0" cy="137.4" r="7"><title>Plain bisect, one replay per commit: 8% at 320 replays, 92% wrong accusations</title></circle>
+</g>
+<g transform="translate(736,408)">
+<text class="panel ink" x="0" y="-14">The bug fails 20% of the time</text>
+<line class="rule" x1="0" y1="150.0" x2="280" y2="150.0"/>
+<text class="tick muted" x="-8" y="154.0" text-anchor="end">0%</text>
+<line class="rule" x1="0" y1="75.0" x2="280" y2="75.0"/>
+<text class="tick muted" x="-8" y="79.0" text-anchor="end">50%</text>
+<line class="rule" x1="0" y1="0.0" x2="280" y2="0.0"/>
+<text class="tick muted" x="-8" y="4.0" text-anchor="end">100%</text>
+<line class="axis" x1="0" y1="150" x2="280" y2="150"/>
+<line class="axis" x1="0.0" y1="150" x2="0.0" y2="154"/>
+<text class="tick muted" x="0.0" y="169" text-anchor="middle">10</text>
+<line class="axis" x1="56.0" y1="150" x2="56.0" y2="154"/>
+<text class="tick muted" x="56.0" y="169" text-anchor="middle">20</text>
+<line class="axis" x1="112.0" y1="150" x2="112.0" y2="154"/>
+<text class="tick muted" x="112.0" y="169" text-anchor="middle">40</text>
+<line class="axis" x1="168.0" y1="150" x2="168.0" y2="154"/>
+<text class="tick muted" x="168.0" y="169" text-anchor="middle">80</text>
+<line class="axis" x1="224.0" y1="150" x2="224.0" y2="154"/>
+<text class="tick muted" x="224.0" y="169" text-anchor="middle">160</text>
+<line class="axis" x1="280.0" y1="150" x2="280.0" y2="154"/>
+<text class="tick muted" x="280.0" y="169" text-anchor="middle">320</text>
+<text class="tick muted" x="140.0" y="190" text-anchor="middle">replays allowed</text>
+<path class="line s-once" d="M0.0,142.5 L56.0,142.5 L88.8,142.5 L112.0,140.4 L144.8,142.2 L168.0,140.7 L200.8,139.8 L224.0,141.9 L256.8,140.4 L280.0,140.1"/>
+<path class="line s-repeat" d="M0.0,141.3 L56.0,128.7 L88.8,121.2 L112.0,120.3 L144.8,116.7 L168.0,122.7 L200.8,136.2 L224.0,136.2 L256.8,144.0 L280.0,144.3"/>
+<path class="line s-top" d="M0.0,142.8 L56.0,138.6 L88.8,132.3 L112.0,126.6 L144.8,117.9 L168.0,105.6 L200.8,82.5 L224.0,76.5 L256.8,58.2 L280.0,44.4"/>
+<path class="line s-named" d="M0.0,150.0 L56.0,150.0 L88.8,149.4 L112.0,149.7 L144.8,148.2 L168.0,140.7 L200.8,130.5 L224.0,121.8 L256.8,100.5 L280.0,81.3"/>
+<circle class="hit" cx="0.0" cy="150.0" r="7"><title>Statistical bisect, named at 95% and right: 0% at 10 replays, 0% wrong accusations</title></circle>
+<circle class="hit" cx="56.0" cy="150.0" r="7"><title>Statistical bisect, named at 95% and right: 0% at 20 replays, 0% wrong accusations</title></circle>
+<circle class="hit" cx="88.8" cy="149.4" r="7"><title>Statistical bisect, named at 95% and right: 0% at 30 replays, 0% wrong accusations</title></circle>
+<circle class="hit" cx="112.0" cy="149.7" r="7"><title>Statistical bisect, named at 95% and right: 0% at 40 replays, 1% wrong accusations</title></circle>
+<circle class="hit" cx="144.8" cy="148.2" r="7"><title>Statistical bisect, named at 95% and right: 1% at 60 replays, 2% wrong accusations</title></circle>
+<circle class="hit" cx="168.0" cy="140.7" r="7"><title>Statistical bisect, named at 95% and right: 6% at 80 replays, 2% wrong accusations</title></circle>
+<circle class="hit" cx="200.8" cy="130.5" r="7"><title>Statistical bisect, named at 95% and right: 13% at 120 replays, 5% wrong accusations</title></circle>
+<circle class="hit" cx="224.0" cy="121.8" r="7"><title>Statistical bisect, named at 95% and right: 19% at 160 replays, 5% wrong accusations</title></circle>
+<circle class="hit" cx="256.8" cy="100.5" r="7"><title>Statistical bisect, named at 95% and right: 33% at 240 replays, 6% wrong accusations</title></circle>
+<circle class="hit" cx="280.0" cy="81.3" r="7"><title>Statistical bisect, named at 95% and right: 46% at 320 replays, 6% wrong accusations</title></circle>
+<circle class="hit" cx="0.0" cy="142.8" r="7"><title>Statistical bisect, top suspect is right: 5% at 10 replays</title></circle>
+<circle class="hit" cx="56.0" cy="138.6" r="7"><title>Statistical bisect, top suspect is right: 8% at 20 replays</title></circle>
+<circle class="hit" cx="88.8" cy="132.3" r="7"><title>Statistical bisect, top suspect is right: 12% at 30 replays</title></circle>
+<circle class="hit" cx="112.0" cy="126.6" r="7"><title>Statistical bisect, top suspect is right: 16% at 40 replays</title></circle>
+<circle class="hit" cx="144.8" cy="117.9" r="7"><title>Statistical bisect, top suspect is right: 21% at 60 replays</title></circle>
+<circle class="hit" cx="168.0" cy="105.6" r="7"><title>Statistical bisect, top suspect is right: 30% at 80 replays</title></circle>
+<circle class="hit" cx="200.8" cy="82.5" r="7"><title>Statistical bisect, top suspect is right: 45% at 120 replays</title></circle>
+<circle class="hit" cx="224.0" cy="76.5" r="7"><title>Statistical bisect, top suspect is right: 49% at 160 replays</title></circle>
+<circle class="hit" cx="256.8" cy="58.2" r="7"><title>Statistical bisect, top suspect is right: 61% at 240 replays</title></circle>
+<circle class="hit" cx="280.0" cy="44.4" r="7"><title>Statistical bisect, top suspect is right: 70% at 320 replays</title></circle>
+<circle class="hit" cx="0.0" cy="141.3" r="7"><title>Plain bisect, repeats to fill the budget: 6% at 10 replays, 94% wrong accusations</title></circle>
+<circle class="hit" cx="56.0" cy="128.7" r="7"><title>Plain bisect, repeats to fill the budget: 14% at 20 replays, 86% wrong accusations</title></circle>
+<circle class="hit" cx="88.8" cy="121.2" r="7"><title>Plain bisect, repeats to fill the budget: 19% at 30 replays, 81% wrong accusations</title></circle>
+<circle class="hit" cx="112.0" cy="120.3" r="7"><title>Plain bisect, repeats to fill the budget: 20% at 40 replays, 80% wrong accusations</title></circle>
+<circle class="hit" cx="144.8" cy="116.7" r="7"><title>Plain bisect, repeats to fill the budget: 22% at 60 replays, 78% wrong accusations</title></circle>
+<circle class="hit" cx="168.0" cy="122.7" r="7"><title>Plain bisect, repeats to fill the budget: 18% at 80 replays, 82% wrong accusations</title></circle>
+<circle class="hit" cx="200.8" cy="136.2" r="7"><title>Plain bisect, repeats to fill the budget: 9% at 120 replays, 91% wrong accusations</title></circle>
+<circle class="hit" cx="224.0" cy="136.2" r="7"><title>Plain bisect, repeats to fill the budget: 9% at 160 replays, 91% wrong accusations</title></circle>
+<circle class="hit" cx="256.8" cy="144.0" r="7"><title>Plain bisect, repeats to fill the budget: 4% at 240 replays, 96% wrong accusations</title></circle>
+<circle class="hit" cx="280.0" cy="144.3" r="7"><title>Plain bisect, repeats to fill the budget: 4% at 320 replays, 96% wrong accusations</title></circle>
+<circle class="hit" cx="0.0" cy="142.5" r="7"><title>Plain bisect, one replay per commit: 5% at 10 replays, 95% wrong accusations</title></circle>
+<circle class="hit" cx="56.0" cy="142.5" r="7"><title>Plain bisect, one replay per commit: 5% at 20 replays, 95% wrong accusations</title></circle>
+<circle class="hit" cx="88.8" cy="142.5" r="7"><title>Plain bisect, one replay per commit: 5% at 30 replays, 95% wrong accusations</title></circle>
+<circle class="hit" cx="112.0" cy="140.4" r="7"><title>Plain bisect, one replay per commit: 6% at 40 replays, 94% wrong accusations</title></circle>
+<circle class="hit" cx="144.8" cy="142.2" r="7"><title>Plain bisect, one replay per commit: 5% at 60 replays, 95% wrong accusations</title></circle>
+<circle class="hit" cx="168.0" cy="140.7" r="7"><title>Plain bisect, one replay per commit: 6% at 80 replays, 94% wrong accusations</title></circle>
+<circle class="hit" cx="200.8" cy="139.8" r="7"><title>Plain bisect, one replay per commit: 7% at 120 replays, 93% wrong accusations</title></circle>
+<circle class="hit" cx="224.0" cy="141.9" r="7"><title>Plain bisect, one replay per commit: 5% at 160 replays, 95% wrong accusations</title></circle>
+<circle class="hit" cx="256.8" cy="140.4" r="7"><title>Plain bisect, one replay per commit: 6% at 240 replays, 94% wrong accusations</title></circle>
+<circle class="hit" cx="280.0" cy="140.1" r="7"><title>Plain bisect, one replay per commit: 7% at 320 replays, 93% wrong accusations</title></circle>
+</g>
+</svg>
