@@ -310,13 +310,18 @@ def damages(args) -> int:
         return 2
     case, repo, record, path = loaded
     try:
-        counted = damage.count(neatroots(), args.workflow, since_ms=args.since_ms, case_id=case.id)
+        order = [s["sha"] for s in record["suspects"]]
+        since_culprit = order[order.index(record["lineup"]["culprit"]["sha"]):]
+        counted = damage.count(neatroots(), args.workflow, commits=since_culprit, since_ms=args.since_ms, case_id=case.id)
     except NeatError as exc:
         print(f"neatroots could not be asked: {exc}")
         return 1
     record["damages"] = counted.to_dict()
     save_record(path, record)
-    print(f"{counted.bad_runs} of {counted.runs} {args.workflow} runs went bad ({counted.bad_share:.0%}), about ${counted.wasted_usd:.4f} of ${counted.cost_usd:.4f} spent.")
+    if counted.runs:
+        print(f"{counted.bad_runs} of {counted.runs} {args.workflow} runs on the culprit or later went bad ({counted.bad_share:.0%}), about ${counted.wasted_usd:.4f} of ${counted.cost_usd:.4f} spent.")
+    else:
+        print("No ordinary runs are recorded on the culprit or the commits after it, so there is no damage to count.")
     print(f"The investigation itself used {counted.replay_runs} replays, about ${counted.replay_usd:.4f}. {counted.note}")
     return 0
 

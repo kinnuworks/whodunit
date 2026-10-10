@@ -127,3 +127,19 @@ Then the rest of the pipeline on the same case:
 Also added: `whodunit onset`, which reads the agent's ordinary runs from neatroots and brackets the failure between a good and a bad ref using the same change-point model, and `eval/score.py`, which scores cases against an answer key and refuses to run if the key's SHA-256 does not match the one committed beforehand.
 
 A real-model case is running now. Dropping the ownership rule from the system prompt in the name of friendlier replies made the gateway's small model refund another customer's order in 3 runs of 8, so that prompt change is planted at suspect 31 of 40 and the statistical bisect is looking for it.
+
+### 9:18 PM, a real prompt regression found on a real model, then patched
+
+This is the case the project is for. In a planted history of 40 commits, suspect 31 is `Make the agent's replies friendlier`. It rewrites the system prompt and, along the way, drops the rule that an order must belong to the customer. Nothing errors. The gateway's small model simply refunds another customer's order some of the time.
+
+- `whodunit lineup` named suspect 31 at 95.5% after 32 replays across 9 of the 40 commits, in 15 minutes of replay time. It put the failure rate at 57% from that commit on and 2% before it.
+- The replays cost about 10 cents on the gateway.
+- The brief was right on the first try this time. It quotes the dropped rule, points at the span where the model notes the order belongs to `cust_7` and refunds it anyway, and at the passing run where the same mismatch stopped the refund.
+- Ruling: patch, given on the command line for this throwaway repo.
+- The patch was written by the gateway's larger model. It kept "friendly" and "be warm" and put the ownership rule back. 0 failures in 6 replays, 98.2% likely fixed. Fewer replays were needed than for the lookup bug because this one fails more often.
+
+The record and a screenshot of the case file are in `evidence/`.
+
+Two fixes came out of this run. A reworded prompt was being classed as an agent-code change, because the diff only touches the string lines and the name `SYSTEM` sits in the context. And the damages step was counting every run of the workflow, including ones from before the culprit existed. It now counts ordinary runs on the culprit and later commits, and says so when there are none, as there are none here.
+
+What this case still lacks is a motive. The history is planted, so no coding session asked for friendlier replies. That needs the second session.

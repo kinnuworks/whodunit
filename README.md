@@ -77,4 +77,5 @@ The brief and the patch use `WHODUNIT_LLM`: `gateway`, `own`, `agent` for a codi
 - The statistical bisect assumes one change point. Two regressions in the same range will confuse it.
 - A replay that times out counts as a failure, so a badly overloaded machine can frame an innocent commit.
 - Damages are estimates from token counts and list prices.
-- The model-written patch has unit tests around it and no real case behind it yet.
+- The model-written patch has been through one real case, a prompt regression on a planted history. That is not many.
+- Both full cases so far are on planted histories, which have no Entire checkpoints, so neither has a motive.

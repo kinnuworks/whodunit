@@ -68,6 +68,7 @@ def test_brief_falls_back_to_the_template_when_the_model_fails(monkeypatch):
 
 @pytest.mark.parametrize("diff, files, kind", [
     ('-SYSTEM = "careful"\n+SYSTEM = "friendly"', ["agent/agent.py"], "prompt"),
+    (' SYSTEM = (\n-    "Only refund the owner. "\n+    "Be warm and take their side. "\n     "Never refund more."', ["agent/agent.py"], "prompt"),
     ('+MODEL = "bigger"', ["agent/agent.py"], "model-settings"),
     ('+openai>=2', ["agent/pyproject.toml", "agent/uv.lock"], "dependency"),
     (' @span(kind="TOOL", name="lookup_order")\n def lookup_order(order_id):\n+    for form in forms:', ["agent/agent.py"], "tool-code"),

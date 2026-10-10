@@ -56,15 +56,20 @@ def _spend(mcp: Mcp, where: str, prices: dict) -> tuple[float, float, int, int]:
     return cost, bad_cost, tokens, bad_tokens
 
 
-def count(mcp: Mcp, workflow: str, since_ms: float | None = None, case_id: str | None = None, prices: dict | None = None) -> Damages:
-    """Count a workflow's runs since the failures began. A run is bad if it errored or neatroots raised a finding on it.
+def count(mcp: Mcp, workflow: str, commits: list[str] | None = None, since_ms: float | None = None, case_id: str | None = None,
+          prices: dict | None = None) -> Damages:
+    """Count the workflow's ordinary runs on the culprit and the commits after it.
 
+    `commits` are those SHAs. A run is bad if it errored or neatroots raised a finding on it.
     Replays made for a case are left out of the damage and reported on their own line.
     """
     prices = prices or PRICES
     safe = workflow.replace("'", "''")
     window = f" and r.started_ms >= {float(since_ms)}" if since_ms else ""
     production = f"r.workflow = '{safe}' and r.doctor = 0{window} and not " + REPLAY.format(like="%case:%")
+    if commits is not None:
+        on_bad = " or ".join(f"i.attributes like '%commit:{sha}%'" for sha in commits if sha.isalnum()) or "0"
+        production += f" and exists (select 1 from spans i where i.trace_id = r.trace_id and i.name = 'run_info' and ({on_bad}))"
     row = mcp.call("query_sql", sql=f"select count(*) as runs, coalesce(sum({BAD}), 0) as bad from runs r where {production}")["rows"][0]
     cost, bad_cost, tokens, bad_tokens = _spend(mcp, production, prices)
     damages = Damages(

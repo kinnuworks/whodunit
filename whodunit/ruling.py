@@ -41,6 +41,10 @@ def classify(diff: str, files: list[str]) -> str:
         return "dependency"
     if re.search(r"\b(SYSTEM|PROMPT|INSTRUCTIONS)\b|system_prompt|\"role\": \"system\"", text) or "prompt" in names:
         return "prompt"
+    # A reworded prompt often changes only the string lines inside it, and the name sits in the context.
+    only_strings = bool(changed) and all(line.strip()[:1] in "\"'" or line.strip()[:2] in ('f"', "f'") for line in changed if line.strip())
+    if only_strings and re.search(r"\b(SYSTEM|PROMPT|INSTRUCTIONS)\b|system_prompt", diff):
+        return "prompt"
     if re.search(r"\b(MODEL|temperature|max_tokens|top_p)\b", text):
         return "model-settings"
     # A tool's own lines are often context around the change, so this one reads the whole diff.

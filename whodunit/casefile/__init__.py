@@ -41,7 +41,7 @@ def lineup_svg(record: dict) -> str:
     good = replays.get(record.get("case", {}).get("good", ""), [])
     has_odds = any("probability" in s for s in suspects)
     count = len(suspects)
-    step = max(14, min(26, 760 // (count + 1)))
+    step = max(12, min(26, 690 // (count + 1)))
     bar_h, top, left = 120, 18, step + 52
     most = max(max(len(v) for v in replays.values()) if replays else 0, 1)
     rows = min(most, 14)
@@ -197,9 +197,12 @@ def render(record: dict) -> str:
 
     # Damages
     if damages:
-        body = (f'<p>{damages["bad_runs"]} of {damages["runs"]} runs went bad, which is {damages["bad_share"]:.0%}. '
-                f'They cost about ${damages["wasted_usd"]:.2f} of the ${damages["cost_usd"]:.2f} spent.</p>'
-                f'<p class="small">The investigation used {damages["replay_runs"]} replays, about ${damages["replay_usd"]:.2f}. {escape(damages["note"])}</p>')
+        if damages["runs"]:
+            body = (f'<p>{damages["bad_runs"]} of {damages["runs"]} runs on the culprit or later went bad, which is {damages["bad_share"]:.0%}. '
+                    f'They cost about ${damages["wasted_usd"]:.2f} of the ${damages["cost_usd"]:.2f} spent.</p>')
+        else:
+            body = '<p>No ordinary runs are recorded on the culprit or the commits after it, so there is no damage to count.</p>'
+        body += (f'<p class="small">The investigation used {damages["replay_runs"]} replays, about ${damages["replay_usd"]:.2f}. {escape(damages["note"])}</p>')
     else:
         body = '<p class="empty">Not counted yet.</p>'
     parts.append(_field("Damages", body))

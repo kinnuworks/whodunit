@@ -22,6 +22,8 @@ The checkpoint links will take the form `https://entire.io/gh/OWNER/REPO/commit/
 - `casefile-v1-planted-flaky-lookup.png`: the case file page for the first full case. Before the fix, replays failed about 39% of the time from the culprit on (48 replays across 11 commits). After the revert, 0 failures in 8 replays, 95.8% likely fixed.
 - `planted-flaky-lookup.record.json`: the record that page is drawn from. Machine paths are replaced with placeholders.
 
+- `casefile-v1-planted-friendly-prompt.png` and `planted-friendly-prompt.record.json`: a prompt regression on the gateway's small model. Before the fix, 57% of replays refunded another customer's order from the culprit on (32 replays across 9 commits). After a model-written patch that kept the friendlier wording, 0 failures in 6 replays, 98.2% likely fixed. Failing run `b5aa7b890c48`, passing run `d0cdabcc261a`.
+
 ## Simulator
 
 - `../eval/simulator/accuracy-clean-baseline.svg` and `accuracy-flaky-baseline.svg`: accuracy against replay budget, next to plain bisect, at failure rates from 100% down to 20%.
@@ -35,4 +37,4 @@ The checkpoint links will take the form `https://entire.io/gh/OWNER/REPO/commit/
 
 - Links to the #neatHack posts.
 - The cfo.ai plan.
-- A case on the genuine history, with a motive from a real request.
+- A case on the genuine history, with a motive from a real request. Both cases so far are on planted histories.
