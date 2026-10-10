@@ -65,9 +65,13 @@ During a replay neatroots sets `NEATROOTS_REPLAY_INPUT`, and the agent uses it i
 - The model and the trace destination are each one environment variable.
 - The agent reads its replay input from `NEATROOTS_REPLAY_INPUT`.
 - Runs are tagged with the commit and the case, and a `run_info` span repeats the tags.
-- There are eight orders in place of one, and the refunds a run paid out are kept for checks to read.
+- Orders moved out of `agent.py` into `orders.json`, which now holds ten orders in place of one.
+- The refunds a run paid out are kept in memory for checks to read.
 - `issue_refund` requires a short reason (such as `arrived damaged`), which is stored with the refund.
-- Each run makes at most 3 model calls, each capped at 150 tokens.
 - A `get_order_status` tool answers "where is my order?" questions with the status and placed_on date, without refunding anything.
+- Each run makes at most 3 model calls, each capped at 150 tokens, to save on gateway spend.
+- The OpenAI client carries a 30-second timeout and 2 retries, where the original had neither.
+- The system prompt is warmer: it acknowledges what went wrong before saying what was done, gives the customer the benefit of the doubt on a mistyped order number, tries digit-swap and digit-double corrections on a failed lookup, and offers a replacement alongside a refund where that fits.
+- If an order doesn't belong to the customer, the agent never names whose it is or mentions another customer.
 - `fake_llm.py` plays a careful agent. The original repeated a failing lookup until a steering note arrived.
 - Dependencies are in `pyproject.toml` and locked with uv for Python 3.12.
