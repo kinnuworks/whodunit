@@ -1,0 +1,1 @@
+In victims/refund-agent/agent.py the load_env_file helper silently ignores a WHODUNIT_ENV path that doesn't exist. Print a one-line warning to stderr in that case and carry on as before. Check agent.py still compiles, then commit.
