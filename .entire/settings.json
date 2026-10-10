@@ -1,0 +1,11 @@
+{
+  "redaction": {
+    "pii": {
+      "enabled": true,
+      "email": true,
+      "phone": true,
+      "address": false
+    }
+  },
+  "commit_linking": "always"
+}
