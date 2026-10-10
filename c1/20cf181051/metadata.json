@@ -1,0 +1,38 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "c120cf181051",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 3,
+  "files_touched": [
+    ".gitignore",
+    "cases/cents-off.record.json",
+    "cases/half-done-batch.record.json",
+    "cases/strangers-paid.record.json",
+    "cases/turned-away.record.json",
+    "cases/wrong-order-refunded.record.json",
+    "eval/answer-key.json",
+    "eval/sealed/README.md",
+    "eval/sealed/score-after-more-replays.json",
+    "eval/sealed/score-at-120-replays.json",
+    "tests/test_lineup.py",
+    "whodunit/cli.py",
+    "whodunit/lineup.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/c1/20cf181051/0/metadata.json",
+      "transcript": "/c1/20cf181051/0/full.jsonl",
+      "compact_transcript": "/c1/20cf181051/0/transcript.jsonl",
+      "content_hash": "/c1/20cf181051/0/content_hash.txt",
+      "prompt": "/c1/20cf181051/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 24,
+    "cache_creation_tokens": 19167,
+    "cache_read_tokens": 5553032,
+    "output_tokens": 11441,
+    "api_call_count": 12
+  }
+}

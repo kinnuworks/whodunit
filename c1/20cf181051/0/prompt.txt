@@ -1,0 +1,21 @@
+<task-notification>
+<task-id>bmwdt8te3</task-id>
+<tool-use-id>toolu_019hoqZszh42qbBSq8GymEv7</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-kinnu-neathack/d1722531-fd19-41ec-9e89-c3cbe406e10c/tasks/bmwdt8te3.output</output-file>
+<status>completed</status>
+<summary>Background command "Run the lineup on all five sealed cases with the gateway model" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+cfo.ai, is also ready
+
+---
+
+<task-notification>
+<task-id>buy91jp03</task-id>
+<tool-use-id>toolu_01NBNz2FFLHCsLwT7fTvctCd</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-kinnu-neathack/d1722531-fd19-41ec-9e89-c3cbe406e10c/tasks/buy91jp03.output</output-file>
+<status>completed</status>
+<summary>Background command "Give the two unsolved cases up to 200 more replays each, starting from what is on record" completed (exit code 0)</summary>
+</task-notification>
