@@ -1,0 +1,1 @@
+small one for victims/refund-agent: add a status line to the README explaining what each order status (delivered, shipped) means for refunds today. we don't treat them differently yet, just document it. commit when done.
