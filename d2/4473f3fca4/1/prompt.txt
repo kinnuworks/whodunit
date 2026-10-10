@@ -1,0 +1,1 @@
+victims/refund-agent: add a line to the README under Run it showing how to print just the JSON result with --json and pipe it to jq. Commit.
