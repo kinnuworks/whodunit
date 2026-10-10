@@ -15,7 +15,7 @@ uv run agent.py "Please refund order 1001 for customer cust_9."
 
 Open http://localhost:4100 to see the run. Add `--json` to get the reply and the refunds paid out as one line of JSON.
 
-The orders it knows about are 1001 and 1002 (customer `cust_9`), 2002 (`cust_4`), 3003 (`cust_7`), 4004 (`cust_2`, EUR) and 5005 (`cust_3`). Each order has an id, owner, amount, currency, status, and placed_on date. Any other order id comes back as a 404 from the lookup tool.
+The orders it knows about are 1001, 1002, 6006 and 7007 (customer `cust_9`), 2002 (`cust_4`), 3003 (`cust_7`), 4004 (`cust_2`, EUR) and 5005 (`cust_3`). Each order has an id, owner, amount, currency, status, and placed_on date. Any other order id comes back as a 404 from the lookup tool.
 
 ## Choosing the model
 
@@ -53,6 +53,6 @@ During a replay neatroots sets `NEATROOTS_REPLAY_INPUT`, and the agent uses it i
 - The model and the trace destination are each one environment variable.
 - The agent reads its replay input from `NEATROOTS_REPLAY_INPUT`.
 - Runs are tagged with the commit and the case, and a `run_info` span repeats the tags.
-- There are six orders in place of one, and the refunds a run paid out are kept for checks to read.
+- There are eight orders in place of one, and the refunds a run paid out are kept for checks to read.
 - `fake_llm.py` plays a careful agent. The original repeated a failing lookup until a steering note arrived.
 - Dependencies are in `pyproject.toml` and locked with uv for Python 3.12.

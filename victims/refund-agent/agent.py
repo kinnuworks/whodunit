@@ -136,6 +136,8 @@ ORDERS = {
     "3003": {"order_id": "3003", "owner": "cust_7", "amount": 129.99, "currency": "USD", "status": "delivered", "placed_on": "2026-09-28"},
     "4004": {"order_id": "4004", "owner": "cust_2", "amount": 75.0, "currency": "EUR", "status": "delivered", "placed_on": "2026-09-20"},
     "5005": {"order_id": "5005", "owner": "cust_3", "amount": 64.75, "currency": "USD", "status": "delivered", "placed_on": "2026-09-25"},
+    "6006": {"order_id": "6006", "owner": "cust_9", "amount": 25.0, "currency": "USD", "status": "delivered", "placed_on": "2026-09-18"},
+    "7007": {"order_id": "7007", "owner": "cust_9", "amount": 60.0, "currency": "USD", "status": "delivered", "placed_on": "2026-10-02"},
 }
 REFUNDS: list[dict] = []  # what this run paid out, for the checks to read
 
