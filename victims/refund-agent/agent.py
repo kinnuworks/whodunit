@@ -218,12 +218,17 @@ def run_info():
     return {"tags": TAGS, "commit_short": current_commit()[:12], "model": MODEL, "version": agent_version()}
 
 
+MODEL_CALLS = 0
+
+
 @span(kind="WORKFLOW", name="refund")
 def run(request: str, max_steps: int = 3):
+    global MODEL_CALLS
     run_info()
     messages = [{"role": "system", "content": SYSTEM}, {"role": "user", "content": request}]
     for _ in range(max_steps):
         r = client.chat.completions.create(model=MODEL, messages=messages, tools=TOOLS, max_tokens=150)
+        MODEL_CALLS += 1
         m = r.choices[0].message
         if not m.tool_calls:
             return m.content
@@ -240,7 +245,8 @@ if __name__ == "__main__":
     try:
         reply = run(request)
         if "--json" in sys.argv:
-            print(json.dumps({"request": request, "reply": reply, "refunds": REFUNDS, "model": MODEL}))
+            print(json.dumps({"request": request, "reply": reply, "refunds": REFUNDS, "model": MODEL,
+                              "model_calls": MODEL_CALLS}))
         elif "--quiet" not in sys.argv:
             print(reply)
     finally:
