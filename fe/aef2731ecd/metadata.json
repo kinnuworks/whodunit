@@ -3,7 +3,7 @@
   "checkpoint_id": "feaef2731ecd",
   "strategy": "manual-commit",
   "branch": "whodunit/strangers-paid",
-  "checkpoints_count": 2,
+  "checkpoints_count": 4,
   "files_touched": [
     "victims/refund-agent/agent.py"
   ],
@@ -21,14 +21,21 @@
       "compact_transcript": "/fe/aef2731ecd/1/transcript.jsonl",
       "content_hash": "/fe/aef2731ecd/1/content_hash.txt",
       "prompt": ""
+    },
+    {
+      "metadata": "/fe/aef2731ecd/2/metadata.json",
+      "transcript": "/fe/aef2731ecd/2/full.jsonl",
+      "compact_transcript": "/fe/aef2731ecd/2/transcript.jsonl",
+      "content_hash": "/fe/aef2731ecd/2/content_hash.txt",
+      "prompt": ""
     }
   ],
   "token_usage": {
-    "input_tokens": 6,
-    "cache_creation_tokens": 17678,
-    "cache_read_tokens": 426962,
-    "output_tokens": 4924,
-    "api_call_count": 3,
+    "input_tokens": 12,
+    "cache_creation_tokens": 26426,
+    "cache_read_tokens": 2058375,
+    "output_tokens": 9035,
+    "api_call_count": 6,
     "subagent_tokens": {
       "input_tokens": 26,
       "cache_creation_tokens": 207448,
