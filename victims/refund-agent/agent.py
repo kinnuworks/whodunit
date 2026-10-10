@@ -218,9 +218,15 @@ def call_tool(name, args):
 
 
 @span(kind="CHAIN", name="run_info")
-def run_info():
+def run_info(max_steps: int):
     """Put the tags in a span's output too. neatlogs cloud search reads span text and skips tags."""
-    return {"tags": TAGS, "commit_short": current_commit()[:12], "model": MODEL, "version": agent_version()}
+    return {
+        "tags": TAGS,
+        "commit_short": current_commit()[:12],
+        "model": MODEL,
+        "version": agent_version(),
+        "max_steps": max_steps,
+    }
 
 
 MODEL_CALLS = 0
@@ -229,7 +235,7 @@ MODEL_CALLS = 0
 @span(kind="WORKFLOW", name="refund")
 def run(request: str, max_steps: int = 3):
     global MODEL_CALLS
-    run_info()
+    run_info(max_steps)
     messages = [{"role": "system", "content": SYSTEM}, {"role": "user", "content": request}]
     for _ in range(max_steps):
         r = client.chat.completions.create(model=MODEL, messages=messages, tools=TOOLS, max_tokens=150)
