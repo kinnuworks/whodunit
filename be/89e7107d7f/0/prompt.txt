@@ -1,0 +1,1 @@
+victims/refund-agent: please add a pytest-free smoke check script, smoke.py, that imports agent.py's lookup_order and issue_refund-free helpers and checks that orders.json loads and every order has the six expected fields. It must not call the model. Run it with uv run python smoke.py, then commit.

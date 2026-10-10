@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "be89e7107d7f",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "victims/refund-agent/smoke.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/be/89e7107d7f/0/metadata.json",
+      "transcript": "/be/89e7107d7f/0/full.jsonl",
+      "compact_transcript": "/be/89e7107d7f/0/transcript.jsonl",
+      "content_hash": "/be/89e7107d7f/0/content_hash.txt",
+      "prompt": "/be/89e7107d7f/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 14,
+    "cache_creation_tokens": 42305,
+    "cache_read_tokens": 478435,
+    "output_tokens": 2447,
+    "api_call_count": 7
+  }
+}
