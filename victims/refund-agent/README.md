@@ -19,7 +19,22 @@ Open http://localhost:4100 to see the run. Add `--json` to get the reply and the
 {"request": "Please refund order 1001 for customer cust_9.", "reply": "Order 1001 has been refunded in full: 42.00.", "refunds": [{"refunded": 42, "order_id": "1001", "reason": "customer request"}], "model": "fake", "model_calls": 3}
 ```
 
-The orders live in `orders.json`, keyed by order id. It currently has 1001, 1002, 6006 and 7007 (customer `cust_9`), 2002 and 1212 (`cust_4`), 3003 (`cust_7`), 4004 (`cust_2`, EUR), 5005 (`cust_3`), 8008 (`cust_6`), 9009 (`cust_5`) and 1111 (`cust_8`). Each order has an id, owner, amount, currency, status, and placed_on date. Any other order id comes back as a 404 from the lookup tool.
+The orders live in `orders.json`, keyed by order id. Each order has an id, owner, amount, currency, status, and placed_on date. Any other order id comes back as a 404 from the lookup tool.
+
+| id | customer | amount | currency | status | placed on |
+| --- | --- | --- | --- | --- | --- |
+| 1001 | cust_9 | 42.00 | USD | delivered | 2026-09-01 |
+| 1002 | cust_9 | 18.50 | USD | delivered | 2026-09-02 |
+| 1111 | cust_8 | 55.00 | USD | delivered | 2026-10-06 |
+| 1212 | cust_4 | 48.00 | USD | shipped | 2026-10-07 |
+| 2002 | cust_4 | 30.00 | USD | shipped | 2026-09-15 |
+| 3003 | cust_7 | 129.99 | USD | delivered | 2026-09-28 |
+| 4004 | cust_2 | 75.00 | EUR | delivered | 2026-09-20 |
+| 5005 | cust_3 | 64.75 | USD | delivered | 2026-09-25 |
+| 6006 | cust_9 | 25.00 | USD | delivered | 2026-09-18 |
+| 7007 | cust_9 | 60.00 | USD | delivered | 2026-10-02 |
+| 8008 | cust_6 | 90.00 | USD | shipped | 2026-10-05 |
+| 9009 | cust_5 | 45.00 | USD | delivered | 2026-09-30 |
 
 To add one, add a new key to `orders.json` with the same fields as the others. The order id in the value should match its key.
 
