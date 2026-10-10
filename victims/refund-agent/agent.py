@@ -9,6 +9,9 @@ the commit it ran on.
     REFUND_LLM=gateway uv run agent.py "..."     # the hackathon gateway
     TRACE_TO=neatlogs uv run agent.py "..."      # send the trace to neatlogs cloud
     uv run agent.py "..." --quiet                # skip printing the reply, keep only the trace
+    uv run agent.py "..." --json                 # print request, reply, refunds, model, model_calls as JSON
+
+Orders live in orders.json, keyed by order_id.
 
 Settings, all environment variables:
 
