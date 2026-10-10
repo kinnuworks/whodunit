@@ -1,0 +1,1 @@
+victims/refund-agent: the module docstring at the top of agent.py lists the settings, but it's out of date now (no mention of --quiet, --json fields, orders.json). Bring it up to date, keep it brief. Check agent.py still compiles, then commit.
