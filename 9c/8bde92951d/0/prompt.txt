@@ -1,0 +1,1 @@
+victims/refund-agent: smoke.py prints nothing when everything passes, which looks like it might not have run. Print a one-line summary at the end like 'smoke: 11 orders ok'. Run it, then commit.
