@@ -55,6 +55,10 @@ neatroots replay <trace-id> --input "Please refund order 1002 for customer cust_
 
 During a replay neatroots sets `NEATROOTS_REPLAY_INPUT`, and the agent uses it in place of the command line.
 
+## Smoke check
+
+`smoke.py` is a pytest-free sanity check that never touches the model or `issue_refund`. It loads `orders.json` through `lookup_order` and `get_order_status` and checks that every order has the six expected fields, every currency is a three-letter code, and every amount is positive. Run it with `uv run python smoke.py`.
+
 ## Troubleshooting
 
 **Connection refused on port 4100.** neatroots is not running. Start it with `neatroots start` in another terminal before running the agent or a replay.
