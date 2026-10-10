@@ -15,7 +15,9 @@ uv run agent.py "Please refund order 1001 for customer cust_9."
 
 Open http://localhost:4100 to see the run. Add `--json` to get the reply and the refunds paid out as one line of JSON.
 
-The orders it knows about are 1001, 1002, 6006 and 7007 (customer `cust_9`), 2002 (`cust_4`), 3003 (`cust_7`), 4004 (`cust_2`, EUR) and 5005 (`cust_3`). Each order has an id, owner, amount, currency, status, and placed_on date. Any other order id comes back as a 404 from the lookup tool.
+The orders live in `orders.json`, keyed by order id. It currently has 1001, 1002, 6006 and 7007 (customer `cust_9`), 2002 (`cust_4`), 3003 (`cust_7`), 4004 (`cust_2`, EUR) and 5005 (`cust_3`). Each order has an id, owner, amount, currency, status, and placed_on date. Any other order id comes back as a 404 from the lookup tool.
+
+To add one, add a new key to `orders.json` with the same fields as the others. The order id in the value should match its key.
 
 Status is `delivered` or `shipped`. Today the agent treats both the same: if the order exists and belongs to the customer, it refunds regardless of status.
 
