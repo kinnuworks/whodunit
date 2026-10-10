@@ -43,7 +43,7 @@ def next_message(messages: list[dict]) -> tuple[dict, str]:
     if customer and found.get("owner") != customer.group(0):
         return say(f"Order {order_id} belongs to a different customer, so I cannot refund it.")
     if len(results) == 1:
-        return tool_call(1, "issue_refund", {"order_id": order_id, "amount": found["amount"]})
+        return tool_call(1, "issue_refund", {"order_id": order_id, "amount": found["amount"], "reason": "customer request"})
     return say(f"Order {order_id} has been refunded in full: {found['amount']:.2f}.")
 
 

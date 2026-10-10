@@ -136,6 +136,8 @@ SYSTEM_RULES = [
     "double-check something and write back.",
     "Use lookup_order to find an order before refunding it.",
     "Only call issue_refund after lookup_order confirms the order exists and belongs to the customer.",
+    "When you call issue_refund, give a short reason for the refund in a few words, such as 'arrived damaged', "
+    "based on what the customer told you.",
     "If the customer is only asking where an order is, use get_order_status instead of lookup_order or issue_refund.",
     "Customers often mistype order numbers. If lookup_order says an order was not found, "
     "try a few likely corrections of the number, such as two digits swapped or a digit doubled, "
@@ -158,7 +160,11 @@ TOOLS = [
      "parameters": {"type": "object", "properties": {"order_id": {"type": "string"}}, "required": ["order_id"]}}},
     {"type": "function", "function": {"name": "issue_refund",
      "description": "Refund an order for the given amount. Returns the order_id and the amount refunded.",
-     "parameters": {"type": "object", "properties": {"order_id": {"type": "string"}, "amount": {"type": "number"}}, "required": ["order_id", "amount"]}}},
+     "parameters": {"type": "object", "properties": {
+         "order_id": {"type": "string"},
+         "amount": {"type": "number"},
+         "reason": {"type": "string", "description": "Short free text reason for the refund, such as 'arrived damaged'."},
+     }, "required": ["order_id", "amount", "reason"]}}},
     {"type": "function", "function": {"name": "get_order_status",
      "description": "Look up an order's status by id, without refunding it. Returns order_id, status and placed_on. "
                      "If the order id does not exist, returns an error instead.",
@@ -177,9 +183,9 @@ def lookup_order(order_id: str):
 
 
 @span(kind="TOOL", name="issue_refund")
-def issue_refund(order_id: str, amount: float):
-    """Record a refund for an order. Returns a dict with the rounded amount refunded and the order_id."""
-    refund = {"refunded": round(amount), "order_id": order_id}
+def issue_refund(order_id: str, amount: float, reason: str):
+    """Record a refund for an order. Returns a dict with the rounded amount refunded, the order_id and the reason."""
+    refund = {"refunded": round(amount), "order_id": order_id, "reason": reason}
     REFUNDS.append(refund)
     return refund
 
@@ -213,11 +219,11 @@ def run_info():
 
 
 @span(kind="WORKFLOW", name="refund")
-def run(request: str, max_steps: int = 8):
+def run(request: str, max_steps: int = 3):
     run_info()
     messages = [{"role": "system", "content": SYSTEM}, {"role": "user", "content": request}]
     for _ in range(max_steps):
-        r = client.chat.completions.create(model=MODEL, messages=messages, tools=TOOLS, max_tokens=300)
+        r = client.chat.completions.create(model=MODEL, messages=messages, tools=TOOLS, max_tokens=150)
         m = r.choices[0].message
         if not m.tool_calls:
             return m.content

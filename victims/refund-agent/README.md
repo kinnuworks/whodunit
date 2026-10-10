@@ -66,6 +66,8 @@ During a replay neatroots sets `NEATROOTS_REPLAY_INPUT`, and the agent uses it i
 - The agent reads its replay input from `NEATROOTS_REPLAY_INPUT`.
 - Runs are tagged with the commit and the case, and a `run_info` span repeats the tags.
 - There are eight orders in place of one, and the refunds a run paid out are kept for checks to read.
+- `issue_refund` requires a short reason (such as `arrived damaged`), which is stored with the refund.
+- Each run makes at most 3 model calls, each capped at 150 tokens.
 - A `get_order_status` tool answers "where is my order?" questions with the status and placed_on date, without refunding anything.
 - `fake_llm.py` plays a careful agent. The original repeated a failing lookup until a steering note arrived.
 - Dependencies are in `pyproject.toml` and locked with uv for Python 3.12.
