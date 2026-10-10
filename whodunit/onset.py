@@ -97,3 +97,24 @@ def find_onset(workflow: str, runs: list[dict], floor: float = 0.01) -> Onset:
             inputs[run["input_preview"]] = inputs.get(run["input_preview"], 0) + 1
     onset.failing_inputs = sorted(inputs, key=lambda text: -inputs[text])[:5]
     return onset
+
+
+def cloud_trend(detection: str = "Execution Failed") -> dict:
+    """Ask neatlogs cloud when a detection started firing. Needs NEATLOGS_API_KEY in .env.
+
+    Returns {"detection", "first_seen", "total", "points"}, where first_seen is the start of the
+    first bucket with any occurrences, or None if the detection has not fired in the period.
+    """
+    import os
+
+    from .env import load_env
+    from .neat import NEATLOGS
+
+    load_env()
+    key = os.environ.get("NEATLOGS_API_KEY", "")
+    if not key:
+        raise RuntimeError("NEATLOGS_API_KEY is not in .env")
+    trend = Mcp(NEATLOGS, token=key).call("get_detection_trend", detection_name=detection)
+    points = trend.get("data_points", [])
+    first = next((p["date"] for p in points if p.get("count", 0) > 0), None)
+    return {"detection": trend.get("detection_name", detection), "first_seen": first, "total": trend.get("total_occurrences", 0), "points": points}

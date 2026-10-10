@@ -84,7 +84,10 @@ class Runner:
         env = {k: v for k, v in os.environ.items() if k != "VIRTUAL_ENV"}
         env.update(self.case.env)
         env["WHODUNIT_COMMIT"] = sha
-        env["WHODUNIT_CASE"] = self.case.id
+        if self.case.id:
+            env["WHODUNIT_CASE"] = self.case.id
+        else:
+            env.pop("WHODUNIT_CASE", None)  # ordinary traffic carries no case tag
         lock = self.root / sha[:12] / self.case.target / "uv.lock"
         if lock.is_file():
             # Worktrees with the same lockfile share one environment, so a new commit does not

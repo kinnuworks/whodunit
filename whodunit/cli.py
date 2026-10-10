@@ -14,7 +14,7 @@ from . import fix as fixes
 from . import ruling as rulings
 from .motive import find_motive
 from .neat import NeatError, neatroots
-from .onset import find_onset, traffic
+from .onset import cloud_trend, find_onset, traffic
 from .lineup import linear_scan_cost, plain_bisect, statistical_bisect
 from .replay import FAIL, PASS, Runner
 from .suspects import git, list_suspects, resolve
@@ -329,6 +329,12 @@ def onset(args) -> int:
         print(f"neatroots could not be asked: {exc}")
         return 1
     found = find_onset(args.workflow, runs)
+    if args.cloud:
+        try:
+            trend = cloud_trend(args.cloud)
+            print(f"neatlogs cloud, detection \"{trend['detection']}\": {trend['total']} occurrences, first seen {trend['first_seen'] or 'never in this period'}.")
+        except (NeatError, RuntimeError) as exc:
+            print(f"neatlogs cloud could not be asked: {exc}")
     if args.json:
         print(json.dumps(found.to_dict(), indent=2))
         return 0 if found.good else 1
@@ -401,6 +407,7 @@ def main(argv: list[str] | None = None) -> int:
             p.add_argument("--since-ms", type=float, help="count runs from this time, in ms since the epoch")
     p = commands.add_parser("onset", help="find when the failures began and between which commits, from ordinary runs")
     p.add_argument("--workflow", default="refund-agent")
+    p.add_argument("--cloud", metavar="DETECTION", help="also ask neatlogs cloud when this detection started firing")
     p.add_argument("--json", action="store_true")
     p.set_defaults(func=onset)
     p = commands.add_parser("open-case", help="write the case file page and open it")
