@@ -237,8 +237,15 @@ def run(request: str, max_steps: int = 3):
             return m.content
         messages.append({"role": "assistant", "content": m.content, "tool_calls": [tc.model_dump() for tc in m.tool_calls]})
         for tc in m.tool_calls:
-            args = json.loads(tc.function.arguments or "{}")
-            messages.append({"role": "tool", "tool_call_id": tc.id, "content": call_tool(tc.function.name, args)})
+            try:
+                args = json.loads(tc.function.arguments or "{}")
+            except json.JSONDecodeError as exc:
+                timestamp = datetime.now().strftime("%H:%M:%S")
+                print(f"[{timestamp}] tool {tc.function.name} got bad arguments: {exc}", file=sys.stderr)
+                content = json.dumps({"error": f"invalid arguments JSON: {exc}"})
+            else:
+                content = call_tool(tc.function.name, args)
+            messages.append({"role": "tool", "tool_call_id": tc.id, "content": content})
     return "I couldn't finish this one. A person will follow up with you shortly."
 
 
