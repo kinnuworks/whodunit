@@ -77,6 +77,13 @@ def trace_settings() -> tuple[str, str]:
     sys.exit(f"TRACE_TO={choice} is not one of neatroots, neatlogs.")
 
 
+def agent_version() -> str:
+    import tomllib
+
+    with open(HERE / "pyproject.toml", "rb") as f:
+        return tomllib.load(f)["project"]["version"]
+
+
 def current_commit() -> str:
     given = os.environ.get("WHODUNIT_COMMIT")
     if given:
@@ -187,7 +194,7 @@ def call_tool(name, args):
 @span(kind="CHAIN", name="run_info")
 def run_info():
     """Put the tags in a span's output too. neatlogs cloud search reads span text and skips tags."""
-    return {"tags": TAGS, "commit_short": current_commit()[:12], "model": MODEL}
+    return {"tags": TAGS, "commit_short": current_commit()[:12], "model": MODEL, "version": agent_version()}
 
 
 @span(kind="WORKFLOW", name="refund")
