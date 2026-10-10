@@ -1,0 +1,1 @@
+victims/refund-agent: the gateway sometimes returns a tool call with arguments that aren't valid JSON, and json.loads then crashes the whole run. Catch that and hand the model an error result for that tool call instead, so it can try again. Check agent.py still compiles, then commit.

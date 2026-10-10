@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "77506d8caa4c",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "victims/refund-agent/agent.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/77/506d8caa4c/0/metadata.json",
+      "transcript": "/77/506d8caa4c/0/full.jsonl",
+      "compact_transcript": "/77/506d8caa4c/0/transcript.jsonl",
+      "content_hash": "/77/506d8caa4c/0/content_hash.txt",
+      "prompt": "/77/506d8caa4c/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 18,
+    "cache_creation_tokens": 34231,
+    "cache_read_tokens": 585263,
+    "output_tokens": 1194,
+    "api_call_count": 9
+  }
+}
