@@ -1,0 +1,1 @@
+Read AGENTS.md and hackathon.md, then build milestone 1: get the refund agent running under victims/refund-agent/ with traces reaching neatlogs and neatroots, commit, and verify the first Entire checkpoint with entire checkpoint list and entire checkpoint explain --transcript before anything is pushed.

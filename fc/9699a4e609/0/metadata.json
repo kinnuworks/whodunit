@@ -1,0 +1,68 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "fc9699a4e609",
+  "session_id": "d1722531-fd19-41ec-9e89-c3cbe406e10c",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-10T13:46:15.488783Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "2ede71b9f85a",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 66,
+    "cache_creation_tokens": 101334,
+    "cache_read_tokens": 3655084,
+    "output_tokens": 27675,
+    "api_call_count": 31
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_018Qm4kKricuddnfpEDqLYrr",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "neatroots-instrument-agent"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "2ede71b9f85a",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 59,
+        "end": 60,
+        "entry_ids": [
+          "7405c011-ac34-45bb-9eab-bb95fdcd1047"
+        ],
+        "tool_use_id": "toolu_018Qm4kKricuddnfpEDqLYrr"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_018Qm4kKricuddnfpEDqLYrr"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: neatroots-instrument-agent",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 102,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/settings.json": 101,
+        "CLAUDE.md": 1
+      }
+    }
+  ]
+}
