@@ -116,7 +116,7 @@ neatlogs.init(
 
 from openai import OpenAI  # noqa: E402  (import after neatlogs.init)
 
-client = OpenAI(base_url=LLM_BASE_URL, api_key=LLM_API_KEY)
+client = OpenAI(base_url=LLM_BASE_URL, api_key=LLM_API_KEY, timeout=30.0, max_retries=2)
 
 SYSTEM_RULES = [
     "You are a refund agent for an online shop.",
