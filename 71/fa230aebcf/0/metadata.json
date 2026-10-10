@@ -1,0 +1,47 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "71fa230aebcf",
+  "session_id": "10c268ec-987a-445a-a3c0-71831df5dc0f",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-10T17:55:18.152002Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "victims/refund-agent/agent.py"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5",
+  "turn_id": "7c73cd5dae22",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 12,
+    "cache_creation_tokens": 37509,
+    "cache_read_tokens": 384997,
+    "output_tokens": 1493,
+    "api_call_count": 6
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-10T17:55:18.143581Z",
+    "agent_lines": 3,
+    "agent_removed": 2,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 3,
+    "total_lines_changed": 5,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 1,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "CLAUDE.md": 1
+      }
+    }
+  ]
+}
