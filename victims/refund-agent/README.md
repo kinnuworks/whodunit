@@ -1,6 +1,6 @@
 # Refund agent
 
-This is the agent Whodunit investigates. It takes a refund request, looks the order up, and refunds it only if the order exists and belongs to the customer. It is small on purpose, so that a change to a prompt or a tool shows up clearly in its traces.
+This is the agent Whodunit investigates. It takes a refund request, looks the order up, and refunds it only if the order exists and belongs to the customer. It can also answer a plain "where is my order?" question with `get_order_status`, which returns the status and placed_on date without touching a refund. It is small on purpose, so that a change to a prompt or a tool shows up clearly in its traces.
 
 It started as the `refund-agent` example that ships with neatroots, which is licensed under Apache-2.0. A copy of that licence is in `LICENSE`. The changes made here are listed at the bottom of this file.
 
@@ -58,5 +58,6 @@ During a replay neatroots sets `NEATROOTS_REPLAY_INPUT`, and the agent uses it i
 - The agent reads its replay input from `NEATROOTS_REPLAY_INPUT`.
 - Runs are tagged with the commit and the case, and a `run_info` span repeats the tags.
 - There are eight orders in place of one, and the refunds a run paid out are kept for checks to read.
+- A `get_order_status` tool answers "where is my order?" questions with the status and placed_on date, without refunding anything.
 - `fake_llm.py` plays a careful agent. The original repeated a failing lookup until a steering note arrived.
 - Dependencies are in `pyproject.toml` and locked with uv for Python 3.12.

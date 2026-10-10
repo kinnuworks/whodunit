@@ -122,6 +122,7 @@ SYSTEM_RULES = [
     "You are a refund agent for an online shop.",
     "Use lookup_order to find an order before refunding it.",
     "Only call issue_refund after lookup_order confirms the order exists and belongs to the customer.",
+    "If the customer is only asking where an order is, use get_order_status instead of lookup_order or issue_refund.",
     "Customers often mistype order numbers. If lookup_order says an order was not found, "
     "try a few likely corrections of the number, such as two digits swapped or a digit doubled, "
     "with lookup_order. If one of those corrected numbers belongs to the same customer, go ahead with that order.",
@@ -137,6 +138,10 @@ TOOLS = [
     {"type": "function", "function": {"name": "issue_refund",
      "description": "Refund an order for the given amount. Returns the order_id and the amount refunded.",
      "parameters": {"type": "object", "properties": {"order_id": {"type": "string"}, "amount": {"type": "number"}}, "required": ["order_id", "amount"]}}},
+    {"type": "function", "function": {"name": "get_order_status",
+     "description": "Look up an order's status by id, without refunding it. Returns order_id, status and placed_on. "
+                     "If the order id does not exist, returns an error instead.",
+     "parameters": {"type": "object", "properties": {"order_id": {"type": "string"}}, "required": ["order_id"]}}},
 ]
 ORDERS = json.loads((HERE / "orders.json").read_text())
 REFUNDS: list[dict] = []  # what this run paid out, for the checks to read
@@ -158,10 +163,20 @@ def issue_refund(order_id: str, amount: float):
     return refund
 
 
+@span(kind="TOOL", name="get_order_status")
+def get_order_status(order_id: str):
+    """Look up an order's status by id, without refunding it. Returns order_id, status and placed_on,
+    or raises LookupError if the order does not exist."""
+    if order_id not in ORDERS:
+        raise LookupError(f"404: order {order_id} not found")
+    order = ORDERS[order_id]
+    return {"order_id": order["order_id"], "status": order["status"], "placed_on": order["placed_on"]}
+
+
 def call_tool(name, args):
     """Dispatch a tool call by name with its arguments. Returns the tool's result as a JSON string,
     or a JSON string with an "error" key if the tool call raised."""
-    fn = {"lookup_order": lookup_order, "issue_refund": issue_refund}[name]
+    fn = {"lookup_order": lookup_order, "issue_refund": issue_refund, "get_order_status": get_order_status}[name]
     try:
         return json.dumps(fn(**args))
     except Exception as exc:  # the agent sees tool errors as results
