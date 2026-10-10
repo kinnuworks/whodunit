@@ -3,8 +3,10 @@
   "checkpoint_id": "587df29ec38f",
   "strategy": "manual-commit",
   "branch": "whodunit/cents-off",
-  "checkpoints_count": 3,
-  "files_touched": null,
+  "checkpoints_count": 5,
+  "files_touched": [
+    "victims/refund-agent/agent.py"
+  ],
   "sessions": [
     {
       "metadata": "/58/7df29ec38f/0/metadata.json",
@@ -12,14 +14,21 @@
       "compact_transcript": "/58/7df29ec38f/0/transcript.jsonl",
       "content_hash": "/58/7df29ec38f/0/content_hash.txt",
       "prompt": "/58/7df29ec38f/0/prompt.txt"
+    },
+    {
+      "metadata": "/58/7df29ec38f/1/metadata.json",
+      "transcript": "/58/7df29ec38f/1/full.jsonl",
+      "compact_transcript": "/58/7df29ec38f/1/transcript.jsonl",
+      "content_hash": "/58/7df29ec38f/1/content_hash.txt",
+      "prompt": ""
     }
   ],
   "token_usage": {
-    "input_tokens": 42,
-    "cache_creation_tokens": 61402,
-    "cache_read_tokens": 3405808,
-    "output_tokens": 10155,
-    "api_call_count": 18,
+    "input_tokens": 46,
+    "cache_creation_tokens": 64154,
+    "cache_read_tokens": 4505199,
+    "output_tokens": 11559,
+    "api_call_count": 20,
     "subagent_tokens": {
       "input_tokens": 50,
       "cache_creation_tokens": 245032,
