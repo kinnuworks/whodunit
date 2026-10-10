@@ -1,0 +1,1 @@
+Could you update the 'Changes from the neatroots example' list at the bottom of victims/refund-agent/README.md? A lot has changed since it was written (orders.json, new tools, refund reasons, the tone of the prompt, timeouts). Keep each bullet to one line. Commit.
