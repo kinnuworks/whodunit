@@ -1,0 +1,1 @@
+victims/refund-agent README: add a small Troubleshooting section. Cover: neatroots not running (connection refused on 4100), missing LITELLM keys, and the mock LLM not following the refund rules. Commit.
