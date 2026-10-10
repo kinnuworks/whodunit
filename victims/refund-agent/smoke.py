@@ -2,16 +2,38 @@
 
 Imports agent.py's lookup_order and get_order_status (never issue_refund, never the
 model) and checks that orders.json loads, every order has the six expected fields, every
-currency is a three-letter code and every amount is positive.
+currency is a three-letter code and every amount is positive. Also re-reads orders.json
+raw, since a dict built from it would silently drop a duplicate order_id key.
 
     uv run python smoke.py
 """
 
+import json
 import sys
 
-from agent import ORDERS, get_order_status, lookup_order
+from agent import HERE, ORDERS, get_order_status, lookup_order
 
 EXPECTED_FIELDS = {"order_id", "owner", "amount", "currency", "status", "placed_on"}
+
+
+def check_raw_orders_json() -> list[str]:
+    failures = []
+
+    def hook(pairs):
+        seen = set()
+        for key, _ in pairs:
+            if key in seen:
+                failures.append(f"order_id {key!r} appears more than once in orders.json")
+            seen.add(key)
+        return dict(pairs)
+
+    raw_orders = json.loads((HERE / "orders.json").read_text(), object_pairs_hook=hook)
+    for key, order in raw_orders.items():
+        if order.get("order_id") != key:
+            failures.append(
+                f"order {key!r}: orders.json key does not match its order_id field {order.get('order_id')!r}"
+            )
+    return failures
 
 
 def main() -> int:
@@ -19,7 +41,7 @@ def main() -> int:
         print("FAIL: orders.json loaded no orders", file=sys.stderr)
         return 1
 
-    failures = []
+    failures = check_raw_orders_json()
     for order_id, order in ORDERS.items():
         missing = EXPECTED_FIELDS - order.keys()
         if missing:
