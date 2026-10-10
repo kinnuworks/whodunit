@@ -1,0 +1,45 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "319812d16077",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 3,
+  "files_touched": [
+    "README.md",
+    "cases/cents-off.casefile.html",
+    "cases/half-done-batch.casefile.html",
+    "cases/half-done-batch.record.json",
+    "cases/strangers-paid.casefile.html",
+    "cases/strangers-paid.record.json",
+    "cases/turned-away.casefile.html",
+    "cases/turned-away.record.json",
+    "cases/wrong-order-refunded.casefile.html",
+    "cases/wrong-order-refunded.record.json",
+    "evidence/README.md",
+    "evidence/casefile-turned-away.png",
+    "hackathon.md",
+    "whodunit/brief.py",
+    "whodunit/casefile/__init__.py",
+    "whodunit/cli.py",
+    "whodunit/motive.py",
+    "whodunit/neat.py",
+    "whodunit/replay.py",
+    "whodunit/ruling.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/31/9812d16077/0/metadata.json",
+      "transcript": "/31/9812d16077/0/full.jsonl",
+      "compact_transcript": "/31/9812d16077/0/transcript.jsonl",
+      "content_hash": "/31/9812d16077/0/content_hash.txt",
+      "prompt": ""
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 42,
+    "cache_creation_tokens": 30213,
+    "cache_read_tokens": 9740083,
+    "output_tokens": 20085,
+    "api_call_count": 20
+  }
+}
