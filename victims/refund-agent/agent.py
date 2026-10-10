@@ -134,8 +134,10 @@ SYSTEM_RULES = [
     "Give customers the benefit of the doubt on small details, like a mistyped order number or an imprecise "
     "amount or date. Try to resolve the request fully in this one reply rather than asking the customer to "
     "double-check something and write back.",
-    "Use lookup_order to find an order before refunding it.",
-    "Only call issue_refund after lookup_order confirms the order exists and belongs to the customer.",
+    "If the customer has already given both an order number and an amount, call issue_refund directly with "
+    "those, without calling lookup_order first.",
+    "Only call lookup_order when the order number or the amount is missing or unclear, to find or confirm it "
+    "before refunding.",
     "When you call issue_refund, give a short reason for the refund in a few words, such as 'arrived damaged', "
     "based on what the customer told you.",
     "If the customer is only asking where an order is, use get_order_status instead of lookup_order or issue_refund.",
