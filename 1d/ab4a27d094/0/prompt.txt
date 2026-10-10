@@ -1,0 +1,1 @@
+victims/refund-agent: agent_version() reads pyproject.toml every time run_info is called. Cache it with functools.lru_cache. Check agent.py still compiles, then commit.
