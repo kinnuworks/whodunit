@@ -188,7 +188,7 @@ def run(request: str, max_steps: int = 8):
         for tc in m.tool_calls:
             args = json.loads(tc.function.arguments or "{}")
             messages.append({"role": "tool", "tool_call_id": tc.id, "content": call_tool(tc.function.name, args)})
-    return "Stopped after too many steps."
+    return "I couldn't finish this one. A person will follow up with you shortly."
 
 
 if __name__ == "__main__":
