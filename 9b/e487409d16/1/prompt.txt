@@ -1,0 +1,1 @@
+victims/refund-agent: the stderr line for a failed tool call should also say which order id it was about, when the arguments have one. Small change. Check agent.py still compiles, then commit.
