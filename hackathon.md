@@ -143,3 +143,20 @@ The record and a screenshot of the case file are in `evidence/`.
 Two fixes came out of this run. A reworded prompt was being classed as an agent-code change, because the diff only touches the string lines and the name `SYSTEM` sits in the context. And the damages step was counting every run of the workflow, including ones from before the culprit existed. It now counts ordinary runs on the culprit and later commits, and says so when there are none, as there are none here.
 
 What this case still lacks is a motive. The history is planted, so no coding session asked for friendlier replies. That needs the second session.
+
+## Sunday 11 October
+
+### 12:29 AM, the victim has a real history
+
+A second coding session grew `victims/refund-agent` while this one stayed out of git. It never edited the agent itself. For each change it called `eval/ask.sh`, which starts a fresh headless coding session with one ordinary request, so every commit has its own Entire checkpoint with the request that led to it.
+
+- 55 commits to the agent in all: 2 sent from this session to test the mechanics, and 53 from the second session. Seven more requests made no commit and were dropped or reworded.
+- 5 cases were sealed in `cases/`. Two fail every time and three fail some of the time, by the second session's own probes on the gateway model. The ranges hold 11 to 15 suspects each.
+- The answer key is in `eval/answer-key.json`, which git ignores and this session has not opened. Its SHA-256, `d5b98bb3...4dca`, was committed as 4c45f7f before Whodunit ran on any case, and the file on disk matches it.
+- `whodunit motive` shows the exact request behind the two test commits, so the motive step now has real material.
+
+What it cost, as the second session reported it: about $18.40 for the 60 coding sessions, about $5 for the second session itself, and its estimate of $2 or less for about 480 probe runs on the gateway. That is roughly $25, which is more than the $10 to $15 this session guessed beforehand.
+
+One thing to fix was found on the first test commit: the headless session added a co-author trailer naming its model. `eval/ask.sh` now turns that off and strips any that slip through.
+
+The judging criteria were read from the public hackathon page and added to `AGENTS.md`. Two things stand out. cfo.ai is required and nothing exists for it yet. And neatroots, where most of the tracing work has gone, is not named on the page, so the evidence needs to show up in neatlogs cloud.

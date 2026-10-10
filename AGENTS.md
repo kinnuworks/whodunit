@@ -100,6 +100,18 @@ There is one shared $25 allowance and nothing meters it, so stop resources when 
 
 A second session grows the victim's history and plants regressions through ordinary-sounding requests. It writes the answer key to a file, and the SHA-256 of that file is committed before Whodunit runs. Report cases solved, wrong accusations, replays used against a linear scan, and cost per case, and include at least one case Whodunit gets wrong. The stretch goal is one real regression in a public open-source agent with a comment or PR upstream, which needs the owner's yes.
 
+## What the judges score
+
+From the public hackathon page, read on 11 October. Each part is scored out of 100 and weighted.
+
+- The agent: 30%. Evidence asked for: before and after runs with the numbers compared, and a run where an action failed along with what the agent did next.
+- Use of neatlogs, Entire and cfo.ai: 25%. All three are required. For cfo.ai the page asks for a business plan covering pricing, costs, revenue and runway. For Entire it names checkpoints and entire-graph. neatroots is not mentioned on the page, so evidence should be shown in neatlogs cloud wherever it can be.
+- Demo video: 20%, judged on how clearly it explains the agent and the tool use.
+- Building in public: 15%, links tagged #neatHack.
+- Usefulness and originality: 10%.
+
+Entries are made by quoting the official neatlogs post with the team, name, project, public repo and demo. The window is Monday 12 October, 7:00 to 11:55 PM IST, the final cutoff is announced on Discord, and the organisers engage with the first 50 quote posts.
+
 ## Evidence to collect as we go
 
 Before and after neatlogs traces with numbers, trace links or screenshots, an Entire checkpoint link and id, the cfo.ai plan, a run where an action failed along with what the agent did next, links to the #neatHack posts, and commits dated inside the window. `hackathon.md` at the repo root is the dated build log, and it gets a new entry whenever something is finished or found out.

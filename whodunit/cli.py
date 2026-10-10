@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import os
 import sys
 from dataclasses import asdict
 from pathlib import Path
@@ -133,7 +134,7 @@ def lineup(args) -> int:
         for i in found.remaining:
             say(f"  {suspects[i].short}  {suspects[i].subject}")
     record = load_record(record_path(args))
-    record["case"] = {"id": case.id, "symptom": case.symptom, "good": resolve(repo, case.good), "bad": resolve(repo, case.bad), "target": case.target, "file": str(Path(args.case).resolve()), "repo": str(repo)}
+    record["case"] = {"id": case.id, "symptom": case.symptom, "good": resolve(repo, case.good), "bad": resolve(repo, case.bad), "target": case.target, "file": os.path.relpath(Path(args.case).resolve()), "repo": os.path.relpath(repo)}
     record["suspects"] = [
         {"sha": s.sha, "subject": s.subject, "checkpoint": s.checkpoint, "touches_target": s.touches_target,
          **({"probability": round(found.posterior[i], 5)} if found.posterior else {})}
