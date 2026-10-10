@@ -3,7 +3,7 @@
   "checkpoint_id": "d248e108a420",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 1,
+  "checkpoints_count": 2,
   "files_touched": [
     "victims/refund-agent/agent.py"
   ],
@@ -14,13 +14,20 @@
       "compact_transcript": "/d2/48e108a420/0/transcript.jsonl",
       "content_hash": "/d2/48e108a420/0/content_hash.txt",
       "prompt": "/d2/48e108a420/0/prompt.txt"
+    },
+    {
+      "metadata": "/d2/48e108a420/1/metadata.json",
+      "transcript": "/d2/48e108a420/1/full.jsonl",
+      "compact_transcript": "/d2/48e108a420/1/transcript.jsonl",
+      "content_hash": "/d2/48e108a420/1/content_hash.txt",
+      "prompt": "/d2/48e108a420/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 18,
-    "cache_creation_tokens": 34562,
-    "cache_read_tokens": 587796,
-    "output_tokens": 1230,
-    "api_call_count": 9
+    "input_tokens": 44,
+    "cache_creation_tokens": 77006,
+    "cache_read_tokens": 1527680,
+    "output_tokens": 3507,
+    "api_call_count": 22
   }
 }
