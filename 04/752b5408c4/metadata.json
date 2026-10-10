@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "04752b5408c4",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "victims/refund-agent/README.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/04/752b5408c4/0/metadata.json",
+      "transcript": "/04/752b5408c4/0/full.jsonl",
+      "compact_transcript": "/04/752b5408c4/0/transcript.jsonl",
+      "content_hash": "/04/752b5408c4/0/content_hash.txt",
+      "prompt": "/04/752b5408c4/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 8,
+    "cache_creation_tokens": 37412,
+    "cache_read_tokens": 237948,
+    "output_tokens": 1452,
+    "api_call_count": 4
+  }
+}
