@@ -1,0 +1,1 @@
+In victims/refund-agent, lookup_order should also return when the order was placed. Add a placed_on date to each order in ORDERS (pick sensible dates in September 2026) and list the new field in the README. Check agent.py still compiles, then commit.
