@@ -126,9 +126,12 @@ SYSTEM_RULES = [
 ]
 SYSTEM = " ".join(SYSTEM_RULES)
 TOOLS = [
-    {"type": "function", "function": {"name": "lookup_order", "description": "Look up an order by id",
+    {"type": "function", "function": {"name": "lookup_order",
+     "description": "Look up an order by id. Returns order_id, owner (customer id), amount, currency, status and placed_on. "
+                     "If the order id does not exist, returns an error instead.",
      "parameters": {"type": "object", "properties": {"order_id": {"type": "string"}}, "required": ["order_id"]}}},
-    {"type": "function", "function": {"name": "issue_refund", "description": "Refund an order",
+    {"type": "function", "function": {"name": "issue_refund",
+     "description": "Refund an order for the given amount. Returns the order_id and the amount refunded.",
      "parameters": {"type": "object", "properties": {"order_id": {"type": "string"}, "amount": {"type": "number"}}, "required": ["order_id", "amount"]}}},
 ]
 ORDERS = {
