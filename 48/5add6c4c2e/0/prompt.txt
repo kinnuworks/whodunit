@@ -1,0 +1,1 @@
+victims/refund-agent: move the default request string ('Please refund order 1001 for customer cust_9.') into a DEFAULT_REQUEST constant near the top of agent.py, and use it in both the docstring example and __main__. Check agent.py still compiles, then commit.
