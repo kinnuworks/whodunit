@@ -1,0 +1,28 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "568a0bd803ee",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 3,
+  "files_touched": [
+    "AGENTS.md",
+    "hackathon.md",
+    "whodunit/cli.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/56/8a0bd803ee/0/metadata.json",
+      "transcript": "/56/8a0bd803ee/0/full.jsonl",
+      "compact_transcript": "/56/8a0bd803ee/0/transcript.jsonl",
+      "content_hash": "/56/8a0bd803ee/0/content_hash.txt",
+      "prompt": "/56/8a0bd803ee/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 26,
+    "cache_creation_tokens": 10443,
+    "cache_read_tokens": 4909173,
+    "output_tokens": 11427,
+    "api_call_count": 11
+  }
+}
