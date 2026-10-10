@@ -1,0 +1,1 @@
+victims/refund-agent: the run_info span should also carry the max_steps setting so we can tell runs apart in traces after the recent change. Check agent.py still compiles, then commit.
