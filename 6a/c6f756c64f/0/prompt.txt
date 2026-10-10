@@ -1,0 +1,1 @@
+In victims/refund-agent, the lookup_order tool description just says 'Look up an order by id'. Make the tool descriptions a bit more helpful for the model, e.g. say what fields come back and that a missing order returns an error. Check agent.py still compiles, then commit.
