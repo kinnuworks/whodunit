@@ -16,13 +16,13 @@ Checked before writing any code:
 
 Next: turn Entire on, get the refund agent running with traces going to neatlogs and neatroots, and verify the first checkpoint.
 
-### 7:20 PM, the refund agent runs and both collectors see it
+### 7:16 PM, the refund agent runs and both collectors see it
 
 `victims/refund-agent/` now holds the demo target. It started as the `refund-agent` example that ships with neatroots (Apache-2.0, licence copied alongside) and lost its steering hook, so nothing changes what the model receives between runs.
 
 What was run and what came back:
 
-- neatroots: `python -m neatlogs doctor --probe` passed all 8 checks against port 4100. Six agent runs landed under the `refund-agent` workflow with the full span tree, for example run `ffbdcba4` (3 model calls, 2 tool calls, 156 tokens).
+- neatroots: `python -m neatlogs doctor --probe` passed all 8 checks against port 4100. Ten agent runs landed under the `refund-agent` workflow (54 spans) with the full span tree, for example run `ffbdcba4` (3 model calls, 2 tool calls, 156 tokens).
 - neatlogs cloud: the same probe passed against `ingest.neatlogs.com`, and `search_traces` over MCP found the run that refunded order 1002 through the gateway (trace `61e879c3`, 6 spans, 2,792 tokens).
 - Gateway model `claude-haiku` refunded order 1001 for 42.00 and refused order 2002 because it belongs to another customer. Both answers are correct.
 - Whole-agent replay works: `neatroots replay ffbdcba4... --input "..."` started run `5b20f1eb` and the agent picked the new input up from `NEATROOTS_REPLAY_INPUT`.
@@ -36,3 +36,15 @@ Found out along the way:
 - `neatroots mock-llm` picks a tool by keyword and refunds 9 for any order, so it is good for plumbing and useless as a known-good baseline. `fake_llm.py` is the scripted careful agent for that.
 
 Not tested yet: `REFUND_LLM=own`, the owner's key fallback.
+
+### 7:22 PM, first Entire checkpoints verified
+
+The hooks do fire for sessions run in the desktop app, which was the open question. Both commits got an `Entire-Checkpoint:` trailer, and `entire checkpoint list` shows 2 checkpoints: `fc9699a4e609` on 601c1fc and `f8f2b3618deb` on d210212.
+
+`entire checkpoint explain --transcript` returned 240 entries, about 955,000 characters. Checked before any push:
+
+- None of the six key values in `.env` appears, in full or by 12 character prefix.
+- The owner's email shows only as `[REDACTED_EMAIL]`, 3 times. The 10 to 12 digit strings the phone pattern could match are timestamps and decimals.
+- The transcript does carry things that are not secrets and are still personal: the home folder path, the names of every connector installed in the coding agent, and the titles of the private notes index. The owner should read that list before the first push and decide.
+
+Nothing has been pushed.
