@@ -1,0 +1,1 @@
+victims/refund-agent: smoke.py should also fail if two orders share an order_id or if an order's key in orders.json doesn't match its order_id field. Run it, then commit.
