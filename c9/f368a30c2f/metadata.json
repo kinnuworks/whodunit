@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "c9f368a30c2f",
+  "strategy": "manual-commit",
+  "branch": "whodunit/turned-away",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "victims/refund-agent/agent.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/c9/f368a30c2f/0/metadata.json",
+      "transcript": "/c9/f368a30c2f/0/full.jsonl",
+      "compact_transcript": "/c9/f368a30c2f/0/transcript.jsonl",
+      "content_hash": "/c9/f368a30c2f/0/content_hash.txt",
+      "prompt": ""
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 4,
+    "cache_creation_tokens": 4818,
+    "cache_read_tokens": 1187346,
+    "output_tokens": 3871,
+    "api_call_count": 2
+  }
+}
