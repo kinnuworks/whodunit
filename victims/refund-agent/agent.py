@@ -19,6 +19,7 @@ Settings, all environment variables:
     WHODUNIT_ENV path to the .env file, if it is not in a parent folder
 """
 
+import functools
 import json
 import os
 import subprocess
@@ -82,6 +83,7 @@ def trace_settings() -> tuple[str, str]:
     sys.exit(f"TRACE_TO={choice} is not one of neatroots, neatlogs.")
 
 
+@functools.lru_cache(maxsize=1)
 def agent_version() -> str:
     import tomllib
 
