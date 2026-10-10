@@ -1,0 +1,7 @@
+<task-notification>
+<task-id>bslv9y1v9</task-id>
+<tool-use-id>toolu_014ymBcu2mG3hJw1HJiS3VrR</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-kinnu-neathack/d1722531-fd19-41ec-9e89-c3cbe406e10c/tasks/bslv9y1v9.output</output-file>
+<status>completed</status>
+<summary>Background command "Bisect a real prompt regression with the gateway model across 40 commits" completed (exit code 0)</summary>
+</task-notification>
