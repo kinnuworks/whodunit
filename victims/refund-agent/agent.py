@@ -23,6 +23,7 @@ import json
 import os
 import subprocess
 import sys
+from datetime import datetime
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -187,7 +188,8 @@ def call_tool(name, args):
     try:
         return json.dumps(fn(**args))
     except Exception as exc:  # the agent sees tool errors as results
-        print(f"tool call failed: {name}: {exc}", file=sys.stderr)
+        timestamp = datetime.now().strftime("%H:%M:%S")
+        print(f"[{timestamp}] tool {name} failed: {exc}", file=sys.stderr)
         return json.dumps({"error": str(exc)})
 
 
