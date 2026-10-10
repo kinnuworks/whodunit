@@ -200,10 +200,13 @@ def get_order_status(order_id: str):
     return {"order_id": order["order_id"], "status": order["status"], "placed_on": order["placed_on"]}
 
 
+TOOL_FUNCTIONS = {"lookup_order": lookup_order, "issue_refund": issue_refund, "get_order_status": get_order_status}
+
+
 def call_tool(name, args):
     """Dispatch a tool call by name with its arguments. Returns the tool's result as a JSON string,
     or a JSON string with an "error" key if the tool call raised."""
-    fn = {"lookup_order": lookup_order, "issue_refund": issue_refund, "get_order_status": get_order_status}[name]
+    fn = TOOL_FUNCTIONS[name]
     try:
         return json.dumps(fn(**args))
     except Exception as exc:  # the agent sees tool errors as results
