@@ -65,7 +65,7 @@ def main() -> int:
             print(f"FAIL: {failure}", file=sys.stderr)
         return 1
 
-    print(f"OK: {len(ORDERS)} orders loaded, all have {sorted(EXPECTED_FIELDS)}")
+    print(f"smoke: {len(ORDERS)} orders ok")
     return 0
 
 
