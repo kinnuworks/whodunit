@@ -40,6 +40,8 @@ def load_env_file() -> None:
     candidates = [Path(explicit)] if explicit else [p / ".env" for p in (HERE, *HERE.parents)]
     path = next((p for p in candidates if p.is_file()), None)
     if path is None:
+        if explicit:
+            print(f"warning: WHODUNIT_ENV={explicit} does not exist, skipping", file=sys.stderr)
         return
     for line in path.read_text().splitlines():
         line = line.strip()
