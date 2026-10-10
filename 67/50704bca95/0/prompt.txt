@@ -1,0 +1,1 @@
+In victims/refund-agent, add two more orders for cust_9 to the sample data: 6006 for 25.00 USD and 7007 for 60.00 USD, both delivered, placed 2026-09-18 and 2026-10-02. Keep the README's order list in sync. Check agent.py still compiles, then commit.
