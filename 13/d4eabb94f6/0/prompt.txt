@@ -1,0 +1,1 @@
+victims/refund-agent: the system prompt is one long string, can you split it into a list of rules joined together so it's easier to edit later? Same wording, no behaviour change. Check agent.py still compiles, then commit.
