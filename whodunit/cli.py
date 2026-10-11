@@ -13,6 +13,7 @@ from . import brief as briefs
 from . import casefile
 from . import damages as damage
 from . import fix as fixes
+from . import opening
 from . import ruling as rulings
 from .motive import checkpoint_link, find_motive
 from .neat import NeatError, forward_to_cloud, neatroots
@@ -855,7 +856,98 @@ def onset(args) -> int:
     return 0
 
 
+def _from_trace(args) -> int:
+    """Write a case file from one failing run, and stop. `whodunit investigate` takes it from there."""
+    import tomllib
+
+    from .env import load_env
+    from .neat import NEATLOGS, Mcp
+
+    repo = Path(args.repo).resolve()
+    local = neatroots()
+    load_env()
+    cloud = Mcp(NEATLOGS, token=os.environ["NEATLOGS_API_KEY"]) if os.environ.get("NEATLOGS_API_KEY") else None
+    try:
+        run = opening.read_failing_run(args.from_trace, local, cloud)
+    except LookupError as exc:
+        print(exc)
+        return 2
+    if not run.request or not run.commit:
+        print(f"Run {run.trace_id[:12]} was found in {run.source}, and it has no " + ("request in its root span." if not run.request else "commit in its run_info tags, so there is no bad ref."))
+        return 2
+    try:
+        run.commit = resolve(repo, run.commit)
+    except RuntimeError:
+        print(f"Run {run.trace_id[:12]} ran on commit {run.commit[:12]}, which is not in this repo.")
+        return 2
+    try:
+        earlier = opening.history(local, repo, run)
+    except (NeatError, KeyError, TypeError) as exc:
+        earlier = []
+        print(f"neatroots could not be asked for earlier runs of this request: {exc}")
+    made = opening.draft(run, earlier)
+    print(f"Failing run {run.trace_id[:12]}, from {run.source}, on commit {run.commit[:12]}.")
+    print(f"It was asked: {run.request}")
+    print(f"It refunded: {json.dumps(run.paid) if run.paid else 'nothing'}")
+    if args.expect is not None:
+        made.expected, made.expected_from = json.loads(args.expect), None
+    if made.expected is None:
+        # The one question. Nobody can say what the run should have done but the owner.
+        question = ("No earlier run of this request passed. What should this request have produced? "
+                    'Give the refunds as JSON, for example [] or [{"order_id": "1001", "refunded": 42.0}]: ')
+        if not sys.stdin.isatty():
+            print(question)
+            print("Answer with --expect '<JSON>' and run this again.")
+            return 2
+        try:
+            made.expected = json.loads(input(question))
+        except (json.JSONDecodeError, EOFError) as exc:
+            print(f"That could not be read as JSON: {exc}")
+            return 2
+    elif made.expected_from:
+        print(f"It should have refunded: {json.dumps(made.expected)}, which is what run {made.expected_from['trace_id'][:12]} paid for the same request on commit {made.expected_from['commit'][:12]}.")
+    if args.good:
+        made.good = resolve(repo, args.good)
+    if made.good is None:
+        print("No earlier run says where the trouble began, so the last good ref has to be given: --good <ref>")
+        return 2
+    for said in made.notes:
+        print(said)
+    like_path = Path(args.like) if args.like else next(
+        (p for p in sorted((Path.cwd() / "cases").glob("*.toml")) if "good" in tomllib.loads(p.read_text())), None)
+    if like_path is None or not like_path.is_file():
+        print("A trace does not say how to run the agent. Point at a case for the same agent with --like <case.toml>.")
+        return 2
+    like = tomllib.loads(like_path.read_text())
+    case_id = args.id or f"trace-{run.trace_id[:8]}"
+    def refunds_said(paid: dict) -> str:
+        return " and ".join(f"a refund of {amount:.2f} on order {order}" for order, amount in sorted(paid.items())) or "no refund"
+
+    wanted = {str(r["order_id"]): float(r["refunded"]) for r in made.expected or []}
+    symptom = args.symptom or f'The request "{run.request}" ended in {refunds_said(run.paid)}, where it should have ended in {refunds_said(wanted)}.'
+    out = Path(args.out) if args.out else Path.cwd() / "cases" / f"{case_id}.toml"
+    if out.exists():
+        print(f"{out} is already there. Pick another --id or --out.")
+        return 2
+    comment = (f"Opened from failing run {run.trace_id} in {run.source}.\n"
+               + (f"The expected result is what run {made.expected_from['trace_id']} paid for the same request on commit {made.expected_from['commit'][:12]}.\n" if made.expected_from
+                  else "The expected result was given by the owner.\n")
+               + f"How to run the agent was copied from {like_path.name}.")
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(opening.case_toml(case_id, symptom, made, like, comment))
+    between = len(git(repo, "rev-list", f"{made.good}..{made.bad}").split())
+    print(f"Last good ref {made.good[:12]}, first bad ref {made.bad[:12]}: {between} suspects.")
+    print(f"Case file: {out}")
+    print(f"Next: whodunit investigate {out}")
+    return 0
+
+
 def open_case(args) -> int:
+    if getattr(args, "from_trace", None):
+        return _from_trace(args)
+    if not args.case:
+        print("Give a case file, or --from-trace <trace id> to write one from a failing run.")
+        return 2
     path = record_path(args)
     record = load_record(path)
     if not record:
@@ -963,10 +1055,18 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--cloud", metavar="DETECTION", help="also ask neatlogs cloud when this detection started firing")
     p.add_argument("--json", action="store_true")
     p.set_defaults(func=onset)
-    p = commands.add_parser("open-case", help="write the case file page and open it")
-    p.add_argument("case")
+    p = commands.add_parser("open-case", help="write the case file page and open it, or with --from-trace write a new case file from one failing run")
+    p.add_argument("case", nargs="?")
     p.add_argument("--record")
     p.add_argument("--no-open", action="store_true", help="write the page without opening a browser")
+    p.add_argument("--from-trace", metavar="TRACE_ID", help="write a case file from this failing run in neatroots or neatlogs cloud, and stop")
+    p.add_argument("--repo", default=".", help="with --from-trace: the git repo that holds the agent")
+    p.add_argument("--like", metavar="CASE", help="with --from-trace: a case for the same agent, to copy how it is built and run (default: the first one under cases/)")
+    p.add_argument("--id", help="with --from-trace: the new case's id (default: trace-<first 8 of the trace id>)")
+    p.add_argument("--symptom", help="with --from-trace: the symptom line, if the one worked out is not good enough")
+    p.add_argument("--expect", metavar="JSON", help="with --from-trace: what the request should have produced, when no earlier run shows it")
+    p.add_argument("--good", metavar="REF", help="with --from-trace: the last good ref, when no earlier run places it")
+    p.add_argument("--out", help="with --from-trace: where to write the case file (default: cases/<id>.toml)")
     p.set_defaults(func=open_case)
     p = commands.add_parser("check", help="replay a kept case against a ref, as a regression test")
     p.add_argument("case")

@@ -16,7 +16,15 @@ How well that works is measured two ways. [eval/sealed](eval/sealed/README.md) i
 
 ## How a case runs
 
-A case is a small TOML file: a symptom, the failing inputs with what each should have produced, the last good ref and the first bad ref. One command runs all of it:
+A case is a small TOML file: a symptom, the failing inputs with what each should have produced, the last good ref and the first bad ref. It can be written by hand, or from one failing run:
+
+```bash
+uv run whodunit open-case --from-trace <trace id>
+```
+
+That reads the run from neatroots or neatlogs cloud, takes the input from its root span and the bad ref from its tags, takes the expected result from the nearest earlier run of the same input that passed, and brackets the range with every run of that input. If no earlier run passed, it asks what the request should have produced. It writes the case file and stops.
+
+One command then runs all of it:
 
 ```bash
 uv run whodunit investigate cases/whole-history.toml --from-traffic refund-agent

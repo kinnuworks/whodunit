@@ -471,3 +471,18 @@ Two smaller things that are not as asked:
 - The id the trace gets is read through the SDK's own header helper. The ordinary way of asking for the current span returned zeros, because the SDK keeps its spans apart from anyone else's.
 
 `uv.lock` grew by about 1,900 lines for the extra. The base install still has no dependencies.
+
+### 6:00 PM, a case from one trace
+
+Stage 2, fourth item. Until now a case file was written by hand: someone had to know the failing input, what it should have produced, and both ends of the range. `whodunit open-case --from-trace <id>` writes the file from one failing run and stops.
+
+- It looks for the run in neatroots, and in neatlogs cloud if neatroots does not have it.
+- The input is the root span's. The bad ref is the commit in the run_info tags.
+- The expected result is what the nearest earlier run of the same input paid, among runs that passed. A run passed if it was not flagged and paid something different from the failing run.
+- The good ref comes from `whodunit/onset.py`: every run of that input, judged against the expected result, goes through the same change-point model the lineup uses, and the range starts where that model is 99% sure nothing had gone wrong yet.
+- If no earlier run passed, it asks one question: what should this request have produced? Away from a keyboard it prints the question, writes nothing and exits, and `--expect` gives the answer.
+- A trace does not say how to build and run the agent, so that is copied from another case for the same agent.
+
+Tried on the real traces, on an ordinary run from the traffic that refunded 30.00 on someone else's order. From the trace id alone it wrote a case with the right request, an expected result of no refund taken from a run 11 hours of traffic earlier, and a range of 41 suspects that holds the real culprit. That file went to a scratch folder and is not in `cases/`.
+
+What it cannot do: the earlier runs of the same input are read from neatroots only. A trace that exists only in the cloud gets its input and its bad ref, and then has to be told the expected result and the good ref. And "passed" leans on neatroots' own flags, so a run that was wrong without being flagged, and wrong in a different way from the failing one, could be taken for the expected result. The file's first lines name the run the expectation came from, so a person can check it.
