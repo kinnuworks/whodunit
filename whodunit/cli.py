@@ -8,7 +8,7 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict, fields
 from pathlib import Path
 
-from .case import Case
+from .case import Case, CaseInput
 from . import brief as briefs
 from . import casefile
 from . import damages as damage
@@ -429,12 +429,96 @@ def _attempt(kind: str, case, repo: Path, record: dict, args, feedback: str = ""
     attempt["verification"] = asdict(checked)
     attempt["diff"] = git(repo, "show", "--format=", made.commit)[:4000]
     print(f"  {kind}: {fixes.observed(checked.failures, checked.replays)} " + (f"Not kept: {checked.note}." if checked.note else "That clears the bar for keeping it."))
+    if checked.fixed:
+        harm = _check_harm(case, repo, record, made.commit, args)
+        if harm:
+            attempt["harm"] = harm
+            print(f"  {kind}: {_harm_said(harm)}")
     return attempt
 
 
+def _check_harm(case, repo: Path, record: dict, commit: str, args) -> dict | None:
+    """Replay the other cases' inputs and the ordinary requests on a fix commit. None if there are none to replay."""
+    others = _other_requests(case)
+    if not others:
+        return None
+    expect = {text: wanted for text, wanted, _ in others}
+    where = {"fix": commit, "before": record["case"]["bad"]}
+    with Runner(repo, case, keep=getattr(args, "keep", False)) as runner:
+        harm = fixes.do_no_harm(lambda at, text: runner.replay(where[at], CaseInput(text, expect[text])).verdict,
+                                [(text, source) for text, _, source in others], parallel=args.parallel)
+    return asdict(harm)
+
+
+def harm(args) -> int:
+    """Run the do-no-harm check on a fix that was kept before the check existed, or again on any kept fix."""
+    loaded = _need_culprit(args)
+    if loaded is None:
+        return 2
+    case, repo, record, path = loaded
+    kept = record.get("fix") or {}
+    if not kept.get("commit") or not (kept.get("verification") or {}).get("fixed"):
+        print("This case has no fix that cleared its own bar, so there is nothing to check.")
+        return 2
+    found = _check_harm(case, repo, record, kept["commit"], args)
+    if found is None:
+        print("No other cases and no ordinary.toml under cases/, so there is nothing to check against.")
+        return 2
+    kept["harm"] = found
+    for attempt in record.get("attempts", []):
+        if attempt.get("commit") == kept["commit"]:
+            attempt["harm"] = found
+    _replayed(record)
+    save_record(path, record)
+    print(_harm_said(found))
+    return 1 if found["broken"] else 0
+
+
+def _other_requests(case) -> list[tuple[str, dict, str]]:
+    """(request, what it should produce, where it came from) for the do-no-harm check.
+
+    They come from the folder kept cases live in, `cases/` under the working directory: the
+    inputs of every other case for the same agent, and `ordinary.toml`, a short list of
+    everyday requests that should succeed. A request this case already replays is left out.
+    """
+    import tomllib
+
+    mine, out = {i.text for i in case.inputs}, {}
+    for path in sorted((Path.cwd() / "cases").glob("*.toml")):
+        try:
+            data = tomllib.loads(path.read_text())
+        except (OSError, tomllib.TOMLDecodeError):
+            continue
+        if "good" in data and (data.get("id") == case.id or data.get("target", ".") != case.target or data.get("check", {"kind": "refunds"}) != case.check):
+            continue  # this case itself, another agent, or a check this case's runner cannot apply
+        source = data.get("id") or path.stem
+        for one in data.get("inputs", []):
+            if one.get("text") and one["text"] not in mine:
+                out.setdefault(one["text"], ({k: v for k, v in one.items() if k != "text"}, f"case {source}" if "good" in data else "an ordinary request"))
+    return [(text, expect, source) for text, (expect, source) in out.items()]
+
+
+def _harm_said(harm: dict) -> str:
+    """The do-no-harm result in a sentence, for the command line and the case file."""
+    n = harm["checked"]
+    said = f"Checked against {n} other {'request' if n == 1 else 'requests'}."
+    if harm["broken"]:
+        said += f" The fix broke {len(harm['broken'])} of them: " + "; ".join(
+            f'"{b["text"]}" went wrong in {b["fix"][0]} of {b["fix"][1]} replays on the fix, and in {b["before"][0]} of {b["before"][1]} before it' for b in harm["broken"]) + "."
+    else:
+        said += " The fix broke none of them."
+    if harm["already_failing"]:
+        k = len(harm["already_failing"])
+        said += f" {k} {'was' if k == 1 else 'were'} already going wrong before the fix, which is some other bug's doing."
+    if harm["unclear"]:
+        k = len(harm["unclear"])
+        said += f" {k} went wrong once or twice on the fix commit, too few times to say the fix did it."
+    return said
+
+
 def _proven(attempt: dict) -> bool:
-    """Did this attempt clear the bar for keeping a fix? That is a threshold on the replays, not proof."""
-    return bool((attempt.get("verification") or {}).get("fixed"))
+    """Did this attempt clear the bar for keeping a fix, and break nothing else? That is a threshold on the replays, not proof."""
+    return bool((attempt.get("verification") or {}).get("fixed")) and not (attempt.get("harm") or {}).get("broken")
 
 
 def fix(args) -> int:
@@ -458,12 +542,14 @@ def fix(args) -> int:
     if wanted == rulings.PATCH and not _proven(attempts[-1]):
         first = attempts[-1]
         feedback = (first.get("note") or "") + "\nThe first patch:\n" + first.get("diff", "none was made") + "\nReplays of it that still failed:\n" + "\n".join(first.get("failed_replays", []) or ["none recorded"])
-        print("  The patch did not clear the bar. Trying once more, with the first patch and its failures in view.")
+        if (first.get("harm") or {}).get("broken"):
+            feedback += "\nThe first patch cleared its own case and broke other requests that used to work. " + _harm_said(first["harm"]) + " A patch must leave those working."
+        print("  The patch " + ("broke other requests" if (first.get("harm") or {}).get("broken") else "did not clear the bar") + ". Trying once more, with the first patch and what went wrong in view.")
         attempts.append(_attempt(rulings.PATCH, case, repo, record, args, feedback))
     if wanted == rulings.PATCH and not _proven(attempts[-1]):
-        print("  Still short of the bar. Falling back to a revert, which loses what the commit was for.")
+        print("  The second patch is not kept either. Falling back to a revert, which loses what the commit was for.")
         attempts.append(_attempt(rulings.REVERT, case, repo, record, args))
-        attempts[-1]["note"] = ((attempts[-1].get("note") or "") + " This is a fallback: the ruling was to patch, and two patches did not clear the bar.").strip()
+        attempts[-1]["note"] = ((attempts[-1].get("note") or "") + " This is a fallback: the ruling was to patch, and two patches were not kept.").strip()
     final = next((a for a in reversed(attempts) if _proven(a)), attempts[-1])
     record["fix"] = final
     record["attempts"] = attempts
@@ -707,6 +793,11 @@ def main(argv: list[str] | None = None) -> int:
         if name == "damages":
             p.add_argument("--workflow", default="refund-agent")
             p.add_argument("--since-ms", type=float, help="count runs from this time, in ms since the epoch")
+    p = commands.add_parser("harm", help="replay the other cases' inputs and the ordinary requests on a kept fix, to see that it broke nothing")
+    p.add_argument("case", help="path to the case file")
+    p.add_argument("--record", help="the case record (default: next to the case file)")
+    p.add_argument("--parallel", type=int, default=3)
+    p.set_defaults(func=harm)
     p = commands.add_parser("investigate", help="run a whole case from lineup to case file, stopping only for the owner's ruling")
     p.add_argument("case", help="path to the case file")
     p.add_argument("--repo", default=".")

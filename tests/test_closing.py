@@ -4,7 +4,7 @@ import json
 
 import pytest
 
-from tests.planted import git, stub_history
+from tests.planted import git, shop_history, stub_history
 from whodunit import brief as briefs
 from whodunit import casefile, fix as fixes, llm, ruling as rulings
 from whodunit.case import Case
@@ -402,3 +402,72 @@ def test_a_record_and_its_page_name_no_model_and_no_assistant(monkeypatch):
     assert written["writer"] == "model" and "some-vendor-model-9" not in json.dumps(written)
     page = casefile.render({"case": {"id": "c"}, "suspects": [], "brief": written})
     assert "Written by a model." in page and "some-vendor-model-9" not in page
+
+
+ORDINARY = '''# Requests that should go through whatever is being fixed.
+[[inputs]]
+text = "Please refund order 1001 for customer cust_9."
+refunds = [{ order_id = "1001", refunded = 42.0 }]
+'''
+
+
+def test_a_fix_that_stops_every_refund_is_rejected(tmp_path, monkeypatch, capsys):
+    # The case expects no refund, so a patch that refunds nobody clears it. Before the do-no-harm check that patch was kept.
+    monkeypatch.setenv("WHODUNIT_LLM", "gateway")
+    monkeypatch.chdir(tmp_path)
+    (tmp_path / "cases").mkdir()
+    (tmp_path / "cases" / "ordinary.toml").write_text(ORDINARY)
+    made = shop_history(tmp_path / "repo")
+    case = str(made["case"])
+    broken_file = git(made["repo"], "show", f"{made['shas'][-1]}:agent/agent.py")
+    patches = iter([
+        broken_file.replace("print(json.dumps(", "refunds = []  # no refunds, no wrong refunds\nprint(json.dumps("),  # harmful: nobody is refunded
+        broken_file.replace("STRANGERS = True", "STRANGERS = False"),  # the real fix
+    ])
+    seen = []
+
+    def ask(system, prompt, **kw):
+        if system.startswith("You write the root-cause brief"):
+            raise llm.LlmError("no brief model in this test")
+        seen.append(prompt)
+        return f"=== agent/agent.py\n{next(patches)}\n=== end"
+    monkeypatch.setattr(llm, "ask", ask)
+    assert main(["investigate", case, "--repo", str(made["repo"]), "--budget", "60", "--answer", "patch", "--fix-budget", "45"]) == 0
+    record = json.loads(made["case"].with_name("case.record.json").read_text())
+    first, second = record["attempts"]
+    assert first["verification"]["fixed"] and first["verification"]["failures"] == 0  # it cleared its own case
+    assert [b["text"] for b in first["harm"]["broken"]] == ["Please refund order 1001 for customer cust_9."]  # and broke an ordinary refund
+    assert second["harm"]["broken"] == [] and second["harm"]["checked"] == 1
+    assert record["fix"]["commit"] == second["commit"]
+    assert "broke" in seen[1] and "Please refund order 1001" in seen[1]  # the second try was told what the first one broke
+    page = made["case"].with_name("case.casefile.html").read_text()
+    assert "Checked against 1 other request" in page and "broke 1 other request" in page
+
+
+def test_the_harm_check_can_be_run_on_a_fix_that_was_kept_before_it_existed(tmp_path, monkeypatch, capsys):
+    monkeypatch.setenv("WHODUNIT_LLM", "none")
+    monkeypatch.chdir(tmp_path)
+    made = shop_history(tmp_path / "repo")
+    case, record_file = str(made["case"]), made["case"].with_name("case.record.json")
+    assert main(["investigate", case, "--repo", str(made["repo"]), "--budget", "60", "--answer", "revert"]) == 0
+    assert "harm" not in json.loads(record_file.read_text())["fix"]  # nothing to check against yet
+    assert "Nothing was checked for what else it might have broken" in made["case"].with_name("case.casefile.html").read_text()
+    (tmp_path / "cases" / "ordinary.toml").write_text(ORDINARY)
+    assert main(["harm", case]) == 0
+    record = json.loads(record_file.read_text())
+    assert record["fix"]["harm"]["checked"] == 1 and record["fix"]["harm"]["broken"] == [] and record["attempts"][-1]["harm"] == record["fix"]["harm"]
+    assert main(["open-case", case, "--no-open"]) == 0
+    assert "Checked against 1 other request" in made["case"].with_name("case.casefile.html").read_text()
+
+
+def test_a_request_that_was_already_failing_is_not_held_against_the_fix():
+    # Another open regression fails on the bad ref and on the fix commit alike. That is not the fix's doing.
+    def replay(where, text):
+        return "fail" if "3003" in text else "pass"
+    harm = fixes.do_no_harm(replay, [("Please refund order 3003 in full.", "cents-off"), ("Please refund order 1001.", "ordinary")])
+    assert harm.checked == 2 and harm.broken == [] and [a["text"] for a in harm.already_failing] == ["Please refund order 3003 in full."]
+
+    def worse(where, text):
+        return "fail" if where == "fix" and "1001" in text else "pass"
+    harm = fixes.do_no_harm(worse, [("Please refund order 1001.", "ordinary")])
+    assert [b["text"] for b in harm.broken] == ["Please refund order 1001."] and harm.broken[0]["fix"][0] == harm.broken[0]["fix"][1] and harm.broken[0]["before"][0] == 0

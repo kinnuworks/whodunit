@@ -6,6 +6,25 @@ from pathlib import Path
 
 from ..fix import observed
 
+
+def harm_said(harm: dict) -> str:
+    """The do-no-harm check in a sentence or two."""
+    n = harm["checked"]
+    said = f'Checked against {n} other {"request" if n == 1 else "requests"}: the inputs of the other cases and a few ordinary requests that should succeed.'
+    if harm["broken"]:
+        k = len(harm["broken"])
+        said += f' The fix broke {k} other {"request" if k == 1 else "requests"} that had been going right, so it was not kept: ' + "; ".join(
+            f'"{b["text"]}" went wrong in {b["fix"][0]} of {b["fix"][1]} replays on the fix and in {b["before"][0]} of {b["before"][1]} before it' for b in harm["broken"]) + "."
+    else:
+        said += " The fix broke none of them."
+    if harm["already_failing"]:
+        k = len(harm["already_failing"])
+        said += f' {k} {"was" if k == 1 else "were"} already going wrong before the fix. That is some other bug, and is not held against this one.'
+    if harm["unclear"]:
+        k = len(harm["unclear"])
+        said += f' {k} went wrong once or twice on the fix commit, which is too few to say the fix did it.'
+    return said
+
 STYLE = (Path(__file__).parent / "casefile.css").read_text()
 
 
@@ -94,6 +113,12 @@ def lineup_svg(record: dict) -> str:
     return "".join(out)
 
 
+def kept(attempt: dict | None) -> bool:
+    """A fix is kept when it cleared its own bar and the do-no-harm check, if one was run, found nothing broken."""
+    attempt = attempt or {}
+    return bool((attempt.get("verification") or {}).get("fixed")) and not (attempt.get("harm") or {}).get("broken")
+
+
 def timeline(record: dict) -> list[tuple[str, str]]:
     """What happened in this case, in order, as (step, what happened).
 
@@ -127,8 +152,14 @@ def timeline(record: dict) -> list[tuple[str, str]]:
         if attempt.get("commit") is None:
             steps.append(("fix", f'Try {n}, a {attempt["kind"]}: no change was made. {attempt.get("note", "")}'.strip()))
         else:
-            steps.append(("fix", f'Try {n}, a {attempt["kind"]}: {observed(seen.get("failures", 0), seen.get("replays", 0))} {"Kept" if seen.get("fixed") else "Not kept"}.'))
-    if tries and not any((a.get("verification") or {}).get("fixed") for a in tries):
+            broke = (attempt.get("harm") or {}).get("broken")
+            line = f'Try {n}, a {attempt["kind"]}: {observed(seen.get("failures", 0), seen.get("replays", 0))} '
+            if broke:
+                line += f'Not kept, because it broke {len(broke)} other {"request" if len(broke) == 1 else "requests"}.'
+            else:
+                line += "Kept." if seen.get("fixed") else "Not kept."
+            steps.append(("fix", line))
+    if tries and not any(kept(a) for a in tries):
         steps.append(("fix", f'No fix cleared the bar in {len(tries)} {"try" if len(tries) == 1 else "tries"}. The case stays open.'))
     fix = record.get("fix") or {}
     again = [c for c in record.get("checks", []) if c["ref"] == fix.get("commit")]
@@ -272,8 +303,11 @@ def render(record: dict) -> str:
             if attempt.get("commit") is None:
                 how = f'no change was made. {escape(attempt.get("note", ""))}'
             else:
+                broke = (attempt.get("harm") or {}).get("broken")
                 how = (f'<span class="sha">{escape(_short(attempt["commit"]))}</span>, {observed(seen.get("failures", 0), seen.get("replays", 0))} '
-                       f'{"Kept" if seen.get("fixed") else "Not kept"}.')
+                       f'{"Not kept" if broke or not seen.get("fixed") else "Kept"}.')
+                if attempt.get("harm"):
+                    how += f' {escape(harm_said(attempt["harm"]))}'
             rows += f'<li>Try {n}, a {escape(attempt["kind"])}: {how}</li>'
         return f'<details open><summary>What it took</summary><ol class="steps">{rows}</ol></details>'
 
@@ -287,6 +321,10 @@ def render(record: dict) -> str:
             if check["fixed"]:
                 body += ('<p class="small">The second figure is the 95% upper bound on how often the fix still fails, from these replays alone. '
                          'Clearing the bar is not proof: in simulation a fix that still fails 4 runs in 100 clears it about one time in three.</p>')
+        if fix.get("harm"):
+            body += f'<p>{escape(harm_said(fix["harm"]))}</p>'
+        elif check.get("fixed"):
+            body += ('<p class="small">Only this case\'s own requests were replayed on the fix. Nothing was checked for what else it might have broken.</p>')
         if len(tries) > 1:
             body += tried()
         if fix.get("note"):
@@ -340,7 +378,7 @@ def render(record: dict) -> str:
         rows = "".join(f'<li><span class="cite">{escape(step)}</span> {escape(text)}</li>' for step, text in happened)
         parts.append(_field("Log", f'<ol class="steps">{rows}</ol>'))
 
-    stamp = ("Closed" if (fix.get("verification") or {}).get("fixed") else "Culprit named") if culprit else "Open"
+    stamp = ("Closed" if kept(fix) else "Culprit named") if culprit else "Open"
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -378,7 +416,7 @@ def render_index(records: list[tuple[str, dict]]) -> str:
     for page, record in records:
         case, lineup = record.get("case", {}), record.get("lineup") or {}
         culprit, fix, damages = lineup.get("culprit"), record.get("fix") or {}, record.get("damages") or {}
-        proven = (fix.get("verification") or {}).get("fixed")
+        proven = kept(fix)
         state = "Closed" if proven else "Culprit named" if culprit else "Open"
         who = (f'<span class="sha">{escape(_short(culprit["sha"]))}</span> {escape(culprit["subject"])}' if culprit else "Nobody yet")
         fixed = (f'{escape(fix["kind"])}, {len(record.get("attempts") or [1])} {"try" if len(record.get("attempts") or [1]) == 1 else "tries"}' if proven

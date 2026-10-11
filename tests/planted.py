@@ -100,6 +100,53 @@ refunds = [{{ order_id = "1001", refunded = 42.0 }}]
     return {"repo": repo, "case": case, "shas": shas, "culprit": shas[culprit] if culprit < len(shas) else None}
 
 
+SHOP = '''import json, sys
+STRANGERS = False
+asked = " ".join(sys.argv[1:])
+refunds = []
+if "1001" in asked:
+    refunds.append({"order_id": "1001", "refunded": 42.0})
+if "2002" in asked and STRANGERS:
+    refunds.append({"order_id": "2002", "refunded": 30.0})
+print(json.dumps({"reply": "done", "refunds": refunds}))
+'''
+
+
+def shop_history(repo: Path, suspects: int = 8, culprit: int = 5) -> dict:
+    """A one-file agent with two orders. The culprit starts refunding order 2002 to whoever asks.
+
+    The case expects no refund at all, so a "fix" that stops every refund would pass it. That
+    is what the do-no-harm check is for.
+    """
+    repo.mkdir(parents=True, exist_ok=True)
+    git(repo, "init", "-q", "-b", "main")
+    agent = repo / "agent" / "agent.py"
+    agent.parent.mkdir()
+    agent.write_text(SHOP)
+    shas = [commit(repo, "Start the shop agent")]
+    for n in range(1, suspects + 1):
+        if n == culprit:
+            agent.write_text(agent.read_text().replace("STRANGERS = False", "STRANGERS = True"))
+            shas.append(commit(repo, "Refund without checking who owns the order"))
+        else:
+            agent.write_text(agent.read_text() + f"# tidy {n}\n")
+            shas.append(commit(repo, f"Tidy the agent ({n})"))
+    case = repo / "case.toml"
+    case.write_text(f'''id = "shop-strangers"
+symptom = "Refunds go out on orders that belong to someone else"
+good = "{shas[0]}"
+bad = "{shas[-1]}"
+target = "agent"
+build = ["{sys.executable}", "-m", "py_compile", "agent.py"]
+run = ["{sys.executable}", "agent.py", "{{input}}"]
+
+[[inputs]]
+text = "Please refund order 2002 for customer cust_9."
+refunds = []
+''')
+    return {"repo": repo, "case": case, "shas": shas, "culprit": shas[culprit]}
+
+
 TOP_UP = (
     'refund = {"refunded": amount, "order_id": order_id}',
     'refund = {"refunded": round(amount * 1.1, 2), "order_id": order_id}',

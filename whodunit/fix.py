@@ -153,6 +153,74 @@ def verify(trial, good: tuple[int, int], bad: tuple[int, int], budget: int = 90,
 
 
 @dataclass
+class Harm:
+    """What a fix did to requests that are not its own case's."""
+
+    checked: int = 0  # other requests replayed on the fix commit
+    replays: int = 0
+    broken: list[dict] = field(default_factory=list)  # they went right before the fix and go wrong on it
+    already_failing: list[dict] = field(default_factory=list)  # wrong before the fix too, so not the fix's doing
+    unclear: list[dict] = field(default_factory=list)  # a failure or two on the fix commit, and too few replays to say more
+    voided: int = 0
+
+
+@lru_cache(maxsize=None)
+def probability_no_worse(fix: tuple[int, int], before: tuple[int, int], margin: float = 0.05, samples: int = 20000) -> float:
+    """P(a request fails on the fix commit no more often than before it, give or take `margin`).
+
+    Both sides are (failures, passes) with the same loose prior. Unlike the fix's own bar this
+    does not assume the "before" side is a healthy commit: another bug may have it failing every time.
+    """
+    rng = random.Random(0)
+    hits = sum(rng.betavariate(0.5 + fix[0], 0.5 + fix[1]) <= rng.betavariate(0.5 + before[0], 0.5 + before[1]) + margin for _ in range(samples))
+    return hits / samples
+
+
+def do_no_harm(replay, requests: list[tuple[str, str]], first: int = 2, more: int = 6, parallel: int = 1) -> Harm:
+    """Replay other requests on the fix commit, and say which of them the fix broke.
+
+    A case checks only its own inputs. When what it expects is "no refund", a patch that
+    stopped every refund would clear it. So once a fix clears its own case, the inputs of the
+    other cases and a few ordinary requests that should succeed are replayed on the fix commit.
+
+    `replay(where, text)` runs one request on "fix" or on "before" (the commit the fix started
+    from) and returns a verdict. `requests` are (text, where it came from). Each is replayed
+    `first` times on the fix commit. One that fails there is replayed as often before the fix.
+    If it fails at least as often there, it belongs to some other bug and is not held against
+    this one. If it looks worse on the fix, both are replayed `more` times, and the request
+    counts as broken when the fix commit is 95% likely to fail it more often than before.
+    """
+    from concurrent.futures import ThreadPoolExecutor
+
+    harm = Harm(checked=len(requests))
+
+    def run(where: str, text: str, times: int) -> tuple[int, int]:
+        with ThreadPoolExecutor(max_workers=max(1, parallel)) as pool:
+            verdicts = list(pool.map(lambda _: replay(where, text), range(times)))
+        harm.replays += sum(v in ("pass", "fail") for v in verdicts)
+        harm.voided += verdicts.count("void")
+        return verdicts.count("fail"), verdicts.count("pass")
+
+    for text, source in requests:
+        fix_f, fix_p = run("fix", text, first)
+        if fix_f == 0:
+            continue
+        before_f, before_p = run("before", text, first)
+        if before_f < fix_f:
+            # It looks worse on the fix than before it. Replay both enough to tell a real difference from a stray failure.
+            (f, p), (bf, bp) = run("fix", text, more), run("before", text, more)
+            fix_f, fix_p, before_f, before_p = fix_f + f, fix_p + p, before_f + bf, before_p + bp
+        told = {"text": text, "from": source, "fix": [fix_f, fix_f + fix_p], "before": [before_f, before_f + before_p]}
+        if probability_no_worse((fix_f, fix_p), (before_f, before_p)) <= 0.05:
+            harm.broken.append(told)
+        elif before_f:
+            harm.already_failing.append(told)
+        else:
+            harm.unclear.append(told)
+    return harm
+
+
+@dataclass
 class Fix:
     branch: str
     kind: str  # revert or patch

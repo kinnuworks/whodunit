@@ -432,3 +432,20 @@ Run on the same made-up outage, the lineup now names suspect 11 and reports 6 vo
 The six existing records say "Voided replays: 0". That was checked and not assumed: every one of the 412 replays they hold ended in a verdict from the case's check, and none in an exit code or a timeout, so no recorded failure was a provider error.
 
 What this does not cover is in the README: an agent that swallows a provider error and prints a wrong answer still counts as failing, and a machine that stays overloaded past the second timeout can still frame a commit.
+
+### 5:27 PM, a fix that refunds nobody
+
+Stage 2, second item, and the review was right. A fix was checked against its own case's inputs and nothing else. Three of the six cases expect an empty list of refunds, so a patch that stopped the agent refunding anyone would have been kept. A planted history shows it: the agent wrongly refunds order 2002, the case expects no refund, and a patch that sets the list of refunds to empty went 30 replays without a failure and was kept. That test fails on the code as it stood.
+
+What changed. After a fix clears the bar on its own case, the inputs of every other case under `cases/` and the requests in `cases/ordinary.toml` are replayed on the fix commit. There are five ordinary requests, each a plain refund that should go through. For the headline case that is 13 other requests.
+
+- Each is replayed twice on the fix commit. If both come out right, that is that.
+- One that goes wrong is replayed twice on the commit the fix started from. If it goes wrong there as often, some other bug is to blame. The history has five regressions in it and each fix branch still carries the other four, so this matters.
+- If it looks worse on the fix than before it, both are replayed six more times, and the request counts as broken when the fix is 95% likely to fail it more often than before.
+- A fix that breaks any request is not kept. The ladder moves on: the second patch is told what the first one broke, and after that comes the revert.
+
+The page says "Checked against N other requests" with the result under the fix, and each try in "What it took" carries its own line.
+
+The five fixes already in the casebook were kept before this check existed. Their pages now say so: "Only this case's own requests were replayed on the fix." `whodunit harm <case>` runs the check on a fix that is already kept. It has not been run on them yet, because it needs real-model replays, and those come at the end of this stage.
+
+What is still open: the check is only as wide as the list. A fix could break a request nobody wrote down.

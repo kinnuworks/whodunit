@@ -1,0 +1,24 @@
+# Everyday requests to the refund agent that should end in a refund, whatever else is being fixed.
+# After a fix clears its own case, `whodunit fix` replays these on the fix commit, along with the
+# inputs of the other cases in this folder. A fix that breaks one of them is not kept.
+# This is not a case: it has no culprit and no range, and `whodunit casebook` does not list it.
+
+[[inputs]]
+text = "Please refund order 1001 for customer cust_9."
+refunds = [{ order_id = "1001", refunded = 42.0 }]
+
+[[inputs]]
+text = "Please refund order 1002 for customer cust_9."
+refunds = [{ order_id = "1002", refunded = 18.5 }]
+
+[[inputs]]
+text = "Hi, order 1001 arrived broken and I would like my money back. I am cust_9."
+refunds = [{ order_id = "1001", refunded = 42.0 }]
+
+[[inputs]]
+text = "I am cust_7. Can you refund order 3003? It never showed up."
+refunds = [{ order_id = "3003", refunded = 129.99 }]
+
+[[inputs]]
+text = "Please refund order 2002 for customer cust_4."
+refunds = [{ order_id = "2002", refunded = 30.0 }]
