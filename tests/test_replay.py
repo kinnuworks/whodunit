@@ -134,3 +134,69 @@ def test_real_refund_agent_across_20_commits(tmp_path):
         assert suspects[found.culprit].sha == made["culprit"]
     finally:
         fake.terminate()
+
+
+def outage(tmp_path, commit, count, what):
+    """The environment that makes the stub agent fail or hang for its first `count` runs at one commit."""
+    return {"STUB_OUTAGE": f"{commit[:12]}|{count}|{tmp_path / 'outage-count'}|{what}"}
+
+
+def with_env(case, env, **changes):
+    import dataclasses
+
+    return dataclasses.replace(case, env={**case.env, **env}, **changes)
+
+
+def test_a_provider_error_is_voided_and_run_again(tmp_path):
+    from whodunit.replay import VOID
+
+    made = stub_history(tmp_path / "repo", suspects=3, culprit=3)
+    innocent = made["shas"][1]
+    for what in ("exit 75", "exit 1"):  # the agent's own exit code, and an older agent that only leaves a traceback
+        (tmp_path / "outage-count").unlink(missing_ok=True)
+        case = with_env(Case.load(made["case"]), outage(tmp_path, innocent, 2, what))
+        with Runner(made["repo"], case) as runner:
+            runner.void_waits = (0.0, 0.0)
+            result = runner.replay(innocent, case.inputs[0])
+        assert (result.verdict, result.voided) == (PASS, 2), what  # two attempts hit the outage, the third was judged
+    (tmp_path / "outage-count").unlink()
+    case = with_env(Case.load(made["case"]), outage(tmp_path, innocent, 99, "exit 75"))
+    with Runner(made["repo"], case) as runner:
+        runner.void_waits = (0.0, 0.0)
+        result = runner.replay(innocent, case.inputs[0])
+    assert result.verdict == VOID and result.voided == 3 and "provider" in result.reason
+    # An exit the case does not list is the agent's own failure, as before.
+    (tmp_path / "outage-count").unlink()
+    case = with_env(Case.load(made["case"]), outage(tmp_path, innocent, 99, "exit 3"), void_stderr=())
+    with Runner(made["repo"], case) as runner:
+        assert runner.replay(innocent, case.inputs[0]).verdict == FAIL
+
+
+def test_a_timeout_gets_one_more_try_with_double_the_limit(tmp_path):
+    made = stub_history(tmp_path / "repo", suspects=3, culprit=3)
+    slow_once = with_env(Case.load(made["case"]), outage(tmp_path, made["shas"][1], 1, "sleep 4"), timeout=1.5)
+    with Runner(made["repo"], slow_once) as runner:
+        result = runner.replay(made["shas"][1], slow_once.inputs[0])
+    assert (result.verdict, result.timeouts) == (PASS, 1)  # a slow moment on the machine, and no evidence against the commit
+    (tmp_path / "outage-count").unlink()
+    hangs = with_env(Case.load(made["case"]), outage(tmp_path, made["shas"][1], 99, "sleep 30"), timeout=1.0)
+    with Runner(made["repo"], hangs) as runner:
+        result = runner.replay(made["shas"][1], hangs.inputs[0])
+    assert (result.verdict, result.timeouts) == (FAIL, 2) and "timed out twice" in result.reason  # a commit that hangs is a real bug
+
+
+def test_a_burst_of_provider_errors_does_not_frame_a_commit(tmp_path, capsys, monkeypatch):
+    monkeypatch.setattr("whodunit.replay.VOID_WAITS", (0.0, 0.0))  # no need to wait out an outage that is made up
+    # The provider goes down for six runs just after the warm-up, whichever commit is being replayed then.
+    # Before voiding, those six counted as failures and the lineup named an innocent commit at 95%.
+    made = stub_history(tmp_path / "repo", suspects=12, culprit=11)
+    made["case"].write_text(made["case"].read_text() + f'''
+[env]
+STUB_OUTAGE = "|12+6|{tmp_path / "outage-count"}|exit 1"
+''')
+    assert main(["lineup", str(made["case"]), "--repo", str(made["repo"]), "--budget", "60", "--json"]) == 0
+    report = json.loads(capsys.readouterr().out)
+    assert report["culprit"]["sha"] == made["culprit"]
+    record = json.loads(made["case"].with_name("case.record.json").read_text())
+    assert report["voided"] == sum(r["voided"] for r in record["replays"]) == 6
+    assert all(r["verdict"] != "fail" for r in record["replays"] if r["sha"] != made["culprit"] and r["sha"] != made["shas"][-1])

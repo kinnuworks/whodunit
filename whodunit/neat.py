@@ -71,7 +71,7 @@ class Mcp:
 
 
 MODEL_ID = re.compile(r"\b(?:claude|gpt|gemini|qwen|llama|mistral)(?:[-:.]?\d[\w.:\-]*|-[a-z][\w.:\-]*)", re.I)  # a family name with a version or a variant after it
-SDK_PREFIX = re.compile(r"\b(?:openai|anthropic|litellm)\.(?=[a-z_]+\.)", re.I)
+SDK_PREFIX = re.compile(r"(?<![./\w])(?:openai|anthropic|litellm)\.(?=\w)")  # "sdk.chat.completions.create", "sdk.SomeError", and not a host name
 
 
 def unnamed(text: str) -> str:

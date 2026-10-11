@@ -27,6 +27,7 @@ class Verification:
     note: str = ""
     better: float = 0.0  # P(it looks like the good side and not the bad side), the weaker claim
     upper: float = 1.0  # 95% upper bound on the fix commit's failure rate, from the same posterior
+    voided: int = 0  # replays that hit a provider or network error and were left out
 
 
 def _log_beta(a: float, b: float) -> float:
@@ -122,16 +123,22 @@ def verify(trial, good: tuple[int, int], bad: tuple[int, int], budget: int = 90,
     """
     from concurrent.futures import ThreadPoolExecutor
 
-    failures = passes = 0
+    failures = passes = voided = void_batches = 0
     probability = 0.5
     with ThreadPoolExecutor(max_workers=max(1, parallel)) as pool:
         while failures + passes < budget:
             batch = min(max(1, parallel), budget - failures - passes)
             verdicts = list(pool.map(lambda _: trial(), range(batch))) if batch > 1 else [trial()]
             if "skip" in verdicts:
-                return Verification(False, 0.0, failures + passes, failures, "the fix commit will not build", upper=upper_bound(failures, passes))
+                return Verification(False, 0.0, failures + passes, failures, "the fix commit will not build", upper=upper_bound(failures, passes), voided=voided)
             failures += verdicts.count("fail")
             passes += verdicts.count("pass")
+            # A voided replay hit a provider or network error. It counts neither for the fix nor against it.
+            voided += verdicts.count("void")
+            void_batches = void_batches + 1 if all(v == "void" for v in verdicts) else 0
+            if void_batches >= 3:
+                return Verification(False, probability, failures + passes, failures, "the model provider or the network kept failing, so the fix could not be checked",
+                                    upper=upper_bound(failures, passes), voided=voided)
             probability = probability_back_to_baseline(failures, passes, good)
             if failures + passes >= min(at_least, budget) and (probability >= confidence or probability <= 1 - confidence):
                 break
@@ -142,7 +149,7 @@ def verify(trial, good: tuple[int, int], bad: tuple[int, int], budget: int = 90,
         note = "it still fails more often than before the culprit" + (", though less often than the broken commits do" if better >= confidence else "")
     else:
         note = "the replay budget ran out before the answer was clear"
-    return Verification(probability >= confidence, probability, failures + passes, failures, note, better, upper_bound(failures, passes))
+    return Verification(probability >= confidence, probability, failures + passes, failures, note, better, upper_bound(failures, passes), voided)
 
 
 @dataclass

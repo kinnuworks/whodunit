@@ -18,7 +18,7 @@ from .motive import checkpoint_link, find_motive
 from .neat import NeatError, neatroots
 from .onset import cloud_trend, find_onset, traffic, witness
 from .lineup import linear_scan_cost, plain_bisect, statistical_bisect
-from .replay import FAIL, PASS, Replay, Runner
+from .replay import FAIL, PASS, VOID, Replay, Runner
 from .suspects import git, list_suspects, resolve
 
 
@@ -73,6 +73,9 @@ def _plain(args, case, repo, suspects, runner, say):
     # Check the alibis first. If the good ref fails or the bad ref passes, the case is wrong.
     verdict, results = runner.test_commit(case.good)
     say(f"  last good  {resolve(repo, case.good)[:12]}  {verdict}  {results[-1].reason}")
+    if verdict == VOID:
+        say("The good ref could not be judged, because the model provider or the network kept failing.")
+        return None
     if verdict != PASS:
         say("The good ref does not pass, so there is no clean starting point.")
         return None
@@ -105,7 +108,7 @@ def _statistical(args, case, suspects, runner, say):
         top = max(range(len(posterior)), key=posterior.__getitem__)
         for position in dict.fromkeys(positions):
             who = "last good " if position < 0 else f"suspect {position + 1:>2}"
-            marks = "".join("F" if v == FAIL else "." if v == PASS else "s" for p, v in zip(positions, verdicts) if p == position)
+            marks = "".join("F" if v == FAIL else "." if v == PASS else "v" if v == VOID else "s" for p, v in zip(positions, verdicts) if p == position)
             say(f"  {who}  {marks:<8}  top suspect {top + 1:>2} at {posterior[top]:5.1%}")
 
     priors = None if args.no_priors else [s.prior for s in suspects]
@@ -115,7 +118,7 @@ def _statistical(args, case, suspects, runner, say):
         position = {s.sha: n for n, s in enumerate(suspects)}
         position[resolve(runner.repo, case.good)] = -1
         runner.replays.extend(Replay(**r) for r in load_record(record_path(args)).get("replays", []) if r["sha"] in position)
-        evidence = [(position[r.sha], r.verdict == FAIL) for r in runner.replays if r.verdict != "skip"]
+        evidence = [(position[r.sha], r.verdict == FAIL) for r in runner.replays if r.verdict in (PASS, FAIL)]  # a skipped or voided replay is not evidence
         say(f"Resuming with {len(evidence)} replays already on record.")
     if getattr(args, "from_traffic", None):
         # Ordinary runs that asked what this case asks are evidence that is already paid for.
@@ -131,7 +134,7 @@ def _statistical(args, case, suspects, runner, say):
         if seen:
             at = sorted({p for p, _ in seen})
             say(f"Traffic: {len(seen)} ordinary runs across {len(at)} of these commits had already asked this, and {sum(f for _, f in seen)} of them went wrong.")
-    say(f"Statistical bisect, at most {args.budget} replays, {args.parallel} at a time. F is a failed replay, a dot is a pass.")
+    say(f"Statistical bisect, at most {args.budget} replays, {args.parallel} at a time. F is a failed replay, a dot is a pass, and v was voided by a provider error.")
     return statistical_bisect(
         len(suspects), trial, args.budget, priors=priors, confidence=args.confidence, parallel=args.parallel, on_round=on_round,
         evidence=evidence,
@@ -154,7 +157,9 @@ def lineup(args) -> int:
 
     with Runner(repo, case, keep=args.keep) as runner:
         found = _plain(args, case, repo, suspects, runner, say) if args.method == "plain" else _statistical(args, case, suspects, runner, say)
-        replays = sum(r.verdict != "skip" for r in runner.replays)
+        replays = sum(r.verdict in (PASS, FAIL) for r in runner.replays)
+        voided = sum(r.voided for r in runner.replays)  # attempts thrown away because the provider or the network failed
+        timed_out = sum(r.timeouts for r in runner.replays)
         seconds = sum(r.seconds for r in runner.replays)
         commits = len({r.sha for r in runner.replays})
         every_replay = [asdict(r) for r in runner.replays]
@@ -168,6 +173,8 @@ def lineup(args) -> int:
         "suspects": len(suspects),
         "commits_tested": commits,
         "replays": replays,
+        "voided": voided,
+        "timeouts": timed_out,
         "seconds": round(seconds, 1),
         "culprit": None,
         "remaining": [{"sha": suspects[i].sha, "subject": suspects[i].subject, **({"probability": round(found.posterior[i], 4)} if found.posterior else {})} for i in found.remaining],
@@ -187,6 +194,8 @@ def lineup(args) -> int:
             say(f"Confidence: {found.posterior[found.culprit]:.1%}. It fails about {found.rates[1]:.0%} of the time from this commit on, and {found.rates[0]:.0%} before it.")
         say(f"Checkpoint: {culprit.checkpoint or 'none on this commit'}")
         say(f"Tested {commits} commits with {replays} replays in {seconds:.0f}s of replay time. A scan from the oldest suspect would have tested {report['linear_scan_commits']} commits.")
+        if voided or timed_out:
+            say(f"Voided and run again: {voided} attempts that hit a provider or network error. Timed out: {timed_out}. A voided attempt is never evidence.")
     elif found.note:
         report["note"] = found.note
         say(f"Nobody named: {found.note}.")
@@ -416,6 +425,7 @@ def _attempt(kind: str, case, repo: Path, record: dict, args, feedback: str = ""
     with Runner(repo, case, keep=getattr(args, "keep", False)) as runner:
         checked = fixes.verify(lambda: runner.trial(made.commit), good, bad, budget=args.fix_budget, parallel=args.parallel)
         attempt["failed_replays"] = [f"{r.input} -> {r.reason}" for r in runner.replays if r.verdict == FAIL][:4]
+        attempt["voided"] = sum(r.voided for r in runner.replays)
     attempt["verification"] = asdict(checked)
     attempt["diff"] = git(repo, "show", "--format=", made.commit)[:4000]
     print(f"  {kind}: {fixes.observed(checked.failures, checked.replays)} " + (f"Not kept: {checked.note}." if checked.note else "That clears the bar for keeping it."))
@@ -544,16 +554,16 @@ def check(args) -> int:
     with Runner(repo, case) as runner:
         with ThreadPoolExecutor(max_workers=max(1, args.parallel)) as pool:
             verdicts = list(pool.map(lambda _: runner.trial(ref), range(args.runs)))
-    failures = verdicts.count(FAIL)
+    failures, judged = verdicts.count(FAIL), verdicts.count(FAIL) + verdicts.count(PASS)
     sha = resolve(repo, ref)
-    print(f"{case.id} at {sha[:12]}: {failures} failures in {len(verdicts)} replays.")
+    print(f"{case.id} at {sha[:12]}: {failures} failures in {judged} replays." + (f" {verdicts.count(VOID)} more were voided by provider errors." if VOID in verdicts else ""))
     path = record_path(args)
     record = load_record(path)
     if record:
-        record.setdefault("checks", []).append({"at": time.strftime("%Y-%m-%d %H:%M"), "ref": sha, "runs": len(verdicts), "failures": failures})
+        record.setdefault("checks", []).append({"at": time.strftime("%Y-%m-%d %H:%M"), "ref": sha, "runs": judged, "failures": failures})
         _replayed(record)
         save_record(path, record)
-    return 0 if failures == 0 and "skip" not in verdicts else 1
+    return 0 if failures == 0 and judged > 0 and "skip" not in verdicts else 1
 
 
 def damages(args) -> int:

@@ -30,6 +30,10 @@ class Case:
     timeout: float = 120.0
     fixed: str = ""  # the commit that fixed it, once the case is closed and kept as a regression test
     traffic_sent_by: str = ""  # who sent the agent's ordinary runs, when it was a script and not real users
+    # How the agent says "the model provider or the network failed, and my own code did not". A replay
+    # that ends this way is voided and run again, and is never evidence about the commit.
+    void_exit_codes: tuple[int, ...] = ()  # exit codes the agent keeps for that
+    void_stderr: tuple[str, ...] = ()  # for commits from before it had one: text on the last line of stderr, with a non-zero exit
 
     @classmethod
     def load(cls, path: str | Path) -> "Case":
@@ -37,7 +41,7 @@ class Case:
         inputs = tuple(
             CaseInput(text=i["text"], expect={k: v for k, v in i.items() if k != "text"}) for i in data.pop("inputs")
         )
-        for key in ("build", "run"):
+        for key in ("build", "run", "void_exit_codes", "void_stderr"):
             data[key] = tuple(data.get(key, ()))
         return cls(inputs=inputs, **data)
 

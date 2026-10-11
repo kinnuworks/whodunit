@@ -126,7 +126,9 @@
   ],
   "failure_rate_before": 0.026,
   "failure_rate_from": 0.929,
-  "linear_scan_commits": 7
+  "linear_scan_commits": 7,
+  "voided": 0,
+  "timeouts": 0
  },
  "replays": [
   {

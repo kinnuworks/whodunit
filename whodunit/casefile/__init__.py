@@ -174,6 +174,12 @@ def render(record: dict) -> str:
                       f'and {lineup["traffic_failures"]} of them went wrong. They were used as evidence at no cost.{who}</p>')
         named += (f'<p class="small">{lineup.get("replays", 0)} replays across {lineup.get("commits_tested", 0)} commits, '
                   f'{lineup.get("seconds", 0) / 60:.1f} minutes of replay time.{rates}{scan}</p>')
+        if "voided" in lineup:
+            lost = lineup["voided"]
+            named += (f'<p class="small">Voided replays: {lost}. ' + (
+                "No replay hit a provider or network error." if not lost else
+                f'{"That one" if lost == 1 else "Those"} hit a provider or network error and {"was" if lost == 1 else "were"} run again. A voided replay is never evidence about a commit.')
+                + (f' {lineup["timeouts"]} ran out of time and got one more try with double the limit.' if lineup.get("timeouts") else "") + "</p>")
         named += f'<div class="scroll">{lineup_svg(record)}</div>'
         named += ('<p class="key"><span class="swatch culprit"></span>culprit <span class="swatch suspect"></span>suspect '
                   '<span class="swatch elsewhere"></span>has an alibi <span class="dot fail"></span>failed replay <span class="dot pass"></span>passed replay</p>')

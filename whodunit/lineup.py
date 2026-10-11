@@ -10,6 +10,7 @@ from dataclasses import dataclass, field
 from typing import Callable, Sequence
 
 PASS, FAIL, SKIP = "pass", "fail", "skip"
+VOID = "void"  # a replay that hit a provider or network error. It is never evidence.
 
 
 @dataclass
@@ -185,10 +186,14 @@ def statistical_bisect(
 ) -> Lineup:
     """Find the first bad suspect when a bad commit only fails some of the time.
 
-    `trial(position)` runs one replay and returns pass, fail or skip. Position -1 is the good
-    ref. `budget` is the most replays to spend, counting the warm-up runs at both ends. Stops
-    when one suspect holds `confidence` of the posterior, or when the budget is gone, in which
-    case `remaining` lists the suspects still in play, most likely first.
+    `trial(position)` runs one replay and returns pass, fail, skip or void. Position -1 is the
+    good ref. `budget` is the most replays to spend, counting the warm-up runs at both ends.
+    Stops when one suspect holds `confidence` of the posterior, or when the budget is gone, in
+    which case `remaining` lists the suspects still in play, most likely first.
+
+    A void replay hit a provider or network error. It is not counted as a pass or a failure
+    and does not use up the budget. If three rounds in a row are all void, the lineup stops
+    and says the provider kept failing.
 
     `evidence` is what is already known, as (position, failed) pairs: replays from an earlier
     run of the same case, or the agent's ordinary traffic. It shapes the posterior from the
@@ -201,8 +206,11 @@ def statistical_bisect(
     tested: list[tuple[int, str]] = []
     skipped: set[int] = set()
     bad = count - 1
+    void_rounds = 0  # rounds in a row in which every replay was voided
+    down = "the model provider or the network kept failing, so the replays could not be judged"
 
     def run(positions: list[int]) -> list[str]:
+        nonlocal void_rounds
         positions = positions[: max(0, budget - (state.replays - known))]
         if parallel > 1 and len(positions) > 1:
             with ThreadPoolExecutor(max_workers=parallel) as pool:
@@ -213,8 +221,10 @@ def statistical_bisect(
             tested.append((position, verdict))
             if verdict == SKIP:
                 skipped.add(position)
-            else:
+            elif verdict != VOID:
                 state.observe(position, verdict == FAIL)
+        if positions:
+            void_rounds = void_rounds + 1 if all(v == VOID for v in verdicts) else 0
         if on_round and positions:
             on_round(positions, verdicts, state.posterior())
         return verdicts
@@ -244,10 +254,20 @@ def statistical_bisect(
     run(first)
     if -1 in skipped or bad in skipped:
         return finish("the good ref or the bad ref will not build")
+    # An end that lost warm-up replays to a provider error gets them again, a few times at most.
+    for _ in range(3):
+        short = [-1] * max(0, warmup - state.fails[0] - state.passes[0]) + [bad] * max(0, warmup - state.fails[bad + 1] - state.passes[bad + 1])
+        if not short or void_rounds >= 3:
+            break
+        run(short)
+    if void_rounds >= 3 or state.fails[0] + state.passes[0] == 0 or state.fails[bad + 1] + state.passes[bad + 1] == 0:
+        return finish(down)
     extra = 0
-    while state.fails[bad + 1] == 0 and extra < 2 * warmup and state.replays - known < budget:
+    while state.fails[bad + 1] == 0 and extra < 2 * warmup and state.replays - known < budget and void_rounds < 3:
         run([bad] * max(1, parallel))  # a rare failure may simply not have shown yet
         extra += max(1, parallel)
+    if void_rounds >= 3:
+        return finish(down)
     if state.fails[bad + 1] == 0:
         return finish(f"the bad ref passed all {state.passes[bad + 1]} of its replays")
 
@@ -259,4 +279,6 @@ def statistical_bisect(
         if position is None:
             break
         run([position] * max(1, parallel))
+        if void_rounds >= 3:
+            return finish(down)
     return finish()

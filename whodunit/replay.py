@@ -11,20 +11,25 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .case import Case, CaseInput, judge
+from .neat import unnamed
 from .suspects import git, resolve
 
 PASS, FAIL, SKIP = "pass", "fail", "skip"
+VOID = "void"  # the provider or the network failed every time it was tried, so the replay says nothing about the commit
+VOID_WAITS = (2.0, 8.0)  # seconds to wait before the second and the third attempt after a provider error
 
 
 @dataclass(frozen=True)
 class Replay:
     sha: str
     input: str
-    verdict: str  # pass, fail or skip
+    verdict: str  # pass, fail, skip or void
     reason: str
     seconds: float
     started: float = 0.0  # wall clock, seconds since the epoch
     tag: str = ""  # the case tag this replay's run carries in its trace, unique to the replay
+    voided: int = 0  # attempts that hit a provider or network error and were thrown away
+    timeouts: int = 0  # attempts that ran out of time
 
 
 def run_command(command: list[str], cwd: Path, env: dict, timeout: float) -> subprocess.CompletedProcess:
@@ -61,6 +66,7 @@ class Runner:
         self._turn: dict[str, int] = defaultdict(int)  # which input a commit gets next
         self._count = 0
         self._first = int(time.time()) % 100000 * 1000  # so tags from separate runs of one case never collide
+        self.void_waits: tuple[float, ...] = VOID_WAITS
         subprocess.run(["git", "-C", str(self.repo), "worktree", "prune"], capture_output=True)
 
     def __enter__(self):
@@ -129,8 +135,26 @@ class Runner:
         self.built[sha] = problem
         return problem
 
+    def _provider_failed(self, done: subprocess.CompletedProcess) -> str:
+        """Why this run says nothing about the commit, if it ended in a provider or network error. Empty otherwise."""
+        lines = [line.strip() for line in done.stderr.splitlines() if line.strip()] or [""]
+        if done.returncode in self.case.void_exit_codes:
+            said = next((line for line in reversed(lines) if "provider error" in line or any(text in line for text in self.case.void_stderr)), lines[-1])
+            return unnamed(said) or f"exit {done.returncode}"
+        # An agent from before it had an exit code for this dies on the exception, which is then the last thing it prints.
+        if done.returncode != 0 and any(text in lines[-1] for text in self.case.void_stderr):
+            return unnamed(lines[-1])
+        return ""
+
     def replay(self, ref: str, case_input: CaseInput) -> Replay:
-        """Run the agent once at this commit with this input and judge the result."""
+        """Run the agent once at this commit with this input and judge the result.
+
+        Two kinds of run are not judged. One that ends in a provider or network error is voided
+        and run again, up to three attempts, and if every attempt goes that way the verdict is
+        void. One that runs out of time gets a single further try with double the limit. If
+        that one finishes it is judged like any other, and if it runs out of time too the
+        verdict is a failure, because a commit that hangs is a real bug.
+        """
         sha = resolve(self.repo, ref)
         started, clock = time.monotonic(), time.time()
         with self._locks["#"]:
@@ -139,20 +163,38 @@ class Runner:
             # one replay be matched to exactly one run afterwards.
             tag = f"{self.case.id}/{self._first + self._count}" if self.case.id else ""
         problem = self.build(sha)
+        voided = timeouts = 0
         if problem:
             verdict, reason = SKIP, problem
         else:
             cwd = self.worktree(sha) / self.case.target
             command = [part.replace("{input}", case_input.text) for part in self.case.run]
-            try:
-                done = run_command(command, cwd, self._env(sha, tag), self.case.timeout)
+            limit = self.case.timeout
+            while True:
+                try:
+                    done = run_command(command, cwd, self._env(sha, tag), limit)
+                except subprocess.TimeoutExpired:
+                    timeouts += 1
+                    if timeouts == 1:
+                        limit *= 2
+                        continue
+                    verdict, reason = FAIL, f"timed out twice, after {self.case.timeout:.0f}s and then {limit:.0f}s"
+                    break
+                trouble = self._provider_failed(done)
+                if trouble:
+                    voided += 1
+                    if voided <= len(self.void_waits):
+                        time.sleep(self.void_waits[voided - 1])
+                        continue
+                    verdict, reason = VOID, f"the provider or the network failed on all {voided} attempts: {trouble}"
+                    break
                 passed, reason = judge(self.case, case_input, done.stdout, cwd)
                 if not passed and done.returncode != 0:
-                    reason = f"exit {done.returncode}: " + ((done.stderr.strip().splitlines() or [reason])[-1])
+                    reason = f"exit {done.returncode}: " + unnamed((done.stderr.strip().splitlines() or [reason])[-1])
                 verdict = PASS if passed else FAIL
-            except subprocess.TimeoutExpired:
-                verdict, reason = FAIL, f"timed out after {self.case.timeout:.0f}s"
-        result = Replay(sha=sha, input=case_input.text, verdict=verdict, reason=reason, seconds=time.monotonic() - started, started=clock, tag=tag)
+                break
+        result = Replay(sha=sha, input=case_input.text, verdict=verdict, reason=reason, seconds=time.monotonic() - started, started=clock, tag=tag,
+                        voided=voided, timeouts=timeouts)
         self.replays.append(result)
         return result
 

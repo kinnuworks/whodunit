@@ -413,3 +413,22 @@ Four small things, each checked against the code first. All four were as the rev
 - `pitch/posts.md` number 6 said six customers were owed 60.00 each. The record has 360.00 withheld across six runs: three requests owed 90.00 and three owed 30.00. The average is 60.00 and nobody was owed that. Corrected.
 
 That is the end of stage 1. Nothing was pushed, posted, written to cfo.ai or launched. Larger-model calls for the two rewritten briefs came to about 40 cents, and no replays were made.
+
+### 5:13 PM, a provider outage could frame a commit
+
+Stage 2, first item. The review was right, and it was easy to show. In `whodunit/replay.py` any non-zero exit and any timeout counted as a failed replay. A planted history with 12 suspects and the bug at suspect 11 was given a made-up outage: the six runs after the warm-up exit with a provider error, whichever commit is being replayed. The code as it stood named suspect 1, "Tidy the agent (1)", at 95.7%. Three of the six errors were enough.
+
+What changed:
+
+- A fourth verdict, void. A run that ends in a provider or network error is thrown away and run again, up to three attempts with a short wait between them. If all three go that way the replay's verdict is void. A void replay is never evidence: the lineup does not count it as a pass or a failure, it does not use up the budget, and a resumed case leaves it out. The fix check ignores it the same way.
+- If three rounds in a row are all void, the lineup stops and says the provider kept failing. It names nobody. The fix check does the same.
+- How a run says "this was the provider and not me" is listed in the case file. `void_exit_codes` is the agent's own exit code. `void_stderr` is text on the last line of stderr, for commits from before the agent had a code.
+- The refund agent now exits with 75 for a refused connection, a timeout, a rate limit, a 5xx or a rejected key. This session made that commit itself, which is the first time it has edited the agent. It sits after every case's bad ref, so no case replays it. Every replay in the six cases runs an older commit and is caught by the stderr list.
+- A timeout gets one more try with double the limit. If that finishes, it is judged like any run. If it times out as well, the replay is a failure, because a commit that hangs is a real bug.
+- The page prints the number of voided replays next to the replay count, and how many timed out.
+
+Run on the same made-up outage, the lineup now names suspect 11 and reports 6 voided attempts. Against a dead endpoint the real agent, at the bad ref of the headline case, comes back void after three attempts with "APIConnectionError: Connection error."
+
+The six existing records say "Voided replays: 0". That was checked and not assumed: every one of the 412 replays they hold ended in a verdict from the case's check, and none in an exit code or a timeout, so no recorded failure was a provider error.
+
+What this does not cover is in the README: an agent that swallows a provider error and prints a wrong answer still counts as failing, and a machine that stays overloaded past the second timeout can still frame a commit.

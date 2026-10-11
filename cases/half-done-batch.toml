@@ -4,6 +4,8 @@ good = "7d991542f6e7d12f6c4c8d62baac9ff8deb8638c"
 bad = "92122ad24b01eabd7a0c4952fa8904b013c5b63d"
 target = "victims/refund-agent"
 traffic_sent_by = "eval/traffic.py"  # the ordinary runs were sent by this script, which plays customers
+void_exit_codes = [75]  # the agent's own code for "the provider or the network failed"
+void_stderr = ["APIConnectionError", "APITimeoutError", "RateLimitError", "InternalServerError", "AuthenticationError", "PermissionDeniedError"]  # commits from before it had that code
 build = ["uv", "run", "-q", "python", "-m", "py_compile", "agent.py"]
 run = ["uv", "run", "-q", "agent.py", "--json", "{input}"]
 

@@ -166,3 +166,30 @@ def test_wrong_accusations_are_counted_against_accusations_made():
     assert rows[0]["wrong_of_accused"] == 0.1 and rows[1]["wrong_of_accused"] is None  # 10 of 100 accusations, where 10 of 500 cases would read as 2%
     assert wrong_of_accused(rows[0]) == "10% (10 of 100)" and wrong_of_accused(rows[1]) == "nobody named"
     assert "Statistical bisect: wrong, of accusations made | nobody named | 10% (10 of 100) |" in table_markdown({"cells": rows})
+
+
+def test_a_voided_replay_is_never_evidence():
+    from whodunit.lineup import VOID
+
+    calls = {"n": 0}
+    inner = flaky(12, 1.0, seed=3)  # a bug that fails every time, so only the voids could send this wrong
+
+    def trial(position):
+        calls["n"] += 1
+        return VOID if calls["n"] % 3 == 0 else inner(position)  # every third replay hits a provider error
+    found = statistical_bisect(20, trial, budget=200)
+    judged = [verdict for _, verdict in found.tested if verdict in (PASS, FAIL)]
+    assert found.culprit == 12 and found.replays == len(judged) < calls["n"]
+
+
+def test_the_lineup_stops_when_the_provider_keeps_failing():
+    from whodunit.lineup import VOID
+
+    calls = []
+
+    def trial(position):
+        calls.append(position)
+        return VOID
+    found = statistical_bisect(20, trial, budget=200)
+    assert found.culprit is None and "kept failing" in found.note and found.replays == 0
+    assert len(calls) < 60  # it gives up, and does not spin

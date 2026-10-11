@@ -493,7 +493,9 @@
   "failure_rate_from": 0.812,
   "linear_scan_commits": 37,
   "traffic_runs": 18,
-  "traffic_failures": 4
+  "traffic_failures": 4,
+  "voided": 0,
+  "timeouts": 0
  },
  "replays": [
   {

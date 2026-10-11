@@ -35,8 +35,25 @@ def edit(path: Path, old: str, new: str) -> None:
     path.write_text(text.replace(old, new, 1))
 
 
-STUB = '''import json
+STUB = '''import json, os, pathlib, sys, time
 BONUS = 0
+# STUB_OUTAGE plays a provider outage or a hang: "<commit prefix>|<which runs>|<counter file>|<what happens>".
+# Which runs is "4" for the first four at that commit, or "12+6" to let twelve through and hit the next six.
+# What happens is "exit <code>" with a provider error on stderr, or "sleep <seconds>".
+outage = os.environ.get("STUB_OUTAGE", "")
+if outage and os.environ.get("WHODUNIT_COMMIT", "").startswith(outage.split("|")[0]):
+    _, which, counter, what = outage.split("|")
+    skip, _, count = which.rpartition("+")
+    seen = pathlib.Path(counter)
+    n = int(seen.read_text()) if seen.exists() else 0
+    seen.write_text(str(n + 1))
+    if int(skip or 0) <= n < int(skip or 0) + int(count):
+        kind, _, amount = what.partition(" ")
+        if kind == "sleep":
+            time.sleep(float(amount))
+        else:
+            print("Traceback (most recent call last):\\nprovider.ConnectionError: Connection error.", file=sys.stderr)
+            sys.exit(int(amount))
 print(json.dumps({"reply": "done", "refunds": [{"order_id": "1001", "refunded": 42.0 + BONUS}]}))
 '''
 
@@ -73,6 +90,8 @@ bad = "{shas[-1]}"
 target = "agent"
 build = ["{sys.executable}", "-m", "py_compile", "agent.py"]
 run = ["{sys.executable}", "agent.py", "{{input}}"]
+void_exit_codes = [75]
+void_stderr = ["provider.ConnectionError"]
 
 [[inputs]]
 text = "Please refund order 1001 for customer cust_9."

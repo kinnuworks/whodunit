@@ -224,6 +224,16 @@ def test_the_upper_bound_says_how_little_thirty_clean_replays_show():
     assert checked.upper == fixes.upper_bound(0, checked.replays)
 
 
+def test_voided_replays_do_not_count_for_or_against_a_fix():
+    import itertools
+
+    every_other = itertools.cycle(["void", "pass"])
+    checked = fixes.verify(lambda: next(every_other), (0, 40), (20, 40), budget=90)
+    assert checked.fixed and checked.failures == 0 and checked.voided >= 20 and checked.replays == fixes.verify(lambda: "pass", (0, 40), (20, 40)).replays
+    down = fixes.verify(lambda: "void", (0, 40), (20, 40), budget=90)
+    assert not down.fixed and down.replays == 0 and "kept failing" in down.note
+
+
 def test_a_partial_fix_is_not_called_proven():
     # The bug failed 9 runs in 10. The patch gets it down to 1 in 10, and before the culprit it was 0 in 40.
     import itertools
