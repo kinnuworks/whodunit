@@ -98,6 +98,28 @@ def to_rows(cells: list[Cell]) -> list[dict]:
     return [{**asdict(c), "accuracy": round(c.accuracy, 4), "mean_replays": round(c.replays / c.trials, 1)} for c in cells]
 
 
+def fix_bar(rates=(0.0, 0.01, 0.02, 0.04, 0.06, 0.10), baselines=((0, 12), (0, 24)), trials: int = 2000, seed: int = 0) -> list[dict]:
+    """How often a fix that still fails at a given rate clears the bar for keeping it.
+
+    The bar is the one `whodunit fix` uses: replay three at a time, up to 90 times, and keep the
+    fix once its failure rate is 95% likely to be within 5 points of the rate before the
+    culprit. `baselines` are (failures, passes) seen before the culprit, both clean.
+    """
+    from .fix import verify
+
+    rows = []
+    for good in baselines:
+        for rate in rates:
+            rng = random.Random(f"fix-bar-{seed}-{good}-{rate}")
+            kept = replays = 0
+            for _ in range(trials):
+                checked = verify(lambda: FAIL if rng.random() < rate else PASS, good, (8, 0), parallel=3)
+                kept += checked.fixed
+                replays += checked.replays
+            rows.append({"baseline_passes": good[1], "fix_fails": rate, "trials": trials, "kept": kept, "kept_share": round(kept / trials, 4), "mean_replays": round(replays / trials, 1)})
+    return rows
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     parser.add_argument("--out", default="eval/simulator")
@@ -112,6 +134,7 @@ def main(argv: list[str] | None = None) -> int:
         results[name] = {"suspects": args.suspects, "trials": args.trials, "good_rate": good_rate, "cells": rows}
         print(f"{name}: {len(rows)} cells")
     (out / "results.json").write_text(json.dumps(results, indent=1) + "\n")
+    (out / "fix-bar.json").write_text(json.dumps(fix_bar(), indent=1) + "\n")
     from .chart import write_charts
 
     write_charts(results, out)

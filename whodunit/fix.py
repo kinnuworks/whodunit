@@ -1,4 +1,4 @@
-"""The fix: apply it on a branch, replay the case until the evidence says it is fixed, and keep the case.
+"""The fix: apply it on a branch, replay the case until the evidence clears the bar for keeping it, and keep the case.
 
 A revert is mechanical. A patch that keeps the culprit's intent is written by a model and
 checked the same way. Nothing here pushes or opens a pull request. That stays with the owner.
@@ -10,6 +10,7 @@ import re
 import shutil
 import subprocess
 from dataclasses import dataclass, field
+from functools import lru_cache
 from pathlib import Path
 
 from . import llm
@@ -18,12 +19,13 @@ from .suspects import git
 
 @dataclass
 class Verification:
-    fixed: bool
+    fixed: bool  # the bar for keeping a fix was cleared; see verify()
     probability: float  # P(its failure rate is back within 5 points of the rate before the culprit)
     replays: int
     failures: int
     note: str = ""
     better: float = 0.0  # P(it looks like the good side and not the bad side), the weaker claim
+    upper: float = 1.0  # 95% upper bound on the fix commit's failure rate, from the same posterior
 
 
 def _log_beta(a: float, b: float) -> float:
@@ -47,6 +49,7 @@ def probability_fixed(failures: int, passes: int, good: tuple[int, int], bad: tu
     return math.exp(log_good - top) / (math.exp(log_good - top) + math.exp(log_bad - top))
 
 
+@lru_cache(maxsize=None)  # the seed is fixed, so the same counts always give the same answer
 def probability_back_to_baseline(failures: int, passes: int, good: tuple[int, int], margin: float = 0.05, samples: int = 20000) -> float:
     """P(the fix commit's failure rate is within `margin` of the rate before the culprit).
 
@@ -61,30 +64,76 @@ def probability_back_to_baseline(failures: int, passes: int, good: tuple[int, in
     return hits / samples
 
 
+def _beta_cdf(x: float, a: float, b: float) -> float:
+    """The regularised incomplete beta function, by its continued fraction."""
+    if x <= 0.0:
+        return 0.0
+    if x >= 1.0:
+        return 1.0
+    if x > (a + 1.0) / (a + b + 2.0):
+        return 1.0 - _beta_cdf(1.0 - x, b, a)  # the fraction converges quickly only on this side
+    tiny = 1e-300
+    c, d = 1.0, 1.0 - (a + b) * x / (a + 1.0)
+    d = 1.0 / (d if abs(d) > tiny else tiny)
+    h = d
+    for m in range(1, 300):
+        for numerator in (m * (b - m) * x / ((a + 2 * m - 1) * (a + 2 * m)), -(a + m) * (a + b + m) * x / ((a + 2 * m) * (a + 2 * m + 1))):
+            d = 1.0 + numerator * d
+            d = 1.0 / (d if abs(d) > tiny else tiny)
+            c = 1.0 + numerator / c
+            c = c if abs(c) > tiny else tiny
+            h *= d * c
+        if abs(d * c - 1.0) < 1e-12:
+            break
+    return math.exp(a * math.log(x) + b * math.log(1.0 - x) - _log_beta(a, b)) * h / a
+
+
+def upper_bound(failures: int, passes: int, level: float = 0.95) -> float:
+    """The failure rate the fix commit is `level` likely to be at or under, given its replays.
+
+    This is a quantile of the posterior probability_back_to_baseline uses for the fix commit,
+    Beta(0.5 + failures, 0.5 + passes). It is what the case file prints next to the count,
+    because "0 failures in 30" on its own sounds like more than it is: the bound is about 6%.
+    """
+    a, b = 0.5 + failures, 0.5 + passes
+    low, high = 0.0, 1.0
+    for _ in range(60):
+        middle = (low + high) / 2
+        low, high = (middle, high) if _beta_cdf(middle, a, b) < level else (low, middle)
+    return high
+
+
+def observed(failures: int, replays: int) -> str:
+    """What the replays of a fix showed, as the case file and the command line say it."""
+    bound = upper_bound(failures, replays - failures)
+    return f"{failures} {'failure' if failures == 1 else 'failures'} in {replays} replays. At most {bound:.1%} at 95%."
+
+
 def verify(trial, good: tuple[int, int], bad: tuple[int, int], budget: int = 90, confidence: float = 0.95, parallel: int = 1, at_least: int = 12) -> Verification:
     """Replay the fix commit until its failure rate is 95% likely back to baseline, 95% likely not, or the budget is spent.
 
     With a clean baseline that takes about 30 replays without a failure. `better` records the
     weaker claim, that the fix commit looks like the good side and not the bad side.
+
+    Clearing this bar is the reason to keep a fix. It is not proof that the bug is gone. In
+    simulation a fix that still fails 4 runs in 100 clears it about one time in three, so what
+    gets reported is the count and `upper`, the 95% bound on the failure rate after the fix.
     """
     from concurrent.futures import ThreadPoolExecutor
 
     failures = passes = 0
     probability = 0.5
-    while failures + passes < budget:
-        batch = min(max(1, parallel), budget - failures - passes)
-        if batch > 1:
-            with ThreadPoolExecutor(max_workers=batch) as pool:
-                verdicts = list(pool.map(lambda _: trial(), range(batch)))
-        else:
-            verdicts = [trial()]
-        if "skip" in verdicts:
-            return Verification(False, 0.0, failures + passes, failures, "the fix commit will not build")
-        failures += verdicts.count("fail")
-        passes += verdicts.count("pass")
-        probability = probability_back_to_baseline(failures, passes, good)
-        if failures + passes >= min(at_least, budget) and (probability >= confidence or probability <= 1 - confidence):
-            break
+    with ThreadPoolExecutor(max_workers=max(1, parallel)) as pool:
+        while failures + passes < budget:
+            batch = min(max(1, parallel), budget - failures - passes)
+            verdicts = list(pool.map(lambda _: trial(), range(batch))) if batch > 1 else [trial()]
+            if "skip" in verdicts:
+                return Verification(False, 0.0, failures + passes, failures, "the fix commit will not build", upper=upper_bound(failures, passes))
+            failures += verdicts.count("fail")
+            passes += verdicts.count("pass")
+            probability = probability_back_to_baseline(failures, passes, good)
+            if failures + passes >= min(at_least, budget) and (probability >= confidence or probability <= 1 - confidence):
+                break
     better = probability_fixed(failures, passes, good, bad)
     if probability >= confidence:
         note = ""
@@ -92,7 +141,7 @@ def verify(trial, good: tuple[int, int], bad: tuple[int, int], budget: int = 90,
         note = "it still fails more often than before the culprit" + (", though less often than the broken commits do" if better >= confidence else "")
     else:
         note = "the replay budget ran out before the answer was clear"
-    return Verification(probability >= confidence, probability, failures + passes, failures, note, better)
+    return Verification(probability >= confidence, probability, failures + passes, failures, note, better, upper_bound(failures, passes))
 
 
 @dataclass

@@ -1,0 +1,98 @@
+[
+ {
+  "baseline_passes": 12,
+  "fix_fails": 0.0,
+  "trials": 2000,
+  "kept": 2000,
+  "kept_share": 1.0,
+  "mean_replays": 30.0
+ },
+ {
+  "baseline_passes": 12,
+  "fix_fails": 0.01,
+  "trials": 2000,
+  "kept": 1788,
+  "kept_share": 0.894,
+  "mean_replays": 41.6
+ },
+ {
+  "baseline_passes": 12,
+  "fix_fails": 0.02,
+  "trials": 2000,
+  "kept": 1435,
+  "kept_share": 0.7175,
+  "mean_replays": 52.5
+ },
+ {
+  "baseline_passes": 12,
+  "fix_fails": 0.04,
+  "trials": 2000,
+  "kept": 756,
+  "kept_share": 0.378,
+  "mean_replays": 69.5
+ },
+ {
+  "baseline_passes": 12,
+  "fix_fails": 0.06,
+  "trials": 2000,
+  "kept": 373,
+  "kept_share": 0.1865,
+  "mean_replays": 76.0
+ },
+ {
+  "baseline_passes": 12,
+  "fix_fails": 0.1,
+  "trials": 2000,
+  "kept": 79,
+  "kept_share": 0.0395,
+  "mean_replays": 71.0
+ },
+ {
+  "baseline_passes": 24,
+  "fix_fails": 0.0,
+  "trials": 2000,
+  "kept": 2000,
+  "kept_share": 1.0,
+  "mean_replays": 33.0
+ },
+ {
+  "baseline_passes": 24,
+  "fix_fails": 0.01,
+  "trials": 2000,
+  "kept": 1792,
+  "kept_share": 0.896,
+  "mean_replays": 44.3
+ },
+ {
+  "baseline_passes": 24,
+  "fix_fails": 0.02,
+  "trials": 2000,
+  "kept": 1360,
+  "kept_share": 0.68,
+  "mean_replays": 57.0
+ },
+ {
+  "baseline_passes": 24,
+  "fix_fails": 0.04,
+  "trials": 2000,
+  "kept": 697,
+  "kept_share": 0.3485,
+  "mean_replays": 71.6
+ },
+ {
+  "baseline_passes": 24,
+  "fix_fails": 0.06,
+  "trials": 2000,
+  "kept": 343,
+  "kept_share": 0.1715,
+  "mean_replays": 74.6
+ },
+ {
+  "baseline_passes": 24,
+  "fix_fails": 0.1,
+  "trials": 2000,
+  "kept": 73,
+  "kept_share": 0.0365,
+  "mean_replays": 62.0
+ }
+]

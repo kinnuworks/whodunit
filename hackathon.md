@@ -300,3 +300,19 @@ Run over the eight briefs on record, the new check flags one sentence, the one t
 Rewriting the `cents-off` brief took six drafts, and I read each one. What was wrong with the ones not kept: a headline that said `round()` "truncates", a claim about what the request had not asked for, "one dollar more" for a difference of 0.25, and one whose last sentence was muddled. The fifth is in the record. The model made the same slip again in it, `ad7eeb7e` for `ad7edb7e`, and this time the check sent the draft back and the second try had the id right. The page says so under the brief. What is still loose in the kept one: its headline says the commit "rounds refund amounts up", which is true of both requests in the case and not of every amount.
 
 Nothing checks arithmetic or meaning. A person still has to read a brief before it is quoted anywhere. About 30 cents of larger-model calls for this and the entry before it.
+
+### 4:30 PM, what "proven" was worth
+
+The review was right, and the number is in the repo now. `eval/simulator/fix-bar.json` has 2,000 simulated fixes per row against the same criterion `whodunit fix` uses. A fix that still fails 4 runs in 100 clears the bar 35 to 38% of the time, depending on how many clean replays there were before the culprit. One that still fails 2 in 100 clears it about 70% of the time. One that fails 10 in 100 clears it 4% of the time.
+
+The criterion stays as it was: a fix is kept when its failure rate is 95% likely to be back within 5 points of the rate before the culprit. What changed is what gets said about it.
+
+- The page, the command line, the README, `pitch/` and the sealed eval write-up no longer say "proven". They give the count and the 95% upper bound on the failure rate after the fix: "0 failures in 30 replays. At most 6.2% at 95%." For the 36-replay case it is 5.2%. For the two patches on `half-done-batch`, 5 failures in 90, it is 10.6%.
+- The bound is a quantile of the posterior the criterion already uses for the fix commit, Beta(0.5 + failures, 0.5 + passes), worked out exactly and checked against 200,000 samples.
+- The page says under a kept fix that clearing the bar is not proof, with the one-in-three figure.
+
+Earlier entries in this log still say "proven", because that is what was believed when they were written.
+
+What went wrong: the first version of the simulation ran for ten minutes and had to be stopped. The posterior is worked out by sampling, 20,000 draws each time, and the simulation asked for it a few hundred thousand times. It is cached now, which is safe because the seed is fixed, and it still takes about six minutes.
+
+A gap of about an hour and a half before this entry is the session waiting, not work.

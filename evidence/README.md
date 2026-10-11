@@ -26,14 +26,14 @@ The checkpoint links will take the form `https://entire.io/gh/OWNER/REPO/commit/
 
 - `casefile-turned-away.png`: the first case with a real motive. The culprit came from a request for friendlier replies, and the page quotes it from the Entire checkpoint `6b2050de3c0b`. The five case files from the sealed eval are in `../cases/` as `.casefile.html`, with their records beside them.
 
-- `casefile-whole-history.png`: the headline case. 57 suspects, 20 replays, the real request from checkpoint `bfbe27725663`, a patch proven on 30 clean replays, and 120.00 in refunds that went to the wrong people. Failing run `47e39d7c784a`, passing run `463025bf71f1`. Before the fix about 81% of replays failed from the culprit on. After it, 0 of 30.
+- `casefile-whole-history.png`: the headline case. 57 suspects, 20 replays, the real request from checkpoint `bfbe27725663`, a patch replayed 30 times without a failure (at most 6.2% at 95%), and 120.00 in refunds that went to the wrong people. Failing run `47e39d7c784a`, passing run `463025bf71f1`. Before the fix about 81% of replays failed from the culprit on. After it, 0 of 30.
 
 - `casebook.png`: the index of all six cases, with culprit, state and what each cost. The page is `../cases/index.html`.
 
 ## A fix that failed, and what the agent did next
 
-- `../cases/turned-away.record.json`, under `attempts`: the first patch failed 5 of 12 replays, the second failed 4 of 18, and Whodunit then reverted the culprit and proved the revert on 30 clean replays.
-- `../cases/half-done-batch.record.json`: two patches not proven and a revert that conflicts. Left open.
+- `../cases/turned-away.record.json`, under `attempts`: the first patch failed 5 of 12 replays, the second failed 4 of 18, and Whodunit then reverted the culprit and replayed the revert 30 times without a failure.
+- `../cases/half-done-batch.record.json`: two patches that fell short of the bar and a revert that conflicts. Left open.
 
 ## Sealed eval
 

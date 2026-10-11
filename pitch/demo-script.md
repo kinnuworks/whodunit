@@ -50,11 +50,11 @@ Scroll to Ruling and Fix.
 
 > Revert it, or keep what it was for and patch it? That is the owner's call, and Whodunit asks once per kind of change. This was a prompt change and the rule was already patch, so nobody was asked.
 
-> The patch keeps the shortcut and puts the ownership check back. Then it has to be proven. Thirty replays, no failures, which puts the failure rate back where it was before the culprit.
+> The patch keeps the shortcut and puts the ownership check back. Then it has to earn its place. Thirty replays, no failures. At 95% that puts the failure rate after the fix at 6.2% or less, close enough to where it was before the culprit to keep the patch.
 
 Switch to `cases/turned-away.casefile.html`, scroll to Fix, "What it took".
 
-> It does not always go that well. Here the first patch still failed 5 replays in 12. The second failed 4 in 18. So it reverted the commit and proved that. And one case in our eval it could not fix at all, and it says so.
+> It does not always go that well. Here the first patch still failed 5 replays in 12. The second failed 4 in 18. So it reverted the commit, and the revert went 30 replays without a failure. And one case in our eval it could not fix at all, and it says so.
 
 ## Scene 5, the damage and the numbers (1:55 to 2:25)
 

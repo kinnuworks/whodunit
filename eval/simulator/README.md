@@ -30,6 +30,21 @@ Agents are rarely this clean. Give every good commit a 5% chance of failing by i
 
 The statistical bisect holds up. On the 30% bug it names the right commit in 60% of cases with 160 replays and 84% with 320. On a bug that fails every time it is right in 99% of cases and uses about 21 replays.
 
+## How much a kept fix shows
+
+`whodunit fix` keeps a fix once its failure rate is 95% likely to be back within 5 points of the rate before the culprit. With a clean baseline that is 30 replays without a failure. `fix-bar.json` has how often a fix that is not really fixed clears the same bar, from 2,000 simulated fixes per row, replayed three at a time with up to 90 replays allowed.
+
+| The fix still fails | Kept, after 12 clean replays before the culprit | Kept, after 24 |
+| ---: | ---: | ---: |
+| never | 100% | 100% |
+| 1% of the time | 89% | 90% |
+| 2% | 72% | 68% |
+| 4% | 38% | 35% |
+| 6% | 19% | 17% |
+| 10% | 4% | 4% |
+
+So a kept fix is not a proven one. A patch that still fails 4 runs in 100 is kept about one time in three. That is why the case file reports the count with the 95% upper bound on the failure rate after the fix, "0 failures in 30 replays. At most 6.2% at 95%.", and does not say proven. Telling a 2% leftover from a clean fix would take a few hundred replays, which nobody would pay for on every case.
+
 ## Where it falls short
 
 - A bug that fails 20% of the time on a flaky baseline is named in only 46% of cases, even with 320 replays. The top suspect is right in 70%.

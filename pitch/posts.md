@@ -46,7 +46,7 @@ Attach: the table from `eval/sealed/README.md`.
 
 Our own fix check was too lenient. A patch passed 3 replays, we called it proven, and then it failed 2 of 8.
 
-Now a fix has to bring the failure rate back to where it was before the culprit. About 30 clean replays.
+Now a fix has to bring the failure rate back to where it was before the culprit, and the page says what was seen: "0 failures in 30 replays. At most 6.2% at 95%."
 
 One of our five cases still isn't fixed. The case file says so. #neatHack
 

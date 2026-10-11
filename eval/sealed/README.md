@@ -40,15 +40,15 @@ Replay spend on the gateway, estimated from token counts at list prices, came to
 
 ## What happened after the culprits were named
 
-The owner's ruling was patch for all three kinds of change involved. A fix counts as proven when its failure rate is back within 5 points of the rate before the culprit, at 95%.
+The owner's ruling was patch for all three kinds of change involved. A fix is kept when its failure rate is 95% likely to be back within 5 points of the rate before the culprit. The last column gives what the replays of the kept fix showed and the 95% upper bound on its failure rate. Clearing the bar is not proof: in simulation a fix that still fails 4 runs in 100 clears it about one time in three.
 
-| Case | Outcome | Tries | Replays of the final fix |
+| Case | Outcome | Tries | Replays of the final fix, and the most it could still fail at 95% |
 | --- | --- | ---: | --- |
-| cents-off | patched and proven | 1 | 0 failures in 30 |
-| strangers-paid | patched and proven | 1 | 0 failures in 30 |
-| wrong-order-refunded | patched and proven | 1 | 0 failures in 36 |
-| turned-away | two patches not proven, then reverted and proven | 3 | 0 failures in 30 |
-| half-done-batch | not fixed | 3 | two patches left 5 failures in 90 each, and the revert conflicts |
+| cents-off | patch kept | 1 | 0 failures in 30, at most 6.2% |
+| strangers-paid | patch kept | 1 | 0 failures in 30, at most 6.2% |
+| wrong-order-refunded | patch kept | 1 | 0 failures in 36, at most 5.2% |
+| turned-away | two patches fell short, then a revert was kept | 3 | 0 failures in 30, at most 6.2% |
+| half-done-batch | not fixed | 3 | two patches left 5 failures in 90 each, at most 10.6%, and the revert conflicts |
 
 So four of five were closed, one of them only by giving up on the patch the owner asked for, and one was left open and says so.
 

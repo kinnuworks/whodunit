@@ -374,20 +374,23 @@ def _attempt(kind: str, case, repo: Path, record: dict, args, feedback: str = ""
         attempt["failed_replays"] = [f"{r.input} -> {r.reason}" for r in runner.replays if r.verdict == FAIL][:4]
     attempt["verification"] = asdict(checked)
     attempt["diff"] = git(repo, "show", "--format=", made.commit)[:4000]
-    print(f"  {kind}: {checked.failures} failures in {checked.replays} replays. Probability the failure rate is back to where it was: {checked.probability:.1%}." + (f" Not proven: {checked.note}." if checked.note else ""))
+    print(f"  {kind}: {fixes.observed(checked.failures, checked.replays)} " + (f"Not kept: {checked.note}." if checked.note else "That clears the bar for keeping it."))
     return attempt
 
 
 def _proven(attempt: dict) -> bool:
+    """Did this attempt clear the bar for keeping a fix? That is a threshold on the replays, not proof."""
     return bool((attempt.get("verification") or {}).get("fixed"))
 
 
 def fix(args) -> int:
-    """Apply the ruling on a branch and replay until the evidence says fixed. If it is not, try again.
+    """Apply the ruling on a branch and replay until the fix clears the bar or plainly does not. If it does not, try again.
 
-    A patch that is not proven gets one more try, with the first patch and its failing replays
-    in front of the model. If that is not proven either, the culprit is reverted, which is the
-    safe answer and loses what the commit was for. Every try is kept in the record.
+    The bar: the fix commit's failure rate is 95% likely to be back within 5 points of the rate
+    before the culprit. A patch that does not clear it gets one more try, with the first patch
+    and its failing replays in front of the model. If that does not clear it either, the culprit
+    is reverted, which is the safe answer and loses what the commit was for. Every try is kept
+    in the record.
     """
     loaded = _need_culprit(args)
     if loaded is None:
@@ -401,12 +404,12 @@ def fix(args) -> int:
     if wanted == rulings.PATCH and not _proven(attempts[-1]):
         first = attempts[-1]
         feedback = (first.get("note") or "") + "\nThe first patch:\n" + first.get("diff", "none was made") + "\nReplays of it that still failed:\n" + "\n".join(first.get("failed_replays", []) or ["none recorded"])
-        print("  The patch is not proven. Trying once more, with the first patch and its failures in view.")
+        print("  The patch did not clear the bar. Trying once more, with the first patch and its failures in view.")
         attempts.append(_attempt(rulings.PATCH, case, repo, record, args, feedback))
     if wanted == rulings.PATCH and not _proven(attempts[-1]):
-        print("  Still not proven. Falling back to a revert, which loses what the commit was for.")
+        print("  Still short of the bar. Falling back to a revert, which loses what the commit was for.")
         attempts.append(_attempt(rulings.REVERT, case, repo, record, args))
-        attempts[-1]["note"] = ((attempts[-1].get("note") or "") + " This is a fallback: the ruling was to patch, and two patches were not proven.").strip()
+        attempts[-1]["note"] = ((attempts[-1].get("note") or "") + " This is a fallback: the ruling was to patch, and two patches did not clear the bar.").strip()
     final = next((a for a in reversed(attempts) if _proven(a)), attempts[-1])
     record["fix"] = final
     record["attempts"] = attempts
@@ -422,7 +425,9 @@ def fix(args) -> int:
         record["fix"]["regression_case"] = os.path.relpath(kept)
     save_record(path, record)
     if _proven(final):
-        print(f"Fixed by {final['kind']} {final['commit'][:12]} after {len(attempts)} {'try' if len(attempts) == 1 else 'tries'}. Kept as a regression test: {record['fix']['regression_case']}")
+        seen = final["verification"]
+        print(f"Kept the {final['kind']} {final['commit'][:12]} after {len(attempts)} {'try' if len(attempts) == 1 else 'tries'}: {fixes.observed(seen['failures'], seen['replays'])}")
+        print(f"The case is kept as a regression test: {record['fix']['regression_case']}")
         print(f"The branch {final['branch']} is local. Pushing it and opening a pull request is the owner's call.")
     else:
         print(f"Not fixed after {len(attempts)} {'try' if len(attempts) == 1 else 'tries'}. The record has each one.")
@@ -478,7 +483,9 @@ def investigate(args) -> int:
     code = fix(args)
     done = load_record(path)
     tries = done.get("attempts", [])
-    note("fix", (f"Proven with a {done['fix']['kind']} after {len(tries)} {'try' if len(tries) == 1 else 'tries'}." if code == 0 else f"Not proven after {len(tries)} tries."))
+    seen = (done.get("fix") or {}).get("verification") or {}
+    note("fix", (f"Kept a {done['fix']['kind']} after {len(tries)} {'try' if len(tries) == 1 else 'tries'}: {fixes.observed(seen['failures'], seen['replays'])}" if code == 0
+                 else f"No fix cleared the bar in {len(tries)} {'try' if len(tries) == 1 else 'tries'}."))
     damages(args)
     return finish(code)
 
@@ -619,7 +626,7 @@ def main(argv: list[str] | None = None) -> int:
     for name, func, text in (
         ("brief", brief, "write the root-cause brief for a case that has a culprit"),
         ("ruling", ruling, "ask the owner once per kind of change: revert, or keep the intent and patch"),
-        ("fix", fix, "apply the ruling on a branch and replay until the fix is proven"),
+        ("fix", fix, "apply the ruling on a branch and replay it against the bar for keeping a fix"),
         ("damages", damages, "count the bad runs and what they cost"),
     ):
         p = commands.add_parser(name, help=text)

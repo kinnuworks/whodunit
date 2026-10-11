@@ -214,6 +214,16 @@ def test_verify_stops_when_sure():
     assert not broken.fixed and "will not build" in broken.note
 
 
+def test_the_upper_bound_says_how_little_thirty_clean_replays_show():
+    assert 0.060 < fixes.upper_bound(0, 30) < 0.064  # 0 failures in 30 still allows about 6%
+    assert fixes.upper_bound(0, 12) > 0.14 and fixes.upper_bound(0, 300) < 0.007
+    assert fixes.upper_bound(5, 85) > fixes.upper_bound(0, 90)
+    assert fixes.observed(0, 30) == "0 failures in 30 replays. At most 6.2% at 95%."
+    assert fixes.observed(1, 12).startswith("1 failure in 12 replays. At most ")
+    checked = fixes.verify(lambda: "pass", (0, 40), (20, 40), budget=90)
+    assert checked.upper == fixes.upper_bound(0, checked.replays)
+
+
 def test_a_partial_fix_is_not_called_proven():
     # The bug failed 9 runs in 10. The patch gets it down to 1 in 10, and before the culprit it was 0 in 40.
     import itertools
@@ -249,7 +259,10 @@ def test_revert_fixes_the_stub_and_the_whole_pipeline_runs(tmp_path, monkeypatch
     kept = tmp_path / "cases" / "stub-bonus.toml"
     assert Case.load(kept).fixed == record["fix"]["commit"]
     page = made["case"].with_name("case.casefile.html").read_text()
-    assert "Add a goodwill bonus to refunds" in page and "Proven" in page and "Revert it." in page
+    assert "Add a goodwill bonus to refunds" in page and "Revert it." in page
+    seen = record["fix"]["verification"]
+    assert f"0 failures in {seen['replays']} replays. At most {seen['upper']:.1%} at 95%." in page and "clears the bar" in page
+    assert "Proven" not in page and "proven" not in page
     assert "no Entire checkpoint" in page
     # The kept case passes at the fix and fails at the bad ref.
     assert main(["check", str(kept), "--repo", str(made["repo"]), "--ref", record["fix"]["commit"], "--runs", "2"]) == 0

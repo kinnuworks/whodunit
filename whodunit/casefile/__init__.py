@@ -4,6 +4,8 @@ import math
 from html import escape
 from pathlib import Path
 
+from ..fix import observed
+
 STYLE = (Path(__file__).parent / "casefile.css").read_text()
 
 
@@ -196,10 +198,12 @@ def render(record: dict) -> str:
         check = fix.get("verification") or {}
         body = f'<p>{escape(fix["kind"]).capitalize()} committed as <span class="sha">{escape(_short(fix["commit"]))}</span> on branch <code>{escape(fix["branch"])}</code>.</p>'
         if check:
-            state = "Proven" if check["fixed"] else "Not proven"
-            body += (f'<p><strong>{state}.</strong> {check["failures"]} failures in {check["replays"]} replays of the fix. '
-                     f'Probability the failure rate is back to where it was before the culprit: {_pct(check["probability"])}.'
-                     f'{" " + escape(check["note"]).capitalize() + "." if check.get("note") else ""}</p>')
+            bar = "the bar for keeping a fix: a failure rate 95% likely to be back within 5 points of the rate before the culprit"
+            verdict = f"That clears {bar}." if check["fixed"] else f'That is short of {bar}. {escape(check.get("note", "")).capitalize()}.'
+            body += f'<p><strong>{observed(check["failures"], check["replays"])}</strong> {verdict}</p>'
+            if check["fixed"]:
+                body += ('<p class="small">The second figure is the 95% upper bound on how often the fix still fails, from these replays alone. '
+                         'Clearing the bar is not proof: in simulation a fix that still fails 4 runs in 100 clears it about one time in three.</p>')
         tries = record.get("attempts") or []
         if len(tries) > 1:
             rows = ""
@@ -208,8 +212,8 @@ def render(record: dict) -> str:
                 if attempt.get("commit") is None:
                     how = f'no change was made. {escape(attempt.get("note", ""))}'
                 else:
-                    how = (f'<span class="sha">{escape(_short(attempt["commit"]))}</span>, {seen.get("failures", 0)} failures in {seen.get("replays", 0)} replays, '
-                           f'{"proven" if seen.get("fixed") else "not proven"} at {_pct(seen.get("probability", 0))}')
+                    how = (f'<span class="sha">{escape(_short(attempt["commit"]))}</span>, {observed(seen.get("failures", 0), seen.get("replays", 0))} '
+                           f'{"Kept" if seen.get("fixed") else "Not kept"}')
                 rows += f'<li>Try {n}, a {escape(attempt["kind"])}: {how}.</li>'
             body += f'<details open><summary>What it took</summary><ul class="steps">{rows}</ul></details>'
         if fix.get("note"):
