@@ -1,0 +1,32 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "b09e709d2034",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "README.md",
+    "cases/cents-off.casefile.html",
+    "cases/cents-off.record.json",
+    "hackathon.md",
+    "tests/test_closing.py",
+    "whodunit/brief.py",
+    "whodunit/cli.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/b0/9e709d2034/0/metadata.json",
+      "transcript": "/b0/9e709d2034/0/full.jsonl",
+      "compact_transcript": "/b0/9e709d2034/0/transcript.jsonl",
+      "content_hash": "/b0/9e709d2034/0/content_hash.txt",
+      "prompt": "/b0/9e709d2034/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 28,
+    "cache_creation_tokens": 270986,
+    "cache_read_tokens": 3315369,
+    "output_tokens": 20821,
+    "api_call_count": 14
+  }
+}
