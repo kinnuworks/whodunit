@@ -187,20 +187,11 @@ Things that went wrong, and what was done:
 
 Not done: no ruling has been given for any of the five, because that is the owner's question to answer. The culprits fall into three kinds: prompt (`strangers-paid`, `wrong-order-refunded`), tool code (`cents-off`), and model settings (`half-done-batch`). `turned-away` is classed as agent code and reads like a prompt change, which is one more thing the classifier gets wrong.
 
-### 1:21 AM, a look at the rest of the field
-
-About 120 public repos mention the hackathon on GitHub, 13 hours in. Roughly 80 have real work in them and 25 are a README or less. X search needs a sign-in, so posts were only found through links in READMEs.
-
-- Three other entries ask the same question as Whodunit. AgentBisect has a worktree replay runner and no bisect yet, and it sorts a commit into good or bad by pass-rate thresholds. Autopsy and Rootline name the culprit by having a model read traces, diffs and checkpoints, with no replay across commits. All three use planted bugs that fail every time.
-- A larger group repairs a failing agent from its neatlogs traces and keeps the patch only if a re-run improves (Mend, Pitstop, Medic, Suture). None of them asks which commit caused it.
-- Entire has its own page for the event, `hack.entire.io/neathacks-2026`, with a prize for best use of Checkpoints, Graph or Brain. Its first suggested idea is "a debugger for agent mistakes". The suggested checklist asks for an accessible checkpoint link and its id, and notes that reviewers need access to the repo.
-- The furthest-along entries already show things this repo lacks: a public cfo.ai model link, neatlogs cloud screenshots with detections, a demo video, #neatHack posts and a live page.
-
-One test fails at the moment, `tests/test_replay.py::test_real_refund_agent_across_20_commits`, with other work uncommitted in the tree.
-
 ### 1:40 AM, a checkpoint takes in every session that is open
 
-Two sessions were open in this folder at once. One ran `whodunit fix`, which committed patches on `whodunit/turned-away` and `whodunit/cents-off`. The other was reading up on the field and touched neither branch. Entire attached both sessions to those two commits, as checkpoints `b7aa968e95c5` and `587df29ec38f`.
+Two sessions were open in this folder at once. One ran `whodunit fix`, which committed patches on `whodunit/turned-away` and `whodunit/cents-off`. The other was doing unrelated reading and touched neither branch. Entire attached both sessions to those two commits, as checkpoints `b7aa968e95c5` and `587df29ec38f`.
+
+At 1:21 AM one test was failing, `tests/test_replay.py::test_real_refund_agent_across_20_commits`, with other work uncommitted in the tree.
 
 So a commit's checkpoint can hold a session that had nothing to do with it. The motive step reads checkpoints to find the request behind a culprit, and it needs to pick the session that touched the commit's files. Until it does, work that is unrelated to a change should be done from another folder.
 
@@ -360,7 +351,7 @@ That is now on the page under the alibis, in the README, in the video script and
 
 The page draws it from a file next to the record, `cases/whole-history.ablation.json`. `whodunit lineup --ablation` writes that file from a real run and leaves the case record alone. The file in the repo today was entered by hand from this log, and says so, because the record of the original run was not kept. It gets replaced by a real one when the headline case is rerun at the end of stage 2.
 
-### 4:50 PM, a log that could not go stale
+### 4:47 PM, a log that could not go stale
 
 The review was right. On `turned-away` the Fix section showed a revert kept after three tries and the Log said "Proven with a patch after 1 try". On `cents-off` the Log said two tries and Fix showed one.
 
@@ -373,7 +364,7 @@ Two more things turned up while checking each page against its record:
 - `half-done-batch` said "No fix was made" and listed none of its three tries, although an earlier entry in this log claims the case file lists all three. It lists them now, under "Not fixed."
 - Two records carried a stored note saying "two patches were not proven". It now says they did not clear the bar, to match the wording change from earlier today.
 
-### 4:55 PM, no model and no assistant by name
+### 4:51 PM, no model and no assistant by name
 
 The review was right. Every case page printed "Written by:" followed by a model id. Every record with a motive named the coding assistant and its model. The trace outlines in the records carried the replay model's id and a span named after an SDK.
 
@@ -389,7 +380,7 @@ What is left, on purpose. Three kinds of place still carry a vendor's name, beca
 
 Also left: `victims/refund-agent/` and its README, which are the thing being investigated and whose history was made by the second session. `eval/ask.sh` and `whodunit/llm.py` name a command and model ids because a command and an API call need them. The price table in `whodunit/damages.py` is keyed by the model name on a trace span. The screenshots in `evidence/` still show the old line, and are due to be retaken in stage 3.
 
-### 5:00 PM, the working brief against the code
+### 4:53 PM, the working brief against the code
 
 The review was right about each thing it named in `AGENTS.md`, and reading the brief against the code turned up a few more.
 
@@ -405,3 +396,9 @@ The review was right about each thing it named in `AGENTS.md`, and reading the b
 - "Still to do, in order of points" is now "in this order".
 
 The rules that came out of today are in the brief as well: damage is only the runs that fail the case's own check, traffic numbers say they came from a script, a fix is reported as a count with its upper bound, and a brief gets read by a person before it is quoted.
+
+### 4:54 PM, one entry out of this log, one image out of the evidence
+
+The entry of 1:21 AM on 11 October, about other teams' entries, is removed from this log in an ordinary commit. The history is not rewritten, so the text is still in the earlier commits. One line of it was about this build and is kept, moved into the 1:40 AM entry: a test was failing at the time. That test, the end to end run on the real agent with a scripted model, was run again just now and passes in 38 seconds.
+
+`evidence/neathack-bingo.png` is moved to `pitch/`. Nothing in `evidence/` linked to it. What happens to it is the owner's call.
