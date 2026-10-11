@@ -394,6 +394,8 @@ def investigate(args) -> int:
         open_case(argparse.Namespace(case=args.case, record=args.record, no_open=True))
         return code
 
+    if getattr(args, "fresh", False) and path.is_file():
+        path.rename(path.with_name(path.name + time.strftime(".%H%M%S.old")))
     record = load_record(path)
     args.method, args.confidence, args.no_priors, args.keep, args.json = "statistical", 0.95, False, False, False
     args.no_runs, args.since_ms = False, None
@@ -524,6 +526,25 @@ def open_case(args) -> int:
     return 0
 
 
+def casebook(args) -> int:
+    """Write every case file in a folder, and an index page that lists them."""
+    folder = Path(args.folder)
+    records = []
+    for path in sorted(folder.glob("*.record.json")):
+        record = load_record(path)
+        page = casefile.write(record, path.with_name(path.name.replace(".record.json", "") + ".casefile.html"))
+        records.append((page.name, record))
+    records.sort(key=lambda item: -len(item[1].get("suspects", [])))
+    index = folder / "index.html"
+    index.write_text(casefile.render_index(records))
+    print(f"{index}: {len(records)} cases")
+    if args.open:
+        import webbrowser
+
+        webbrowser.open(index.resolve().as_uri())
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(prog="whodunit", description="Find the commit that broke an AI agent.")
     commands = parser.add_subparsers(dest="command", required=True)
@@ -573,9 +594,14 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--answer", choices=("revert", "patch"), help="the owner's ruling, if there is no standing rule yet")
     p.add_argument("--workflow", default="refund-agent")
     p.add_argument("--redo-brief", action="store_true")
+    p.add_argument("--fresh", action="store_true", help="set aside any earlier record for this case and start over")
     p.add_argument("--from-traffic", metavar="WORKFLOW", help="start the lineup from ordinary runs of this workflow")
     p.add_argument("--no-graph", action="store_true")
     p.set_defaults(func=investigate)
+    p = commands.add_parser("casebook", help="write every case file in a folder and an index page")
+    p.add_argument("folder", nargs="?", default="cases")
+    p.add_argument("--open", action="store_true")
+    p.set_defaults(func=casebook)
     p = commands.add_parser("onset", help="find when the failures began and between which commits, from ordinary runs")
     p.add_argument("--workflow", default="refund-agent")
     p.add_argument("--cloud", metavar="DETECTION", help="also ask neatlogs cloud when this detection started firing")

@@ -69,6 +69,17 @@ class Mcp:
             return text
 
 
+def select_all(mcp: Mcp, sql: str, cap: int = 5000) -> list[dict]:
+    """Run a SELECT and page through it. neatroots hands back at most 200 rows per query."""
+    rows: list[dict] = []
+    while len(rows) < cap:
+        page = mcp.call("query_sql", sql=f"{sql} limit 200 offset {len(rows)}").get("rows", [])
+        rows += page
+        if len(page) < 200:
+            break
+    return rows
+
+
 def neatroots() -> Mcp:
     return Mcp(os.environ.get("NEATROOTS_MCP", NEATROOTS))
 

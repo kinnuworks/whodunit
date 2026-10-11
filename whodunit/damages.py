@@ -8,7 +8,7 @@ Writing them to cfo.ai is a separate step that needs the owner's yes.
 import json
 from dataclasses import asdict, dataclass
 
-from .neat import Mcp
+from .neat import Mcp, select_all
 
 # US dollars per million tokens (input, output), by the model name on the LLM span. These are
 # list prices as best known when this was written. Pass your own to `count` for real billing.
@@ -100,16 +100,16 @@ def count_case(mcp: Mcp, damages: Damages, workflow: str, commits: list[str], in
     safe = workflow.replace("'", "''")
     on_bad = " or ".join(f"i.attributes like '%commit:{sha}%'" for sha in commits if sha.isalnum()) or "0"
     asked = ", ".join("'" + text.replace("'", "''") + "'" for text in expected) or "''"
-    runs = mcp.call("query_sql", sql=(
+    runs = select_all(mcp, (
         "select r.trace_id, r.input_preview from runs r where "
         f"r.workflow = '{safe}' and r.doctor = 0 and r.input_preview in ({asked}) and not " + REPLAY.format(like="%case:%") +
-        f" and exists (select 1 from spans i where i.trace_id = r.trace_id and i.name = 'run_info' and ({on_bad})) limit 200"
-    ))["rows"]
+        f" and exists (select 1 from spans i where i.trace_id = r.trace_id and i.name = 'run_info' and ({on_bad}))"
+    ), cap=1000)
     if not runs:
         return damages
     ids = ", ".join("'" + r["trace_id"] + "'" for r in runs)
     paid: dict[str, dict[str, float]] = {r["trace_id"]: {} for r in runs}
-    for span in mcp.call("query_sql", sql=f"select trace_id, output_preview from spans where name = 'issue_refund' and status_code != 2 and trace_id in ({ids}) limit 200")["rows"]:
+    for span in select_all(mcp, f"select trace_id, output_preview from spans where name = 'issue_refund' and status_code != 2 and trace_id in ({ids})"):
         try:
             out = json.loads(span["output_preview"] or "{}")
             order, amount = str(out["order_id"]), float(out["refunded"])

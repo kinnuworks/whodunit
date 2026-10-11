@@ -9,7 +9,7 @@ import json
 from dataclasses import asdict, dataclass, field
 
 from .lineup import ChangePoint
-from .neat import Mcp
+from .neat import Mcp, select_all
 
 
 @dataclass
@@ -33,12 +33,12 @@ class Onset:
 def traffic(mcp: Mcp, workflow: str, limit: int = 5000) -> list[dict]:
     """The workflow's ordinary runs, oldest first, each with its commit. Whodunit's own replays are left out."""
     safe = workflow.replace("'", "''")
-    rows = mcp.call("query_sql", sql=(
+    rows = select_all(mcp, (
         "select r.trace_id, r.started_ms, r.input_preview, s.output_preview as info, "
         "(r.status = 'error' or r.error_count > 0 or r.finding_count > 0) as bad "
         "from runs r join spans s on s.trace_id = r.trace_id and s.name = 'run_info' "
-        f"where r.workflow = '{safe}' and r.doctor = 0 and s.attributes not like '%case:%' order by r.started_ms limit {int(limit)}"
-    ))["rows"]
+        f"where r.workflow = '{safe}' and r.doctor = 0 and s.attributes not like '%case:%' order by r.started_ms"
+    ), cap=limit)
     out = []
     for row in rows:
         try:
@@ -130,12 +130,12 @@ def witness(mcp: Mcp, workflow: str, positions: dict[str, int], inputs: list[tup
     expected = {text: {str(r["order_id"]): float(r["refunded"]) for r in refunds} for text, refunds in inputs}
     safe = workflow.replace("'", "''")
     asked = ", ".join("'" + text.replace("'", "''") + "'" for text in expected) or "''"
-    rows = mcp.call("query_sql", sql=(
+    rows = select_all(mcp, (
         "select r.trace_id, r.input_preview, s.output_preview as info from runs r "
         "join spans s on s.trace_id = r.trace_id and s.name = 'run_info' "
         f"where r.workflow = '{safe}' and r.doctor = 0 and r.input_preview in ({asked}) and s.attributes not like '%case:%' "
-        "order by r.started_ms desc limit 200"
-    ))["rows"]
+        "order by r.started_ms desc"
+    ), cap=1000)
     runs = []
     for row in rows:
         try:
@@ -149,7 +149,7 @@ def witness(mcp: Mcp, workflow: str, positions: dict[str, int], inputs: list[tup
         return []
     ids = ", ".join("'" + trace + "'" for trace, _, _ in runs)
     paid: dict[str, dict[str, float]] = {trace: {} for trace, _, _ in runs}
-    for span in mcp.call("query_sql", sql=f"select trace_id, output_preview from spans where name = 'issue_refund' and status_code != 2 and trace_id in ({ids}) limit 200")["rows"]:
+    for span in select_all(mcp, f"select trace_id, output_preview from spans where name = 'issue_refund' and status_code != 2 and trace_id in ({ids})"):
         try:
             out = json.loads(span["output_preview"] or "{}")
             order, amount = str(out["order_id"]), float(out["refunded"])

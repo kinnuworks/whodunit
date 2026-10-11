@@ -28,6 +28,8 @@ The checkpoint links will take the form `https://entire.io/gh/OWNER/REPO/commit/
 
 - `casefile-whole-history.png`: the headline case. 57 suspects, 20 replays, the real request from checkpoint `bfbe27725663`, a patch proven on 30 clean replays, and 120.00 in refunds that went to the wrong people. Failing run `47e39d7c784a`, passing run `463025bf71f1`. Before the fix about 81% of replays failed from the culprit on. After it, 0 of 30.
 
+- `casebook.png`: the index of all six cases, with culprit, state and what each cost. The page is `../cases/index.html`.
+
 ## A fix that failed, and what the agent did next
 
 - `../cases/turned-away.record.json`, under `attempts`: the first patch failed 5 of 12 replays, the second failed 4 of 18, and Whodunit then reverted the culprit and proved the revert on 30 clean replays.

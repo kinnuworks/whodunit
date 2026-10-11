@@ -60,3 +60,8 @@ footer { padding-top: 20px; font-size: 15px; color: var(--muted); }
   main { padding: 32px 16px 64px; } h1 { font-size: 34px; } .lede { font-size: 17px; }
   .field { grid-template-columns: 1fr; gap: 10px; padding: 22px 0; } .verdict { font-size: 21px; }
 }
+table.cases { border-collapse: collapse; width: 100%; font-size: 15px; }
+table.cases th { text-align: left; font: 700 13px/1.45 var(--typed); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding: 0 16px 8px 0; }
+table.cases td { vertical-align: top; padding: 12px 16px 12px 0; border-top: 1px solid var(--rule); }
+table.cases td:first-child { width: 36%; } table.cases a { font-weight: 500; }
+@media (max-width: 720px) { table.cases thead { display: none; } table.cases td { display: block; border-top: 0; padding: 2px 0; } table.cases tr { display: block; padding: 14px 0; border-top: 1px solid var(--rule); } table.cases td:first-child { width: auto; } }

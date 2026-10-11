@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Whodunit casebook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;500;700&family=Courier+Prime:wght@400;700&family=Young+Serif&display=swap" rel="stylesheet">
+<style>:root {
+  --paper: #F3EDDF; --surface: #E9E0CC; --ink: #201B15; --muted: #6B6156; --rule: #D8CDB6; --ribbon: #B4261F;
+  --serif: 'Young Serif', Georgia, serif;
+  --sans: 'Alegreya Sans', 'Gill Sans', 'Trebuchet MS', sans-serif;
+  --typed: 'Courier Prime', 'Courier New', Courier, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --paper: #1B1714; --surface: #26201A; --ink: #EDE4D3; --muted: #A3978A; --rule: #3A3128; --ribbon: #E5604F; }
+}
+* { box-sizing: border-box; }
+html { background: var(--paper); }
+body { margin: 0; color: var(--ink); font: 400 17px/1.55 var(--sans); -webkit-font-smoothing: antialiased; }
+main { max-width: 1000px; margin: 0 auto; padding: 56px 24px 96px; }
+header { padding-bottom: 28px; border-bottom: 2px solid var(--ink); }
+.label { margin: 0 0 20px; font: 400 13px/1.45 var(--typed); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; }
+.caseid { color: var(--ink); }
+.stamp { margin-left: auto; padding: 3px 10px 1px; border: 1.5px solid var(--muted); color: var(--muted); transform: rotate(-2deg); font-weight: 700; }
+.stamp.closed { border-color: var(--ribbon); color: var(--ribbon); }
+h1 { margin: 0; font: 400 44px/1.1 var(--serif); letter-spacing: -0.01em; text-wrap: balance; }
+.lede { margin: 16px 0 0; font-size: 21px; line-height: 1.2; color: var(--muted); }
+.field { display: grid; grid-template-columns: 148px minmax(0, 1fr); gap: 0 28px; padding: 28px 0; border-bottom: 1px solid var(--rule); }
+.field h2 { margin: 4px 0 0; font: 700 13px/1.45 var(--typed); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.body > :first-child { margin-top: 0; } .body > :last-child { margin-bottom: 0; }
+.body p { margin: 0 0 12px; max-width: 68ch; }
+h3 { margin: 0 0 2px; font: 700 15px/1.2 var(--sans); }
+.verdict { font: 400 27px/1.2 var(--serif); margin-bottom: 10px; max-width: none; text-wrap: balance; }
+.verdict .sha { font-size: 21px; color: var(--ribbon); margin-right: 6px; }
+.verdict.open { color: var(--muted); }
+.small-verdict { font-size: 21px; }
+.headline { font: 400 21px/1.2 var(--serif); }
+.small, .key { font-size: 15px; color: var(--muted); }
+.empty { color: var(--muted); font-style: italic; }
+.sha, code, .cite { font-family: var(--typed); font-size: 0.88em; }
+code { background: var(--surface); padding: 1px 5px; border-radius: 2px; }
+.cite { display: inline-block; margin-left: 4px; padding: 0 5px; border: 1px solid var(--rule); border-radius: 2px; color: var(--muted); font-size: 13px; line-height: 1.45; white-space: nowrap; }
+.typed { margin: 0 0 12px; padding: 14px 16px; background: var(--surface); border-left: 3px solid var(--ribbon); font: 400 15px/1.45 var(--typed); white-space: pre-wrap; overflow-wrap: anywhere; max-height: 420px; overflow: auto; }
+.pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-bottom: 12px; }
+.pair .typed { border-left-color: var(--rule); font-size: 13px; }
+.pair > div:last-child .typed { border-left-color: var(--ribbon); }
+details { margin: 0 0 12px; } summary { cursor: pointer; font-weight: 500; margin-bottom: 8px; }
+summary:focus-visible, a:focus-visible { outline: 2px solid var(--ribbon); outline-offset: 2px; }
+a { color: var(--ink); text-decoration-color: var(--ribbon); text-underline-offset: 3px; }
+.steps { margin: 0; padding-left: 0; list-style: none; font-size: 15px; } .steps li { margin-bottom: 6px; } .steps .cite { margin: 0 6px 0 0; }
+.scroll { overflow-x: auto; margin: 6px 0 4px; }
+.lineup { display: block; max-width: none; }
+.lineup .rule { stroke: var(--rule); stroke-width: 1; }
+.lineup .tick { font: 400 13px var(--typed); fill: var(--muted); } .lineup .tick.strong { fill: var(--ink); font-weight: 700; }
+.lineup .bar.suspect { fill: var(--ink); } .lineup .bar.elsewhere { fill: var(--muted); opacity: 0.45; } .lineup .bar.culprit { fill: var(--ribbon); }
+.lineup .good { stroke: var(--muted); stroke-width: 2; }
+.lineup .fail { fill: var(--ribbon); } .lineup .pass { fill: none; stroke: var(--ink); stroke-width: 1; } .lineup .skip { fill: var(--muted); opacity: 0.5; }
+.lineup .hit { fill: transparent; } .lineup g:hover .hit { fill: var(--surface); }
+.key { display: flex; flex-wrap: wrap; gap: 4px 6px; align-items: center; }
+.swatch { display: inline-block; width: 10px; height: 14px; margin-left: 10px; } .swatch:first-child { margin-left: 0; }
+.swatch.culprit { background: var(--ribbon); } .swatch.suspect { background: var(--ink); } .swatch.elsewhere { background: var(--muted); opacity: 0.45; }
+.dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-left: 10px; } .dot.fail { background: var(--ribbon); } .dot.pass { border: 1px solid var(--ink); }
+table.remaining { border-collapse: collapse; margin-top: 8px; font-size: 15px; } table.remaining caption { text-align: left; font-weight: 700; padding-bottom: 4px; }
+table.remaining td { padding: 3px 14px 3px 0; border-top: 1px solid var(--rule); } td.num { font-family: var(--typed); text-align: right; }
+footer { padding-top: 20px; font-size: 15px; color: var(--muted); }
+@media (max-width: 720px) {
+  main { padding: 32px 16px 64px; } h1 { font-size: 34px; } .lede { font-size: 17px; }
+  .field { grid-template-columns: 1fr; gap: 10px; padding: 22px 0; } .verdict { font-size: 21px; }
+}
+table.cases { border-collapse: collapse; width: 100%; font-size: 15px; }
+table.cases th { text-align: left; font: 700 13px/1.45 var(--typed); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding: 0 16px 8px 0; }
+table.cases td { vertical-align: top; padding: 12px 16px 12px 0; border-top: 1px solid var(--rule); }
+table.cases td:first-child { width: 36%; } table.cases a { font-weight: 500; }
+@media (max-width: 720px) { table.cases thead { display: none; } table.cases td { display: block; border-top: 0; padding: 2px 0; } table.cases tr { display: block; padding: 14px 0; border-top: 1px solid var(--rule); } table.cases td:first-child { width: auto; } }
+</style>
+</head>
+<body>
+<main>
+<header>
+<p class="label">Whodunit casebook</p>
+<h1>Which commit did it, and why</h1>
+<p class="lede">6 cases on the refund agent. Each one links to its case file.</p>
+</header>
+<section class="field"><h2>Cases</h2><div class="body"><table class="cases"><thead><tr><th>What was reported</th><th>Which commit</th><th>Where it stands</th><th>What it cost</th></tr></thead><tbody><tr><td><a href="whole-history.casefile.html">Refunds are going out on orders that belong to someone else, when the person asking quotes an amount</a><div class="small">57 suspects, 20 replays</div></td><td><span class="sha">ced2ecd21c3e</span> Let the agent skip lookup_order when the customer gives order number and amount</td><td>Closed<div class="small">patch, 1 try</div></td><td>120.00 paid out wrongly</td></tr><tr><td><a href="half-done-batch.casefile.html">Customers who ask for two orders back in one message sometimes get one refund or none, and the reply says a person will follow up.</a><div class="small">15 suspects, 168 replays</div></td><td><span class="sha">c54575368397</span> Require a reason on every refund and cut model calls to save on gateway spend</td><td>Culprit named<div class="small">not fixed</div></td><td></td></tr><tr><td><a href="turned-away.casefile.html">Customers asking for a refund on an order that has shipped get a kind reply and no refund.</a><div class="small">14 suspects, 24 replays</div></td><td><span class="sha">ca0a2d6288aa</span> Reassure customers instead of refunding orders still in transit</td><td>Closed<div class="small">revert, 3 tries</div></td><td>360.00 owed and not paid</td></tr><tr><td><a href="cents-off.casefile.html">Full refunds on orders priced with cents pay out the wrong amount. Order 3003 cost 129.99 and the customer was refunded 130.</a><div class="small">13 suspects, 21 replays</div></td><td><span class="sha">367c64a5ae27</span> Round refund amount to whole currency units in issue_refund</td><td>Closed<div class="small">patch, 1 try</div></td><td>0.51 paid out wrongly</td></tr><tr><td><a href="wrong-order-refunded.casefile.html">A customer asked about an order number we have no record of, and every so often the agent refunds one of their other orders instead.</a><div class="small">12 suspects, 168 replays</div></td><td><span class="sha">d4fb1587c066</span> Try digit-swap and digit-double corrections on order lookup misses</td><td>Closed<div class="small">patch, 1 try</div></td><td>60.00 paid out wrongly</td></tr><tr><td><a href="strangers-paid.casefile.html">Refunds are going out on orders that belong to someone else, usually when the person asking quotes an amount.</a><div class="small">11 suspects, 30 replays</div></td><td><span class="sha">ced2ecd21c3e</span> Let the agent skip lookup_order when the customer gives order number and amount</td><td>Closed<div class="small">patch, 1 try</div></td><td>30.00 paid out wrongly</td></tr></tbody></table></div></section>
+</main>
+</body>
+</html>

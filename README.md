@@ -52,7 +52,7 @@ uv run whodunit lineup /tmp/planted/case.toml --repo /tmp/planted --method plain
 
 Add `flaky-lookup 40 27` to the `planted.py` line for 40 commits with a bug at commit 27 that fails about one run in three, and drop `--method plain` to use the statistical bisect.
 
-`uv run python -m whodunit.simulate --out eval/simulator` regenerates the simulator charts.
+`uv run python -m whodunit.simulate --out eval/simulator` regenerates the simulator charts, and `uv run whodunit casebook` rewrites every case file and the index at `cases/index.html`.
 
 ## What is in here
 

@@ -1,0 +1,17 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  fast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # the planted histories are built from an earlier commit of the refund agent
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync
+      # No model and no keys. The lineup is tested against simulated commits and stub agents.
+      - run: uv run pytest -m "not slow"

@@ -273,3 +273,49 @@ def render(record: dict) -> str:
 def write(record: dict, path: Path) -> Path:
     path.write_text(render(record))
     return path
+
+
+def render_index(records: list[tuple[str, dict]]) -> str:
+    """The casebook: every case in a folder on one page. `records` are (page file name, record)."""
+    rows = ""
+    for page, record in records:
+        case, lineup = record.get("case", {}), record.get("lineup") or {}
+        culprit, fix, damages = lineup.get("culprit"), record.get("fix") or {}, record.get("damages") or {}
+        proven = (fix.get("verification") or {}).get("fixed")
+        state = "Closed" if proven else "Culprit named" if culprit else "Open"
+        who = (f'<span class="sha">{escape(_short(culprit["sha"]))}</span> {escape(culprit["subject"])}' if culprit else "Nobody yet")
+        fixed = (f'{escape(fix["kind"])}, {len(record.get("attempts") or [1])} {"try" if len(record.get("attempts") or [1]) == 1 else "tries"}' if proven
+                 else "not fixed" if fix else "")
+        money = []
+        if damages.get("wrongly_paid"):
+            money.append(f'{damages["wrongly_paid"]:.2f} paid out wrongly')
+        if damages.get("withheld"):
+            money.append(f'{damages["withheld"]:.2f} owed and not paid')
+        rows += (f'<tr><td><a href="{escape(page)}">{escape(case.get("symptom", page))}</a><div class="small">{len(record.get("suspects", []))} suspects, '
+                 f'{lineup.get("replays", 0)} replays</div></td><td>{who}</td><td>{escape(state)}<div class="small">{fixed}</div></td>'
+                 f'<td>{escape(", ".join(money))}</td></tr>')
+    body = (f'<table class="cases"><thead><tr><th>What was reported</th><th>Which commit</th><th>Where it stands</th><th>What it cost</th></tr></thead><tbody>{rows}</tbody></table>'
+            if records else '<p class="empty">No cases yet. Lucky you.</p>')
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Whodunit casebook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;500;700&family=Courier+Prime:wght@400;700&family=Young+Serif&display=swap" rel="stylesheet">
+<style>{STYLE}</style>
+</head>
+<body>
+<main>
+<header>
+<p class="label">Whodunit casebook</p>
+<h1>Which commit did it, and why</h1>
+<p class="lede">{len(records)} {"case" if len(records) == 1 else "cases"} on the refund agent. Each one links to its case file.</p>
+</header>
+<section class="field"><h2>Cases</h2><div class="body">{body}</div></section>
+</main>
+</body>
+</html>
+"""

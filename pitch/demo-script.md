@@ -2,7 +2,7 @@
 
 About two and a half minutes. Screen recording with voice. The judges score the video on how clearly it explains the agent and the tool use, so every scene names the tool on screen.
 
-Before recording: `neatroots start` is running, the terminal is in the repo root at a large font, and `cases/whole-history.casefile.html` is open in a browser tab. Run the command in scene 2 once beforehand so the worktree environments are warm.
+Before recording: `neatroots start` is running, the terminal is in the repo root at a large font, and `cases/index.html` (the casebook, from `uv run whodunit casebook`) is open in a browser tab. Run the command in scene 2 once beforehand so the worktree environments are warm.
 
 ## Scene 1, the question (0:00 to 0:15)
 
@@ -15,8 +15,10 @@ Show `git log --oneline` scrolling on the refund agent's folder.
 Type and run:
 
 ```bash
-uv run whodunit investigate cases/whole-history.toml --from-traffic refund-agent
+uv run whodunit investigate cases/whole-history.toml --from-traffic refund-agent --fresh
 ```
+
+`--fresh` sets the earlier record aside so the run starts from nothing. It takes about five minutes end to end and about 20 cents on the gateway, so record it once and cut.
 
 Let the first lines print. Point at each as it appears.
 
