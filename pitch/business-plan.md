@@ -66,9 +66,18 @@ Gross margin on Team at full use: 40 investigations at $1.20 is $48, plus about 
 | Monthly churn | 6% | 3% | 2% |
 | Monthly revenue at month 12 | $1,494 | $9,222 | $22,932 |
 
-## Runway, assumed
+## Runway, worked from the assumptions above
 
-Starting cash of $15,000. In the base case the business is cash-positive on its running costs from about month 5, and the founder draw from month 7 is covered by month 9. In the downside case the cash lasts about 14 months with no draw, and about 9 months with one.
+Starting cash of $15,000. Paying agents ramp in a straight line between the months in the table, each paying agent costs about $26 a month to serve at half use, and the founder draw starts in month 7.
+
+| | Revenue covers costs from | Lowest cash | Cash at month 12 |
+| --- | --- | ---: | ---: |
+| Downside, no draw | month 8 | $11,587 | $13,290 |
+| Downside, with the draw | never in two years | runs out in month 11 | minus $4,710 |
+| Base, with the draw | month 5 | $12,795 | $26,113 |
+| Upside, with the draw | month 4 | $12,900 | $76,750 |
+
+So the plan survives the downside only if the founder takes no draw, and that is the decision the model should make visible.
 
 ## Levers worth a simulator
 
