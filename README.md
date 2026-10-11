@@ -12,7 +12,7 @@ It was built for neatHack between 10 and 12 October 2026. `hackathon.md` is the 
 
 Whodunit replays the failing inputs against suspect commits and keeps a probability for each suspect being the first bad one. It names a commit only when it is 95% sure. If the replay budget runs out first, it hands back the suspects still in the lineup with their probabilities.
 
-How well that works is measured two ways. [eval/sealed](eval/sealed/README.md) is five regressions planted by a separate session with a sealed answer key: three were named inside 120 replays, all five after more, and no commit was wrongly accused. Plain bisect with five retries, on the same five, got three right with fewer replays, named an innocent commit on the fourth and could not start on the fifth. [eval/simulator](eval/simulator/README.md) is simulated cases with a known culprit. The short version: when good commits never fail, plain bisect with repeats is cheaper. When good commits fail 5% of the time on their own, it falls apart and the statistical bisect does not.
+How well that works is measured two ways. [eval/sealed](eval/sealed/README.md) is five regressions planted by a separate session with a sealed answer key: three were named inside 120 replays, all five after more, and no commit was wrongly accused. Plain bisect with five retries, on the same five, got three right with fewer replays, named an innocent commit on the fourth and could not start on the fifth. [eval/simulator](eval/simulator/README.md) is simulated cases with a known culprit. The short version: when good commits never fail, plain bisect with repeats is cheaper. When good commits fail 5% of the time on their own, it falls apart and the statistical bisect does not. The simulator also shows where the 95% stops meaning 95%: for a bug that fails one run in ten, about one accusation in nine is wrong on a clean baseline, and nearly all of the few it makes are wrong on a flaky one.
 
 ## How a case runs
 
@@ -73,6 +73,7 @@ The brief and the patch use `WHODUNIT_LLM`: `gateway`, `own`, `agent` for a codi
 ## What it does not do yet
 
 - The statistical bisect assumes one change point. Two regressions in the same range will confuse it.
+- An accusation is less reliable than its 95% for bugs that fail rarely. In simulation the share of accusations that name the wrong commit is under 5% for bugs that fail 30% of the time or more on a clean baseline, 6% at 20% and 11% at 10%. [eval/simulator](eval/simulator/README.md) has the table.
 - A replay that times out counts as a failure, so a badly overloaded machine can frame an innocent commit.
 - Damages are estimates from token counts and list prices.
 - The model-written patch has been through one real case, a prompt regression on a planted history. That is not many.

@@ -41,7 +41,7 @@ The checkpoint links will take the form `https://entire.io/gh/OWNER/REPO/commit/
 
 ## Simulator
 
-- `../eval/simulator/accuracy-clean-baseline.svg` and `accuracy-flaky-baseline.svg`: accuracy against replay budget, next to plain bisect, at failure rates from 100% down to 20%.
+- `../eval/simulator/accuracy-clean-baseline.svg` and `accuracy-flaky-baseline.svg`: accuracy against replay budget, next to plain bisect, at failure rates from 100% down to 10%. `tables.md` gives wrong accusations as a share of accusations made, per cell.
 
 ## A failure and what happened next
 

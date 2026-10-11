@@ -22,7 +22,7 @@ from pathlib import Path
 
 from .lineup import FAIL, PASS, plain_bisect, statistical_bisect
 
-RATES = (1.0, 0.8, 0.6, 0.4, 0.3, 0.2)
+RATES = (1.0, 0.8, 0.6, 0.4, 0.3, 0.2, 0.1)  # two of the sealed cases turned out to fail about one run in eight
 BUDGETS = (10, 20, 30, 40, 60, 80, 120, 160, 240, 320)
 METHODS = ("statistical", "plain_repeated", "plain_once")
 
@@ -95,7 +95,11 @@ def sweep(suspects: int = 40, trials: int = 500, good_rate: float = 0.0, rates=R
 
 
 def to_rows(cells: list[Cell]) -> list[dict]:
-    return [{**asdict(c), "accuracy": round(c.accuracy, 4), "mean_replays": round(c.replays / c.trials, 1)} for c in cells]
+    """One dict per cell. `wrong_of_accused` is the share of accusations that named the wrong commit, or None if nobody was accused."""
+    return [{
+        **asdict(c), "accuracy": round(c.accuracy, 4), "mean_replays": round(c.replays / c.trials, 1),
+        "wrong_of_accused": round(c.wrong / (c.right + c.wrong), 4) if c.right + c.wrong else None,
+    } for c in cells]
 
 
 def fix_bar(rates=(0.0, 0.01, 0.02, 0.04, 0.06, 0.10), baselines=((0, 12), (0, 24)), trials: int = 2000, seed: int = 0) -> list[dict]:
@@ -120,6 +124,17 @@ def fix_bar(rates=(0.0, 0.01, 0.02, 0.04, 0.06, 0.10), baselines=((0, 12), (0, 2
     return rows
 
 
+def short_range(trials: int = 2000) -> list[dict]:
+    """The sealed eval's two rare bugs, as near as a simulation gets: 13 suspects, a clean baseline, a bug that fails 12% of the time.
+
+    The budgets are the ones those cases met: 120 replays, where nobody was named, 168, where
+    both were, and 320, the most they were allowed.
+    """
+    cells = [Cell("statistical", 0.12, 0.0, budget, 13, trials) for budget in (120, 168, 320)]
+    with ProcessPoolExecutor() as pool:
+        return to_rows(list(pool.map(run_cell, cells)))
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     parser.add_argument("--out", default="eval/simulator")
@@ -135,6 +150,7 @@ def main(argv: list[str] | None = None) -> int:
         print(f"{name}: {len(rows)} cells")
     (out / "results.json").write_text(json.dumps(results, indent=1) + "\n")
     (out / "fix-bar.json").write_text(json.dumps(fix_bar(), indent=1) + "\n")
+    (out / "short-range.json").write_text(json.dumps(short_range(), indent=1) + "\n")
     from .chart import write_charts
 
     write_charts(results, out)

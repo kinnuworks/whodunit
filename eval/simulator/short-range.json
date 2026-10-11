@@ -1,0 +1,50 @@
+[
+ {
+  "method": "statistical",
+  "bad_rate": 0.12,
+  "good_rate": 0.0,
+  "budget": 120,
+  "suspects": 13,
+  "trials": 2000,
+  "right": 483,
+  "wrong": 71,
+  "nobody": 1446,
+  "top_right": 1413,
+  "replays": 198295,
+  "accuracy": 0.2415,
+  "mean_replays": 99.1,
+  "wrong_of_accused": 0.1282
+ },
+ {
+  "method": "statistical",
+  "bad_rate": 0.12,
+  "good_rate": 0.0,
+  "budget": 168,
+  "suspects": 13,
+  "trials": 2000,
+  "right": 910,
+  "wrong": 68,
+  "nobody": 1022,
+  "top_right": 1570,
+  "replays": 248661,
+  "accuracy": 0.455,
+  "mean_replays": 124.3,
+  "wrong_of_accused": 0.0695
+ },
+ {
+  "method": "statistical",
+  "bad_rate": 0.12,
+  "good_rate": 0.0,
+  "budget": 320,
+  "suspects": 13,
+  "trials": 2000,
+  "right": 1538,
+  "wrong": 69,
+  "nobody": 393,
+  "top_right": 1695,
+  "replays": 315293,
+  "accuracy": 0.769,
+  "mean_replays": 157.6,
+  "wrong_of_accused": 0.0429
+ }
+]

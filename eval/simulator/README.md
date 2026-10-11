@@ -2,13 +2,13 @@
 
 How often does the lineup name the right commit, for a given number of replays? This folder answers that with simulated cases, where the culprit is known.
 
-Each case has 40 suspect commits and one culprit picked at random. Every point is 500 cases. Three methods get the same cases and the same replay budget:
+Each case has 40 suspect commits and one culprit picked at random. Every point is 500 cases, for bugs that fail from 100% of the time down to 10%. Three methods get the same cases and the same replay budget:
 
 - The statistical bisect in `whodunit/lineup.py`. It names a commit only when it is 95% sure, and otherwise hands back the suspects that remain with their probabilities.
 - Plain bisect with repeats. It replays each commit as many times as the budget allows and calls the commit bad on the first failure.
 - Plain bisect with one replay per commit, which is what `git bisect run` does.
 
-To regenerate everything here, run `uv run python -m whodunit.simulate --out eval/simulator`. It takes about two minutes. `tables.md` has every number behind the charts, and `results.json` has the raw counts.
+To regenerate everything here, run `uv run python -m whodunit.simulate --out eval/simulator`. It takes about ten minutes. `tables.md` has every number behind the charts, `results.json` has the raw counts, and `fix-bar.json` and `short-range.json` hold the two smaller runs described further down.
 
 ## When good commits never fail
 
@@ -30,6 +30,38 @@ Agents are rarely this clean. Give every good commit a 5% chance of failing by i
 
 The statistical bisect holds up. On the 30% bug it names the right commit in 60% of cases with 160 replays and 84% with 320. On a bug that fails every time it is right in 99% of cases and uses about 21 replays.
 
+## Wrong accusations, out of accusations made
+
+The first version of this page gave wrong accusations as a share of all cases, which ran from 0% to 7%. That flatters the method wherever it mostly names nobody. If it names a commit in 10 cases out of 500 and 5 of those are wrong, that is 1% of cases and half of its accusations. The second number is the one that says whether an accusation can be trusted, so `tables.md` now has it for every cell. Pooled over the ten budgets, for the statistical bisect:
+
+| The bug fails | Good commits never fail | Good commits fail 5% of the time |
+| ---: | ---: | ---: |
+| 100% | 0 of 4,515 wrong, 0% | 39 of 4,377, 0.9% |
+| 80% | 43 of 4,130, 1.0% | 69 of 3,885, 1.8% |
+| 60% | 67 of 3,652, 1.8% | 127 of 3,290, 3.9% |
+| 40% | 99 of 3,010, 3.3% | 156 of 2,420, 6.4% |
+| 30% | 105 of 2,516, 4.2% | 132 of 1,655, 8.0% |
+| 20% | 112 of 1,824, 6.1% | 132 of 725, 18.2% |
+| 10% | 74 of 685, 10.8% | 74 of 92, 80.4% |
+
+So "named at 95%" means what it says for bugs that fail about a third of the time or more. Below that it does not. For a bug that fails one run in ten on a clean baseline, about one accusation in nine is wrong across the budgets, and the small budgets are the worst: 11 wrong of 40 at 120 replays, 13 of 85 at 160, 17 of 318 at 320. When good commits also fail 5% of the time, a 10% bug is out of reach. The statistical bisect names nobody in 94% of cases even with 320 replays, 25 of the 29 commits it does name are innocent, and its top suspect is right in 11% of cases.
+
+For comparison, plain bisect always names someone, so its wrong accusations are simply its wrong answers: 19% of them on a clean baseline across the whole grid, and 80% when good commits fail 5% of the time.
+
+The model's own probability is off here because its priors are. It takes the failure rate of good commits to be about 5% and anything from rare to always for bad ones, so a rate of 10% sits closer to its idea of a good commit than of a bad one, and a few stray failures in a row can look like a change point.
+
+### The sealed eval's two rare cases
+
+Two of the five sealed cases fail about 12% and 14% of the time. Both went unnamed at 120 replays and were named, correctly, at 168. `short-range.json` simulates cases shaped like them: 13 suspects, a clean baseline, a bug that fails 12% of the time, 2,000 cases per row.
+
+| Replays allowed | Named and right | Named and wrong | Nobody named | Wrong, of accusations made |
+| ---: | ---: | ---: | ---: | ---: |
+| 120 | 24% | 3.6% | 72% | 71 of 554, 13% |
+| 168 | 46% | 3.4% | 51% | 68 of 978, 7% |
+| 320 | 77% | 3.5% | 20% | 69 of 1,607, 4% |
+
+Those cases were allowed up to 320 replays. With that much, an accusation in conditions like theirs is wrong about one time in 23, close to what the 95% bar promises. With only 120 it would have been wrong about one time in eight. The eval's result, five named and none wrongly, fits this and is far too small to confirm it.
+
 ## How much a kept fix shows
 
 `whodunit fix` keeps a fix once its failure rate is 95% likely to be back within 5 points of the rate before the culprit. With a clean baseline that is 30 replays without a failure. `fix-bar.json` has how often a fix that is not really fixed clears the same bar, from 2,000 simulated fixes per row, replayed three at a time with up to 90 replays allowed.
@@ -48,7 +80,8 @@ So a kept fix is not a proven one. A patch that still fails 4 runs in 100 is kep
 ## Where it falls short
 
 - A bug that fails 20% of the time on a flaky baseline is named in only 46% of cases, even with 320 replays. The top suspect is right in 70%.
-- The 95% bar is not always met. Across the cells, the share of cases with a wrong accusation runs from 0% to 7%, and the 7% is the 30% bug on a flaky baseline at 320 replays. The model assumes one change point and two fixed failure rates, and the prior on the good rate is a guess.
+- A bug that fails 10% of the time on a clean baseline is named in 60% of cases with 320 replays, where plain bisect with repeats gets 99%. With 160 replays it is 14% against 85%.
+- The 95% bar is not met for rare bugs. See the section on wrong accusations above: for a bug that fails 20% of the time or less, more than one accusation in twenty is wrong, and on a flaky baseline far more. The model assumes one change point and two fixed failure rates, and the prior on the good rate is a guess.
 - These are simulated commits with independent replays. Real replays share a model provider and a machine, so their failures can come in bursts, which this does not capture.
 - Small budgets are spent mostly on warming up. Below about 30 replays the statistical bisect rarely names anyone unless the bug fails every time.
 

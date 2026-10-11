@@ -85,7 +85,7 @@ def accuracy_svg(sweep: dict, title: str, subtitle: str) -> str:
         for b in ticks:
             out.append(f'<line class="axis" x1="{x(b):.1f}" y1="{plot_h}" x2="{x(b):.1f}" y2="{plot_h + 4}"/>')
             out.append(f'<text class="tick muted" x="{x(b):.1f}" y="{plot_h + 19}" text-anchor="middle">{b}</text>')
-        if n // columns == rows - 1:
+        if n + columns >= len(rates):  # nothing is drawn below this panel
             out.append(f'<text class="tick muted" x="{plot_w / 2}" y="{plot_h + 40}" text-anchor="middle">replays allowed</text>')
         # Draw the baselines first so the statistical bisect sits on top.
         for key, label, css in reversed(SERIES):
@@ -94,11 +94,17 @@ def accuracy_svg(sweep: dict, title: str, subtitle: str) -> str:
             out.append(f'<path class="line {css}" d="{path}"/>')
         for key, label, css in SERIES:
             for b, v, cell in _points(sweep, key, rate):
-                wrong = f", {cell['wrong'] / cell['trials']:.0%} wrong accusations" if key != "statistical_top" else ""
+                wrong = f", wrong in {wrong_of_accused(cell)} accusations" if key != "statistical_top" and cell["right"] + cell["wrong"] else ""
                 out.append(f'<circle class="hit" cx="{x(b):.1f}" cy="{y(v):.1f}" r="7"><title>{label}: {v:.0%} at {b} replays{wrong}</title></circle>')
         out.append("</g>")
     out.append("</svg>")
     return "\n".join(out) + "\n"
+
+
+def wrong_of_accused(cell: dict) -> str:
+    """Of the cases where a commit was named, how many named the wrong one: "3% (4 of 131)"."""
+    accused = cell["right"] + cell["wrong"]
+    return f"{cell['wrong'] / accused:.0%} ({cell['wrong']} of {accused})" if accused else "nobody named"
 
 
 def table_markdown(sweep: dict) -> str:
@@ -106,7 +112,8 @@ def table_markdown(sweep: dict) -> str:
     budgets = sorted({c["budget"] for c in sweep["cells"]})
     lines = []
     for rate in rates:
-        lines.append(f"The bug fails {rate:.0%} of the time. Each cell is right / wrong / nobody named, as a percentage of cases.\n")
+        lines.append(f"The bug fails {rate:.0%} of the time. In the first four rows each cell is right / wrong / nobody named, as a percentage of all cases. "
+                     "The last three rows count only the cases where a commit was named, and give the share of those that named the wrong one.\n")
         lines.append("| Replays allowed | " + " | ".join(str(b) for b in budgets) + " |")
         lines.append("| --- |" + " ---: |" * len(budgets))
         for key, label, _ in SERIES:
@@ -115,6 +122,8 @@ def table_markdown(sweep: dict) -> str:
             else:
                 row = [f"{c['right'] / c['trials']:.0%} / {c['wrong'] / c['trials']:.0%} / {c['nobody'] / c['trials']:.0%}" for _, _, c in _points(sweep, key, rate)]
             lines.append(f"| {label} | " + " | ".join(row) + " |")
+        for key, label in (("statistical", "Statistical bisect"), ("plain_repeated", "Plain bisect with repeats"), ("plain_once", "Plain bisect, one replay")):
+            lines.append(f"| {label}: wrong, of accusations made | " + " | ".join(wrong_of_accused(c) for _, _, c in _points(sweep, key, rate)) + " |")
         lines.append("")
     return "\n".join(lines)
 

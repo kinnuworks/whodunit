@@ -316,3 +316,22 @@ Earlier entries in this log still say "proven", because that is what was believe
 What went wrong: the first version of the simulation ran for ten minutes and had to be stopped. The posterior is worked out by sampling, 20,000 draws each time, and the simulation asked for it a few hundred thousand times. It is cached now, which is safe because the seed is fixed, and it still takes about six minutes.
 
 A gap of about an hour and a half before this entry is the session waiting, not work.
+
+### 4:50 PM, wrong accusations, counted against accusations made
+
+The review was right, and what came out is the least comfortable result so far.
+
+`eval/simulator/README.md` gave wrong accusations as a share of all cases, 0% to 7%. Where the lineup mostly names nobody, that number hides how often a named commit is innocent. The tables now give the share of accusations made, for every cell, and the grid goes down to a bug that fails 10% of the time.
+
+For the statistical bisect, pooled over the ten budgets, 40 suspects:
+
+- Clean baseline: 0% wrong at a bug that fails every time, 4.2% at 30%, 6.1% at 20%, 10.8% at 10%.
+- Good commits fail 5% of the time: 0.9% at every time, 8.0% at 30%, 18.2% at 20%, and 80.4% at 10%, which is 74 wrong of the 92 commits it named in 5,000 cases.
+
+So "named at 95%" holds for bugs that fail about a third of the time or more, and does not hold for rare ones. On a clean baseline with a 10% bug, plain bisect with repeats is also simply better: 99% right at 320 replays against 60%.
+
+Two of the sealed cases sit near 12% and 14%, so a smaller run copies their shape: 13 suspects, clean baseline, 12% bug, 2,000 cases per row. With 320 replays allowed, which is what those cases had, 4% of accusations are wrong. With 120 it is 13%. The sealed result of five named and none wrongly fits that and is too small to confirm it. `eval/sealed/README.md` now says so.
+
+The README's list of what the tool does not do has this in it, with the numbers.
+
+What went wrong: the regeneration takes about ten minutes now, up from two, and the README had said two. The seventh chart panel sits alone on a third row.

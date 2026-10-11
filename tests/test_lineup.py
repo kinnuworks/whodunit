@@ -156,3 +156,13 @@ def test_earlier_evidence_is_free_and_shapes_the_posterior():
     assert len(calls) <= 25  # the budget covers new replays only
     assert second.replays == len(known) + len(calls)
     assert -1 not in calls  # the good ref was already warmed up
+
+
+def test_wrong_accusations_are_counted_against_accusations_made():
+    from whodunit.chart import table_markdown, wrong_of_accused
+    from whodunit.simulate import Cell, to_rows
+
+    rows = to_rows([Cell("statistical", 0.1, 0.05, 160, 40, 500, right=90, wrong=10, nobody=400), Cell("statistical", 0.1, 0.05, 20, 40, 500, nobody=500)])
+    assert rows[0]["wrong_of_accused"] == 0.1 and rows[1]["wrong_of_accused"] is None  # 10 of 100 accusations, where 10 of 500 cases would read as 2%
+    assert wrong_of_accused(rows[0]) == "10% (10 of 100)" and wrong_of_accused(rows[1]) == "nobody named"
+    assert "Statistical bisect: wrong, of accusations made | nobody named | 10% (10 of 100) |" in table_markdown({"cells": rows})

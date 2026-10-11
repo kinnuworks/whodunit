@@ -32,7 +32,7 @@ Replay spend on the gateway, estimated from token counts at list prices, came to
 
 ## What this does and does not show
 
-- No commit was wrongly accused, at either budget. On `half-done-batch` the top suspect at 120 replays was the wrong commit, at 53%, and Whodunit named nobody. That is the behaviour the 95% bar is for.
+- No commit was wrongly accused, at either budget. Five cases cannot show how often that would hold. The simulator puts a number on it for cases shaped like the two rare ones: with 320 replays allowed, about 4% of accusations name the wrong commit, and with 120 about 13%. See `eval/simulator/README.md`. On `half-done-batch` the top suspect at 120 replays was the wrong commit, at 53%, and Whodunit named nobody. That is the behaviour the 95% bar is for.
 - The two cases it could not close at 120 replays are the two that fail least often. Whodunit put them at 12% and 14%, where the second session had measured 30% and 25% from a handful of probes. A bug that rare needs a lot of replays whatever the method.
 - The ranges are short, 11 to 15 suspects. On ranges this size a careful scan from the oldest commit would have replayed about as many commits as Whodunit did, so this eval says little about savings on long histories. The simulator in `eval/simulator` covers 40 suspects.
 - Five cases is a small sample. It is enough to say the pipeline works on a history it did not write, and not enough to put a number on accuracy.
