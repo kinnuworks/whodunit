@@ -133,7 +133,18 @@ neatlogs.init(
     flush_interval=0.2,
 )
 
-from openai import OpenAI  # noqa: E402  (import after neatlogs.init)
+from openai import (  # noqa: E402  (import after neatlogs.init)
+    APIConnectionError,
+    AuthenticationError,
+    InternalServerError,
+    OpenAI,
+    PermissionDeniedError,
+    RateLimitError,
+)
+
+# Exit code for "the model provider or the network failed, and the agent's own code did not".
+# A replay harness can throw such a run away and try again, where any other failure is the agent's.
+PROVIDER_TROUBLE = 75
 
 client = OpenAI(base_url=LLM_BASE_URL, api_key=LLM_API_KEY, timeout=30.0, max_retries=2)
 
@@ -290,6 +301,7 @@ def run(request: str, max_steps: int = 3):
 if __name__ == "__main__":
     args = [a for a in sys.argv[1:] if a not in ("--json", "--quiet")]
     request = os.environ.get("NEATROOTS_REPLAY_INPUT") or " ".join(args) or DEFAULT_REQUEST
+    code = 0
     try:
         reply = run(request)
         if "--json" in sys.argv:
@@ -297,6 +309,11 @@ if __name__ == "__main__":
                               "model_calls": MODEL_CALLS}))
         elif "--quiet" not in sys.argv:
             print(reply)
+    except (APIConnectionError, RateLimitError, InternalServerError, AuthenticationError, PermissionDeniedError) as exc:
+        # A timeout is an APIConnectionError too. Nothing is printed on stdout, so no result is mistaken for one.
+        print(f"provider error: {type(exc).__name__}: {exc}", file=sys.stderr)
+        code = PROVIDER_TROUBLE
     finally:
         neatlogs.flush()
         neatlogs.shutdown()
+    sys.exit(code)
