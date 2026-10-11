@@ -1,0 +1,24 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "80377830018b",
+  "strategy": "manual-commit",
+  "branch": "whodunit/whole-history",
+  "checkpoints_count": 1,
+  "files_touched": null,
+  "sessions": [
+    {
+      "metadata": "/80/377830018b/0/metadata.json",
+      "transcript": "/80/377830018b/0/full.jsonl",
+      "compact_transcript": "/80/377830018b/0/transcript.jsonl",
+      "content_hash": "/80/377830018b/0/content_hash.txt",
+      "prompt": "/80/377830018b/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 48,
+    "cache_creation_tokens": 611954,
+    "cache_read_tokens": 13621478,
+    "output_tokens": 15896,
+    "api_call_count": 24
+  }
+}

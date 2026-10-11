@@ -1,0 +1,53 @@
+what all we left to do before submission, and research rivals if possible in this session?
+
+---
+
+Do all and more, be IMPRESSIVE, and make sure you WIN this contest, i will run the research in different
+
+---
+
+if i paste something here, will everyone see it and know
+
+---
+
+and ps "for the duration of the hackathon you get unlimited cfo.ai credits. it won't show on the dashboard but there is basically no restrction - just start using it"
+
+---
+
+<task-notification>
+<task-id>bo9y1v5od</task-id>
+<tool-use-id>toolu_015B44nD4KgJ5hbisquYrziD</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-kinnu-neathack/d1722531-fd19-41ec-9e89-c3cbe406e10c/tasks/bo9y1v5od.output</output-file>
+<status>completed</status>
+<summary>Background command "Run the whole investigation, with a patch ruling, on the five real cases" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>b5wtw15cf</task-id>
+<tool-use-id>toolu_01QCrQtAznTAydMRKCtR4Cx3</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-kinnu-neathack/d1722531-fd19-41ec-9e89-c3cbe406e10c/tasks/b5wtw15cf.output</output-file>
+<status>completed</status>
+<summary>Background command "Send ordinary traffic through the grown history, first to neatroots and then to neatlogs cloud" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>b0dis2tai</task-id>
+<tool-use-id>toolu_018SWYMKuGZMnXcqyS6nYWgV</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-kinnu-neathack/d1722531-fd19-41ec-9e89-c3cbe406e10c/tasks/b0dis2tai.output</output-file>
+<status>completed</status>
+<summary>Background command "Redo the five fixes under the stricter proof: back to the pre-culprit failure rate" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>bgfkcrtlr</task-id>
+<tool-use-id>toolu_01Wo7xWXLihN3aiAEiukkVoy</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-kinnu-neathack/d1722531-fd19-41ec-9e89-c3cbe406e10c/tasks/bgfkcrtlr.output</output-file>
+<status>completed</status>
+<summary>Background command "Ask the brief to set the request against what the commit did, and wait for the case traffic" completed (exit code 0)</summary>
+</task-notification>
