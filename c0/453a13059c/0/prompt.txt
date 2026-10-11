@@ -1,0 +1,7 @@
+<task-notification>
+<task-id>boblqhuvg</task-id>
+<tool-use-id>toolu_018965rE9EJQjCtb2d8U7qwx</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-kinnu-neathack/2b277f39-7446-42f5-947e-a22d15214289/tasks/boblqhuvg.output</output-file>
+<status>completed</status>
+<summary>Background command "Test the new share and regenerate the simulator results" completed (exit code 0)</summary>
+</task-notification>
