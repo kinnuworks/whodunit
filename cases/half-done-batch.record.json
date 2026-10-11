@@ -1503,7 +1503,9 @@
   "request_time": null,
   "earlier_requests": [],
   "steps": [],
-  "note": "The commit names Entire checkpoint d098c3973305, and Entire cannot find it, so the request behind this commit is not on record."
+  "note": "The commit names Entire checkpoint d098c3973305, and Entire cannot find it, so the request behind this commit is not on record.",
+  "quote_checked": false,
+  "provenance": {}
  },
  "evidence": {
   "culprit": "c54575368397e58f98e19f28d555fe081677b964",

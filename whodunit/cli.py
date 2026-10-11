@@ -294,7 +294,23 @@ def lineup(args) -> int:
 
 
 def motive(args) -> int:
-    found = find_motive(Path(args.repo).resolve(), args.commit)
+    if getattr(args, "case", None):
+        # Look the motive up again for a case's culprit and put it in the record. Nothing is replayed and no model is asked.
+        loaded = _need_culprit(args)
+        if loaded is None:
+            return 2
+        _, repo, record, path = loaded
+        found = find_motive(repo, record["lineup"]["culprit"]["sha"])
+        changed = (record.get("motive") or {}).get("request") != found.request
+        record["motive"] = found.to_dict()
+        save_record(path, record)
+        if changed and record.get("brief"):
+            print("The request on record has changed. The brief was written from the old one, so write it again with `whodunit brief`.")
+    else:
+        if not args.commit:
+            print("Give a commit, or --case <case file> to refresh the motive in a case record.")
+            return 2
+        found = find_motive(Path(args.repo).resolve(), args.commit)
     if args.json:
         print(json.dumps(found.to_dict(), indent=2))
         return 0 if found.request else 1
@@ -319,6 +335,14 @@ def motive(args) -> int:
     for step in found.steps[-args.steps:]:
         text = step.text.strip().splitlines()[0][:120] if step.text.strip() else ""
         print(f"  [{step.id}] {step.kind:<6} {(step.file + ': ') if step.file and step.kind == 'edited' else ''}{text}")
+    print()
+    print("The quote was checked against the transcript." if found.quote_checked else "The quote is not word for word in the transcript, so the page will not say it was checked.")
+    traced = found.provenance
+    if traced.get("lines"):
+        print(f"entire why puts {traced['agree']} of {traced['lines']} changed lines behind this commit and checkpoint."
+              + ("" if traced.get("request_agrees") is not False else " The request it holds for them is a different one."))
+    elif traced.get("note"):
+        print(traced["note"])
     return 0
 
 
@@ -1100,7 +1124,9 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--record")
     p.set_defaults(func=check)
     p = commands.add_parser("motive", help="show what a commit was asked to do, from its Entire checkpoint")
-    p.add_argument("commit", help="commit SHA or ref")
+    p.add_argument("commit", nargs="?", help="commit SHA or ref")
+    p.add_argument("--case", help="look the motive up again for this case's culprit and store it in the case record")
+    p.add_argument("--record", help="with --case: the case record (default: next to the case file)")
     p.add_argument("--repo", default=".")
     p.add_argument("--steps", type=int, default=12, help="how many of the agent's steps to print")
     p.add_argument("--json", action="store_true")

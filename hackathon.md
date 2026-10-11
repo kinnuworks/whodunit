@@ -510,3 +510,26 @@ So a loud drift is caught and a faint one mostly ends in "nobody named", which i
 A side effect to own up to: a good ref that fails once in its warm-up now gets a few more replays, so the flaky-baseline numbers published this afternoon moved. Wrong accusations there went down a little, for instance 8.0% to 6.8% at a 30% bug and 80.4% to 77.8% at a 10% bug. The clean-baseline numbers did not change by a single case. `eval/simulator/README.md` and the tables have the new ones, and the 4:40 PM entry above has the old.
 
 What this does not catch: a change outside the repo that breaks only newer commits. That still looks like a regression in one of them.
+
+### 6:24 PM, the wrong request had been quoted for one case
+
+Stage 2, sixth item. It asked for a second route to the motive, and the second route disagreed with the first on one case out of six. The first was wrong.
+
+Two checks were added to `whodunit/motive.py`:
+
+- The request, as the page will show it, has to be word for word in the session transcript as something a person typed. Only then does the page say "Quote checked against the transcript." A request that had a path removed for the page is no longer a quotation, and gets no such line.
+- `entire why FILE:LINE --json` is asked about the lines the culprit changed, in a checkout of the culprit that is removed afterwards. It has to name the same commit, the same checkpoint, the same session and the same request.
+
+On four culprits everything agreed: 4 of 4 lines, 1 of 1, 9 of 9, 4 of 4. On `wrong-order-refunded`, `entire why` put all 3 changed lines behind the right commit and checkpoint, and held a different request for them from the one on the page.
+
+Both requests were real. Checkpoint `d248e108a420` holds two sessions, 53 seconds apart, that both edited `agent.py`. The earlier one was asked to make the agent work out which order a customer meant "and then carry on with that order instead of making the customer write back". It edited the file and tried to commit, and its change was thrown away, which is one of the seven dropped requests noted on Saturday night. The later one was reworded: try likely corrections, "and if one of them belongs to the same customer, go ahead with that order". That session made the commit. The case file had been quoting the first as the motive of a commit it never made.
+
+Why the wrong one was picked. Sessions were scored by how many of the commit's files they edited, plus a little for having run something that looked like a commit. The two tied on edits. The session that really made the commit lost the tie-break because git records a commit to the whole second, the commit command was issued 19 milliseconds into that second, and so it counted as coming after the commit.
+
+What changed. The session is now chosen by whether it ran the commit: the commit's subject in a `git commit` command, or its short SHA in what git printed back. Editing the same files only breaks ties. A second is allowed for git's rounding. A test has the two-session shape and fails on the old scoring.
+
+The record for `wrong-order-refunded` now has the right request, and all three checks agree on it. Its brief had been written from the wrong session's steps, so it was written again, for about 5 cents. The new one quotes "if one of them belongs to the same customer" and says the commit did what was asked. Its patch was written yesterday from the earlier request and is left as it is: it stands on its 36 replays, whatever it was told.
+
+`half-done-batch` has no readable checkpoint, so neither check can run there and the page claims nothing.
+
+`whodunit motive --case <case>` does the lookup again for a record. It replays nothing and asks no model.

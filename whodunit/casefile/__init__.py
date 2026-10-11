@@ -244,8 +244,21 @@ def render(record: dict) -> str:
     # Motive
     if motive.get("request"):
         link = f' <a href="{escape(motive["link"])}">Open the checkpoint</a>' if motive.get("link") else ""
+        checked = " Quote checked against the transcript." if motive.get("quote_checked") else ""
         body = (f'<p>Someone asked the coding agent for this:</p>{_typed(motive["request"])}'
-                f'<p class="small">Entire checkpoint <span class="cite">{escape(motive.get("checkpoint") or "")}</span>, asked at {escape((motive.get("request_time") or "")[:16].replace("T", " "))} UTC.{link}</p>')
+                f'<p class="small">Entire checkpoint <span class="cite">{escape(motive.get("checkpoint") or "")}</span>, asked at {escape((motive.get("request_time") or "")[:16].replace("T", " "))} UTC.{checked}{link}</p>')
+        traced = motive.get("provenance") or {}
+        if traced.get("lines"):
+            # A second route to the same answer: what Entire says about each line the commit changed.
+            if traced["agree"] == traced["lines"]:
+                said = f'Line by line, <code>entire why</code> puts all {traced["lines"]} changed lines that were checked behind this commit and this checkpoint.'
+            else:
+                where = ", ".join(f'{d["file"]}:{d["line"]} (commit {d["commit"]}, checkpoint {d["checkpoint"] or "none"})' for d in traced["disagree"][:4])
+                said = (f'Line by line, <code>entire why</code> puts {traced["agree"]} of the {traced["lines"]} changed lines that were checked behind this commit and this checkpoint. '
+                        f'It disagrees on {escape(where)}.')
+            if traced.get("request_agrees") is False:
+                said += " The request it holds for those lines is not the one quoted above."
+            body += f'<p class="small">{said}</p>'
         steps = [s for s in motive.get("steps", []) if s["kind"] in ("said", "edited")][-6:]
         if steps:
             lines = "".join(

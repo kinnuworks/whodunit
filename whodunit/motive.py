@@ -3,13 +3,17 @@
 Entire keeps a checkpoint for a commit that followed coding-agent work, with the session
 transcript behind it. This module finds the request that led to the commit and the part of
 the session where the agent worked on it.
+
+Two things are then checked before anything is quoted. The request has to be word for word in
+the transcript. And `entire why`, asked about each line the commit changed, has to name the
+same commit and the same checkpoint.
 """
 
 import json
 import re
 import subprocess
 from dataclasses import asdict, dataclass, field
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from .suspects import git
@@ -40,6 +44,8 @@ class Motive:
     earlier_requests: list[str] = field(default_factory=list)  # prompts before it in the same session, oldest first
     steps: list[Step] = field(default_factory=list)
     note: str = ""  # why something is missing
+    quote_checked: bool = False  # the request as shown is word for word in the session transcript, as something a person typed
+    provenance: dict = field(default_factory=dict)  # what `entire why` says about the lines the commit changed; see line_provenance
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -66,6 +72,98 @@ def checkpoint_link(repo: str | Path, sha: str) -> str | None:
         return None
     match = re.search(r"github\.com[:/]([^/]+)/([^/]+?)(?:\.git)?$", url)
     return f"https://entire.io/gh/{match.group(1)}/{match.group(2)}/commit/{sha}" if match else None
+
+
+def quoted_verbatim(request: str | None, entries: list[dict]) -> bool:
+    """Is the request, as it will be shown, word for word in the transcript as something a person typed?
+
+    Line breaks and runs of spaces are not counted as differences. Anything else is: a request
+    that had a path removed for the page, or was cut short, is no longer a quotation, and the
+    page must not say it was checked.
+    """
+    shown = " ".join((request or "").split())
+    if not shown:
+        return False
+    return any(shown in " ".join(text.split()) for text in (_prompt_text(entry) for entry in entries) if text)
+
+
+def changed_lines(repo: str | Path, sha: str, limit: int = 12) -> list[tuple[str, int]]:
+    """(file, line number after the commit) for lines the commit added or rewrote, at most `limit` of them.
+
+    Lines are taken from every hunk in turn, so a commit with many hunks is sampled across all of them.
+    """
+    hunks: list[list[tuple[str, int]]] = []
+    name = None
+    for line in git(repo, "show", "--format=", "--unified=0", sha).splitlines():
+        if line.startswith("+++ "):
+            name = None if line.endswith("/dev/null") else line[6:]
+        elif line.startswith("@@") and name:
+            found = re.match(r"@@ -\d+(?:,\d+)? \+(\d+)(?:,(\d+))? @@", line)
+            start, count = int(found.group(1)), int(found.group(2) or 1)
+            if count:
+                hunks.append([(name, n) for n in range(start, start + count)])
+    out: list[tuple[str, int]] = []
+    while hunks and len(out) < limit:
+        for hunk in list(hunks):
+            if hunk and len(out) < limit:
+                out.append(hunk.pop(0))
+            if not hunk:
+                hunks.remove(hunk)
+    return out
+
+
+def line_provenance(repo: str | Path, sha: str, checkpoint: str, request: str | None, session: str | None = None) -> dict:
+    """Ask `entire why` about the lines the commit changed, and see that it agrees with the checkpoint.
+
+    The motive is found from the commit's checkpoint trailer and its session. This asks the
+    same question a second way, line by line: which commit and which checkpoint does Entire put
+    behind each changed line? It is asked in a checkout of the commit itself, which is removed
+    afterwards. Returns {"lines", "agree", "disagree", "request_agrees", "note"}.
+    """
+    full = git(repo, "rev-parse", sha).strip()
+    lines = changed_lines(repo, full)
+    result = {"lines": 0, "agree": 0, "disagree": [], "request_agrees": None, "session_agrees": None, "note": ""}
+    if not lines:
+        result["note"] = "The commit added or rewrote no lines, so there was nothing to ask about."
+        return result
+    checkout = Path(repo).resolve() / ".whodunit" / "why" / full[:12]
+    subprocess.run(["git", "-C", str(repo), "worktree", "remove", "--force", str(checkout)], capture_output=True)
+    checkout.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        git(repo, "worktree", "add", "--detach", "--force", str(checkout), full)
+        prompts, held = set(), set()
+        for name, number in lines:
+            raw = entire(checkout, "why", f"{name}:{number}", "--json")
+            try:
+                told = (json.loads(raw) if raw else {}).get("line") or {}
+            except json.JSONDecodeError:
+                told = {}
+            if not told.get("commit_sha"):
+                continue
+            result["lines"] += 1
+            if told["commit_sha"] == full and told.get("checkpoint_id") == checkpoint:
+                result["agree"] += 1
+                if told.get("prompt"):
+                    prompts.add(" ".join(told["prompt"].split()))
+                if told.get("session_id"):
+                    held.add(told["session_id"])
+            else:
+                result["disagree"].append({"file": name, "line": number, "commit": told["commit_sha"][:12], "checkpoint": told.get("checkpoint_id") or ""})
+        if not result["lines"]:
+            result["note"] = "`entire why` could not be asked about the commit's lines."
+        elif prompts and request:
+            # The prompt Entire holds for those lines should be the request quoted on the page, or the start of it.
+            shown = " ".join(request.split())
+            result["request_agrees"] = all(shown.startswith(told.rstrip(".\u2026 ")) or told.startswith(shown) for told in prompts)
+        if held and session:
+            result["session_agrees"] = held == {session}
+    finally:
+        subprocess.run(["git", "-C", str(repo), "worktree", "remove", "--force", str(checkout)], capture_output=True)
+        try:
+            checkout.parent.rmdir()
+        except OSError:
+            pass
+    return result
 
 
 def _when(stamp: str | None) -> datetime | None:
@@ -117,6 +215,9 @@ def read_transcript(entries: list[dict], commit_time: datetime, files: set[str],
     The request is the last prompt a person typed before the commit. A checkpoint can cover
     several commits from one long turn, so the commit time is what ties a prompt to a commit.
     """
+    # git records a commit to the whole second, and the command that made it is often issued a few
+    # milliseconds into that second. Without the allowance that command looks later than the commit.
+    commit_time = commit_time + timedelta(seconds=1)
     prompts = []
     for entry in entries:
         text, at = _prompt_text(entry), _when(entry.get("timestamp"))
@@ -141,6 +242,45 @@ def read_transcript(entries: list[dict], commit_time: datetime, files: set[str],
     }
 
 
+def made_the_commit(entries: list[dict], sha: str, subject: str) -> bool:
+    """Did this session run the commit? Its transcript then has the commit's subject in a `git commit`
+    command, or the short SHA in what git printed back ("[main d4fb158] ...")."""
+    for entry in entries:
+        content = entry.get("message", {}).get("content")
+        for block in content if isinstance(content, list) else []:
+            if block.get("type") == "tool_use" and block.get("name") == "Bash":
+                command = (block.get("input") or {}).get("command") or ""
+                if "git" in command and "commit" in command and subject and subject in command:
+                    return True
+            elif block.get("type") == "tool_result":
+                said = block.get("content")
+                said = said if isinstance(said, str) else " ".join(part.get("text", "") for part in said or [] if isinstance(part, dict))
+                if re.search(rf"\[[^\]\n]*\b{re.escape(sha[:7])}[0-9a-f]*\]", said):
+                    return True
+    return False
+
+
+def pick_session(sessions: list[list[dict]], made_at: datetime, files: set[str], sha: str, subject: str) -> tuple[int | None, dict | None, str]:
+    """Which session in a checkpoint is behind this commit: (its index, what read_transcript found in it, why it was picked).
+
+    A checkpoint takes in every session open in the folder when the commit was made. The one
+    wanted is the one that ran the commit. A session that only edited the same files may be an
+    earlier attempt at the same change that was thrown away, with a differently worded request.
+    """
+    best, found, top, why = None, None, -1.0, ""
+    for index, entries in enumerate(sessions):
+        candidate = read_transcript(entries, made_at, files)
+        if candidate["request"] is None:
+            continue
+        ran_it = made_the_commit(entries, sha, subject)
+        edits = sum(1.0 for step in candidate["steps"] if step.kind == "edited")
+        score = (100.0 if ran_it else 0.0) + edits
+        if score > top:
+            best, found, top = index, candidate, score
+            why = "it ran the commit" if ran_it else "it edited the commit's files" if edits else "it is the only one with a prompt from before the commit"
+    return best, found, why
+
+
 def find_motive(repo: str | Path, sha: str) -> Motive:
     """Everything Entire knows about why this commit was made."""
     full, subject, stamp, trailer = git(
@@ -161,33 +301,28 @@ def find_motive(repo: str | Path, sha: str) -> Motive:
     files = {f for f in git(repo, "diff-tree", "--no-commit-id", "--name-only", "-r", full).split("\n") if f}
     made_at = datetime.fromisoformat(stamp).astimezone(timezone.utc)
     # A checkpoint takes in every session that was open in the folder when the commit was made,
-    # including ones that had nothing to do with it. The session wanted is the one that edited
-    # the commit's files.
-    best, best_score, chosen = None, -1.0, 0
+    # including ones that had nothing to do with it. pick_session says which one is wanted.
+    transcripts = []
     for index in range(len(sessions)):
         raw = entire(repo, "checkpoint", "explain", "--checkpoint", motive.checkpoint, "--session-index", str(index), "--raw-transcript")
-        if not raw:
-            continue
         entries = []
-        for line in raw.splitlines():
+        for line in (raw or "").splitlines():
             try:
                 entries.append(json.loads(line))
             except json.JSONDecodeError:
                 continue
-        candidate = read_transcript(entries, made_at, files)
-        if candidate["request"] is None:
-            continue
-        score = sum(1.0 for step in candidate["steps"] if step.kind == "edited") + (0.5 if any(step.kind == "ran" and "ommit" in step.text for step in candidate["steps"]) else 0.0)
-        if score > best_score:
-            best, best_score, chosen = candidate, score, index
-    if best is None:
+        transcripts.append(entries)
+    chosen, found, why = pick_session(transcripts, made_at, files, full, subject)
+    if found is None:
         motive.note = "The checkpoint has no transcript with a prompt from before this commit."
         return motive
-    found = best
-    motive.session = sessions[chosen].get("session_id")  # which assistant and model it was is left out of the record
+    best_entries = transcripts[chosen]
+    # The session's own id is in its transcript. The checkpoint's list is not always in the same order.
+    motive.session = next((entry.get("sessionId") for entry in best_entries if entry.get("sessionId")), None) or sessions[chosen].get("session_id")
     if len(sessions) > 1:
-        motive.note = (f"This checkpoint holds {len(sessions)} sessions. " + (
-            "The one that edited the commit's files was used." if best_score >= 1 else "None of them edited the commit's files, so the request shown may not be the cause of this commit."))
+        motive.note = (f"This checkpoint holds {len(sessions)} sessions. The one used is the one that " + {
+            "it ran the commit": "ran the commit.", "it edited the commit's files": "edited the commit's files. None of them is on record as running the commit itself."}.get(
+                why, "has a prompt from before the commit. None of them edited the commit's files, so the request shown may not be the cause of this commit."))
     for key, value in found.items():
         setattr(motive, key, value)
     # A session transcript is full of absolute paths. The case file is public, so they go.
@@ -200,4 +335,8 @@ def find_motive(repo: str | Path, sha: str) -> Motive:
     motive.earlier_requests = [scrub(t) for t in motive.earlier_requests]
     for step in motive.steps:
         step.text = scrub(step.text)
+    # Two checks on what will be quoted. Is it word for word in the transcript, after the scrubbing above?
+    # And does Entire, asked line by line, put the commit's lines behind the same checkpoint and request?
+    motive.quote_checked = quoted_verbatim(motive.request, best_entries)
+    motive.provenance = line_provenance(repo, full, motive.checkpoint, motive.request, motive.session)
     return motive
