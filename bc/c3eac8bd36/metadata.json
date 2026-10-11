@@ -1,0 +1,28 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "bcc3eac8bd36",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "evidence/neathack-bingo.png",
+    "hackathon.md",
+    "pitch/neathack-bingo.png"
+  ],
+  "sessions": [
+    {
+      "metadata": "/bc/c3eac8bd36/0/metadata.json",
+      "transcript": "/bc/c3eac8bd36/0/full.jsonl",
+      "compact_transcript": "/bc/c3eac8bd36/0/transcript.jsonl",
+      "content_hash": "/bc/c3eac8bd36/0/content_hash.txt",
+      "prompt": "/bc/c3eac8bd36/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 14,
+    "cache_creation_tokens": 11927,
+    "cache_read_tokens": 3108067,
+    "output_tokens": 8755,
+    "api_call_count": 7
+  }
+}
