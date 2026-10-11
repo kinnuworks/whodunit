@@ -1,6 +1,6 @@
 # Whodunit working brief
 
-Whodunit finds the commit that broke an AI agent. It shows what that commit was asked to do, fixes it, proves the fix, and reports what the breakage cost. The pitch in one line: "41 commits since it last worked. Which one did it?"
+Whodunit finds the commit that broke an AI agent. It shows what that commit was asked to do, fixes it, proves the fix, and reports what the breakage cost. The pitch in one line: "57 commits since it last worked. Which one did it?"
 
 This is the brief for whoever writes code here, human or coding agent. Read it before changing anything.
 
@@ -126,7 +126,7 @@ Before and after neatlogs traces with numbers, trace links or screenshots, an En
 4. Sunday 6 PM: motive, brief, ruling memory, fix and verify, case file page v1.
 5. Monday 2 AM: sealed-key eval on the grown victim, neatlogs cloud link (the detection trend dates the onset), cfo.ai model through MCP, parallel replays on the AWS allowance.
 6. Monday noon: stretch target, README, evidence folder.
-7. Monday 6 PM: demo video, which opens on "41 commits, which one did it?" and names the culprit inside 30 seconds. Submit at 7 PM.
+7. Monday 6 PM: demo video, which opens on "57 commits, which one did it?" and names the culprit inside 30 seconds. Submit at 7 PM.
 
 If milestone 3 slips past Sunday 2 PM, drop the stretch target and the AWS runner and keep everything else.
 

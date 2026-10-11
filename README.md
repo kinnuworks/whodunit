@@ -1,6 +1,6 @@
 # Whodunit
 
-41 commits since it last worked. Which one did it?
+57 commits since it last worked. Which one did it?
 
 Whodunit answers two questions about an AI agent that used to work and now fails: which commit broke it, and why that commit was made. Then it fixes the commit, proves the fix by replaying the failures, and counts what the breakage cost.
 

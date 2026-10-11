@@ -259,3 +259,11 @@ So the honest version of the pitch is narrower than the one this started with. W
 The second measurement: `whole-history` was run again without the entire-graph alibis and without traffic. It took 30 replays across 8 commits to reach 95.4%, against 20 replays across 5 commits and 99.8% with them. One run each way.
 
 Other things since the last entry: a casebook page at `cases/index.html` lists every case, `whodunit investigate --fresh` starts a case over for the video, queries to neatroots now page past its 200-row limit, and the fast tests run in a GitHub Actions workflow. The onset from traffic alone is not sharp on this history: with five regressions in it and only "errored or flagged" to go on, it brackets the whole range. The per-case witness, which judges each run against what the case expects, is what the headline run used.
+
+### 2:00 PM, a review of the repo, and the headline number
+
+A review of the repo listed claims that the code or the records do not back. The rest of today works through that list in order, one commit per item, and each entry says whether the review was right.
+
+The first one was right. The README, the pitch line in `AGENTS.md` and milestone 7 all said 41 commits. That number came from the plan, written before the victim had a history. The headline case has 57 suspects, so all three now say 57. "Suspects: 41. Cleared: 40." stays in `AGENTS.md` where it is marked as sample copy. The case file page was never wrong, because it counts the suspects in the record.
+
+Before the first commit, `entire session list` showed one other session in this folder, idle for half an hour. The owner was told.
