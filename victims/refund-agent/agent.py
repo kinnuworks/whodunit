@@ -96,6 +96,17 @@ def agent_version() -> str:
         return tomllib.load(f)["project"]["version"]
 
 
+@functools.lru_cache(maxsize=1)
+def lock_hash() -> str:
+    """The first 12 characters of the hash of uv.lock, so a run records which dependencies it ran with."""
+    import hashlib
+
+    try:
+        return hashlib.sha256((HERE / "uv.lock").read_bytes()).hexdigest()[:12]
+    except OSError:
+        return ""
+
+
 def current_commit() -> str:
     given = os.environ.get("WHODUNIT_COMMIT")
     if given:
@@ -266,6 +277,7 @@ def run_info(max_steps: int):
         "commit_short": current_commit()[:12],
         "model": MODEL,
         "version": agent_version(),
+        "lock": lock_hash(),
         "max_steps": max_steps,
     }
 

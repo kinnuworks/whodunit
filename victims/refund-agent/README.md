@@ -111,6 +111,7 @@ During a replay neatroots sets `NEATROOTS_REPLAY_INPUT`, and the agent uses it i
 - A `get_order_status` tool answers "where is my order?" questions with the status and placed_on date, without refunding anything.
 - Each run makes at most 3 model calls, each capped at 150 tokens, to save on gateway spend.
 - The OpenAI client carries a 30-second timeout and 2 retries, where the original had neither.
+- The `run_info` span also carries the first 12 characters of the hash of `uv.lock`, next to the model and the version, so a run says which dependencies it ran with.
 - When the model provider or the network fails (a refused connection, a timeout, a rate limit, a 5xx, a rejected key), the agent prints `provider error: ...` on stderr and exits with code 75. Any other failure keeps its usual exit code. A replay harness can then throw the run away and try again without blaming the commit.
 - The system prompt is warmer: it acknowledges what went wrong before saying what was done, gives the customer the benefit of the doubt on a mistyped order number, tries digit-swap and digit-double corrections on a failed lookup, and offers a replacement alongside a refund where that fits.
 - If an order doesn't belong to the customer, the agent never names whose it is or mentions another customer.
