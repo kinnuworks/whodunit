@@ -7,6 +7,7 @@ nothing outside the standard library.
 import json
 import os
 import re
+import subprocess
 import urllib.error
 import urllib.request
 
@@ -104,6 +105,21 @@ def select_all(mcp: Mcp, sql: str, cap: int = 5000) -> list[dict]:
 
 def neatroots() -> Mcp:
     return Mcp(os.environ.get("NEATROOTS_MCP", NEATROOTS))
+
+
+def forward_to_cloud(trace_ids: list[str]) -> tuple[bool, str]:
+    """Ask neatroots to send these runs to neatlogs cloud. Returns (sent, what neatroots said last).
+
+    neatroots does the sending, with the project key it keeps in the system keychain after
+    `neatroots cloud login`. Storing that key is the owner's step. Until it is done this
+    returns False with neatroots' own message, and the runs stay local.
+    """
+    try:
+        done = subprocess.run(["neatroots", "cloud", "forward", "--yes", *trace_ids], capture_output=True, text=True, timeout=180, stdin=subprocess.DEVNULL)
+    except (OSError, subprocess.TimeoutExpired) as exc:
+        return False, f"neatroots could not be run: {exc}"
+    said = [line.strip() for line in (done.stdout + "\n" + done.stderr).splitlines() if line.strip()]
+    return done.returncode == 0, said[-1] if said else f"neatroots exited with {done.returncode}"
 
 
 def replay_runs(mcp: Mcp, case_id: str, sha: str | None = None, limit: int = 200) -> list[dict]:

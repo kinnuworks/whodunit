@@ -8,6 +8,11 @@ dependencies = []
 [project.scripts]
 whodunit = "whodunit.cli:main"
 
+[project.optional-dependencies]
+trace = [
+    "neatlogs>=1.4",
+]
+
 [dependency-groups]
 dev = ["pytest>=8"]
 

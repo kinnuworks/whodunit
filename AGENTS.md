@@ -43,6 +43,7 @@ Python 3.12 through uv, in one repo.
 - `whodunit/casefile/`: the static HTML case file, which is the main demo surface. `whodunit open-case` writes one page and `whodunit casebook` writes them all with an index.
 - `whodunit/onset.py`: reads the agent's ordinary runs from neatroots and brackets the failure between a good and a bad ref with the same change-point model. `--cloud` asks neatlogs when a detection began firing.
 - `whodunit/neat.py`, `whodunit/llm.py`, `whodunit/env.py`: the MCP client for neatroots and neatlogs, the one place a model is asked for text, and the `.env` loader.
+- `whodunit/trace.py`: the investigation's own trace. One trace per `whodunit investigate`, with a span per lineup round and per step, sent with the Neatlogs SDK when it is installed (`uv sync --extra trace`) and the key is in `.env`. `WHODUNIT_TRACE` is `cloud`, `neatroots` or `off`. The tests always run with it off.
 - `whodunit/simulate.py` and `whodunit/chart.py`: the simulator and its SVG charts. Results live in `eval/simulator/`.
 - `whodunit/cli.py`: the commands. Each step reads and writes one case record, `<case>.record.json`, next to the case file.
 - `eval/`: `score.py` scores cases against a sealed answer key, `traffic.py` sends everyday requests through a history, `probe.py` runs one request a few times at one commit, `ask.sh` starts a fresh coding session with one request, and `SECOND-SESSION.md` briefs the session that grows the victim. `eval/sealed/` and `eval/simulator/` hold the results.
@@ -66,7 +67,7 @@ Version 0.2.6 is installed at `~/.local/bin/neatroots` and serves on port 4100. 
 - Whole-agent replay: `neatroots rerun add <project> "<command>" --cwd <dir>`, then `neatroots replay <trace-id> [--input ...]`. The agent receives `NEATROOTS_REPLAY_INPUT`, `NEATROOTS_REPLAY_ID` and `NEATLOGS_ENDPOINT`.
 - Checks are YAML files in `.neatroots/checks/`. The `rule` kinds (repeat, errors, count, threshold, match, run_end) need no model. `yes_no` questions return a probability and need neatroots' local model. On the evening of 10 October a small local model was found switched on, served on port 11434, and the built-in `ignored-tool-error` check ran it on incoming runs. A burst of replays then queues model work on this machine, so keep replays to two or three at a time while it is on. On the afternoon of 11 October `neatroots status` reported that model as unavailable.
 - `neatroots mock-llm` is a key-free stand-in LLM on port 4110.
-- `neatroots status` reports "cloud no key", so importing cloud traces needs the project key configured first.
+- `neatroots status` reports "cloud no key". `neatroots cloud forward <trace ids>` sends runs to neatlogs cloud and needs `neatroots cloud login` first, which stores the project key in the macOS Keychain. That is the owner's step. Until it is done, `whodunit forward` records that the runs stayed local.
 - MCP tools the code calls: `query_sql`, `get_run_outline` and `compare_runs`. Whodunit replays the agent itself, in worktrees, and does not use neatroots' own `rerun` or `replay`. `list_findings` is not read either, because a verdict comes from the case's check.
 
 ### neatlogs cloud

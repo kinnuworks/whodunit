@@ -15,11 +15,12 @@ from . import damages as damage
 from . import fix as fixes
 from . import ruling as rulings
 from .motive import checkpoint_link, find_motive
-from .neat import NeatError, neatroots
+from .neat import NeatError, forward_to_cloud, neatroots
 from .onset import cloud_trend, find_onset, traffic, witness
 from .lineup import linear_scan_cost, plain_bisect, statistical_bisect
 from .replay import FAIL, PASS, VOID, Replay, Runner
 from .suspects import git, list_suspects, resolve
+from .trace import OFF, Trace
 
 
 def record_path(args) -> Path:
@@ -59,6 +60,16 @@ def for_page(record: dict, record_file: Path) -> dict:
     if motive.get("checkpoint") and motive.get("sha"):
         repo = Path((record.get("case") or {}).get("repo") or ".")
         shown["motive"] = {**motive, "link": checkpoint_link(repo if repo.is_dir() else Path.cwd(), motive["sha"])}
+    # A link to a trace in neatlogs cloud needs the address of the dashboard, which is the owner's to give:
+    # NEATLOGS_TRACE_URL, with {trace_id} where the id goes. Without it the page prints the ids and no link.
+    template = os.environ.get("NEATLOGS_TRACE_URL", "")
+    if "{trace_id}" in template:
+        traced = record.get("trace") or {}
+        if traced.get("where") == "cloud" and traced.get("trace_id"):
+            shown["trace"] = {**traced, "link": template.replace("{trace_id}", traced["trace_id"])}
+        cloud = (record.get("evidence") or {}).get("cloud") or {}
+        if cloud.get("sent"):
+            shown["evidence"] = {**record["evidence"], "cloud": {**cloud, "links": {key: template.replace("{trace_id}", value) for key, value in cloud["trace_ids"].items()}}}
     return shown
 
 
@@ -104,12 +115,33 @@ def _statistical(args, case, suspects, runner, say):
     def trial(position: int) -> str:
         return runner.trial(case.good if position < 0 else suspects[position].sha)
 
+    good_sha = resolve(runner.repo, case.good)
+    tracer = getattr(args, "tracer", OFF)
+    runner.rounds = []  # what each round replayed and what the suspects looked like after it, kept in the record
+
     def on_round(positions: list[int], verdicts: list[str], posterior: list[float]) -> None:
         top = max(range(len(posterior)), key=posterior.__getitem__)
         for position in dict.fromkeys(positions):
             who = "last good " if position < 0 else f"suspect {position + 1:>2}"
             marks = "".join("F" if v == FAIL else "." if v == PASS else "v" if v == VOID else "s" for p, v in zip(positions, verdicts) if p == position)
             say(f"  {who}  {marks:<8}  top suspect {top + 1:>2} at {posterior[top]:5.1%}")
+        ranked = sorted(range(len(posterior)), key=lambda i: -posterior[i])[:3]
+        runner.rounds.append({
+            "commits": [good_sha if p < 0 else suspects[p].sha for p in positions], "verdicts": list(verdicts),
+            "top": [[suspects[i].sha, round(posterior[i], 4)] for i in ranked], "posterior": [round(share, 4) for share in posterior],
+        })
+
+    def around(positions: list[int], go) -> list[str]:
+        # One span per round in the investigation's trace: what was replayed, how it came out, who leads now.
+        seen: dict = {}
+        replayed = [f"{'last good' if p < 0 else f'suspect {p + 1}'} ({(good_sha if p < 0 else suspects[p].sha)[:12]})" for p in positions]
+
+        def work() -> dict:
+            seen["verdicts"] = go()
+            last = runner.rounds[-1]
+            return {"verdicts": seen["verdicts"], "top_three": [{"commit": sha[:12], "probability": share} for sha, share in last["top"]]}
+        tracer.step(f"lineup round {len(runner.rounds) + 1}", {"replayed": replayed}, work)
+        return seen["verdicts"]
 
     priors = None if args.no_priors else [s.prior for s in suspects]
     evidence = []
@@ -137,7 +169,7 @@ def _statistical(args, case, suspects, runner, say):
     say(f"Statistical bisect, at most {args.budget} replays, {args.parallel} at a time. F is a failed replay, a dot is a pass, and v was voided by a provider error.")
     return statistical_bisect(
         len(suspects), trial, args.budget, priors=priors, confidence=args.confidence, parallel=args.parallel, on_round=on_round,
-        evidence=evidence,
+        evidence=evidence, around=around,
     )
 
 
@@ -164,6 +196,7 @@ def lineup(args) -> int:
         commits = len({r.sha for r in runner.replays})
         every_replay = [asdict(r) for r in runner.replays]
         witnessed = getattr(runner, "witnessed", [])
+        rounds = getattr(runner, "rounds", [])
     if found is None:
         return 2
 
@@ -231,6 +264,8 @@ def lineup(args) -> int:
         record["witnessed"] = [{"sha": record["case"]["good"] if position < 0 else suspects[position].sha, "failed": bool(failed)} for position, failed in witnessed]
     record["lineup"] = report
     record["replays"] = every_replay
+    # A resumed lineup adds its rounds to the ones the earlier run made.
+    record["rounds"] = (record.get("rounds", []) if getattr(args, "resume", False) else []) + rounds
     _replayed(record)
     save_record(record_path(args), record)
     say(f"Record: {record_path(args)}")
@@ -298,7 +333,15 @@ def brief(args) -> int:
         save_record(path, record)
         _print_brief(written, evidence)
         return 0
-    found = find_motive(repo, culprit)
+    tracer = getattr(args, "tracer", OFF)
+    seen: dict = {}
+
+    def look_up() -> dict:
+        seen["motive"] = find_motive(repo, culprit)
+        told = seen["motive"]
+        return {"checkpoint": told.checkpoint, "request": (told.request or "")[:300], "note": told.note}
+    tracer.step("motive", {"commit": culprit[:12]}, look_up)
+    found = seen["motive"]
     evidence = briefs.gather(
         repo, case.id, culprit, case.target, record.get("replays", []), found,
         None if args.no_runs else neatroots(), order=[s["sha"] for s in record["suspects"]],
@@ -320,7 +363,15 @@ def brief(args) -> int:
         order = [s["sha"] for s in record["suspects"]]
         evidence = briefs.gather(repo, case.id, culprit, case.target, record["replays"], found, neatroots(), order=order)
     evidence.measured, evidence.rate_from = _measured(record)
-    written = briefs.write_brief(evidence, case.symptom)
+
+    def write() -> dict:
+        seen["brief"] = briefs.write_brief(evidence, case.symptom)
+        made = seen["brief"]
+        return {"headline": made["headline"], "sentences_kept": len(made["sentences"]), "sentences_cut": len(made.get("dropped", [])),
+                "first_draft_sent_back": bool(made.get("rejected")), "written_by": made.get("writer")}
+    tracer.step("brief", {"failing_run": (evidence.failing_run or {}).get("trace_id", "")[:12], "passing_run": (evidence.passing_run or {}).get("trace_id", "")[:12],
+                          "measured": evidence.measured}, write)
+    written = seen["brief"]
     record["motive"] = found.to_dict()
     record["evidence"] = asdict(evidence)
     record["brief"] = written
@@ -371,6 +422,25 @@ def _print_brief(written: dict, evidence) -> None:
         print(f"Note: {note}")
 
 
+def forward(args) -> int:
+    """Send the case's failing run and passing run from neatroots to neatlogs cloud, and note it in the record."""
+    loaded = _need_culprit(args)
+    if loaded is None:
+        return 2
+    case, repo, record, path = loaded
+    evidence = record.get("evidence") or {}
+    runs = {key: evidence[key]["trace_id"] for key in ("failing_run", "passing_run") if evidence.get(key)}
+    if not runs:
+        print("The record has no failing or passing run to send. Run `whodunit brief` first.")
+        return 2
+    sent, said = forward_to_cloud(list(runs.values()))
+    evidence["cloud"] = {"sent": sent, "trace_ids": runs if sent else {}, "note": said}
+    record["evidence"] = evidence
+    save_record(path, record)
+    print(f"Sent {len(runs)} runs to neatlogs cloud: {', '.join(runs.values())}." if sent else f"The runs were not sent to neatlogs cloud. neatroots said: {said}")
+    return 0 if sent else 1
+
+
 def ruling(args) -> int:
     loaded = _need_culprit(args)
     if loaded is None:
@@ -409,8 +479,21 @@ def _sides(record: dict) -> tuple[tuple[int, int], tuple[int, int]]:
     return tuple(good), tuple(bad)
 
 
-def _attempt(kind: str, case, repo: Path, record: dict, args, feedback: str = "") -> dict:
+def _attempt(kind: str, case, repo: Path, record: dict, args, feedback: str = "", number: int = 1) -> dict:
     """Make one fix and replay it. Returns what was tried and how it went."""
+    tracer = getattr(args, "tracer", OFF)
+    out: dict = {}
+
+    def work() -> dict:
+        out["attempt"] = attempt = _try_fix(kind, case, repo, record, args, feedback, tracer)
+        seen, harm = attempt.get("verification") or {}, attempt.get("harm") or {}
+        return {"commit": (attempt.get("commit") or "")[:12], "kept": _proven(attempt), "failures": seen.get("failures"), "replays": seen.get("replays"),
+                "broke_other_requests": len(harm.get("broken", [])), "note": attempt.get("note", "")}
+    tracer.step(f"fix attempt {number}, a {kind}", {"culprit": record["lineup"]["culprit"]["sha"][:12], "after_an_earlier_try": bool(feedback)}, work)
+    return out["attempt"]
+
+
+def _try_fix(kind: str, case, repo: Path, record: dict, args, feedback: str, tracer) -> dict:
     culprit = record["lineup"]["culprit"]["sha"]
     if kind == rulings.REVERT:
         made = fixes.revert(repo, culprit, record["case"]["bad"], case.id)
@@ -422,18 +505,27 @@ def _attempt(kind: str, case, repo: Path, record: dict, args, feedback: str = ""
         return attempt
     print(f"  {kind}: committed as {made.commit[:12]} on branch {made.branch}. Replaying to check it.")
     good, bad = _sides(record)
-    with Runner(repo, case, keep=getattr(args, "keep", False)) as runner:
-        checked = fixes.verify(lambda: runner.trial(made.commit), good, bad, budget=args.fix_budget, parallel=args.parallel)
-        attempt["failed_replays"] = [f"{r.input} -> {r.reason}" for r in runner.replays if r.verdict == FAIL][:4]
-        attempt["voided"] = sum(r.voided for r in runner.replays)
-    attempt["verification"] = asdict(checked)
+
+    def verify() -> dict:
+        with Runner(repo, case, keep=getattr(args, "keep", False)) as runner:
+            checked = fixes.verify(lambda: runner.trial(made.commit), good, bad, budget=args.fix_budget, parallel=args.parallel)
+            attempt["failed_replays"] = [f"{r.input} -> {r.reason}" for r in runner.replays if r.verdict == FAIL][:4]
+            attempt["voided"] = sum(r.voided for r in runner.replays)
+        attempt["verification"] = asdict(checked)
+        return {"failures": checked.failures, "replays": checked.replays, "at_most_at_95": round(checked.upper, 4), "cleared_the_bar": checked.fixed, "voided": attempt["voided"]}
+    tracer.step("verify the fix", {"commit": made.commit[:12], "bar": "95% likely to be back within 5 points of the rate before the culprit"}, verify)
+    checked = attempt["verification"]
     attempt["diff"] = git(repo, "show", "--format=", made.commit)[:4000]
-    print(f"  {kind}: {fixes.observed(checked.failures, checked.replays)} " + (f"Not kept: {checked.note}." if checked.note else "That clears the bar for keeping it."))
-    if checked.fixed:
-        harm = _check_harm(case, repo, record, made.commit, args)
-        if harm:
-            attempt["harm"] = harm
-            print(f"  {kind}: {_harm_said(harm)}")
+    print(f"  {kind}: {fixes.observed(checked['failures'], checked['replays'])} " + (f"Not kept: {checked['note']}." if checked["note"] else "That clears the bar for keeping it."))
+    if checked["fixed"]:
+        def no_harm() -> dict:
+            harm = _check_harm(case, repo, record, made.commit, args)
+            if harm:
+                attempt["harm"] = harm
+                print(f"  {kind}: {_harm_said(harm)}")
+            return {"checked": (harm or {}).get("checked", 0), "broken": [b["text"] for b in (harm or {}).get("broken", [])],
+                    "already_failing": len((harm or {}).get("already_failing", []))}
+        tracer.step("do no harm", {"commit": made.commit[:12]}, no_harm)
     return attempt
 
 
@@ -538,17 +630,17 @@ def fix(args) -> int:
         print(f"No ruling yet. Run `whodunit ruling {args.case}` first.")
         return 2
     wanted = record["ruling"]["ruling"]
-    attempts = [_attempt(wanted, case, repo, record, args)]
+    attempts = [_attempt(wanted, case, repo, record, args, number=1)]
     if wanted == rulings.PATCH and not _proven(attempts[-1]):
         first = attempts[-1]
         feedback = (first.get("note") or "") + "\nThe first patch:\n" + first.get("diff", "none was made") + "\nReplays of it that still failed:\n" + "\n".join(first.get("failed_replays", []) or ["none recorded"])
         if (first.get("harm") or {}).get("broken"):
             feedback += "\nThe first patch cleared its own case and broke other requests that used to work. " + _harm_said(first["harm"]) + " A patch must leave those working."
         print("  The patch " + ("broke other requests" if (first.get("harm") or {}).get("broken") else "did not clear the bar") + ". Trying once more, with the first patch and what went wrong in view.")
-        attempts.append(_attempt(rulings.PATCH, case, repo, record, args, feedback))
+        attempts.append(_attempt(rulings.PATCH, case, repo, record, args, feedback, number=2))
     if wanted == rulings.PATCH and not _proven(attempts[-1]):
         print("  The second patch is not kept either. Falling back to a revert, which loses what the commit was for.")
-        attempts.append(_attempt(rulings.REVERT, case, repo, record, args))
+        attempts.append(_attempt(rulings.REVERT, case, repo, record, args, number=3))
         attempts[-1]["note"] = ((attempts[-1].get("note") or "") + " This is a fallback: the ruling was to patch, and two patches were not kept.").strip()
     final = next((a for a in reversed(attempts) if _proven(a)), attempts[-1])
     record["fix"] = final
@@ -576,58 +668,104 @@ def fix(args) -> int:
 
 
 def investigate(args) -> int:
-    """Run a whole case: lineup, motive and brief, ruling, fix, damages, case file. Stops only for the owner's ruling."""
-    import time
+    """Run a whole case: lineup, motive and brief, ruling, fix, damages, case file. Stops only for the owner's ruling.
 
+    The run is one trace. Each step is a span inside it, and so is each round of the lineup
+    and each fix attempt. Where the trace goes is `whodunit/trace.py`'s business, and with no
+    SDK or no key it goes nowhere and nothing else changes.
+    """
+    case = Case.load(args.case)
     path = record_path(args)
+    if getattr(args, "fresh", False) and path.is_file():
+        import time
 
+        path.rename(path.with_name(path.name + time.strftime(".%H%M%S.old")))
+    args.tracer = tracer = Trace(case.id)
+    if not tracer.on:
+        print(f"No trace of this investigation is being sent: {tracer.note}.")
+    out: dict = {}
+
+    def run() -> dict:
+        out["code"] = _investigate(args, path, tracer)
+        record = load_record(path)
+        culprit, kept = (record.get("lineup") or {}).get("culprit"), record.get("fix") or {}
+        return {"culprit": culprit["sha"][:12] if culprit else None, "probability": (culprit or {}).get("probability"),
+                "replays": (record.get("lineup") or {}).get("replays"),
+                "fix": f"{kept['kind']} kept" if _proven(kept) else "waiting for the owner's ruling" if out["code"] == 3 else "none kept"}
+    try:
+        tracer.root({"symptom": case.symptom, "good": case.good[:12], "bad": case.bad[:12]}, run)
+    finally:
+        tracer.close()
+    if tracer.trace_id:
+        record = load_record(path)
+        record["trace"] = {"where": tracer.where, "trace_id": tracer.trace_id}
+        save_record(path, record)
+    open_case(argparse.Namespace(case=args.case, record=args.record, no_open=True))
+    return out["code"]
+
+
+def _investigate(args, path: Path, tracer) -> int:
     def note(step: str, outcome: str) -> None:
         # Progress for whoever is watching. The case file's log is worked out from the record itself,
         # so a step that is run again later cannot leave a stale line behind.
         print(f"[{step}] {outcome}")
 
-    def finish(code: int) -> int:
-        open_case(argparse.Namespace(case=args.case, record=args.record, no_open=True))
-        return code
+    def step(name: str, given: dict, command, told) -> int:
+        """Run one command of the pipeline inside a span. `told(record)` is what the span says came of it."""
+        seen: dict = {}
 
-    if getattr(args, "fresh", False) and path.is_file():
-        path.rename(path.with_name(path.name + time.strftime(".%H%M%S.old")))
+        def work() -> dict:
+            seen["code"] = command(args)
+            return {"exit": seen["code"], **told(load_record(path))}
+        tracer.step(name, given, work)
+        return seen["code"]
+
     record = load_record(path)
     args.method, args.confidence, args.no_priors, args.keep, args.json = "statistical", 0.95, False, False, False
     args.repeats = 1
     args.no_runs, args.from_record, args.since_ms = False, False, None
     if not (record.get("lineup") or {}).get("culprit"):
+        def named(now: dict) -> dict:
+            report = now.get("lineup") or {}
+            return {"culprit": ((report.get("culprit") or {}).get("sha") or "")[:12] or None, "replays": report.get("replays"),
+                    "commits_tested": report.get("commits_tested"), "voided": report.get("voided"), "note": report.get("note", "")}
         args.resume = bool(record.get("replays"))
-        code = lineup(args)
+        code = step("lineup", {"budget": args.budget, "resumed": args.resume}, lineup, named)
         if code == 1:
             note("lineup", f"Nobody could be named inside {args.budget} replays. Carrying on from those replays with {args.budget} more.")
             args.resume = True
-            code = lineup(args)
+            code = step("lineup", {"budget": args.budget, "resumed": True}, lineup, named)
         if code != 0:
             note("lineup", "No culprit named. The case file lists the suspects that remain." if code == 1 else "The case could not be run: its good ref fails or its bad ref passes.")
-            return finish(1)
+            return 1
         found = load_record(path)["lineup"]
         note("lineup", f"Named {found['culprit']['sha'][:12]} ({found['culprit']['subject']}) after {found['replays']} replays across {found['commits_tested']} commits.")
     else:
         note("lineup", f"Already named: {record['lineup']['culprit']['sha'][:12]}.")
     if not load_record(path).get("brief") or args.redo_brief:
-        brief(args)
+        brief(args)  # makes its own two spans, one for the motive and one for the brief
+        if tracer.where == "cloud":
+            # The two runs the brief cites go to the same place as the investigation's own trace.
+            step("send the failing and passing run to neatlogs cloud", {}, forward, lambda now: (now.get("evidence") or {}).get("cloud") or {})
         written = load_record(path)
         note("brief", f"Written by {'a model' if written['brief'].get('writer') == 'model' else 'the fixed template'}. Motive: {'on record' if written['motive'].get('request') else written['motive'].get('note') or 'none'}")
-    code = ruling(args)
+    code = step("ruling", {"asked": "revert it, or keep what it was for and patch the bug?"}, ruling,
+                lambda now: {"ruling": (now.get("ruling") or {}).get("ruling"), "kind": (now.get("ruling") or {}).get("kind") or (now.get("ruling_question") or {}).get("kind"),
+                             "asked_the_owner_now": (now.get("ruling") or {}).get("asked_now"), "waiting": "ruling" not in now})
     if code != 0:
         note("ruling", "Waiting for the owner. Give it with `whodunit ruling <case> --answer revert` or `--answer patch`, then run investigate again.")
-        return finish(3)
+        return 3
     decided = load_record(path)["ruling"]
     note("ruling", f"{decided['ruling']} for a {decided['kind']} change" + ("" if decided.get("asked_now") else ", from the standing rule"))
-    code = fix(args)
+    code = fix(args)  # each attempt is a span of its own
     done = load_record(path)
     tries = done.get("attempts", [])
     seen = (done.get("fix") or {}).get("verification") or {}
     note("fix", (f"Kept a {done['fix']['kind']} after {len(tries)} {'try' if len(tries) == 1 else 'tries'}: {fixes.observed(seen['failures'], seen['replays'])}" if code == 0
                  else f"No fix cleared the bar in {len(tries)} {'try' if len(tries) == 1 else 'tries'}."))
-    damages(args)
-    return finish(code)
+    step("damages", {"workflow": args.workflow}, damages,
+         lambda now: {key: (now.get("damages") or {}).get(key) for key in ("case_runs", "case_bad", "wrongly_paid", "withheld", "replay_runs", "replay_usd")})
+    return code
 
 
 def check(args) -> int:
@@ -793,6 +931,10 @@ def main(argv: list[str] | None = None) -> int:
         if name == "damages":
             p.add_argument("--workflow", default="refund-agent")
             p.add_argument("--since-ms", type=float, help="count runs from this time, in ms since the epoch")
+    p = commands.add_parser("forward", help="send the case's failing run and passing run from neatroots to neatlogs cloud")
+    p.add_argument("case", help="path to the case file")
+    p.add_argument("--record", help="the case record (default: next to the case file)")
+    p.set_defaults(func=forward)
     p = commands.add_parser("harm", help="replay the other cases' inputs and the ordinary requests on a kept fix, to see that it broke nothing")
     p.add_argument("case", help="path to the case file")
     p.add_argument("--record", help="the case record (default: next to the case file)")

@@ -183,6 +183,7 @@ def statistical_bisect(
     bad_prior: tuple[float, float] = BAD_PRIOR,
     on_round: Callable[[list[int], list[str], list[float]], None] | None = None,
     evidence: Sequence[tuple[int, bool]] = (),
+    around: Callable[[list[int], Callable[[], list[str]]], list[str]] | None = None,
 ) -> Lineup:
     """Find the first bad suspect when a bad commit only fails some of the time.
 
@@ -198,6 +199,10 @@ def statistical_bisect(
     `evidence` is what is already known, as (position, failed) pairs: replays from an earlier
     run of the same case, or the agent's ordinary traffic. It shapes the posterior from the
     start and does not count against the budget.
+
+    `around(positions, go)` wraps one round: it has to call `go()`, which runs the replays and
+    returns their verdicts, and return those verdicts. It is how a round gets a span of its own
+    in the investigation's trace.
     """
     state = ChangePoint(count, priors, good_prior, bad_prior)
     for position, failed in evidence:
@@ -210,8 +215,13 @@ def statistical_bisect(
     down = "the model provider or the network kept failing, so the replays could not be judged"
 
     def run(positions: list[int]) -> list[str]:
-        nonlocal void_rounds
         positions = positions[: max(0, budget - (state.replays - known))]
+        if not positions:
+            return []
+        return around(positions, lambda: replay(positions)) if around else replay(positions)
+
+    def replay(positions: list[int]) -> list[str]:
+        nonlocal void_rounds
         if parallel > 1 and len(positions) > 1:
             with ThreadPoolExecutor(max_workers=parallel) as pool:
                 verdicts = list(pool.map(trial, positions))

@@ -449,3 +449,25 @@ The page says "Checked against N other requests" with the result under the fix, 
 The five fixes already in the casebook were kept before this check existed. Their pages now say so: "Only this case's own requests were replayed on the fix." `whodunit harm <case>` runs the check on a fix that is already kept. It has not been run on them yet, because it needs real-model replays, and those come at the end of this stage.
 
 What is still open: the check is only as wide as the list. A fix could break a request nobody wrote down.
+
+### 5:43 PM, the investigation is a trace too
+
+Stage 2, third item. Until now Whodunit read traces and made none of its own. `whodunit investigate` is now one trace per case, tagged with the case id.
+
+- The root span is the investigation. Its input is the case and its output is the culprit, the probability and what became of the fix.
+- Under it, a span for the lineup with one child per round: which commits were replayed, the verdicts, and the top three suspects with their probabilities after that round.
+- Then spans for the motive, the brief, the ruling, each fix attempt with its replays and its do-no-harm check, and the damages.
+- The rounds are also kept in the case record, with the whole posterior after each one. Stage 3 wants to play an investigation back on the page, and this is what it will play.
+
+The SDK is an optional extra, `uv sync --extra trace`. Without it, or without the key, `whodunit/trace.py` does nothing and the rest runs as before. A test hides the SDK and checks that. Another swaps in a stand-in SDK and checks the spans. Every test runs with tracing off, so nothing a test does can reach the cloud.
+
+Checked for real, with no model involved: a planted ten-commit case was run with the trace going to local neatroots, and then once more with it going to neatlogs cloud. The cloud read it back through its MCP endpoint as trace `1c87143bc68b3c01ed9767dca855b8e4`: 14 spans, one root, finalized. That one is a test case called `stub-bonus` and can be deleted from the dashboard.
+
+What did not get done, and why. The item also asks for each case's failing run and passing run to be pushed from neatroots to neatlogs cloud. `neatroots cloud forward` does that, and it answered "no API key stored: run neatroots cloud login". That command puts the project key in the macOS Keychain, which is the owner's step and not this session's. So `whodunit forward <case>` is written and tested against a stand-in, an investigation calls it after the brief, and until the key is stored it records that the runs stayed in neatroots. The page says exactly that under the evidence.
+
+Two smaller things that are not as asked:
+
+- A page links to a cloud trace only if `NEATLOGS_TRACE_URL` gives the dashboard's address for one. This session is not signed in to the dashboard and does not know that address, and a guessed link would be worse than none. Without it the page prints the trace ids.
+- The id the trace gets is read through the SDK's own header helper. The ordinary way of asking for the current span returned zeros, because the SDK keeps its spans apart from anyone else's.
+
+`uv.lock` grew by about 1,900 lines for the extra. The base install still has no dependencies.

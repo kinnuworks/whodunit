@@ -279,6 +279,19 @@ def render(record: dict) -> str:
             for label, run in runs) + "</div>"
     if evidence.get("diff"):
         body += f'<details{" open" if not runs else ""}><summary>The culprit\'s diff</summary>{_typed(evidence["diff"])}</details>'
+    cloud = evidence.get("cloud")
+    if cloud and runs:
+        if cloud.get("sent"):
+            named = []
+            for label, key in (("the failing run", "failing_run"), ("the passing run", "passing_run")):
+                if key in cloud.get("trace_ids", {}):
+                    shown = f'<span class="cite">{escape(cloud["trace_ids"][key])}</span>'
+                    link = (cloud.get("links") or {}).get(key)
+                    named.append(f'{label} {f"""<a href="{escape(link)}">{shown}</a>""" if link else shown}')
+            body += f'<p class="small">Both runs were sent from neatroots to neatlogs cloud: {" and ".join(named)}.</p>'
+        else:
+            body += (f'<p class="small">These two runs are in neatroots on the machine that ran the case. They have not been sent to neatlogs cloud. '
+                     f'neatroots said: {escape(cloud.get("note", ""))}</p>')
     for note in evidence.get("notes", []):
         body += f'<p class="small">{escape(note)}</p>'
     parts.append(_field("Evidence", body or '<p class="empty">Nothing collected yet.</p>'))
@@ -376,6 +389,14 @@ def render(record: dict) -> str:
     happened = timeline(record)
     if happened:
         rows = "".join(f'<li><span class="cite">{escape(step)}</span> {escape(text)}</li>' for step, text in happened)
+        traced = record.get("trace") or {}
+        if traced.get("trace_id"):
+            # The investigation is a trace of its own, with a span for each of these steps and each round of the lineup.
+            place = {"cloud": "neatlogs cloud", "neatroots": "neatroots on the machine that ran it"}.get(traced.get("where"), "the trace collector")
+            name = f'<span class="cite">{escape(traced["trace_id"])}</span>'
+            if traced.get("link"):
+                name = f'<a href="{escape(traced["link"])}">{name}</a>'
+            rows += f'<li><span class="cite">trace</span> This investigation is itself a trace in {place}: {name}</li>'
         parts.append(_field("Log", f'<ol class="steps">{rows}</ol>'))
 
     stamp = ("Closed" if kept(fix) else "Culprit named") if culprit else "Open"

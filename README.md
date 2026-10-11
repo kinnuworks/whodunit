@@ -34,6 +34,8 @@ On the refund agent's real history, 57 commits grown by a separate coding sessio
 5. The fix is a revert or a patch on a local branch. It is kept only when its failure rate is 95% likely to be back within 5 points of the rate before the culprit, which takes about 30 clean replays. What gets reported is the count and the 95% upper bound on the failure rate after the fix, for example "0 failures in 30 replays. At most 6.2% at 95%." That is the honest size of the claim: in simulation a fix that still fails 4 runs in 100 clears the same bar about one time in three. A fix that clears the bar on its own case is then replayed against the inputs of every other case under `cases/` and a short list of ordinary requests in `cases/ordinary.toml`. One that breaks a request that used to work is not kept, however clean its own replays were. A patch that falls short either way is tried once more with what went wrong in view, and after that the culprit is reverted. The case is kept under `cases/` as a regression test that `whodunit check` can replay against any ref.
 6. The damages are counted from the traces. Only runs that fail the case's own check count: they asked what the case asks, on the culprit or later, and paid out something else. What they cost the shop is read from the refund tool's spans, and what they cost in tokens from the model spans. In this repo the ordinary runs were sent by `eval/traffic.py`, a script that plays customers, so the amounts are a test shop's and no real customer was involved.
 
+The investigation is itself one trace. `whodunit investigate` sends it to neatlogs cloud, tagged with the case id: a span for each round of the lineup with the commit replayed, the verdicts and the top three suspects, and spans for the motive, the brief, the ruling, each fix attempt, its replays and the do-no-harm check. That needs the Neatlogs SDK (`uv sync --extra trace`) and `NEATLOGS_API_KEY` in `.env`. Without either, nothing is sent and everything else works the same. `WHODUNIT_TRACE=neatroots` sends it to the local collector, and `off` sends it nowhere. The failing run and the passing run a brief cites are sent to the cloud by neatroots, once `neatroots cloud login` has stored the project key.
+
 Whodunit never pushes, opens a pull request or writes to anyone's finance model by itself. Those stay with the owner.
 
 ## Try it
@@ -56,7 +58,7 @@ Add `flaky-lookup 40 27` to the `planted.py` line for 40 commits with a bug at c
 
 ## What is in here
 
-- `whodunit/` is the tool. `lineup.py` holds both bisects, `replay.py` the worktree runner, `motive.py` the Entire lookups, `brief.py` the evidence and the brief, `ruling.py`, `fix.py` and `damages.py` the closing steps, and `casefile/` the page.
+- `whodunit/` is the tool. `lineup.py` holds both bisects, `replay.py` the worktree runner, `motive.py` the Entire lookups, `brief.py` the evidence and the brief, `ruling.py`, `fix.py` and `damages.py` the closing steps, `trace.py` the investigation's own trace, and `casefile/` the page.
 - `victims/refund-agent/` is the agent under investigation. It started as the `refund-agent` example that ships with neatroots, which is licensed under Apache-2.0. The licence is in that folder and the changes are listed in its README.
 - `eval/simulator/` has the accuracy curves, the tables behind them and what they show.
 - `tests/planted.py` builds histories with a known culprit. The tests and the demo use the same builder.
@@ -73,6 +75,8 @@ Keys live in `.env`, which git ignores. `.env.example` lists them. The code that
 Replays of the refund agent use a scripted model by default and cost nothing. `REFUND_LLM=gateway` or `REFUND_LLM=own` switches them to a real model. Keep one model for the whole of a case, because a model change in the middle would look like a regression.
 
 The brief and the patch use `WHODUNIT_LLM`: `gateway`, `own`, `agent` for a coding agent in headless mode, or `none` for a fixed template with no model.
+
+A case page links to a trace in neatlogs cloud only when `NEATLOGS_TRACE_URL` gives the dashboard's address for one, with `{trace_id}` where the id goes. Without it the page prints the trace ids and makes no link up.
 
 ## What it does not do yet
 
