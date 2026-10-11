@@ -39,6 +39,17 @@ def save_record(path: Path, record: dict) -> None:
     path.write_text(json.dumps(record, indent=1) + "\n")
 
 
+def ablation_path(record_file: Path) -> Path:
+    """Where a case keeps the result of a lineup run with its head start taken away: next to the record."""
+    return record_file.with_name(record_file.name.replace(".record.json", "") + ".ablation.json")
+
+
+def with_ablation(record: dict, record_file: Path) -> dict:
+    """The record, plus the ablation run if there is one on disk. It is shown on the page and not saved into the record."""
+    path = ablation_path(record_file)
+    return {**record, "ablation": json.loads(path.read_text())} if path.is_file() else record
+
+
 def _replayed(record: dict) -> None:
     """Note that this record's own steps have made replays up to now. The damages count the investigation's cost up to here."""
     import time
@@ -175,6 +186,15 @@ def lineup(args) -> int:
         say(f"Could not get it down to one. {len(found.remaining)} suspects remain because the commits between them would not build:")
         for i in found.remaining:
             say(f"  {suspects[i].short}  {suspects[i].subject}")
+    if getattr(args, "ablation", False):
+        # A run with some of the head start taken away, to see what it was worth. The case record is left alone.
+        without = (["alibis from entire-graph"] if args.no_graph else []) + (["any prior on the suspects"] if args.no_priors else []) + \
+                  ([] if getattr(args, "from_traffic", None) else ["ordinary runs as evidence"])
+        kept = {"case": case.id, "without": without, "runs": 1, "replays": replays, "commits_tested": commits,
+                "culprit": report["culprit"] and report["culprit"]["sha"], "probability": report["culprit"] and report["culprit"].get("probability")}
+        ablation_path(record_path(args)).write_text(json.dumps(kept, indent=1) + "\n")
+        say(f"Ablation: {ablation_path(record_path(args))}")
+        return 0 if found.culprit is not None else 1
     record = load_record(record_path(args))
     record["case"] = {"id": case.id, "symptom": case.symptom, "good": resolve(repo, case.good), "bad": resolve(repo, case.bad), "target": case.target, "file": os.path.relpath(Path(args.case).resolve()), "repo": os.path.relpath(repo),
                       "traffic_sent_by": case.traffic_sent_by}
@@ -594,7 +614,7 @@ def open_case(args) -> int:
     if not record:
         print("No cases yet. Lucky you." if not Path(args.case).is_file() else f"No record for this case yet. Run `whodunit lineup {args.case}` first.")
         return 2
-    page = casefile.write(record, path.with_name(path.name.replace(".record.json", "") + ".casefile.html"))
+    page = casefile.write(with_ablation(record, path), path.with_name(path.name.replace(".record.json", "") + ".casefile.html"))
     print(page)
     if not args.no_open:
         import webbrowser
@@ -608,7 +628,7 @@ def casebook(args) -> int:
     folder = Path(args.folder)
     records = []
     for path in sorted(folder.glob("*.record.json")):
-        record = load_record(path)
+        record = with_ablation(load_record(path), path)
         page = casefile.write(record, path.with_name(path.name.replace(".record.json", "") + ".casefile.html"))
         records.append((page.name, record))
     records.sort(key=lambda item: -len(item[1].get("suspects", [])))
@@ -637,6 +657,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--from-traffic", metavar="WORKFLOW", help="start from ordinary runs of this workflow that already asked what the case asks")
     p.add_argument("--no-graph", action="store_true", help="do not ask entire-graph which commits could reach the agent")
     p.add_argument("--no-priors", action="store_true", help="suspect every commit equally, even ones that never touched the agent")
+    p.add_argument("--ablation", action="store_true", help="write the result next to the record as <case>.ablation.json and leave the record alone; use with --no-graph to see what the alibis were worth")
     p.add_argument("--record", help="where to write the case record (default: next to the case file)")
     p.add_argument("--keep", action="store_true", help="leave the worktrees in .whodunit/worktrees")
     p.add_argument("--json", action="store_true", help="print the result as JSON on stdout")

@@ -278,6 +278,22 @@ def test_case_file_renders_an_open_case_without_a_culprit():
     assert "Refunds &lt;vanish&gt;" in page and "Nobody named yet." in page and "Still in the lineup" in page
 
 
+def test_an_ablation_run_is_kept_beside_the_record_and_shown_on_the_page(tmp_path, monkeypatch, capsys):
+    monkeypatch.chdir(tmp_path)
+    made = stub_history(tmp_path / "repo", suspects=10, culprit=6)
+    case, record_file = str(made["case"]), made["case"].with_name("case.record.json")
+    assert main(["lineup", case, "--repo", str(made["repo"]), "--budget", "60"]) == 0
+    before = record_file.read_text()
+    assert main(["lineup", case, "--repo", str(made["repo"]), "--budget", "60", "--no-graph", "--no-priors", "--ablation"]) == 0
+    assert record_file.read_text() == before  # the case record is left alone
+    kept = json.loads(made["case"].with_name("case.ablation.json").read_text())
+    assert kept["culprit"] == made["culprit"] and kept["replays"] > 0 and "alibis from entire-graph" in kept["without"]
+    assert main(["open-case", case, "--no-open"]) == 0
+    page = made["case"].with_name("case.casefile.html").read_text()
+    assert "What the head start was worth" in page and f"this case took {kept['replays']} replays across {kept['commits_tested']} commits" in page
+    assert "one run each way" in page and "cannot be told apart" in page and "too few" in page
+
+
 def test_investigate_runs_the_whole_case_and_waits_for_the_ruling(tmp_path, monkeypatch, capsys):
     monkeypatch.setenv("WHODUNIT_LLM", "none")
     monkeypatch.chdir(tmp_path)

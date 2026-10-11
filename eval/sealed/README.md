@@ -54,7 +54,7 @@ So four of five were closed, one of them only by giving up on the patch the owne
 
 ## The same culprit across the whole history
 
-`cases/whole-history.toml` takes the `strangers-paid` regression and widens the range to the whole grown history, 57 suspects. With alibis from entire-graph for 22 of them and 18 ordinary runs as evidence, 20 replays across 5 commits named the culprit at 99.8%. A scan from the oldest suspect would have tested 37 commits. This is the run that speaks to savings on a longer history, and it is one run.
+`cases/whole-history.toml` takes the `strangers-paid` regression and widens the range to the whole grown history, 57 suspects. With alibis from entire-graph for 22 of them and 18 ordinary runs as evidence, 20 replays across 5 commits named the culprit at 99.8%. A scan from the oldest suspect would have tested 37 commits. This is the run that speaks to savings on a longer history, and it is one run. Run again with no alibis and no ordinary runs to go on, it took 30 replays across 8 commits to reach 95.4%. So the head start saved 10 replays and 3 commits, in one run each way, with the two kinds of help taken away together.
 
 ## Against plain bisect with retries
 

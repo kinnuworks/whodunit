@@ -22,7 +22,7 @@ uv run whodunit investigate cases/whole-history.toml --from-traffic refund-agent
 
 Let the first lines print. Point at each as it appears.
 
-> Whodunit starts with what it already has. Entire's code graph gives 22 of the 57 commits an alibi: a README edit cannot break a refund. And 18 ordinary runs in neatlogs had already asked this question. Four of them went wrong.
+> Whodunit starts with what it already has. Entire's code graph gives 22 of the 57 commits an alibi: a README edit cannot break a refund. And 18 ordinary runs in neatlogs had already asked this question. Four of them went wrong. Without that head start the same case took 30 replays across 8 commits. With it, 20 across 5. That is one run each way.
 
 > Then it replays the failing request against the commits that are left, each in its own git worktree, each replay a real traced run of the agent. A bad commit does not fail every time, so it keeps a probability for every suspect.
 

@@ -135,6 +135,17 @@ def render(record: dict) -> str:
         if excused:
             rows = "".join(f'<li><span class="sha">{escape(_short(s["sha"]))}</span> {escape(s["subject"])}: {escape(s["alibi"])}.</li>' for s in excused)
             named += f'<details><summary>Alibis: {len(excused)} of {len(suspects)} suspects started with less suspicion</summary><ul class="steps">{rows}</ul></details>'
+        tried = record.get("ablation") or {}
+        if tried.get("replays") and culprit:
+            # What the head start was worth, from a run of the same case without it.
+            same = tried.get("culprit") in (None, culprit["sha"])
+            ended = (f'to reach {_pct(tried["probability"])} on the same commit' if same and tried.get("probability") else
+                     "and named a different commit" if tried.get("culprit") else "and named nobody")
+            runs = tried.get("runs", 1)
+            named += (f'<p class="small">What the head start was worth: run again without {escape(" and without ".join(tried.get("without") or ["it"]))}, '
+                      f'this case took {tried["replays"]} replays across {tried["commits_tested"]} commits {ended}, against {lineup.get("replays", 0)} across {lineup.get("commits_tested", 0)} here. '
+                      f'That is {"one run" if runs == 1 else f"{runs} runs"} each way, which is too few to call the difference measured'
+                      f'{", and the things taken away cannot be told apart" if len(tried.get("without") or []) > 1 else ""}.</p>')
         if not culprit and lineup.get("remaining"):
             rows = "".join(f'<tr><td class="num">{_pct(r.get("probability", 0))}</td><td class="sha">{escape(_short(r["sha"]))}</td><td>{escape(r["subject"])}</td></tr>' for r in lineup["remaining"][:8])
             named += f'<table class="remaining"><caption>Still in the lineup</caption>{rows}</table>'

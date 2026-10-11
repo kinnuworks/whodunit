@@ -317,7 +317,7 @@ What went wrong: the first version of the simulation ran for ten minutes and had
 
 A gap of about an hour and a half before this entry is the session waiting, not work.
 
-### 4:50 PM, wrong accusations, counted against accusations made
+### 4:40 PM, wrong accusations, counted against accusations made
 
 The review was right, and what came out is the least comfortable result so far.
 
@@ -336,7 +336,7 @@ The README's list of what the tool does not do has this in it, with the numbers.
 
 What went wrong: the regeneration takes about ten minutes now, up from two, and the README had said two. The seventh chart panel sits alone on a third row.
 
-### 5:00 PM, damages that belonged to other cases
+### 4:42 PM, damages that belonged to other cases
 
 The review was right. `whodunit/damages.py` counted a run as bad if it errored or neatroots raised any finding on it, on the culprit or any later commit. The history has five regressions in it, so "25 of 147 runs went bad" on the headline page was the sum of all of them, and the token cost beside it was too.
 
@@ -351,3 +351,11 @@ Found on the way, and not on the review's list: the line "the investigation used
 Also wrong in my own first draft of the plan note: I wrote "232 scripted requests over 58 commits". neatroots holds 411 ordinary runs over 60 commits, and 232 is the number that went to neatlogs cloud. The note says "a few hundred".
 
 `tests/test_damages.py` runs the queries against a small SQLite database with a second regression in it.
+
+### 4:50 PM, what the alibis saved
+
+The page and the pitch said 22 of 57 commits had an alibi and stopped there. The number that says what that was worth was already in this log: run again with no alibis and no ordinary runs to go on, the headline case took 30 replays across 8 commits to reach 95.4%, against 20 across 5.
+
+That is now on the page under the alibis, in the README, in the video script and in the sealed eval write-up, each time with the two things that limit it: it is one run each way, and the alibis and the traffic were taken away together, so the 10 replays cannot be split between them.
+
+The page draws it from a file next to the record, `cases/whole-history.ablation.json`. `whodunit lineup --ablation` writes that file from a real run and leaves the case record alone. The file in the repo today was entered by hand from this log, and says so, because the record of the original run was not kept. It gets replaced by a real one when the headline case is rerun at the end of stage 2.
