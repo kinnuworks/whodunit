@@ -223,3 +223,46 @@ def test_a_real_regression_is_not_mistaken_for_a_clear_range():
     for seed in range(30):
         found = statistical_bisect(20, flaky(12, 0.6, seed=seed), budget=200)
         assert not found.clear
+
+
+def stepped(first, second, low, high, seed=0):
+    """Two regressions: from `first` the case fails at `low`, and from `second` at `high`."""
+    rng = random.Random(seed)
+
+    def trial(position):
+        rate = high if position >= second else low if position >= first else 0.0
+        return FAIL if rng.random() < rate else PASS
+    return trial
+
+
+def test_two_change_points_have_an_exact_posterior():
+    from whodunit.lineup import OneOrTwo
+
+    state = OneOrTwo(6)
+    for position, fails, passes in ((-1, 0, 8), (0, 0, 8), (1, 0, 8), (2, 4, 4), (3, 4, 4), (4, 8, 0), (5, 8, 0)):
+        for _ in range(fails):
+            state.observe(position, True)
+        for _ in range(passes):
+            state.observe(position, False)
+    weights = state.weights()
+    assert abs(sum(weights) - 1) < 1e-9 and len(weights) == 6 + 15
+    best = max(range(len(weights)), key=weights.__getitem__)
+    assert state.hypotheses[best] == (2, 4) and weights[best] > 0.9  # clean, then half, then always: two changes, at 2 and at 4
+    plain = OneOrTwo(6)
+    for position, fails, passes in ((-1, 0, 8), (0, 0, 8), (1, 0, 8), (2, 8, 0), (3, 8, 0), (4, 8, 0), (5, 8, 0)):
+        for _ in range(fails):
+            plain.observe(position, True)
+        for _ in range(passes):
+            plain.observe(position, False)
+    weights = plain.weights()
+    assert plain.hypotheses[max(range(len(weights)), key=weights.__getitem__)] == (2,)  # one step is one change, and the pairs do not steal it
+    assert sum(weights[6:]) < 0.2
+
+
+def test_the_joint_lineup_names_both_culprits_or_the_one_there_is():
+    from whodunit.lineup import one_or_two_bisect
+
+    both = one_or_two_bisect(12, stepped(4, 9, 0.4, 1.0, seed=2), budget=300)
+    assert both.culprits == (4, 9) and both.two > 0.95 and both.bayes_factor > 19
+    one = one_or_two_bisect(12, flaky(7, 1.0, seed=2), budget=300)
+    assert one.culprits == (7,) and one.two < 0.5 and one.replays < 100  # one culprit, named without waiting to rule every pair out

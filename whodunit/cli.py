@@ -18,7 +18,7 @@ from . import ruling as rulings
 from .motive import checkpoint_link, find_motive
 from .neat import NeatError, forward_to_cloud, neatroots
 from .onset import cloud_trend, environment_then, find_onset, traffic, what_differs, witness
-from .lineup import linear_scan_cost, plain_bisect, statistical_bisect
+from .lineup import ChangePoint, linear_scan_cost, plain_bisect, statistical_bisect
 from .replay import FAIL, PASS, VOID, Replay, Runner
 from .suspects import git, list_suspects, resolve
 from .trace import OFF, Trace
@@ -174,6 +174,40 @@ def _statistical(args, case, suspects, runner, say):
     )
 
 
+def _per_input(case, suspects, good_sha: str, replays: list[dict], priors) -> tuple[list[dict], dict | None]:
+    """What each input says by itself about where the trouble starts, and whether two of them disagree.
+
+    The lineup pools every input's replays, which is right when one commit broke them all. Two
+    regressions in one range often break different inputs. So each input gets a change-point
+    posterior of its own, from its own replays. If two inputs that both fail are 95% sure to
+    have different first bad commits, the case is flagged: there may be two culprits here.
+    """
+    position = {s.sha: n for n, s in enumerate(suspects)} | {good_sha: -1}
+    told, posteriors = [], {}
+    for one in case.inputs:
+        state = ChangePoint(len(suspects), priors)
+        mine = [r for r in replays if r["input"] == one.text and r["verdict"] in (PASS, FAIL) and r["sha"] in position]
+        for replay in mine:
+            state.observe(position[replay["sha"]], replay["verdict"] == FAIL)
+        failures = sum(r["verdict"] == FAIL for r in mine)
+        entry = {"input": one.text, "replays": len(mine), "failures": failures, "top": None, "probability": None}
+        if failures:
+            posterior = state.posterior()
+            top = max(range(len(posterior)), key=posterior.__getitem__)
+            entry["top"], entry["probability"] = suspects[top].sha, round(posterior[top], 4)
+            posteriors[one.text] = posterior
+        told.append(entry)
+    worst = None
+    texts = list(posteriors)
+    for i, a in enumerate(texts):
+        for b in texts[i + 1:]:
+            same = sum(x * y for x, y in zip(posteriors[a], posteriors[b]))  # P(both inputs broke at the same commit)
+            if same <= 0.05 and (worst is None or same < worst["same"]):
+                tops = {entry["input"]: entry["top"] for entry in told}
+                worst = {"same": round(same, 4), "inputs": [a, b], "commits": [tops[a], tops[b]]}
+    return told, worst
+
+
 def lineup(args) -> int:
     case = Case.load(args.case)
     repo = Path(args.repo).resolve()
@@ -227,6 +261,10 @@ def lineup(args) -> int:
     }
     if found.rates and not found.clear:
         report["failure_rate_before"], report["failure_rate_from"] = (round(r, 3) for r in found.rates)
+    if args.method == "statistical":
+        report["per_input"], split = _per_input(case, suspects, resolve(repo, case.good), every_replay, None if args.no_priors else [s.prior for s in suspects])
+        if split:
+            report["inputs_disagree"] = split
     say("")
     if found.clear:
         report["clear"], report["note"], report["differs"] = True, found.note, differs
@@ -268,6 +306,10 @@ def lineup(args) -> int:
         ablation_path(record_path(args)).write_text(json.dumps(kept, indent=1) + "\n")
         say(f"Ablation: {ablation_path(record_path(args))}")
         return 0 if found.culprit is not None else 1
+    if report.get("inputs_disagree"):
+        split = report["inputs_disagree"]
+        say(f"Careful: the inputs point at different commits. \"{split['inputs'][0]}\" points at {split['commits'][0][:12]} and \"{split['inputs'][1]}\" at {split['commits'][1][:12]}.")
+        say("There may be two regressions in this range. A single culprit, if one was named, is at most one of them.")
     record = load_record(record_path(args))
     record["case"] = {"id": case.id, "symptom": case.symptom, "good": resolve(repo, case.good), "bad": resolve(repo, case.bad), "target": case.target, "file": os.path.relpath(Path(args.case).resolve()), "repo": os.path.relpath(repo),
                       "traffic_sent_by": case.traffic_sent_by}

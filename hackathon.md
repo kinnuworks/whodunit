@@ -533,3 +533,22 @@ The record for `wrong-order-refunded` now has the right request, and all three c
 `half-done-batch` has no readable checkpoint, so neither check can run there and the page claims nothing.
 
 `whodunit motive --case <case>` does the lookup again for a record. It replays nothing and asks no model.
+
+### 6:50 PM, two culprits: a flag is in, the model is not wired in
+
+Stage 2, seventh item, and the session's usage limit arrived in the middle of it. This entry says where it stands.
+
+In, with tests that fail on the old code: each input of a case now gets a change-point posterior of its own, from its own replays. If two inputs that both fail are 95% sure to have broken at different commits, the lineup says so on the command line and on the page, and warns that a single culprit is at most one of two. On a planted history with two separate regressions it named one and flagged the other input five commits later.
+
+Built and simulated, and not wired into the lineup: a model that holds one change point and two at once, with an exact posterior over every single commit and every pair, and a Bayes factor between the two stories. `eval/simulator/two-culprits.json` has 200 cases a row, 20 suspects, three methods.
+
+- With two regressions in the range, today's lineup never names both and accuses an innocent commit in 8 to 24% of cases.
+- The joint model names both in up to 55% of cases and accuses an innocent commit in 3 to 9%.
+- With one regression, the joint model is as accurate at 160 replays or more, uses 10 to 15 more replays, and names fewer at 80.
+- Today's lineup followed by a second look took that second look in 25 to 42% of cases that had only one regression, and did no better than the joint model.
+
+The simulator supports the joint model for ranges with two regressions. It was not wired in because it lacks what the lineup has: alibi priors, skipped and voided replays, parallel rounds, resumed evidence and the clear-range check. Putting those in is the next piece of work, and so is a section in `eval/simulator/README.md`, which does not describe this run yet.
+
+Also done here: `whodunit harm` on three of the four fixes kept before the do-no-harm check existed. None of them broke another request. On `strangers-paid` and `turned-away`, 7 and 8 of the 12 other requests were already going wrong before the fix, which is the other regressions on those branches. The check on `wrong-order-refunded` was still running when this was written.
+
+Not done from the end of stage 2: the fresh rerun of the headline case, the real ablation run, and bringing the README, the evidence index, the script and the posts in line. Stage 3 is not in the repo. A draft of the new case file is in the session's scratch folder only.

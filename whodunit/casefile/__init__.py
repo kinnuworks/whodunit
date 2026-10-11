@@ -46,6 +46,10 @@ def _typed(text: str) -> str:
     return f'<pre class="typed">{escape(text.rstrip())}</pre>'
 
 
+def _typed_inline(text: str) -> str:
+    return f'<span class="cite">{escape(text)}</span>'
+
+
 def _cites(ids: list[str]) -> str:
     return "".join(f'<span class="cite">{escape(i)}</span>' for i in ids)
 
@@ -225,6 +229,14 @@ def render(record: dict) -> str:
         if excused:
             rows = "".join(f'<li><span class="sha">{escape(_short(s["sha"]))}</span> {escape(s["subject"])}: {escape(s["alibi"])}.</li>' for s in excused)
             named += f'<details><summary>Alibis: {len(excused)} of {len(suspects)} suspects started with less suspicion</summary><ul class="steps">{rows}</ul></details>'
+        split = lineup.get("inputs_disagree")
+        if split:
+            # Each input was given a posterior of its own, and two of them cannot have broken at the same commit.
+            subject = {s["sha"]: s["subject"] for s in suspects}
+            rows = "".join(f'<li>{_typed_inline(text)} points at <span class="sha">{escape(_short(sha))}</span> {escape(subject.get(sha, ""))}</li>'
+                           for text, sha in zip(split["inputs"], split["commits"]))
+            named += (f'<p><strong>The inputs point at different commits.</strong> There may be two regressions in this range. '
+                      f'The lineup assumes one, so a culprit named above is at most one of them.</p><ul class="steps">{rows}</ul>')
         tried = record.get("ablation") or {}
         if tried.get("replays") and culprit:
             # What the head start was worth, from a run of the same case without it.

@@ -3,7 +3,7 @@ import subprocess
 
 import pytest
 
-from tests.planted import refund_agent_history, stub_history
+from tests.planted import refund_agent_history, shop_history, stub_history
 from whodunit.case import Case, CaseInput, judge, last_json_line
 from whodunit.cli import main
 from whodunit.lineup import plain_bisect
@@ -200,3 +200,26 @@ STUB_OUTAGE = "|12+6|{tmp_path / "outage-count"}|exit 1"
     record = json.loads(made["case"].with_name("case.record.json").read_text())
     assert report["voided"] == sum(r["voided"] for r in record["replays"]) == 6
     assert all(r["verdict"] != "fail" for r in record["replays"] if r["sha"] != made["culprit"] and r["sha"] != made["shas"][-1])
+
+
+def test_inputs_that_point_at_different_commits_are_flagged(tmp_path, capsys):
+    # Two regressions in one range. Suspect 4 overpays order 1001 and suspect 9 refunds order 2002 to a stranger.
+    # A single change point cannot describe that, and the case's two inputs say so between them.
+    made = shop_history(tmp_path / "repo", suspects=12, culprit=9, bonus_at=4)
+    main(["lineup", str(made["case"]), "--repo", str(made["repo"]), "--budget", "120", "--json"])
+    report = json.loads(capsys.readouterr().out)
+    assert len(report["per_input"]) == 2 and all(one["failures"] > 0 for one in report["per_input"])
+    split = report["inputs_disagree"]
+    assert split["same"] <= 0.05 and made["bonus"] in split["commits"] and len(set(split["commits"])) == 2
+    by_input = {one["input"]: one for one in report["per_input"]}
+    assert by_input["Please refund order 1001 for customer cust_9."]["top"] == made["bonus"]
+    page_record = json.loads(made["case"].with_name("case.record.json").read_text())
+    from whodunit import casefile
+    assert "point at different commits" in casefile.render(page_record)
+
+
+def test_inputs_that_agree_are_not_flagged(tmp_path, capsys):
+    made = shop_history(tmp_path / "repo", suspects=10, culprit=6)
+    assert main(["lineup", str(made["case"]), "--repo", str(made["repo"]), "--budget", "80", "--json"]) == 0
+    report = json.loads(capsys.readouterr().out)
+    assert "inputs_disagree" not in report and len(report["per_input"]) == 1

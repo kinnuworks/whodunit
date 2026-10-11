@@ -160,6 +160,74 @@ def no_culprit(trials: int = 500, budget: int = 160) -> list[dict]:
         return list(pool.map(_drift_cell, jobs))
 
 
+TWO_WORLDS = (
+    # name, failure rate after the first change, and after the second (None: there is only one change)
+    ("one change, fails every time", 1.0, None), ("one change, fails half the time", 0.5, None), ("one change, fails 30% of the time", 0.3, None),
+    ("two changes, 50% then every time", 0.5, 1.0), ("two changes, 30% then 90%", 0.3, 0.9), ("two changes, 20% then 60%", 0.2, 0.6),
+)
+
+
+def _two_cell(job: tuple[str, float, float | None, str, int, int, int]) -> dict:
+    """One row of two_culprits(): one world, one method, one budget."""
+    from .lineup import chance_of_two, one_or_two_bisect
+
+    name, first_rate, second_rate, method, budget, suspects, trials = job
+    tally = {"both": 0, "first_only": 0, "second_only": 0, "one_right_one_wrong": 0, "wrong": 0, "nobody": 0, "second_look": 0}
+    replays = 0
+    for n in range(trials):
+        places = random.Random(f"two-{name}-{n}")
+        first = places.randrange(suspects - 1)
+        second = places.randrange(first + 1, suspects) if second_rate is not None else None
+        rng = random.Random(f"two-{name}-{method}-{budget}-{n}")
+
+        def trial(position: int) -> str:
+            rate = second_rate if second is not None and position >= second else first_rate if position >= first else 0.0
+            return FAIL if rng.random() < rate else PASS
+
+        if method == "one change point":
+            found = statistical_bisect(suspects, trial, budget)
+            named, used = (() if found.culprit is None else (found.culprit,)), found.replays
+        elif method == "one, then a second look":
+            # Today's lineup first. If what it gathered says two changes are the likelier story, the joint model takes over.
+            found = statistical_bisect(suspects, trial, budget)
+            named, used = (() if found.culprit is None else (found.culprit,)), found.replays
+            seen = [(position, verdict == FAIL) for position, verdict in found.tested if verdict in (PASS, FAIL)]
+            if chance_of_two(suspects, seen)[0] > 0.5:
+                tally["second_look"] = tally.get("second_look", 0) + 1
+                again = one_or_two_bisect(suspects, trial, max(0, budget - used), evidence=seen)
+                named, used = again.culprits or (), again.replays
+        else:
+            found = one_or_two_bisect(suspects, trial, budget)
+            named, used = found.culprits or (), found.replays
+        replays += used
+        truth = {first} | ({second} if second is not None else set())
+        hits = len(set(named) & truth)
+        if not named:
+            tally["nobody"] += 1
+        elif hits == len(truth) and len(named) == len(truth):
+            tally["both"] += 1  # every culprit there is, and nobody else
+        elif hits and len(named) > hits:
+            tally["one_right_one_wrong"] += 1
+        elif hits:
+            tally["first_only" if first in named else "second_only"] += 1
+        else:
+            tally["wrong"] += 1
+    return {"world": name, "method": method, "budget": budget, "suspects": suspects, "trials": trials, **tally, "mean_replays": round(replays / trials, 1)}
+
+
+def two_culprits(trials: int = 200, suspects: int = 20, budgets=(80, 160, 320)) -> list[dict]:
+    """The lineup's one change point against a model that also allows two, in worlds with one regression and with two.
+
+    "both" means every culprit there is was named and nobody else, so in a world with one
+    change it is simply the right answer. The places of the changes depend on the world and the
+    case alone, so both methods meet the same cases.
+    """
+    jobs = [(name, first, second, method, budget, suspects, trials)
+            for name, first, second in TWO_WORLDS for method in ("one change point", "one or two", "one, then a second look") for budget in budgets]
+    with ProcessPoolExecutor() as pool:
+        return list(pool.map(_two_cell, jobs))
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     parser.add_argument("--out", default="eval/simulator")
@@ -177,6 +245,7 @@ def main(argv: list[str] | None = None) -> int:
     (out / "fix-bar.json").write_text(json.dumps(fix_bar(), indent=1) + "\n")
     (out / "short-range.json").write_text(json.dumps(short_range(), indent=1) + "\n")
     (out / "no-culprit.json").write_text(json.dumps(no_culprit(), indent=1) + "\n")
+    (out / "two-culprits.json").write_text(json.dumps(two_culprits(), indent=1) + "\n")
     from .chart import write_charts
 
     write_charts(results, out)

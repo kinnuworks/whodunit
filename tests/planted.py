@@ -106,21 +106,24 @@ refunds = [{{ order_id = "1001", refunded = 42.0 }}]
 
 SHOP = '''import json, sys
 STRANGERS = False
+BONUS = 0
 asked = " ".join(sys.argv[1:])
 refunds = []
 if "1001" in asked:
-    refunds.append({"order_id": "1001", "refunded": 42.0})
+    refunds.append({"order_id": "1001", "refunded": 42.0 + BONUS})
 if "2002" in asked and STRANGERS:
     refunds.append({"order_id": "2002", "refunded": 30.0})
 print(json.dumps({"reply": "done", "refunds": refunds}))
 '''
 
 
-def shop_history(repo: Path, suspects: int = 8, culprit: int = 5) -> dict:
+def shop_history(repo: Path, suspects: int = 8, culprit: int = 5, bonus_at: int | None = None) -> dict:
     """A one-file agent with two orders. The culprit starts refunding order 2002 to whoever asks.
 
     The case expects no refund at all, so a "fix" that stops every refund would pass it. That
-    is what the do-no-harm check is for.
+    is what the do-no-harm check is for. With `bonus_at`, a second and separate regression is
+    planted at that suspect: order 1001 is overpaid. The case then has two inputs, and each is
+    broken by a different commit.
     """
     repo.mkdir(parents=True, exist_ok=True)
     git(repo, "init", "-q", "-b", "main")
@@ -132,6 +135,9 @@ def shop_history(repo: Path, suspects: int = 8, culprit: int = 5) -> dict:
         if n == culprit:
             agent.write_text(agent.read_text().replace("STRANGERS = False", "STRANGERS = True"))
             shas.append(commit(repo, "Refund without checking who owns the order"))
+        elif n == bonus_at:
+            agent.write_text(agent.read_text().replace("BONUS = 0", "BONUS = 5"))
+            shas.append(commit(repo, "Add a goodwill bonus to refunds"))
         else:
             agent.write_text(agent.read_text() + f"# tidy {n}\n")
             shas.append(commit(repo, f"Tidy the agent ({n})"))
@@ -147,8 +153,12 @@ run = ["{sys.executable}", "agent.py", "{{input}}"]
 [[inputs]]
 text = "Please refund order 2002 for customer cust_9."
 refunds = []
-''')
-    return {"repo": repo, "case": case, "shas": shas, "culprit": shas[culprit]}
+''' + ('''
+[[inputs]]
+text = "Please refund order 1001 for customer cust_9."
+refunds = [{ order_id = "1001", refunded = 42.0 }]
+''' if bonus_at else ""))
+    return {"repo": repo, "case": case, "shas": shas, "culprit": shas[culprit], "bonus": shas[bonus_at] if bonus_at else None}
 
 
 TOP_UP = (
