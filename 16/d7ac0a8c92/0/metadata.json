@@ -1,0 +1,159 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "16d7ac0a8c92",
+  "session_id": "d1722531-fd19-41ec-9e89-c3cbe406e10c",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-11T05:19:10.539742Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    "AGENTS.md",
+    "whodunit/brief.py"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "8930c55672b0",
+  "checkpoint_transcript_start": 1800,
+  "transcript_lines_at_start": 1800,
+  "compact_transcript_start": 300,
+  "token_usage": {
+    "input_tokens": 8,
+    "cache_creation_tokens": 5682,
+    "cache_read_tokens": 1899036,
+    "output_tokens": 1995,
+    "api_call_count": 3
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_018Qm4kKricuddnfpEDqLYrr",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "neatroots-instrument-agent"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "2ede71b9f85a",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 59,
+        "end": 60,
+        "entry_ids": [
+          "7405c011-ac34-45bb-9eab-bb95fdcd1047"
+        ],
+        "tool_use_id": "toolu_018Qm4kKricuddnfpEDqLYrr"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_018Qm4kKricuddnfpEDqLYrr"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: neatroots-instrument-agent",
+        "default_collapsed": true
+      }
+    },
+    {
+      "id": "claude-skill-toolu_01DU3BU8hUEJGXDtcwmK2qR2",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "dataviz"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "a0c1a1c38787",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 398,
+        "end": 399,
+        "entry_ids": [
+          "1079c495-783d-4e73-a10d-f4285b28c51c"
+        ],
+        "tool_use_id": "toolu_01DU3BU8hUEJGXDtcwmK2qR2"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01DU3BU8hUEJGXDtcwmK2qR2"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: dataviz",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 12
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-11T05:19:10.40992Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 1147,
+    "human_modified": 56,
+    "human_removed": 0,
+    "total_committed": 1147,
+    "total_lines_changed": 1263,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 14,
+      "user_lines_removed": 1,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "AGENTS.md": 7,
+        "CLAUDE.md": 5,
+        "whodunit/brief.py": 2
+      },
+      "user_removed_per_file": {
+        "whodunit/brief.py": 1
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 1198,
+      "user_lines_removed": 55,
+      "agent_lines_added": 9,
+      "agent_lines_removed": 1,
+      "user_added_per_file": {
+        "CLAUDE.md": 5,
+        "cases/cents-off.casefile.html": 2,
+        "cases/cents-off.record.json": 13,
+        "cases/half-done-batch.casefile.html": 2,
+        "cases/half-done-batch.record.json": 13,
+        "cases/strangers-paid.casefile.html": 2,
+        "cases/strangers-paid.record.json": 13,
+        "cases/turned-away.casefile.html": 2,
+        "cases/turned-away.record.json": 13,
+        "cases/whole-history.casefile.html": 129,
+        "cases/whole-history.record.json": 987,
+        "cases/whole-history.toml": 2,
+        "cases/wrong-order-refunded.casefile.html": 2,
+        "cases/wrong-order-refunded.record.json": 13
+      },
+      "user_removed_per_file": {
+        "cases/cents-off.casefile.html": 2,
+        "cases/cents-off.record.json": 9,
+        "cases/half-done-batch.casefile.html": 2,
+        "cases/half-done-batch.record.json": 9,
+        "cases/strangers-paid.casefile.html": 2,
+        "cases/strangers-paid.record.json": 9,
+        "cases/turned-away.casefile.html": 2,
+        "cases/turned-away.record.json": 9,
+        "cases/wrong-order-refunded.casefile.html": 2,
+        "cases/wrong-order-refunded.record.json": 9
+      }
+    }
+  ]
+}
