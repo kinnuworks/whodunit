@@ -5,7 +5,7 @@ import json
 import os
 import sys
 from concurrent.futures import ThreadPoolExecutor
-from dataclasses import asdict
+from dataclasses import asdict, fields
 from pathlib import Path
 
 from .case import Case
@@ -178,6 +178,8 @@ def lineup(args) -> int:
     if witnessed:
         report["traffic_runs"] = len(witnessed)
         report["traffic_failures"] = sum(failed for _, failed in witnessed)
+        # Which commit each ordinary run was on, so later steps can say how they fall around the culprit.
+        record["witnessed"] = [{"sha": record["case"]["good"] if position < 0 else suspects[position].sha, "failed": bool(failed)} for position, failed in witnessed]
     record["lineup"] = report
     record["replays"] = every_replay
     save_record(record_path(args), record)
@@ -232,6 +234,19 @@ def brief(args) -> int:
         return 2
     case, repo, record, path = loaded
     culprit = record["lineup"]["culprit"]["sha"]
+    if getattr(args, "from_record", False):
+        # Write the brief again from the evidence already collected. Nothing is asked of neatroots and nothing is replayed.
+        if not record.get("evidence"):
+            print(f"No evidence in {path} yet. Run `whodunit brief {args.case}` without --from-record first.")
+            return 2
+        known = {f.name for f in fields(briefs.Evidence)}
+        evidence = briefs.Evidence(**{k: v for k, v in record["evidence"].items() if k in known})
+        evidence.measured, evidence.rate_from = _measured(record)
+        written = briefs.write_brief(evidence, case.symptom)
+        record["evidence"], record["brief"] = asdict(evidence), written
+        save_record(path, record)
+        _print_brief(written, evidence)
+        return 0
     found = find_motive(repo, culprit)
     evidence = briefs.gather(
         repo, case.id, culprit, case.target, record.get("replays", []), found,
@@ -252,26 +267,51 @@ def brief(args) -> int:
             record.setdefault("replays", []).extend(asdict(r) for r in runner.replays)
         order = [s["sha"] for s in record["suspects"]]
         evidence = briefs.gather(repo, case.id, culprit, case.target, record["replays"], found, neatroots(), order=order)
-    lineup_report = record["lineup"]
-    if "failure_rate_from" in lineup_report:
-        evidence.measured = (
-            f"{lineup_report['replays']} replays across {lineup_report['commits_tested']} commits. Replays fail about "
-            f"{lineup_report['failure_rate_from']:.0%} of the time from the culprit on and {lineup_report['failure_rate_before']:.0%} before it."
-        )
+    evidence.measured, evidence.rate_from = _measured(record)
     written = briefs.write_brief(evidence, case.symptom)
     record["motive"] = found.to_dict()
     record["evidence"] = asdict(evidence)
     record["brief"] = written
     save_record(path, record)
+    _print_brief(written, evidence)
+    return 0
+
+
+def _measured(record: dict) -> tuple[str, float | None]:
+    """What the lineup measured, in words for the brief, and the failure rate from the culprit on."""
+    report = record["lineup"]
+    if "failure_rate_from" not in report:
+        return "", None
+    (good_f, good_p), (bad_f, bad_p) = _sides(record)
+    text = (f"{report['replays']} replays across {report['commits_tested']} commits. From the culprit on, {bad_f} of {bad_f + bad_p} replays failed. "
+            f"Before it, {good_f} of {good_f + good_p} replays failed.")
+    seen = record.get("witnessed") or []
+    if seen:
+        order = {s["sha"]: n for n, s in enumerate(record["suspects"])}
+        at = order[report["culprit"]["sha"]]
+        after = [w["failed"] for w in seen if order.get(w["sha"], -1) >= at]
+        before = [w["failed"] for w in seen if order.get(w["sha"], -1) < at]
+        text += (f" Ordinary runs that asked the same thing were counted as well: {sum(after)} of {len(after)} runs went wrong from the culprit on, "
+                 f"and {sum(before)} of {len(before)} runs before it. Replays and ordinary runs together: {bad_f + sum(after)} of {bad_f + bad_p + len(after)} "
+                 f"went wrong from the culprit on, and {good_f + sum(before)} of {good_f + good_p + len(before)} before it.")
+    elif report.get("traffic_runs"):
+        text += (f" {report['traffic_runs']} ordinary runs that asked the same thing, on commits across the range, were counted as well, "
+                 f"and {report['traffic_failures']} of them went wrong.")
+    text += f" The estimated failure rate is {report['failure_rate_from']:.0%} from the culprit on and {report['failure_rate_before']:.0%} before it."
+    return text, report["failure_rate_from"]
+
+
+def _print_brief(written: dict, evidence) -> None:
     print(written["headline"])
     print()
     for sentence in written["sentences"]:
         print(f"  {sentence['text']}  [{', '.join(sentence['cites'])}]")
     print()
-    print(f"Written by: {written['model']}. Sentences cut for missing citations: {len(written.get('dropped', []))}.")
+    for objection in written.get("rejected") or []:
+        print(f"A first draft was sent back: \"{objection['text']}\" {objection['problem']}.")
+    print(f"Written by: {written['model']}. Sentences cut by the rule checks: {len(written.get('dropped', []))}.")
     for note in evidence.notes:
         print(f"Note: {note}")
-    return 0
 
 
 def ruling(args) -> int:
@@ -406,7 +446,7 @@ def investigate(args) -> int:
     record = load_record(path)
     args.method, args.confidence, args.no_priors, args.keep, args.json = "statistical", 0.95, False, False, False
     args.repeats = 1
-    args.no_runs, args.since_ms = False, None
+    args.no_runs, args.from_record, args.since_ms = False, False, None
     if not (record.get("lineup") or {}).get("culprit"):
         args.resume = bool(record.get("replays"))
         code = lineup(args)
@@ -584,6 +624,7 @@ def main(argv: list[str] | None = None) -> int:
         p.set_defaults(func=func)
         if name == "brief":
             p.add_argument("--no-runs", action="store_true", help="do not ask neatroots for a failing and a passing run")
+            p.add_argument("--from-record", action="store_true", help="write the brief again from the evidence already in the record")
         if name == "ruling":
             p.add_argument("--answer", choices=("revert", "patch"), help="give the ruling here instead of being asked")
         if name == "fix":

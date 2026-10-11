@@ -3,6 +3,11 @@
 It is written from three things: the culprit's diff, the part of the coding session that
 produced it, and a failing run set against a passing one. Every sentence has to cite a span id,
 a commit or a checkpoint that is actually in that evidence, and a sentence that does not is cut.
+
+A second rule check sets the brief against what the lineup measured. A brief that says the bug
+fails always, every time or deterministically, when the measured rate is under 95%, is rejected
+and asked for again with the rates in view. So is one that gives a count of runs or replays
+that the measurements do not.
 """
 
 import json
@@ -16,6 +21,7 @@ from .neat import Mcp, NeatError, replay_runs
 from .suspects import git
 
 MAX_DIFF = 6000
+ALWAYS_NEEDS = 0.95  # a brief may say "always" only when the measured failure rate is at least this
 
 
 @dataclass
@@ -33,6 +39,7 @@ class Evidence:
     passing_run: dict | None = None
     comparison: str | None = None
     measured: str = ""  # what the lineup measured, in words
+    rate_from: float | None = None  # the failure rate from the culprit on, as the case file prints it
     notes: list[str] = field(default_factory=list)
 
     def citable(self) -> set[str]:
@@ -152,6 +159,7 @@ Rules:
 - Use only what the evidence shows. If the evidence does not show something, do not say it.
 - Read the diff line by line before describing it, including its indentation. If the bug fails only some of the time, say what in the code or the run makes it intermittent, or say that the evidence does not show why.
 - Every sentence must cite at least one id from the list of citable ids: a span id, a commit, a checkpoint or a session step.
+- How often it fails is in "What the bisect measured". Do not say it fails always, every time or deterministically unless that rate is 95% or more. Give the measured rate, and say what in the evidence makes some runs come out right, or that the evidence does not show it. Use only the counts of runs and replays given there, and do not add them up into new ones.
 - If the request behind the commit is on record, give one sentence that sets what was asked for against what the commit did, and says where the two part ways. Cite the checkpoint.
 - Plain words, short sentences, no hype. Seven sentences at most.
 
@@ -198,6 +206,46 @@ def check_citations(brief: dict, evidence: Evidence) -> dict:
     return {"headline": str(brief.get("headline", "")).strip(), "sentences": kept, "dropped": [d["text"] for d in dropped]}
 
 
+ABSOLUTE = re.compile(r"(?<![Nn]on)(?<![Nn]on-)\b(always|every (?:single )?(?:time|run)|each time|deterministic(?:ally)?|invariably|without fail|100%)", re.I)
+NEGATION = re.compile(r"\b(?:not|never|no|nor|rarely|seldom|hardly)\b|n't\b", re.I)
+
+
+def absolute_claims(text: str) -> list[str]:
+    """The words in a sentence that say something happens every time. "Does not always" is left out."""
+    found = []
+    for match in ABSOLUTE.finditer(text):
+        before = " ".join(text[:match.start()].split()[-3:])
+        if not NEGATION.search(before):
+            found.append(match.group(1))
+    return found
+
+
+COUNT = re.compile(r"\b(?:(\d+) of (?:the )?)?(\d+)\s+(?:(?:total|ordinary|traffic|matching|other|more|clean|failing|failed|passing|post-culprit)\s+)?(?:runs?|replays?)\b")
+
+
+def unbacked_claims(brief: dict, rate: float | None, measured: str = "") -> list[dict]:
+    """Sentences that contradict what the lineup measured. The headline counts as a sentence.
+
+    Two things are checked. A sentence may say always, every time or deterministic only when the
+    measured failure rate is 95% or more. And a count of runs or replays ("26 runs", "4 of 6
+    runs") has to be one the measurements give. Returns [{"text", "problem"}].
+    """
+    numbers = set(re.findall(r"\d+", measured))
+    pairs = set(re.findall(r"\d+ of \d+", measured))
+    out = []
+    for text in [brief.get("headline", "")] + [s["text"] for s in brief.get("sentences", [])]:
+        words = absolute_claims(text) if rate is not None and rate < ALWAYS_NEEDS else []
+        if words:
+            out.append({"text": text, "problem": f'says "{words[0]}", and the measured failure rate from the culprit on is {rate:.0%}'})
+            continue
+        for part, whole in COUNT.findall(text) if measured else []:
+            said = f"{part} of {whole}" if part else whole
+            if (said not in pairs) if part else (whole not in numbers):
+                out.append({"text": text, "problem": f'gives a count, "{said}", that is not in the measurements'})
+                break
+    return out
+
+
 def template_brief(evidence: Evidence, symptom: str) -> dict:
     """A brief with no model: the facts in fixed sentences, each with its citation."""
     culprit = evidence.culprit[:12]
@@ -218,14 +266,41 @@ def template_brief(evidence: Evidence, symptom: str) -> dict:
     return {"headline": f"{evidence.subject}: {symptom}"[:90], "sentences": sentences, "dropped": [], "model": "none, fixed template"}
 
 
+def _draft(evidence: Evidence, symptom: str, objections: list[dict] = ()) -> dict:
+    """Ask the model once and check the citations. `objections` are what a rule check said about the draft before."""
+    prompt = prompt_for(evidence, symptom)
+    if objections:
+        prompt += (
+            "\n\nYour earlier answer was rejected by a rule check, for these sentences:\n"
+            + "\n".join(f'- "{o["text"]}": it {o["problem"]}.' for o in objections)
+            + f"\nWhat was measured: {evidence.measured or 'not recorded'}"
+            + "\nWrite the whole brief again. Where it says how often the failure happens, give the measured rate, and use only counts that are in the measurements."
+        )
+    answer = llm.ask(SYSTEM, prompt)
+    found = re.search(r"\{.*\}", answer, flags=re.S)
+    return check_citations(json.loads(found.group(0)), evidence)
+
+
 def write_brief(evidence: Evidence, symptom: str) -> dict:
-    """Ask the model for the brief and check its citations. Falls back to the template, and says so."""
+    """Ask the model for the brief and check it. Falls back to the template, and says so.
+
+    A draft that contradicts the measured failure rate is rejected and asked for once more. If
+    the second draft still does, the sentences that say so are cut like any other unbacked one.
+    """
     if llm.choice() == "none":
         return template_brief(evidence, symptom)
     try:
-        answer = llm.ask(SYSTEM, prompt_for(evidence, symptom))
-        found = re.search(r"\{.*\}", answer, flags=re.S)
-        brief = check_citations(json.loads(found.group(0)), evidence)
+        brief = _draft(evidence, symptom)
+        rejected = unbacked_claims(brief, evidence.rate_from, evidence.measured)
+        if rejected:
+            cut_before = brief["dropped"]
+            brief = _draft(evidence, symptom, rejected)
+            brief["dropped"] = cut_before + brief["dropped"]
+            still = {o["text"] for o in unbacked_claims(brief, evidence.rate_from, evidence.measured)}
+            brief["dropped"] += [s["text"] for s in brief["sentences"] if s["text"] in still]
+            brief["sentences"] = [s for s in brief["sentences"] if s["text"] not in still]
+            if brief["headline"] in still:
+                brief["headline"] = f"{evidence.subject}: {symptom}"[:90]
     except (llm.LlmError, AttributeError, json.JSONDecodeError, KeyError) as exc:
         fallback = template_brief(evidence, symptom)
         fallback["model"] = f"none, fixed template (the model step failed: {exc})"
@@ -236,4 +311,5 @@ def write_brief(evidence: Evidence, symptom: str) -> dict:
         fallback["dropped"] = brief["dropped"]
         return fallback
     brief["model"] = llm.model_name()
+    brief["rejected"] = rejected  # what the rule check said about the first draft, if it was sent back
     return brief

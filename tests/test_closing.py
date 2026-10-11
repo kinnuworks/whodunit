@@ -66,6 +66,60 @@ def test_brief_falls_back_to_the_template_when_the_model_fails(monkeypatch):
     assert "fixed template" in written["model"] and "500" in written["model"] and written["sentences"]
 
 
+def test_a_brief_that_says_always_against_the_measured_rate_is_asked_for_again(monkeypatch):
+    monkeypatch.setenv("WHODUNIT_LLM", "gateway")
+    asked = []
+    drafts = iter([
+        '{"headline": "The shortcut is deterministic", "sentences": [{"text": "The agent goes straight to the refund every time.", "cites": ["abc123def456"]}]}',
+        '{"headline": "The shortcut skips the ownership check", "sentences": [{"text": "The agent skipped the lookup in 12 of 14 runs.", "cites": ["abc123def456"]}]}',
+    ])
+
+    def ask(system, prompt, **kw):
+        asked.append(prompt)
+        return next(drafts)
+    monkeypatch.setattr(llm, "ask", ask)
+    written = briefs.write_brief(evidence(rate_from=0.81, measured="12 of 14 runs failed."), "symptom")
+    assert len(asked) == 2 and "rejected by a rule check" in asked[1] and "81%" in asked[1] and "12 of 14 runs failed." in asked[1]
+    assert [s["text"] for s in written["sentences"]] == ["The agent skipped the lookup in 12 of 14 runs."]
+    assert [o["text"] for o in written["rejected"]] == ["The shortcut is deterministic", "The agent goes straight to the refund every time."]
+
+
+def test_a_second_draft_that_still_says_always_loses_those_sentences(monkeypatch):
+    monkeypatch.setenv("WHODUNIT_LLM", "gateway")
+    stubborn = '{"headline": "It always fails", "sentences": [{"text": "It fails every time.", "cites": ["abc123def456"]}, {"text": "The prompt changed.", "cites": ["cccccccccccc"]}]}'
+    monkeypatch.setattr(llm, "ask", lambda *a, **k: stubborn)
+    written = briefs.write_brief(evidence(rate_from=0.59), "Refunds go to strangers")
+    assert [s["text"] for s in written["sentences"]] == ["The prompt changed."] and "It fails every time." in written["dropped"]
+    assert "always" not in written["headline"]
+
+
+def test_a_count_of_runs_has_to_be_one_the_lineup_measured():
+    measured = "20 replays across 5 commits. From the culprit on, 8 of 8 replays failed. Ordinary runs: 4 of 6 runs went wrong."
+    brief = {"headline": "h", "sentences": [
+        {"text": "The bisect measured an 81% failure rate across 26 total runs.", "cites": []},
+        {"text": "It went wrong in 4 of 6 ordinary runs and in all 8 replays.", "cites": []},
+        {"text": "It went wrong in 5 of 6 runs.", "cites": []},
+        {"text": "The loop is capped at 3 model calls and order 2002 costs 30.", "cites": []},
+    ]}
+    found = briefs.unbacked_claims(brief, 0.81, measured)
+    assert [o["text"] for o in found] == [brief["sentences"][0]["text"], brief["sentences"][2]["text"]]
+    assert '"26"' in found[0]["problem"] and '"5 of 6"' in found[1]["problem"]
+    assert briefs.unbacked_claims(brief, 0.81) == []  # nothing measured, nothing to hold a count against
+
+
+def test_always_is_allowed_when_the_measurements_back_it(monkeypatch):
+    monkeypatch.setenv("WHODUNIT_LLM", "gateway")
+    asked = []
+
+    def ask(system, prompt, **kw):
+        asked.append(prompt)
+        return '{"headline": "h", "sentences": [{"text": "It fails every time.", "cites": ["abc123def456"]}]}'
+    monkeypatch.setattr(llm, "ask", ask)
+    assert briefs.write_brief(evidence(rate_from=0.97), "s")["sentences"] and len(asked) == 1
+    assert briefs.unbacked_claims({"headline": "h", "sentences": [{"text": "The model does not always follow the rule.", "cites": []}]}, 0.59) == []
+    assert briefs.unbacked_claims({"headline": "It is non-deterministic", "sentences": []}, 0.59) == []
+
+
 @pytest.mark.parametrize("diff, files, kind", [
     ('-SYSTEM = "careful"\n+SYSTEM = "friendly"', ["agent/agent.py"], "prompt"),
     (' SYSTEM = (\n-    "Only refund the owner. "\n+    "Be warm and take their side. "\n     "Never refund more."', ["agent/agent.py"], "prompt"),

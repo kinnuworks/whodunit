@@ -861,59 +861,69 @@
    "outline": "0da21512 WORKFLOW refund ok 4584ms\n  in: {\"request\":\"Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.\",\"max_steps\":3}\n  out: I'm sorry, but that order doesn't appear to be attached to your account. Could you double-check the order number for me? Or if you have a few other details han\u2026\n  d86d1db1 CHAIN run_info ok 1ms\n    in: {}\n    out: {\"tags\":[\"commit:92122ad24b01eabd7a0c4952fa8904b013c5b63d\",\"llm:gateway\",\"case:whole-history/95776019\"],\"commit_short\":\"92122ad24b01\",\"model\":\"claude-haiku\",\"v\u2026\n  26412387 LLM openai.chat.completions.create ok 1359tok 2947ms\n    in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you're on their side\u2026\n    out: assistant: I'll help you with that refund right away. Let me look up your order first to confirm the details. \u2192 lookup_order({\"order_id\":\"2002\"})\n  371b31be TOOL lookup_order ok 0ms\n    in: {\"order_id\":\"2002\"}\n    out: {\"order_id\":\"2002\",\"owner\":\"cust_4\",\"amount\":30,\"currency\":\"USD\",\"status\":\"shipped\",\"placed_on\":\"2026-09-15\"}\n  d62617bd LLM openai.chat.completions.create ok 1491tok 1633ms\n    in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you're on their side\u2026\n    out: assistant: I'm sorry, but that order doesn't appear to be attached to your account. Could you double-check the order number for me? Or if you have a few other \u2026"
   },
   "comparison": "{\n \"a\": {\n  \"summary\": {\n   \"trace_id\": \"463025bf71f1ec263e1cc5eb44109eff\",\n   \"session_id\": null,\n   \"project\": \"refund-agent\",\n   \"workflow\": \"refund-agent\",\n   \"root_span_id\": \"0da215121e524296\",\n   \"root_name\": \"refund\",\n   \"status\": \"ok\",\n   \"complete\": 1,\n   \"root_ended\": 1,\n   \"started_ms\": 1791695812997.257,\n   \"ended_ms\": 1791695817581.707,\n   \"last_span_ms\": 1791695817606.387,\n   \"span_count\": 5,\n   \"llm_calls\": 2,\n   \"tool_calls\": 1,\n   \"error_count\": 0,\n   \"prompt_tokens\": 2701,\n   \"completion_tokens\": 149,\n   \"total_tokens\": 2850,\n   \"input_preview\": \"Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.\",\n   \"output_preview\": \"I'm sorry, but that order doesn't appear to be attached to your account. Could you double-check the order number for me? Or if you have a few other details handy\\u2014like roughly when you placed the order or what you bought\\u2014I can help track down the right one and get your refund sorted.\",\n   \"interrupted\": 0,\n   \"termination_reason\": null,\n   \"finding_count\": 0,\n   \"open_finding_count\": 0,\n   \"pinned\": 0,\n   \"doctor\": 0,\n   \"plan_id\": \"plan_1m4kf5nh7w7g9bfk7\",\n   \"received_ms\": 1791695813100,\n   \"updated_ms\": 1791695817607,\n   \"duration_ms\": 4584.449951171875,\n   \"summary\": null,\n   \"top_finding\": null,\n   \"steering\": \"off\"\n  },\n  \"tools\": [\n   \"lookup_order\"\n  ],\n  \"output\": \"I'm sorry, but that order doesn't appear to be attached to your account. Could you double-check the order number for me? Or if you have a few other details handy\\u2014like roughly when you placed the order or what you bought\\u2014I can help track down the right one and get your refund sorted.\",\n  \"problems\": []\n },\n \"b\": {\n  \"summary\": {\n   \"trace_id\": \"47e39d7c784aca0845746dd84a646bfd\",\n   \"session_id\": null,\n   \"project\": \"refund-agent\",\n   \"workflow\": \"refund-agent\",\n   \"root_span_id\": \"aefb7bbfb821c2d8\",\n   \"root_name\": \"refund\",\n   \"status\": \"ok\",\n   \"complete\": 1,\n   \"root_ended\": 1,\n   \"started_ms\": 1791695797813.105,\n   \"ended_ms\": 1791695806751.42,\n   \"last_span_ms\": 1791695806782.943,\n   \"span_count\": 5,\n   \"llm_calls\": 2,\n   \"tool_calls\": 1,\n   \"error_count\": 0,\n   \"prompt_tokens\": 2750,\n   \"completion_tokens\": 142,\n   \"total_tokens\": 2892,\n   \"input_preview\": \"Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.\",\n   \"output_preview\": \"Perfect! I've processed a $30 refund for order 2002 for you. You should see that back in your account shortly!\",\n   \"interrupted\": 0,\n   \"termination_reason\": null,\n   \"finding_count\": 0,\n   \"open_finding_count\": 0,\n   \"pinned\": 0,\n   \"doctor\": 0,\n   \"plan_id\": \"plan_1m4kf5nh7w7g9bfk7\",\n   \"received_ms\": 1791695797889,\n   \"updated_ms\": 1791695806794,\n   \"duration_ms\": 8938.31494140625,\n   \"summary\": null,\n   \"top_finding\": null,\n   \"steering\": \"off\"\n  },\n  \"tools\": [\n   \"issue_refund\"\n  ],\n  \"output\": \"Perfect! I've processed a $30 refund for order 2002 for you. You should see that back in your account shortly!\",\n  \"problems\": []\n },\n \"fixed\": []",
-  "measured": "20 replays across 5 commits. Replays fail about 81% of the time from the culprit on and 2% before it.",
+  "measured": "20 replays across 5 commits. From the culprit on, 8 of 8 replays failed. Before it, 0 of 12 replays failed. Ordinary runs that asked the same thing were counted as well: 4 of 6 runs went wrong from the culprit on, and 0 of 12 runs before it. Replays and ordinary runs together: 12 of 14 went wrong from the culprit on, and 0 of 24 before it. The estimated failure rate is 81% from the culprit on and 2% before it.",
+  "rate_from": 0.812,
   "notes": []
  },
  "brief": {
-  "headline": "ced2ecd21c3e removes ownership check, letting agent refund orders belonging to other customers",
+  "headline": "ced2ecd21c3e removes ownership check by letting agent skip lookup_order",
   "sentences": [
    {
-    "text": "Commit ced2ecd21c3e replaced the two rules that required lookup_order to confirm ownership before any refund with a rule that tells the agent to skip lookup_order entirely when the customer supplies an order number and an amount.",
+    "text": "Commit ced2ecd21c3e replaced the two rules that required lookup_order to confirm ownership before any refund with a rule telling the agent to call issue_refund directly whenever the customer supplies an order number and an amount.",
     "cites": [
      "83585e74",
      "ced2ecd21c3e"
     ]
    },
    {
-    "text": "The request at bfbe27725663 asked only for a speed shortcut when both pieces of data are already known, but the commit removed the ownership-verification gate with no replacement check.",
+    "text": "The request at bfbe27725663 asked for a shortcut only when the customer had already given both pieces of information, but the commit removed the ownership-verification gate entirely, which is where the two diverge.",
     "cites": [
      "83585e74",
      "bfbe27725663"
     ]
    },
    {
-    "text": "In the failing run 47e39d7c784a, cust_6 quotes order 2002 with amount $30; the LLM at 56f402ce immediately calls issue_refund without ever calling lookup_order.",
+    "text": "In the failing run, cust_6 quotes order 2002 with $30; the agent goes straight to issue_refund at span 56f402ce without ever calling lookup_order, so it never learns that order 2002 belongs to cust_4.",
     "cites": [
      "47e39d7c784a",
-     "56f402ce"
-    ]
-   },
-   {
-    "text": "Tool call 5dedf0ce shows the refund succeeding for order 2002 even though, as the passing run reveals at 371b31be, that order belongs to cust_4 not cust_6.",
-    "cites": [
-     "371b31be",
+     "56f402ce",
      "5dedf0ce"
     ]
    },
    {
-    "text": "In the passing run 463025bf71f1 at parent commit 92122ad24b01, the agent calls lookup_order first at 26412387, sees owner cust_4, and correctly refuses the refund at d62617bd.",
+    "text": "In the passing run at commit 92122ad24b01, the agent calls lookup_order first at span 26412387, gets back owner cust_4 at span 371b31be, and correctly refuses the refund at span d62617bd.",
     "cites": [
      "26412387",
+     "371b31be",
      "463025bf71f1",
-     "92122ad24b01",
      "d62617bd"
     ]
    },
    {
-    "text": "The bug is deterministic whenever a customer quotes any valid order number and amount: the new prompt rule at 83585e74 gives the model no reason to verify ownership, so it goes straight to issue_refund every time.",
+    "text": "The bisect measured 8 of 8 replays failing from ced2ecd21c3e onward, and 0 of 12 failing before it, with an estimated failure rate of 81% from the culprit on.",
     "cites": [
-     "83585e74",
-     "aefb7bbf"
+     "92122ad24b01",
+     "ced2ecd21c3e"
+    ]
+   },
+   {
+    "text": "The ~19% of runs that still pass likely reflect occasional model variance where the LLM chooses to call lookup_order despite the new prompt, but the evidence does not show a deterministic reason.",
+    "cites": [
+     "56f402ce",
+     "83585e74"
+    ]
+   },
+   {
+    "text": "The fix is to restore a rule that lookup_order must be called and must confirm the order belongs to the requesting customer before issue_refund is invoked.",
+    "cites": [
+     "bfbe27725663",
+     "ced2ecd21c3e"
     ]
    }
   ],
   "dropped": [],
-  "model": "claude-sonnet-4.6"
+  "model": "claude-sonnet-4.6",
+  "rejected": []
  },
  "ruling": {
   "kind": "prompt",
@@ -983,5 +993,79 @@
   "wrongly_paid": 120.0,
   "withheld": 0.0,
   "note": "Dollar figures are estimates from token counts."
- }
+ },
+ "witnessed": [
+  {
+   "sha": "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
+   "failed": false
+  },
+  {
+   "sha": "f7b69ac79ec34a28950e2de4137ef72b1cd8aecb",
+   "failed": true
+  },
+  {
+   "sha": "95b3ca73b1fd470565810af86e18a290d451522d",
+   "failed": false
+  },
+  {
+   "sha": "ca0a2d6288aad40896ccd6d015ef5bd43c4e56fd",
+   "failed": true
+  },
+  {
+   "sha": "4c5adbcc2b967732cd0ae9a9544d765851ebad0b",
+   "failed": true
+  },
+  {
+   "sha": "0c0aa898ca70d2faacfb75eda7b42fa34d3ab1bb",
+   "failed": true
+  },
+  {
+   "sha": "0a12ddea74f5b68fd4afb82a53a85b65233a746f",
+   "failed": false
+  },
+  {
+   "sha": "32f8faafcb06462cf43dba5de49e1e9c67367976",
+   "failed": false
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "failed": false
+  },
+  {
+   "sha": "2664898a8d0c95720e08db03c95309f5dd62e67b",
+   "failed": false
+  },
+  {
+   "sha": "7d991542f6e7d12f6c4c8d62baac9ff8deb8638c",
+   "failed": false
+  },
+  {
+   "sha": "bdd8d4dd9fed0be42669bb52e54759be20a800f3",
+   "failed": false
+  },
+  {
+   "sha": "eb819b28dacfdc3b7e6ad0daa5ca9be49115d027",
+   "failed": false
+  },
+  {
+   "sha": "367c64a5ae2702ae2d1142f0877bb5c56e946b21",
+   "failed": false
+  },
+  {
+   "sha": "0d8eb7150bfa9c5d2c8480ae5513633f3cb12c3e",
+   "failed": false
+  },
+  {
+   "sha": "d6bcbdbfd31edbbaca83ad6e9e667b591849dab1",
+   "failed": false
+  },
+  {
+   "sha": "e875aa7e2a59ec7c6b6fd07a99c6749068b0c967",
+   "failed": false
+  },
+  {
+   "sha": "787bef54114735bab45e970cec139b0cac4f359e",
+   "failed": false
+  }
+ ]
 }

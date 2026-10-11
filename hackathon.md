@@ -267,3 +267,19 @@ A review of the repo listed claims that the code or the records do not back. The
 The first one was right. The README, the pitch line in `AGENTS.md` and milestone 7 all said 41 commits. That number came from the plan, written before the victim had a history. The headline case has 57 suspects, so all three now say 57. "Suspects: 41. Cleared: 40." stays in `AGENTS.md` where it is marked as sample copy. The case file page was never wrong, because it counts the suspects in the record.
 
 Before the first commit, `entire session list` showed one other session in this folder, idle for half an hour. The owner was told.
+
+### 2:10 PM, the headline brief said "every time" next to a page that said 81%
+
+The review was right. The brief for `whole-history` ended: "The bug is deterministic whenever a customer quotes any valid order number and amount ... it goes straight to issue_refund every time." The same page reported an 81% failure rate, and 2 of the 6 ordinary runs on the culprit or later had done the right thing.
+
+How it happened: the 8 replays from the culprit on all failed, and the only number the model was shown was "about 81%" with no counts behind it. The 81% is lower because ordinary traffic was counted too, and that went wrong in 4 of 6 runs.
+
+What changed in `whodunit/brief.py`:
+
+- A rule check with no model in it. A brief that says always, every time or deterministic, when the measured rate from the culprit on is under 95%, is rejected and asked for once more with the rejected sentences and the measurements in front of the model. If the second draft still says it, those sentences are cut the way a sentence with no real citation is cut. "Does not always" and "non-deterministic" are let through.
+- The model now sees the counts, split around the culprit: replays, ordinary runs, and the two together. The lineup stores which commit each ordinary run was on, so later steps can make that split. The `whole-history` record was given the split by asking neatroots the same question the lineup asked. It came back with the same 18 runs and 4 failures.
+- `whodunit brief --from-record` writes a brief again from the evidence already collected, with nothing replayed.
+
+What went wrong on the way: the first rewrite got the rate right and then made up a total, "across 26 total runs". Nothing in the measurements says 26. So the check now also holds any count of runs or replays in a sentence against the measurements, and the model is told not to add counts up into new ones. The second rewrite is the one in the record. It says 8 of 8 replays failed from the culprit on, gives the 81% estimate, and says the evidence does not show why some ordinary runs came out right.
+
+Two calls to the larger model, about 6 cents.

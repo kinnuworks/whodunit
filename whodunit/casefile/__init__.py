@@ -160,7 +160,10 @@ def render(record: dict) -> str:
         body = f'<p class="headline">{escape(brief.get("headline", ""))}</p>'
         body += "".join(f'<p>{escape(s["text"])} {_cites(s["cites"])}</p>' for s in brief["sentences"])
         cut = len(brief.get("dropped", []))
-        body += f'<p class="small">Written by: {escape(brief.get("model", "unknown"))}. Every sentence cites a span, a commit or a checkpoint. {cut} cut for citing nothing real.</p>'
+        sent_back = brief.get("rejected") or []
+        again = (f' A first draft was sent back because it {escape(sent_back[0]["problem"])}.' if sent_back else "")
+        body += (f'<p class="small">Written by: {escape(brief.get("model", "unknown"))}. Every sentence cites a span, a commit or a checkpoint, '
+                 f'and is held against what the lineup measured. {cut} cut by those checks.{again}</p>')
     else:
         body = '<p class="empty">No brief yet.</p>'
     parts.append(_field("Brief", body))
