@@ -10,7 +10,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 
-from .case import Case, CaseInput, judge
+from .case import Case, CaseInput, judge, last_json_line
 from .neat import unnamed
 from .suspects import git, resolve
 
@@ -30,6 +30,8 @@ class Replay:
     tag: str = ""  # the case tag this replay's run carries in its trace, unique to the replay
     voided: int = 0  # attempts that hit a provider or network error and were thrown away
     timeouts: int = 0  # attempts that ran out of time
+    model: str = ""  # a fingerprint of the model id the agent reported, if it reported one. Not the id itself.
+    lock: str = ""  # the first 12 characters of the hash of the lockfile it ran with
 
 
 def run_command(command: list[str], cwd: Path, env: dict, timeout: float) -> subprocess.CompletedProcess:
@@ -94,6 +96,11 @@ class Runner:
         except OSError:
             pass
 
+    def _lock(self, sha: str) -> str:
+        """The hash of the agent's lockfile at this commit, or nothing if it has none."""
+        lock = self.root / sha[:12] / self.case.target / "uv.lock"
+        return hashlib.sha256(lock.read_bytes()).hexdigest()[:12] if lock.is_file() else ""
+
     def _env(self, sha: str, tag: str = "") -> dict:
         env = {k: v for k, v in os.environ.items() if k != "VIRTUAL_ENV"}
         env.update(self.case.env)
@@ -102,11 +109,10 @@ class Runner:
             env["WHODUNIT_CASE"] = tag or self.case.id
         else:
             env.pop("WHODUNIT_CASE", None)  # ordinary traffic carries no case tag
-        lock = self.root / sha[:12] / self.case.target / "uv.lock"
-        if lock.is_file():
+        digest = self._lock(sha)
+        if digest:
             # Worktrees with the same lockfile share one environment, so a new commit does not
             # mean a new install. A commit that changes the lockfile gets its own.
-            digest = hashlib.sha256(lock.read_bytes()).hexdigest()[:12]
             env.setdefault("UV_PROJECT_ENVIRONMENT", str(self.repo / ".whodunit" / "envs" / digest))
         dotenv = self.repo / ".env"
         if dotenv.is_file():
@@ -164,6 +170,7 @@ class Runner:
             tag = f"{self.case.id}/{self._first + self._count}" if self.case.id else ""
         problem = self.build(sha)
         voided = timeouts = 0
+        model = ""
         if problem:
             verdict, reason = SKIP, problem
         else:
@@ -189,12 +196,16 @@ class Runner:
                     verdict, reason = VOID, f"the provider or the network failed on all {voided} attempts: {trouble}"
                     break
                 passed, reason = judge(self.case, case_input, done.stdout, cwd)
+                reported = (last_json_line(done.stdout) or {}).get("model")
+                if reported:
+                    # Which model answered matters when a range turns out to be clear. The record names no model, so it keeps a fingerprint.
+                    model = hashlib.sha256(str(reported).encode()).hexdigest()[:8]
                 if not passed and done.returncode != 0:
                     reason = f"exit {done.returncode}: " + unnamed((done.stderr.strip().splitlines() or [reason])[-1])
                 verdict = PASS if passed else FAIL
                 break
         result = Replay(sha=sha, input=case_input.text, verdict=verdict, reason=reason, seconds=time.monotonic() - started, started=clock, tag=tag,
-                        voided=voided, timeouts=timeouts)
+                        voided=voided, timeouts=timeouts, model=model, lock="" if problem else self._lock(sha))
         self.replays.append(result)
         return result
 

@@ -1,0 +1,82 @@
+[
+ {
+  "fails": 1.0,
+  "good_commits_fail": 1.0,
+  "has_a_culprit": false,
+  "trials": 500,
+  "budget": 160,
+  "said_clear": 500,
+  "accused_a_commit": 0,
+  "named_nobody": 0
+ },
+ {
+  "fails": 0.6,
+  "good_commits_fail": 0.6,
+  "has_a_culprit": false,
+  "trials": 500,
+  "budget": 160,
+  "said_clear": 486,
+  "accused_a_commit": 9,
+  "named_nobody": 5
+ },
+ {
+  "fails": 0.33,
+  "good_commits_fail": 0.33,
+  "has_a_culprit": false,
+  "trials": 500,
+  "budget": 160,
+  "said_clear": 224,
+  "accused_a_commit": 15,
+  "named_nobody": 261
+ },
+ {
+  "fails": 0.2,
+  "good_commits_fail": 0.2,
+  "has_a_culprit": false,
+  "trials": 500,
+  "budget": 160,
+  "said_clear": 40,
+  "accused_a_commit": 15,
+  "named_nobody": 445
+ },
+ {
+  "fails": 0.1,
+  "good_commits_fail": 0.1,
+  "has_a_culprit": false,
+  "trials": 500,
+  "budget": 160,
+  "said_clear": 0,
+  "accused_a_commit": 13,
+  "named_nobody": 487
+ },
+ {
+  "fails": 1.0,
+  "good_commits_fail": 0.05,
+  "has_a_culprit": true,
+  "trials": 500,
+  "budget": 160,
+  "said_clear": 0,
+  "accused_a_commit": 500,
+  "named_nobody": 0
+ },
+ {
+  "fails": 0.3,
+  "good_commits_fail": 0.05,
+  "has_a_culprit": true,
+  "trials": 500,
+  "budget": 160,
+  "said_clear": 0,
+  "accused_a_commit": 336,
+  "named_nobody": 164
+ },
+ {
+  "fails": 0.1,
+  "good_commits_fail": 0.05,
+  "has_a_culprit": true,
+  "trials": 500,
+  "budget": 160,
+  "said_clear": 0,
+  "accused_a_commit": 11,
+  "named_nobody": 489
+ }
+]

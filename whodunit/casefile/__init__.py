@@ -135,6 +135,8 @@ def timeline(record: dict) -> list[tuple[str, str]]:
     if culprit:
         sure = f' at {_pct(culprit["probability"])}' if "probability" in culprit else ""
         steps.append(("lineup", f'Named {_short(culprit["sha"])}{sure} after {lineup.get("replays", 0)} replays across {lineup.get("commits_tested", 0)} commits.'))
+    elif lineup.get("clear"):
+        steps.append(("lineup", f'No commit did it. After {lineup.get("replays", 0)} replays, {lineup.get("note", "the good ref fails as often as the bad one")}.'))
     elif lineup:
         steps.append(("lineup", f'Nobody named after {lineup.get("replays", 0)} replays. {(lineup.get("note") or "no suspect reached the bar").capitalize()}.'))
     if motive:
@@ -190,6 +192,11 @@ def render(record: dict) -> str:
         sure = f' Confidence: {_pct(culprit["probability"])}.' if "probability" in culprit else ""
         named = (f'<p class="verdict"><span class="sha">{escape(_short(culprit["sha"]))}</span> {escape(culprit["subject"])}</p>'
                  f'<p>Suspects: {len(suspects)}. Cleared: {len(suspects) - 1}.{sure}</p>')
+    elif lineup.get("clear"):
+        told = lineup.get("note", "")
+        named = (f'<p class="verdict">No commit did it.</p><p>{escape(told[:1].upper() + told[1:])}. All {len(suspects)} suspects are cleared. '
+                 'Something outside these commits changed, and this is what the runs say about it:</p>'
+                 + '<ul class="steps">' + "".join(f"<li>{escape(line)}</li>" for line in lineup.get("differs", [])) + "</ul>")
     elif lineup:
         named = f'<p class="verdict open">Nobody named yet.</p><p>{escape(lineup.get("note") or "The replays ran out before one suspect stood clear.")}</p>'
     else:
@@ -399,7 +406,7 @@ def render(record: dict) -> str:
             rows += f'<li><span class="cite">trace</span> This investigation is itself a trace in {place}: {name}</li>'
         parts.append(_field("Log", f'<ol class="steps">{rows}</ol>'))
 
-    stamp = ("Closed" if kept(fix) else "Culprit named") if culprit else "Open"
+    stamp = ("Closed" if kept(fix) else "Culprit named") if culprit else "No commit did it" if lineup.get("clear") else "Open"
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -438,8 +445,9 @@ def render_index(records: list[tuple[str, dict]]) -> str:
         case, lineup = record.get("case", {}), record.get("lineup") or {}
         culprit, fix, damages = lineup.get("culprit"), record.get("fix") or {}, record.get("damages") or {}
         proven = kept(fix)
-        state = "Closed" if proven else "Culprit named" if culprit else "Open"
-        who = (f'<span class="sha">{escape(_short(culprit["sha"]))}</span> {escape(culprit["subject"])}' if culprit else "Nobody yet")
+        state = "Closed" if proven else "Culprit named" if culprit else "No commit did it" if lineup.get("clear") else "Open"
+        who = (f'<span class="sha">{escape(_short(culprit["sha"]))}</span> {escape(culprit["subject"])}' if culprit else
+               "None of them. The good ref fails too." if lineup.get("clear") else "Nobody yet")
         fixed = (f'{escape(fix["kind"])}, {len(record.get("attempts") or [1])} {"try" if len(record.get("attempts") or [1]) == 1 else "tries"}' if proven
                  else "not fixed" if fix else "")
         money = []

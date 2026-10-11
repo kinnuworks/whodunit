@@ -73,3 +73,39 @@ def test_the_failing_run_can_come_from_the_cloud(shop):
     assert (local.source, local.request, local.commit, local.paid) == ("neatroots", ASKED, shop["shas"][9], {"1001": 47.0})
     with pytest.raises(LookupError):
         opening.read_failing_run("beef" * 8, shop["traces"], None)
+
+
+def test_when_the_model_changed_underneath_no_commit_is_blamed(tmp_path, monkeypatch, capsys):
+    # The planted history has no bug in it. The model behind the agent is switched by an environment variable,
+    # the way a provider changes a model behind an alias, and every commit overpays, the good ref included.
+    made = stub_history(tmp_path / "repo", suspects=8, culprit=99)
+    made["case"].write_text(made["case"].read_text() + '\n[env]\nSTUB_MODEL = "v2"\n')
+    traces = Traces()
+    for _ in range(3):  # ordinary runs from before the change, at the good ref, that paid the right amount
+        traces.run(made["shas"][0], ASKED, refunds=RIGHT, info={"model": "v1", "version": "0.3.0"})
+    monkeypatch.setattr("whodunit.cli.neatroots", lambda: traces)
+    monkeypatch.setenv("WHODUNIT_LLM", "none")
+    monkeypatch.chdir(tmp_path)
+    assert main(["investigate", str(made["case"]), "--repo", str(made["repo"]), "--budget", "60", "--answer", "revert"]) == 4
+    record = json.loads(made["case"].with_name("case.record.json").read_text())
+    report = record["lineup"]
+    assert report["culprit"] is None and report["clear"] and report["remaining"] == [] and report["replays"] <= 14
+    assert "brief" not in record and "fix" not in record  # with nobody to blame there is nothing to explain or fix
+    assert any("model id differs" in line for line in report["differs"]) and not any("v1" in line or "v2" in line for line in report["differs"])
+    said = capsys.readouterr().out
+    assert "No commit did it" in said and "model id differs" in said
+    page = made["case"].with_name("case.casefile.html").read_text()
+    assert "No commit did it." in page and "model id differs" in page and "Nobody named yet" not in page
+
+
+def test_what_differs_between_then_and_now_is_said_without_naming_a_model():
+    from whodunit.onset import what_differs
+
+    then = [{"model": "aaaa1111", "lock": "0123456789ab"}, {"model": "aaaa1111", "lock": "0123456789ab"}]
+    same = what_differs(then, [{"model": "aaaa1111", "lock": "0123456789ab"}])
+    assert any("model id is the same" in line for line in same) and any("lockfile is the same" in line for line in same)
+    moved = what_differs(then, [{"model": "bbbb2222", "lock": "ffffffffffff"}])
+    assert any("model id differs" in line and "aaaa1111" in line and "bbbb2222" in line for line in moved)
+    assert any("lockfile differs" in line for line in moved)
+    assert any("did not record a lockfile" in line for line in what_differs([{"model": "aaaa1111", "lock": ""}], [{"model": "aaaa1111", "lock": "ffffffffffff"}]))
+    assert "nothing to be compared" in " ".join(what_differs([], [{"model": "bbbb2222", "lock": ""}]))

@@ -193,3 +193,33 @@ def test_the_lineup_stops_when_the_provider_keeps_failing():
     found = statistical_bisect(20, trial, budget=200)
     assert found.culprit is None and "kept failing" in found.note and found.replays == 0
     assert len(calls) < 60  # it gives up, and does not spin
+
+
+def test_when_the_good_ref_fails_as_often_as_the_bad_one_no_commit_is_named():
+    # Something outside the repo changed, and every commit fails now, the good ref included.
+    calls = []
+
+    def trial(position):
+        calls.append(position)
+        return FAIL
+    found = statistical_bisect(20, trial, budget=120)
+    assert found.culprit is None and found.clear and "no commit in this range did it" in found.note
+    assert set(calls) == {-1, 19} and len(calls) <= 14  # it stops at the two ends, and soon
+
+
+def test_a_drift_that_fails_a_third_of_the_time_everywhere_is_not_pinned_on_a_commit():
+    import random
+
+    named = clear = 0
+    for seed in range(40):
+        rng = random.Random(seed)
+        found = statistical_bisect(20, lambda position: FAIL if rng.random() < 0.33 else PASS, budget=160)
+        named += found.culprit is not None
+        clear += found.clear
+    assert clear >= 20 and named <= 4  # mostly it says the range is clear, and it seldom accuses anyone
+
+
+def test_a_real_regression_is_not_mistaken_for_a_clear_range():
+    for seed in range(30):
+        found = statistical_bisect(20, flaky(12, 0.6, seed=seed), budget=200)
+        assert not found.clear

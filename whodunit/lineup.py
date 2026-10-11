@@ -22,6 +22,7 @@ class Lineup:
     replays: int | None = None  # replays that returned a verdict
     rates: tuple[float, float] | None = None  # estimated failure rate before and from the top suspect
     note: str = ""  # why nobody was named, when the evidence itself was the problem
+    clear: bool = False  # the good ref fails about as often as the bad one today, so no commit in the range did it
 
 
 def plain_bisect(count: int, test: Callable[[int], str]) -> Lineup:
@@ -78,6 +79,23 @@ def _log_beta(a: float, b: float) -> float:
 
 def _entropy(q: float) -> float:
     return 0.0 if q <= 0.0 or q >= 1.0 else -(q * math.log(q) + (1.0 - q) * math.log(1.0 - q))
+
+
+def same_at_both_ends(good: tuple[int, int], bad: tuple[int, int], good_prior=GOOD_PRIOR, bad_prior=BAD_PRIOR) -> float:
+    """P(the good ref and the bad ref fail at one and the same rate), from today's replays of each.
+
+    `good` and `bad` are (failures, passes). Two stories are weighed against each other. In
+    one, the good ref is a healthy commit and the bad ref fails at some other rate, which is
+    what the lineup assumes. In the other, both ends share a single rate, which is what the
+    replays look like when something outside the repo changed: a model behind an alias, a
+    dependency that was never pinned. Both have a closed form, like everything else here.
+    """
+    (gf, gp), (bf, bp) = good, bad
+    one_rate = _log_beta(bad_prior[0] + gf + bf, bad_prior[1] + gp + bp) - _log_beta(*bad_prior)
+    two_rates = (_log_beta(good_prior[0] + gf, good_prior[1] + gp) - _log_beta(*good_prior)
+                 + _log_beta(bad_prior[0] + bf, bad_prior[1] + bp) - _log_beta(*bad_prior))
+    top = max(one_rate, two_rates)
+    return math.exp(one_rate - top) / (math.exp(one_rate - top) + math.exp(two_rates - top))
 
 
 class ChangePoint:
@@ -196,6 +214,10 @@ def statistical_bisect(
     and does not use up the budget. If three rounds in a row are all void, the lineup stops
     and says the provider kept failing.
 
+    The warm-up replays the good ref as it behaves today. If it now fails about as often as
+    the bad ref, no commit in the range did it, and the result says so with `clear` set and
+    nobody named. Evidence from before today is not used for that judgement.
+
     `evidence` is what is already known, as (position, failed) pairs: replays from an earlier
     run of the same case, or the agent's ordinary traffic. It shapes the posterior from the
     start and does not count against the budget.
@@ -239,16 +261,21 @@ def statistical_bisect(
             on_round(positions, verdicts, state.posterior())
         return verdicts
 
-    def finish(note: str = "") -> Lineup:
+    def finish(note: str = "", clear: bool = False) -> Lineup:
         posterior = state.posterior()
         ranked = sorted(range(count), key=lambda i: -posterior[i])
         top = ranked[0]
         named = top if posterior[top] >= confidence and not note else None
-        remaining = [top] if named is not None else [i for i in ranked if posterior[i] >= 0.01]
+        remaining = [top] if named is not None else [] if clear else [i for i in ranked if posterior[i] >= 0.01]
         return Lineup(
             culprit=named, remaining=remaining, tested=tested, posterior=posterior,
-            replays=state.replays, rates=state.rates(top), note=note,
+            replays=state.replays, rates=state.rates(top), note=note, clear=clear,
         )
+
+    def today(position: int) -> tuple[int, int]:
+        """(failures, passes) at one end, from this run's replays only."""
+        seen = [verdict for at, verdict in tested if at == position]
+        return seen.count(FAIL), seen.count(PASS)
 
     # Warm up at both ends, so the two failure rates start from evidence. Ends that earlier
     # evidence already covers need less of it.
@@ -272,6 +299,18 @@ def statistical_bisect(
         run(short)
     if void_rounds >= 3 or state.fails[0] + state.passes[0] == 0 or state.fails[bad + 1] + state.passes[bad + 1] == 0:
         return finish(down)
+    # Did any commit do it? If the good ref fails today, it may be failing as often as the bad one. A few
+    # more replays at both ends settle it either way, and then the question is closed before the bisect starts.
+    more = 0
+    while today(-1)[0] and 0.05 < same_at_both_ends(today(-1), today(bad), good_prior, bad_prior) < 0.95 \
+            and more < 2 * warmup and state.replays - known < budget and void_rounds < 3:
+        step = max(1, parallel)
+        run([-1] * step + [bad] * step)
+        more += step
+    (good_f, good_p), (bad_f, bad_p) = today(-1), today(bad)
+    if good_f and same_at_both_ends((good_f, good_p), (bad_f, bad_p), good_prior, bad_prior) >= 0.95:
+        return finish(f"the last good ref now fails about as often as the first bad one, {good_f} of {good_f + good_p} replays against "
+                      f"{bad_f} of {bad_f + bad_p}, so no commit in this range did it", clear=True)
     extra = 0
     while state.fails[bad + 1] == 0 and extra < 2 * warmup and state.replays - known < budget and void_rounds < 3:
         run([bad] * max(1, parallel))  # a rare failure may simply not have shown yet

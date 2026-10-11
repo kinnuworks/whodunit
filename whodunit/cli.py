@@ -17,7 +17,7 @@ from . import opening
 from . import ruling as rulings
 from .motive import checkpoint_link, find_motive
 from .neat import NeatError, forward_to_cloud, neatroots
-from .onset import cloud_trend, find_onset, traffic, witness
+from .onset import cloud_trend, environment_then, find_onset, traffic, what_differs, witness
 from .lineup import linear_scan_cost, plain_bisect, statistical_bisect
 from .replay import FAIL, PASS, VOID, Replay, Runner
 from .suspects import git, list_suspects, resolve
@@ -200,6 +200,18 @@ def lineup(args) -> int:
         rounds = getattr(runner, "rounds", [])
     if found is None:
         return 2
+    differs: list[str] = []
+    if found.clear:
+        # Nobody in the range did it. Say what is different about today, as far as the runs themselves say.
+        good_sha = resolve(repo, case.good)
+        now = [{"model": r["model"], "lock": r["lock"]} for r in every_replay if r["sha"] == good_sha and r["verdict"] in (PASS, FAIL)]
+        workflow = getattr(args, "from_traffic", None) or getattr(args, "workflow", None)
+        try:
+            then = environment_then(neatroots(), workflow, good_sha, [(i.text, i.expect.get("refunds", [])) for i in case.inputs]) if workflow else []
+        except (NeatError, KeyError, TypeError) as exc:
+            then = []
+            differs.append(f"neatroots could not be asked for old runs of the good ref: {exc}")
+        differs += what_differs(then, now)
 
     report = {
         "case": case.id,
@@ -213,10 +225,16 @@ def lineup(args) -> int:
         "culprit": None,
         "remaining": [{"sha": suspects[i].sha, "subject": suspects[i].subject, **({"probability": round(found.posterior[i], 4)} if found.posterior else {})} for i in found.remaining],
     }
-    if found.rates:
+    if found.rates and not found.clear:
         report["failure_rate_before"], report["failure_rate_from"] = (round(r, 3) for r in found.rates)
     say("")
-    if found.culprit is not None:
+    if found.clear:
+        report["clear"], report["note"], report["differs"] = True, found.note, differs
+        say("No commit did it. " + found.note[0].upper() + found.note[1:] + ".")
+        say("Something outside these commits changed. What the runs say about that:")
+        for line in differs:
+            say(f"  {line}")
+    elif found.culprit is not None:
         culprit = suspects[found.culprit]
         report["culprit"] = {"sha": culprit.sha, "subject": culprit.subject, "checkpoint": culprit.checkpoint, "files": list(culprit.files)}
         report["linear_scan_commits"] = linear_scan_cost(found.culprit)
@@ -272,7 +290,7 @@ def lineup(args) -> int:
     say(f"Record: {record_path(args)}")
     if args.json:
         print(json.dumps(report, indent=2))
-    return 0 if found.culprit is not None else 1
+    return 0 if found.culprit is not None else 4 if found.clear else 1  # 4: the range is clear, and no amount of replaying will name anyone
 
 
 def motive(args) -> int:
@@ -692,7 +710,8 @@ def investigate(args) -> int:
         culprit, kept = (record.get("lineup") or {}).get("culprit"), record.get("fix") or {}
         return {"culprit": culprit["sha"][:12] if culprit else None, "probability": (culprit or {}).get("probability"),
                 "replays": (record.get("lineup") or {}).get("replays"),
-                "fix": f"{kept['kind']} kept" if _proven(kept) else "waiting for the owner's ruling" if out["code"] == 3 else "none kept"}
+                "fix": f"{kept['kind']} kept" if _proven(kept) else "waiting for the owner's ruling" if out["code"] == 3 else "none kept",
+                "no_commit_did_it": bool((record.get("lineup") or {}).get("clear"))}
     try:
         tracer.root({"symptom": case.symptom, "good": case.good[:12], "bad": case.bad[:12]}, run)
     finally:
@@ -736,6 +755,9 @@ def _investigate(args, path: Path, tracer) -> int:
             note("lineup", f"Nobody could be named inside {args.budget} replays. Carrying on from those replays with {args.budget} more.")
             args.resume = True
             code = step("lineup", {"budget": args.budget, "resumed": True}, lineup, named)
+        if code == 4:
+            note("lineup", "No commit did it: the good ref fails as often as the bad one today. The case file says what differs from the old runs.")
+            return 4
         if code != 0:
             note("lineup", "No culprit named. The case file lists the suspects that remain." if code == 1 else "The case could not be run: its good ref fails or its bad ref passes.")
             return 1
@@ -994,6 +1016,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--parallel", type=int, default=1, help="replays to run at once")
     p.add_argument("--resume", action="store_true", help="start from the replays already in the case record; --budget is then how many more to spend")
     p.add_argument("--from-traffic", metavar="WORKFLOW", help="start from ordinary runs of this workflow that already asked what the case asks")
+    p.add_argument("--workflow", help="the agent's workflow name in its traces, used to find old runs of the good ref when no commit turns out to be to blame")
     p.add_argument("--no-graph", action="store_true", help="do not ask entire-graph which commits could reach the agent")
     p.add_argument("--no-priors", action="store_true", help="suspect every commit equally, even ones that never touched the agent")
     p.add_argument("--ablation", action="store_true", help="write the result next to the record as <case>.ablation.json and leave the record alone; use with --no-graph to see what the alibis were worth")

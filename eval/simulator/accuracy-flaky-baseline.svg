@@ -51,20 +51,20 @@
 <text class="tick muted" x="280.0" y="169" text-anchor="middle">320</text>
 <path class="line s-once" d="M0.0,19.5 L56.0,20.4 L88.8,21.0 L112.0,22.8 L144.8,24.0 L168.0,24.0 L200.8,21.9 L224.0,21.3 L256.8,20.4 L280.0,19.5"/>
 <path class="line s-repeat" d="M0.0,22.2 L56.0,54.3 L88.8,75.0 L112.0,80.4 L144.8,109.5 L168.0,117.0 L200.8,134.1 L224.0,137.1 L256.8,141.9 L280.0,145.2"/>
-<path class="line s-top" d="M0.0,33.6 L56.0,11.7 L88.8,1.5 L112.0,2.1 L144.8,0.6 L168.0,0.6 L200.8,2.7 L224.0,0.9 L256.8,0.9 L280.0,2.4"/>
-<path class="line s-named" d="M0.0,146.1 L56.0,37.5 L88.8,4.8 L112.0,2.1 L144.8,0.6 L168.0,0.6 L200.8,2.7 L224.0,0.9 L256.8,0.9 L280.0,2.4"/>
+<path class="line s-top" d="M0.0,47.1 L56.0,15.0 L88.8,1.5 L112.0,2.1 L144.8,0.6 L168.0,0.6 L200.8,2.7 L224.0,0.9 L256.8,0.9 L280.0,2.7"/>
+<path class="line s-named" d="M0.0,146.1 L56.0,59.4 L88.8,5.4 L112.0,2.1 L144.8,0.6 L168.0,0.6 L200.8,2.7 L224.0,0.9 L256.8,0.9 L280.0,2.7"/>
 <circle class="hit" cx="0.0" cy="146.1" r="7"><title>Statistical bisect, named at 95% and right: 3% at 10 replays, wrong in 0% (0 of 13) accusations</title></circle>
-<circle class="hit" cx="56.0" cy="37.5" r="7"><title>Statistical bisect, named at 95% and right: 75% at 20 replays, wrong in 1% (2 of 377) accusations</title></circle>
-<circle class="hit" cx="88.8" cy="4.8" r="7"><title>Statistical bisect, named at 95% and right: 97% at 30 replays, wrong in 1% (3 of 487) accusations</title></circle>
+<circle class="hit" cx="56.0" cy="59.4" r="7"><title>Statistical bisect, named at 95% and right: 60% at 20 replays, wrong in 1% (2 of 304) accusations</title></circle>
+<circle class="hit" cx="88.8" cy="5.4" r="7"><title>Statistical bisect, named at 95% and right: 96% at 30 replays, wrong in 1% (3 of 485) accusations</title></circle>
 <circle class="hit" cx="112.0" cy="2.1" r="7"><title>Statistical bisect, named at 95% and right: 99% at 40 replays, wrong in 1% (7 of 500) accusations</title></circle>
 <circle class="hit" cx="144.8" cy="0.6" r="7"><title>Statistical bisect, named at 95% and right: 100% at 60 replays, wrong in 0% (2 of 500) accusations</title></circle>
 <circle class="hit" cx="168.0" cy="0.6" r="7"><title>Statistical bisect, named at 95% and right: 100% at 80 replays, wrong in 0% (2 of 500) accusations</title></circle>
 <circle class="hit" cx="200.8" cy="2.7" r="7"><title>Statistical bisect, named at 95% and right: 98% at 120 replays, wrong in 2% (9 of 500) accusations</title></circle>
 <circle class="hit" cx="224.0" cy="0.9" r="7"><title>Statistical bisect, named at 95% and right: 99% at 160 replays, wrong in 1% (3 of 500) accusations</title></circle>
 <circle class="hit" cx="256.8" cy="0.9" r="7"><title>Statistical bisect, named at 95% and right: 99% at 240 replays, wrong in 1% (3 of 500) accusations</title></circle>
-<circle class="hit" cx="280.0" cy="2.4" r="7"><title>Statistical bisect, named at 95% and right: 98% at 320 replays, wrong in 2% (8 of 500) accusations</title></circle>
-<circle class="hit" cx="0.0" cy="33.6" r="7"><title>Statistical bisect, top suspect is right: 78% at 10 replays</title></circle>
-<circle class="hit" cx="56.0" cy="11.7" r="7"><title>Statistical bisect, top suspect is right: 92% at 20 replays</title></circle>
+<circle class="hit" cx="280.0" cy="2.7" r="7"><title>Statistical bisect, named at 95% and right: 98% at 320 replays, wrong in 2% (8 of 499) accusations</title></circle>
+<circle class="hit" cx="0.0" cy="47.1" r="7"><title>Statistical bisect, top suspect is right: 69% at 10 replays</title></circle>
+<circle class="hit" cx="56.0" cy="15.0" r="7"><title>Statistical bisect, top suspect is right: 90% at 20 replays</title></circle>
 <circle class="hit" cx="88.8" cy="1.5" r="7"><title>Statistical bisect, top suspect is right: 99% at 30 replays</title></circle>
 <circle class="hit" cx="112.0" cy="2.1" r="7"><title>Statistical bisect, top suspect is right: 99% at 40 replays</title></circle>
 <circle class="hit" cx="144.8" cy="0.6" r="7"><title>Statistical bisect, top suspect is right: 100% at 60 replays</title></circle>
@@ -72,7 +72,7 @@
 <circle class="hit" cx="200.8" cy="2.7" r="7"><title>Statistical bisect, top suspect is right: 98% at 120 replays</title></circle>
 <circle class="hit" cx="224.0" cy="0.9" r="7"><title>Statistical bisect, top suspect is right: 99% at 160 replays</title></circle>
 <circle class="hit" cx="256.8" cy="0.9" r="7"><title>Statistical bisect, top suspect is right: 99% at 240 replays</title></circle>
-<circle class="hit" cx="280.0" cy="2.4" r="7"><title>Statistical bisect, top suspect is right: 98% at 320 replays</title></circle>
+<circle class="hit" cx="280.0" cy="2.7" r="7"><title>Statistical bisect, top suspect is right: 98% at 320 replays</title></circle>
 <circle class="hit" cx="0.0" cy="22.2" r="7"><title>Plain bisect, repeats to fill the budget: 85% at 10 replays, wrong in 15% (74 of 500) accusations</title></circle>
 <circle class="hit" cx="56.0" cy="54.3" r="7"><title>Plain bisect, repeats to fill the budget: 64% at 20 replays, wrong in 36% (181 of 500) accusations</title></circle>
 <circle class="hit" cx="88.8" cy="75.0" r="7"><title>Plain bisect, repeats to fill the budget: 50% at 30 replays, wrong in 50% (250 of 500) accusations</title></circle>
@@ -117,28 +117,28 @@
 <text class="tick muted" x="280.0" y="169" text-anchor="middle">320</text>
 <path class="line s-once" d="M0.0,75.6 L56.0,74.7 L88.8,77.1 L112.0,77.4 L144.8,77.7 L168.0,76.8 L200.8,81.3 L224.0,78.9 L256.8,75.0 L280.0,77.1"/>
 <path class="line s-repeat" d="M0.0,73.8 L56.0,57.3 L88.8,73.2 L112.0,83.7 L144.8,105.3 L168.0,115.2 L200.8,129.9 L224.0,136.5 L256.8,142.5 L280.0,144.3"/>
-<path class="line s-top" d="M0.0,82.2 L56.0,42.9 L88.8,12.6 L112.0,3.6 L144.8,6.0 L168.0,2.4 L200.8,1.8 L224.0,2.7 L256.8,2.7 L280.0,3.0"/>
-<path class="line s-named" d="M0.0,148.5 L56.0,120.6 L88.8,47.4 L112.0,15.9 L144.8,8.7 L168.0,2.7 L200.8,1.8 L224.0,3.6 L256.8,3.0 L280.0,3.0"/>
+<path class="line s-top" d="M0.0,88.2 L56.0,57.3 L88.8,20.7 L112.0,4.2 L144.8,6.3 L168.0,2.7 L200.8,1.8 L224.0,2.7 L256.8,2.4 L280.0,3.3"/>
+<path class="line s-named" d="M0.0,148.5 L56.0,122.1 L88.8,54.3 L112.0,19.5 L144.8,9.6 L168.0,3.0 L200.8,1.8 L224.0,3.6 L256.8,2.7 L280.0,3.3"/>
 <circle class="hit" cx="0.0" cy="148.5" r="7"><title>Statistical bisect, named at 95% and right: 1% at 10 replays, wrong in 0% (0 of 5) accusations</title></circle>
-<circle class="hit" cx="56.0" cy="120.6" r="7"><title>Statistical bisect, named at 95% and right: 20% at 20 replays, wrong in 2% (2 of 100) accusations</title></circle>
-<circle class="hit" cx="88.8" cy="47.4" r="7"><title>Statistical bisect, named at 95% and right: 68% at 30 replays, wrong in 1% (4 of 346) accusations</title></circle>
-<circle class="hit" cx="112.0" cy="15.9" r="7"><title>Statistical bisect, named at 95% and right: 89% at 40 replays, wrong in 1% (5 of 452) accusations</title></circle>
-<circle class="hit" cx="144.8" cy="8.7" r="7"><title>Statistical bisect, named at 95% and right: 94% at 60 replays, wrong in 3% (16 of 487) accusations</title></circle>
-<circle class="hit" cx="168.0" cy="2.7" r="7"><title>Statistical bisect, named at 95% and right: 98% at 80 replays, wrong in 2% (8 of 499) accusations</title></circle>
+<circle class="hit" cx="56.0" cy="122.1" r="7"><title>Statistical bisect, named at 95% and right: 19% at 20 replays, wrong in 2% (2 of 95) accusations</title></circle>
+<circle class="hit" cx="88.8" cy="54.3" r="7"><title>Statistical bisect, named at 95% and right: 64% at 30 replays, wrong in 1% (4 of 323) accusations</title></circle>
+<circle class="hit" cx="112.0" cy="19.5" r="7"><title>Statistical bisect, named at 95% and right: 87% at 40 replays, wrong in 1% (4 of 439) accusations</title></circle>
+<circle class="hit" cx="144.8" cy="9.6" r="7"><title>Statistical bisect, named at 95% and right: 94% at 60 replays, wrong in 4% (17 of 485) accusations</title></circle>
+<circle class="hit" cx="168.0" cy="3.0" r="7"><title>Statistical bisect, named at 95% and right: 98% at 80 replays, wrong in 2% (9 of 499) accusations</title></circle>
 <circle class="hit" cx="200.8" cy="1.8" r="7"><title>Statistical bisect, named at 95% and right: 99% at 120 replays, wrong in 1% (6 of 500) accusations</title></circle>
 <circle class="hit" cx="224.0" cy="3.6" r="7"><title>Statistical bisect, named at 95% and right: 98% at 160 replays, wrong in 2% (9 of 497) accusations</title></circle>
-<circle class="hit" cx="256.8" cy="3.0" r="7"><title>Statistical bisect, named at 95% and right: 98% at 240 replays, wrong in 2% (9 of 499) accusations</title></circle>
-<circle class="hit" cx="280.0" cy="3.0" r="7"><title>Statistical bisect, named at 95% and right: 98% at 320 replays, wrong in 2% (10 of 500) accusations</title></circle>
-<circle class="hit" cx="0.0" cy="82.2" r="7"><title>Statistical bisect, top suspect is right: 45% at 10 replays</title></circle>
-<circle class="hit" cx="56.0" cy="42.9" r="7"><title>Statistical bisect, top suspect is right: 71% at 20 replays</title></circle>
-<circle class="hit" cx="88.8" cy="12.6" r="7"><title>Statistical bisect, top suspect is right: 92% at 30 replays</title></circle>
-<circle class="hit" cx="112.0" cy="3.6" r="7"><title>Statistical bisect, top suspect is right: 98% at 40 replays</title></circle>
-<circle class="hit" cx="144.8" cy="6.0" r="7"><title>Statistical bisect, top suspect is right: 96% at 60 replays</title></circle>
-<circle class="hit" cx="168.0" cy="2.4" r="7"><title>Statistical bisect, top suspect is right: 98% at 80 replays</title></circle>
+<circle class="hit" cx="256.8" cy="2.7" r="7"><title>Statistical bisect, named at 95% and right: 98% at 240 replays, wrong in 2% (8 of 499) accusations</title></circle>
+<circle class="hit" cx="280.0" cy="3.3" r="7"><title>Statistical bisect, named at 95% and right: 98% at 320 replays, wrong in 2% (11 of 500) accusations</title></circle>
+<circle class="hit" cx="0.0" cy="88.2" r="7"><title>Statistical bisect, top suspect is right: 41% at 10 replays</title></circle>
+<circle class="hit" cx="56.0" cy="57.3" r="7"><title>Statistical bisect, top suspect is right: 62% at 20 replays</title></circle>
+<circle class="hit" cx="88.8" cy="20.7" r="7"><title>Statistical bisect, top suspect is right: 86% at 30 replays</title></circle>
+<circle class="hit" cx="112.0" cy="4.2" r="7"><title>Statistical bisect, top suspect is right: 97% at 40 replays</title></circle>
+<circle class="hit" cx="144.8" cy="6.3" r="7"><title>Statistical bisect, top suspect is right: 96% at 60 replays</title></circle>
+<circle class="hit" cx="168.0" cy="2.7" r="7"><title>Statistical bisect, top suspect is right: 98% at 80 replays</title></circle>
 <circle class="hit" cx="200.8" cy="1.8" r="7"><title>Statistical bisect, top suspect is right: 99% at 120 replays</title></circle>
 <circle class="hit" cx="224.0" cy="2.7" r="7"><title>Statistical bisect, top suspect is right: 98% at 160 replays</title></circle>
-<circle class="hit" cx="256.8" cy="2.7" r="7"><title>Statistical bisect, top suspect is right: 98% at 240 replays</title></circle>
-<circle class="hit" cx="280.0" cy="3.0" r="7"><title>Statistical bisect, top suspect is right: 98% at 320 replays</title></circle>
+<circle class="hit" cx="256.8" cy="2.4" r="7"><title>Statistical bisect, top suspect is right: 98% at 240 replays</title></circle>
+<circle class="hit" cx="280.0" cy="3.3" r="7"><title>Statistical bisect, top suspect is right: 98% at 320 replays</title></circle>
 <circle class="hit" cx="0.0" cy="73.8" r="7"><title>Plain bisect, repeats to fill the budget: 51% at 10 replays, wrong in 49% (246 of 500) accusations</title></circle>
 <circle class="hit" cx="56.0" cy="57.3" r="7"><title>Plain bisect, repeats to fill the budget: 62% at 20 replays, wrong in 38% (191 of 500) accusations</title></circle>
 <circle class="hit" cx="88.8" cy="73.2" r="7"><title>Plain bisect, repeats to fill the budget: 51% at 30 replays, wrong in 49% (244 of 500) accusations</title></circle>
@@ -183,28 +183,28 @@
 <text class="tick muted" x="280.0" y="169" text-anchor="middle">320</text>
 <path class="line s-once" d="M0.0,111.0 L56.0,106.8 L88.8,103.5 L112.0,105.9 L144.8,104.1 L168.0,107.1 L200.8,111.6 L224.0,107.7 L256.8,111.0 L280.0,108.9"/>
 <path class="line s-repeat" d="M0.0,110.1 L56.0,64.2 L88.8,76.2 L112.0,83.7 L144.8,110.7 L168.0,120.6 L200.8,130.2 L224.0,137.4 L256.8,142.2 L280.0,144.6"/>
-<path class="line s-top" d="M0.0,111.9 L56.0,72.3 L88.8,50.7 L112.0,26.1 L144.8,10.2 L168.0,7.8 L200.8,3.6 L224.0,7.5 L256.8,4.8 L280.0,5.4"/>
-<path class="line s-named" d="M0.0,150.0 L56.0,142.8 L88.8,114.9 L112.0,72.6 L144.8,29.7 L168.0,13.2 L200.8,6.6 L224.0,8.7 L256.8,6.0 L280.0,6.6"/>
+<path class="line s-top" d="M0.0,118.2 L56.0,85.5 L88.8,64.5 L112.0,36.0 L144.8,12.3 L168.0,7.2 L200.8,4.5 L224.0,6.6 L256.8,5.7 L280.0,6.6"/>
+<path class="line s-named" d="M0.0,150.0 L56.0,143.1 L88.8,119.4 L112.0,81.9 L144.8,37.5 L168.0,14.4 L200.8,6.9 L224.0,7.5 L256.8,6.0 L280.0,7.5"/>
 <circle class="hit" cx="0.0" cy="150.0" r="7"><title>Statistical bisect, named at 95% and right: 0% at 10 replays</title></circle>
-<circle class="hit" cx="56.0" cy="142.8" r="7"><title>Statistical bisect, named at 95% and right: 5% at 20 replays, wrong in 17% (5 of 29) accusations</title></circle>
-<circle class="hit" cx="88.8" cy="114.9" r="7"><title>Statistical bisect, named at 95% and right: 23% at 30 replays, wrong in 7% (9 of 126) accusations</title></circle>
-<circle class="hit" cx="112.0" cy="72.6" r="7"><title>Statistical bisect, named at 95% and right: 52% at 40 replays, wrong in 6% (16 of 274) accusations</title></circle>
-<circle class="hit" cx="144.8" cy="29.7" r="7"><title>Statistical bisect, named at 95% and right: 80% at 60 replays, wrong in 4% (16 of 417) accusations</title></circle>
-<circle class="hit" cx="168.0" cy="13.2" r="7"><title>Statistical bisect, named at 95% and right: 91% at 80 replays, wrong in 3% (15 of 471) accusations</title></circle>
-<circle class="hit" cx="200.8" cy="6.6" r="7"><title>Statistical bisect, named at 95% and right: 96% at 120 replays, wrong in 2% (10 of 488) accusations</title></circle>
-<circle class="hit" cx="224.0" cy="8.7" r="7"><title>Statistical bisect, named at 95% and right: 94% at 160 replays, wrong in 5% (23 of 494) accusations</title></circle>
-<circle class="hit" cx="256.8" cy="6.0" r="7"><title>Statistical bisect, named at 95% and right: 96% at 240 replays, wrong in 3% (16 of 496) accusations</title></circle>
-<circle class="hit" cx="280.0" cy="6.6" r="7"><title>Statistical bisect, named at 95% and right: 96% at 320 replays, wrong in 3% (17 of 495) accusations</title></circle>
-<circle class="hit" cx="0.0" cy="111.9" r="7"><title>Statistical bisect, top suspect is right: 25% at 10 replays</title></circle>
-<circle class="hit" cx="56.0" cy="72.3" r="7"><title>Statistical bisect, top suspect is right: 52% at 20 replays</title></circle>
-<circle class="hit" cx="88.8" cy="50.7" r="7"><title>Statistical bisect, top suspect is right: 66% at 30 replays</title></circle>
-<circle class="hit" cx="112.0" cy="26.1" r="7"><title>Statistical bisect, top suspect is right: 83% at 40 replays</title></circle>
-<circle class="hit" cx="144.8" cy="10.2" r="7"><title>Statistical bisect, top suspect is right: 93% at 60 replays</title></circle>
-<circle class="hit" cx="168.0" cy="7.8" r="7"><title>Statistical bisect, top suspect is right: 95% at 80 replays</title></circle>
-<circle class="hit" cx="200.8" cy="3.6" r="7"><title>Statistical bisect, top suspect is right: 98% at 120 replays</title></circle>
-<circle class="hit" cx="224.0" cy="7.5" r="7"><title>Statistical bisect, top suspect is right: 95% at 160 replays</title></circle>
-<circle class="hit" cx="256.8" cy="4.8" r="7"><title>Statistical bisect, top suspect is right: 97% at 240 replays</title></circle>
-<circle class="hit" cx="280.0" cy="5.4" r="7"><title>Statistical bisect, top suspect is right: 96% at 320 replays</title></circle>
+<circle class="hit" cx="56.0" cy="143.1" r="7"><title>Statistical bisect, named at 95% and right: 5% at 20 replays, wrong in 15% (4 of 27) accusations</title></circle>
+<circle class="hit" cx="88.8" cy="119.4" r="7"><title>Statistical bisect, named at 95% and right: 20% at 30 replays, wrong in 8% (9 of 111) accusations</title></circle>
+<circle class="hit" cx="112.0" cy="81.9" r="7"><title>Statistical bisect, named at 95% and right: 45% at 40 replays, wrong in 6% (14 of 241) accusations</title></circle>
+<circle class="hit" cx="144.8" cy="37.5" r="7"><title>Statistical bisect, named at 95% and right: 75% at 60 replays, wrong in 3% (12 of 387) accusations</title></circle>
+<circle class="hit" cx="168.0" cy="14.4" r="7"><title>Statistical bisect, named at 95% and right: 90% at 80 replays, wrong in 3% (15 of 467) accusations</title></circle>
+<circle class="hit" cx="200.8" cy="6.9" r="7"><title>Statistical bisect, named at 95% and right: 95% at 120 replays, wrong in 2% (12 of 489) accusations</title></circle>
+<circle class="hit" cx="224.0" cy="7.5" r="7"><title>Statistical bisect, named at 95% and right: 95% at 160 replays, wrong in 4% (20 of 495) accusations</title></circle>
+<circle class="hit" cx="256.8" cy="6.0" r="7"><title>Statistical bisect, named at 95% and right: 96% at 240 replays, wrong in 3% (17 of 497) accusations</title></circle>
+<circle class="hit" cx="280.0" cy="7.5" r="7"><title>Statistical bisect, named at 95% and right: 95% at 320 replays, wrong in 4% (19 of 494) accusations</title></circle>
+<circle class="hit" cx="0.0" cy="118.2" r="7"><title>Statistical bisect, top suspect is right: 21% at 10 replays</title></circle>
+<circle class="hit" cx="56.0" cy="85.5" r="7"><title>Statistical bisect, top suspect is right: 43% at 20 replays</title></circle>
+<circle class="hit" cx="88.8" cy="64.5" r="7"><title>Statistical bisect, top suspect is right: 57% at 30 replays</title></circle>
+<circle class="hit" cx="112.0" cy="36.0" r="7"><title>Statistical bisect, top suspect is right: 76% at 40 replays</title></circle>
+<circle class="hit" cx="144.8" cy="12.3" r="7"><title>Statistical bisect, top suspect is right: 92% at 60 replays</title></circle>
+<circle class="hit" cx="168.0" cy="7.2" r="7"><title>Statistical bisect, top suspect is right: 95% at 80 replays</title></circle>
+<circle class="hit" cx="200.8" cy="4.5" r="7"><title>Statistical bisect, top suspect is right: 97% at 120 replays</title></circle>
+<circle class="hit" cx="224.0" cy="6.6" r="7"><title>Statistical bisect, top suspect is right: 96% at 160 replays</title></circle>
+<circle class="hit" cx="256.8" cy="5.7" r="7"><title>Statistical bisect, top suspect is right: 96% at 240 replays</title></circle>
+<circle class="hit" cx="280.0" cy="6.6" r="7"><title>Statistical bisect, top suspect is right: 96% at 320 replays</title></circle>
 <circle class="hit" cx="0.0" cy="110.1" r="7"><title>Plain bisect, repeats to fill the budget: 27% at 10 replays, wrong in 73% (367 of 500) accusations</title></circle>
 <circle class="hit" cx="56.0" cy="64.2" r="7"><title>Plain bisect, repeats to fill the budget: 57% at 20 replays, wrong in 43% (214 of 500) accusations</title></circle>
 <circle class="hit" cx="88.8" cy="76.2" r="7"><title>Plain bisect, repeats to fill the budget: 49% at 30 replays, wrong in 51% (254 of 500) accusations</title></circle>
@@ -249,28 +249,28 @@
 <text class="tick muted" x="280.0" y="169" text-anchor="middle">320</text>
 <path class="line s-once" d="M0.0,131.1 L56.0,131.4 L88.8,130.8 L112.0,127.2 L144.8,132.3 L168.0,126.6 L200.8,130.5 L224.0,129.9 L256.8,131.1 L280.0,132.0"/>
 <path class="line s-repeat" d="M0.0,132.3 L56.0,96.6 L88.8,87.0 L112.0,88.5 L144.8,106.5 L168.0,119.7 L200.8,130.5 L224.0,136.8 L256.8,142.5 L280.0,143.7"/>
-<path class="line s-top" d="M0.0,135.3 L56.0,114.0 L88.8,84.3 L112.0,74.4 L144.8,42.9 L168.0,30.6 L200.8,18.9 L224.0,10.2 L256.8,8.1 L280.0,10.5"/>
-<path class="line s-named" d="M0.0,150.0 L56.0,149.4 L88.8,144.3 L112.0,131.4 L144.8,95.1 L168.0,69.0 L200.8,37.2 L224.0,17.4 L256.8,12.6 L280.0,14.4"/>
+<path class="line s-top" d="M0.0,135.9 L56.0,121.2 L88.8,98.7 L112.0,86.4 L144.8,51.0 L168.0,34.8 L200.8,18.6 L224.0,10.5 L256.8,7.8 L280.0,10.2"/>
+<path class="line s-named" d="M0.0,150.0 L56.0,149.4 L88.8,145.2 L112.0,134.4 L144.8,103.5 L168.0,76.5 L200.8,36.3 L224.0,18.3 L256.8,11.4 L280.0,13.2"/>
 <circle class="hit" cx="0.0" cy="150.0" r="7"><title>Statistical bisect, named at 95% and right: 0% at 10 replays</title></circle>
 <circle class="hit" cx="56.0" cy="149.4" r="7"><title>Statistical bisect, named at 95% and right: 0% at 20 replays, wrong in 50% (2 of 4) accusations</title></circle>
-<circle class="hit" cx="88.8" cy="144.3" r="7"><title>Statistical bisect, named at 95% and right: 4% at 30 replays, wrong in 24% (6 of 25) accusations</title></circle>
-<circle class="hit" cx="112.0" cy="131.4" r="7"><title>Statistical bisect, named at 95% and right: 12% at 40 replays, wrong in 16% (12 of 74) accusations</title></circle>
-<circle class="hit" cx="144.8" cy="95.1" r="7"><title>Statistical bisect, named at 95% and right: 37% at 60 replays, wrong in 9% (18 of 201) accusations</title></circle>
-<circle class="hit" cx="168.0" cy="69.0" r="7"><title>Statistical bisect, named at 95% and right: 54% at 80 replays, wrong in 6% (17 of 287) accusations</title></circle>
-<circle class="hit" cx="200.8" cy="37.2" r="7"><title>Statistical bisect, named at 95% and right: 75% at 120 replays, wrong in 6% (25 of 401) accusations</title></circle>
-<circle class="hit" cx="224.0" cy="17.4" r="7"><title>Statistical bisect, named at 95% and right: 88% at 160 replays, wrong in 4% (20 of 462) accusations</title></circle>
-<circle class="hit" cx="256.8" cy="12.6" r="7"><title>Statistical bisect, named at 95% and right: 92% at 240 replays, wrong in 5% (22 of 480) accusations</title></circle>
-<circle class="hit" cx="280.0" cy="14.4" r="7"><title>Statistical bisect, named at 95% and right: 90% at 320 replays, wrong in 7% (34 of 486) accusations</title></circle>
-<circle class="hit" cx="0.0" cy="135.3" r="7"><title>Statistical bisect, top suspect is right: 10% at 10 replays</title></circle>
-<circle class="hit" cx="56.0" cy="114.0" r="7"><title>Statistical bisect, top suspect is right: 24% at 20 replays</title></circle>
-<circle class="hit" cx="88.8" cy="84.3" r="7"><title>Statistical bisect, top suspect is right: 44% at 30 replays</title></circle>
-<circle class="hit" cx="112.0" cy="74.4" r="7"><title>Statistical bisect, top suspect is right: 50% at 40 replays</title></circle>
-<circle class="hit" cx="144.8" cy="42.9" r="7"><title>Statistical bisect, top suspect is right: 71% at 60 replays</title></circle>
-<circle class="hit" cx="168.0" cy="30.6" r="7"><title>Statistical bisect, top suspect is right: 80% at 80 replays</title></circle>
-<circle class="hit" cx="200.8" cy="18.9" r="7"><title>Statistical bisect, top suspect is right: 87% at 120 replays</title></circle>
-<circle class="hit" cx="224.0" cy="10.2" r="7"><title>Statistical bisect, top suspect is right: 93% at 160 replays</title></circle>
-<circle class="hit" cx="256.8" cy="8.1" r="7"><title>Statistical bisect, top suspect is right: 95% at 240 replays</title></circle>
-<circle class="hit" cx="280.0" cy="10.5" r="7"><title>Statistical bisect, top suspect is right: 93% at 320 replays</title></circle>
+<circle class="hit" cx="88.8" cy="145.2" r="7"><title>Statistical bisect, named at 95% and right: 3% at 30 replays, wrong in 27% (6 of 22) accusations</title></circle>
+<circle class="hit" cx="112.0" cy="134.4" r="7"><title>Statistical bisect, named at 95% and right: 10% at 40 replays, wrong in 15% (9 of 61) accusations</title></circle>
+<circle class="hit" cx="144.8" cy="103.5" r="7"><title>Statistical bisect, named at 95% and right: 31% at 60 replays, wrong in 11% (19 of 174) accusations</title></circle>
+<circle class="hit" cx="168.0" cy="76.5" r="7"><title>Statistical bisect, named at 95% and right: 49% at 80 replays, wrong in 7% (18 of 263) accusations</title></circle>
+<circle class="hit" cx="200.8" cy="36.3" r="7"><title>Statistical bisect, named at 95% and right: 76% at 120 replays, wrong in 6% (25 of 404) accusations</title></circle>
+<circle class="hit" cx="224.0" cy="18.3" r="7"><title>Statistical bisect, named at 95% and right: 88% at 160 replays, wrong in 5% (22 of 461) accusations</title></circle>
+<circle class="hit" cx="256.8" cy="11.4" r="7"><title>Statistical bisect, named at 95% and right: 92% at 240 replays, wrong in 5% (22 of 484) accusations</title></circle>
+<circle class="hit" cx="280.0" cy="13.2" r="7"><title>Statistical bisect, named at 95% and right: 91% at 320 replays, wrong in 6% (30 of 486) accusations</title></circle>
+<circle class="hit" cx="0.0" cy="135.9" r="7"><title>Statistical bisect, top suspect is right: 9% at 10 replays</title></circle>
+<circle class="hit" cx="56.0" cy="121.2" r="7"><title>Statistical bisect, top suspect is right: 19% at 20 replays</title></circle>
+<circle class="hit" cx="88.8" cy="98.7" r="7"><title>Statistical bisect, top suspect is right: 34% at 30 replays</title></circle>
+<circle class="hit" cx="112.0" cy="86.4" r="7"><title>Statistical bisect, top suspect is right: 42% at 40 replays</title></circle>
+<circle class="hit" cx="144.8" cy="51.0" r="7"><title>Statistical bisect, top suspect is right: 66% at 60 replays</title></circle>
+<circle class="hit" cx="168.0" cy="34.8" r="7"><title>Statistical bisect, top suspect is right: 77% at 80 replays</title></circle>
+<circle class="hit" cx="200.8" cy="18.6" r="7"><title>Statistical bisect, top suspect is right: 88% at 120 replays</title></circle>
+<circle class="hit" cx="224.0" cy="10.5" r="7"><title>Statistical bisect, top suspect is right: 93% at 160 replays</title></circle>
+<circle class="hit" cx="256.8" cy="7.8" r="7"><title>Statistical bisect, top suspect is right: 95% at 240 replays</title></circle>
+<circle class="hit" cx="280.0" cy="10.2" r="7"><title>Statistical bisect, top suspect is right: 93% at 320 replays</title></circle>
 <circle class="hit" cx="0.0" cy="132.3" r="7"><title>Plain bisect, repeats to fill the budget: 12% at 10 replays, wrong in 88% (441 of 500) accusations</title></circle>
 <circle class="hit" cx="56.0" cy="96.6" r="7"><title>Plain bisect, repeats to fill the budget: 36% at 20 replays, wrong in 64% (322 of 500) accusations</title></circle>
 <circle class="hit" cx="88.8" cy="87.0" r="7"><title>Plain bisect, repeats to fill the budget: 42% at 30 replays, wrong in 58% (290 of 500) accusations</title></circle>
@@ -316,28 +316,28 @@
 <text class="tick muted" x="140.0" y="190" text-anchor="middle">replays allowed</text>
 <path class="line s-once" d="M0.0,136.5 L56.0,138.3 L88.8,141.0 L112.0,135.0 L144.8,135.9 L168.0,138.0 L200.8,138.3 L224.0,135.9 L256.8,135.9 L280.0,137.4"/>
 <path class="line s-repeat" d="M0.0,137.4 L56.0,120.0 L88.8,108.9 L112.0,103.5 L144.8,110.1 L168.0,119.4 L200.8,132.3 L224.0,138.3 L256.8,141.9 L280.0,144.0"/>
-<path class="line s-top" d="M0.0,138.9 L56.0,126.3 L88.8,111.0 L112.0,96.9 L144.8,76.2 L168.0,60.3 L200.8,36.0 L224.0,29.1 L256.8,14.7 L280.0,13.8"/>
-<path class="line s-named" d="M0.0,150.0 L56.0,150.0 L88.8,148.8 L112.0,146.7 L144.8,133.5 L168.0,116.4 L200.8,79.8 L224.0,59.4 L256.8,35.1 L280.0,23.4"/>
+<path class="line s-top" d="M0.0,140.4 L56.0,129.3 L88.8,116.1 L112.0,110.1 L144.8,78.6 L168.0,62.7 L200.8,33.3 L224.0,29.7 L256.8,15.6 L280.0,12.3"/>
+<path class="line s-named" d="M0.0,150.0 L56.0,150.0 L88.8,148.8 L112.0,146.4 L144.8,133.5 L168.0,117.3 L200.8,78.9 L224.0,57.3 L256.8,33.3 L280.0,20.7"/>
 <circle class="hit" cx="0.0" cy="150.0" r="7"><title>Statistical bisect, named at 95% and right: 0% at 10 replays</title></circle>
 <circle class="hit" cx="56.0" cy="150.0" r="7"><title>Statistical bisect, named at 95% and right: 0% at 20 replays</title></circle>
 <circle class="hit" cx="88.8" cy="148.8" r="7"><title>Statistical bisect, named at 95% and right: 1% at 30 replays, wrong in 20% (1 of 5) accusations</title></circle>
-<circle class="hit" cx="112.0" cy="146.7" r="7"><title>Statistical bisect, named at 95% and right: 2% at 40 replays, wrong in 42% (8 of 19) accusations</title></circle>
-<circle class="hit" cx="144.8" cy="133.5" r="7"><title>Statistical bisect, named at 95% and right: 11% at 60 replays, wrong in 18% (12 of 67) accusations</title></circle>
-<circle class="hit" cx="168.0" cy="116.4" r="7"><title>Statistical bisect, named at 95% and right: 22% at 80 replays, wrong in 13% (17 of 129) accusations</title></circle>
-<circle class="hit" cx="200.8" cy="79.8" r="7"><title>Statistical bisect, named at 95% and right: 47% at 120 replays, wrong in 6% (14 of 248) accusations</title></circle>
-<circle class="hit" cx="224.0" cy="59.4" r="7"><title>Statistical bisect, named at 95% and right: 60% at 160 replays, wrong in 8% (25 of 327) accusations</title></circle>
-<circle class="hit" cx="256.8" cy="35.1" r="7"><title>Statistical bisect, named at 95% and right: 77% at 240 replays, wrong in 5% (22 of 405) accusations</title></circle>
-<circle class="hit" cx="280.0" cy="23.4" r="7"><title>Statistical bisect, named at 95% and right: 84% at 320 replays, wrong in 7% (33 of 455) accusations</title></circle>
-<circle class="hit" cx="0.0" cy="138.9" r="7"><title>Statistical bisect, top suspect is right: 7% at 10 replays</title></circle>
-<circle class="hit" cx="56.0" cy="126.3" r="7"><title>Statistical bisect, top suspect is right: 16% at 20 replays</title></circle>
-<circle class="hit" cx="88.8" cy="111.0" r="7"><title>Statistical bisect, top suspect is right: 26% at 30 replays</title></circle>
-<circle class="hit" cx="112.0" cy="96.9" r="7"><title>Statistical bisect, top suspect is right: 35% at 40 replays</title></circle>
-<circle class="hit" cx="144.8" cy="76.2" r="7"><title>Statistical bisect, top suspect is right: 49% at 60 replays</title></circle>
-<circle class="hit" cx="168.0" cy="60.3" r="7"><title>Statistical bisect, top suspect is right: 60% at 80 replays</title></circle>
-<circle class="hit" cx="200.8" cy="36.0" r="7"><title>Statistical bisect, top suspect is right: 76% at 120 replays</title></circle>
-<circle class="hit" cx="224.0" cy="29.1" r="7"><title>Statistical bisect, top suspect is right: 81% at 160 replays</title></circle>
-<circle class="hit" cx="256.8" cy="14.7" r="7"><title>Statistical bisect, top suspect is right: 90% at 240 replays</title></circle>
-<circle class="hit" cx="280.0" cy="13.8" r="7"><title>Statistical bisect, top suspect is right: 91% at 320 replays</title></circle>
+<circle class="hit" cx="112.0" cy="146.4" r="7"><title>Statistical bisect, named at 95% and right: 2% at 40 replays, wrong in 37% (7 of 19) accusations</title></circle>
+<circle class="hit" cx="144.8" cy="133.5" r="7"><title>Statistical bisect, named at 95% and right: 11% at 60 replays, wrong in 15% (10 of 65) accusations</title></circle>
+<circle class="hit" cx="168.0" cy="117.3" r="7"><title>Statistical bisect, named at 95% and right: 22% at 80 replays, wrong in 8% (10 of 119) accusations</title></circle>
+<circle class="hit" cx="200.8" cy="78.9" r="7"><title>Statistical bisect, named at 95% and right: 47% at 120 replays, wrong in 4% (10 of 247) accusations</title></circle>
+<circle class="hit" cx="224.0" cy="57.3" r="7"><title>Statistical bisect, named at 95% and right: 62% at 160 replays, wrong in 7% (24 of 333) accusations</title></circle>
+<circle class="hit" cx="256.8" cy="33.3" r="7"><title>Statistical bisect, named at 95% and right: 78% at 240 replays, wrong in 5% (21 of 410) accusations</title></circle>
+<circle class="hit" cx="280.0" cy="20.7" r="7"><title>Statistical bisect, named at 95% and right: 86% at 320 replays, wrong in 7% (30 of 461) accusations</title></circle>
+<circle class="hit" cx="0.0" cy="140.4" r="7"><title>Statistical bisect, top suspect is right: 6% at 10 replays</title></circle>
+<circle class="hit" cx="56.0" cy="129.3" r="7"><title>Statistical bisect, top suspect is right: 14% at 20 replays</title></circle>
+<circle class="hit" cx="88.8" cy="116.1" r="7"><title>Statistical bisect, top suspect is right: 23% at 30 replays</title></circle>
+<circle class="hit" cx="112.0" cy="110.1" r="7"><title>Statistical bisect, top suspect is right: 27% at 40 replays</title></circle>
+<circle class="hit" cx="144.8" cy="78.6" r="7"><title>Statistical bisect, top suspect is right: 48% at 60 replays</title></circle>
+<circle class="hit" cx="168.0" cy="62.7" r="7"><title>Statistical bisect, top suspect is right: 58% at 80 replays</title></circle>
+<circle class="hit" cx="200.8" cy="33.3" r="7"><title>Statistical bisect, top suspect is right: 78% at 120 replays</title></circle>
+<circle class="hit" cx="224.0" cy="29.7" r="7"><title>Statistical bisect, top suspect is right: 80% at 160 replays</title></circle>
+<circle class="hit" cx="256.8" cy="15.6" r="7"><title>Statistical bisect, top suspect is right: 90% at 240 replays</title></circle>
+<circle class="hit" cx="280.0" cy="12.3" r="7"><title>Statistical bisect, top suspect is right: 92% at 320 replays</title></circle>
 <circle class="hit" cx="0.0" cy="137.4" r="7"><title>Plain bisect, repeats to fill the budget: 8% at 10 replays, wrong in 92% (458 of 500) accusations</title></circle>
 <circle class="hit" cx="56.0" cy="120.0" r="7"><title>Plain bisect, repeats to fill the budget: 20% at 20 replays, wrong in 80% (400 of 500) accusations</title></circle>
 <circle class="hit" cx="88.8" cy="108.9" r="7"><title>Plain bisect, repeats to fill the budget: 27% at 30 replays, wrong in 73% (363 of 500) accusations</title></circle>
@@ -383,27 +383,27 @@
 <text class="tick muted" x="140.0" y="190" text-anchor="middle">replays allowed</text>
 <path class="line s-once" d="M0.0,142.5 L56.0,142.5 L88.8,142.5 L112.0,140.4 L144.8,142.2 L168.0,140.7 L200.8,139.8 L224.0,141.9 L256.8,140.4 L280.0,140.1"/>
 <path class="line s-repeat" d="M0.0,141.3 L56.0,128.7 L88.8,121.2 L112.0,120.3 L144.8,116.7 L168.0,122.7 L200.8,136.2 L224.0,136.2 L256.8,144.0 L280.0,144.3"/>
-<path class="line s-top" d="M0.0,142.8 L56.0,138.6 L88.8,132.3 L112.0,126.6 L144.8,117.9 L168.0,105.6 L200.8,82.5 L224.0,76.5 L256.8,58.2 L280.0,44.4"/>
-<path class="line s-named" d="M0.0,150.0 L56.0,150.0 L88.8,149.4 L112.0,149.7 L144.8,148.2 L168.0,140.7 L200.8,130.5 L224.0,121.8 L256.8,100.5 L280.0,81.3"/>
+<path class="line s-top" d="M0.0,143.1 L56.0,141.3 L88.8,135.0 L112.0,130.2 L144.8,119.7 L168.0,104.1 L200.8,81.9 L224.0,75.6 L256.8,52.8 L280.0,44.4"/>
+<path class="line s-named" d="M0.0,150.0 L56.0,150.0 L88.8,149.4 L112.0,149.7 L144.8,149.1 L168.0,141.6 L200.8,130.2 L224.0,122.7 L256.8,99.6 L280.0,78.3"/>
 <circle class="hit" cx="0.0" cy="150.0" r="7"><title>Statistical bisect, named at 95% and right: 0% at 10 replays</title></circle>
 <circle class="hit" cx="56.0" cy="150.0" r="7"><title>Statistical bisect, named at 95% and right: 0% at 20 replays</title></circle>
 <circle class="hit" cx="88.8" cy="149.4" r="7"><title>Statistical bisect, named at 95% and right: 0% at 30 replays, wrong in 33% (1 of 3) accusations</title></circle>
 <circle class="hit" cx="112.0" cy="149.7" r="7"><title>Statistical bisect, named at 95% and right: 0% at 40 replays, wrong in 83% (5 of 6) accusations</title></circle>
-<circle class="hit" cx="144.8" cy="148.2" r="7"><title>Statistical bisect, named at 95% and right: 1% at 60 replays, wrong in 62% (10 of 16) accusations</title></circle>
-<circle class="hit" cx="168.0" cy="140.7" r="7"><title>Statistical bisect, named at 95% and right: 6% at 80 replays, wrong in 26% (11 of 42) accusations</title></circle>
-<circle class="hit" cx="200.8" cy="130.5" r="7"><title>Statistical bisect, named at 95% and right: 13% at 120 replays, wrong in 27% (24 of 89) accusations</title></circle>
-<circle class="hit" cx="224.0" cy="121.8" r="7"><title>Statistical bisect, named at 95% and right: 19% at 160 replays, wrong in 20% (23 of 117) accusations</title></circle>
-<circle class="hit" cx="256.8" cy="100.5" r="7"><title>Statistical bisect, named at 95% and right: 33% at 240 replays, wrong in 15% (28 of 193) accusations</title></circle>
-<circle class="hit" cx="280.0" cy="81.3" r="7"><title>Statistical bisect, named at 95% and right: 46% at 320 replays, wrong in 12% (30 of 259) accusations</title></circle>
-<circle class="hit" cx="0.0" cy="142.8" r="7"><title>Statistical bisect, top suspect is right: 5% at 10 replays</title></circle>
-<circle class="hit" cx="56.0" cy="138.6" r="7"><title>Statistical bisect, top suspect is right: 8% at 20 replays</title></circle>
-<circle class="hit" cx="88.8" cy="132.3" r="7"><title>Statistical bisect, top suspect is right: 12% at 30 replays</title></circle>
-<circle class="hit" cx="112.0" cy="126.6" r="7"><title>Statistical bisect, top suspect is right: 16% at 40 replays</title></circle>
-<circle class="hit" cx="144.8" cy="117.9" r="7"><title>Statistical bisect, top suspect is right: 21% at 60 replays</title></circle>
-<circle class="hit" cx="168.0" cy="105.6" r="7"><title>Statistical bisect, top suspect is right: 30% at 80 replays</title></circle>
-<circle class="hit" cx="200.8" cy="82.5" r="7"><title>Statistical bisect, top suspect is right: 45% at 120 replays</title></circle>
-<circle class="hit" cx="224.0" cy="76.5" r="7"><title>Statistical bisect, top suspect is right: 49% at 160 replays</title></circle>
-<circle class="hit" cx="256.8" cy="58.2" r="7"><title>Statistical bisect, top suspect is right: 61% at 240 replays</title></circle>
+<circle class="hit" cx="144.8" cy="149.1" r="7"><title>Statistical bisect, named at 95% and right: 1% at 60 replays, wrong in 79% (11 of 14) accusations</title></circle>
+<circle class="hit" cx="168.0" cy="141.6" r="7"><title>Statistical bisect, named at 95% and right: 6% at 80 replays, wrong in 20% (7 of 35) accusations</title></circle>
+<circle class="hit" cx="200.8" cy="130.2" r="7"><title>Statistical bisect, named at 95% and right: 13% at 120 replays, wrong in 23% (20 of 86) accusations</title></circle>
+<circle class="hit" cx="224.0" cy="122.7" r="7"><title>Statistical bisect, named at 95% and right: 18% at 160 replays, wrong in 21% (24 of 115) accusations</title></circle>
+<circle class="hit" cx="256.8" cy="99.6" r="7"><title>Statistical bisect, named at 95% and right: 34% at 240 replays, wrong in 13% (26 of 194) accusations</title></circle>
+<circle class="hit" cx="280.0" cy="78.3" r="7"><title>Statistical bisect, named at 95% and right: 48% at 320 replays, wrong in 10% (28 of 267) accusations</title></circle>
+<circle class="hit" cx="0.0" cy="143.1" r="7"><title>Statistical bisect, top suspect is right: 5% at 10 replays</title></circle>
+<circle class="hit" cx="56.0" cy="141.3" r="7"><title>Statistical bisect, top suspect is right: 6% at 20 replays</title></circle>
+<circle class="hit" cx="88.8" cy="135.0" r="7"><title>Statistical bisect, top suspect is right: 10% at 30 replays</title></circle>
+<circle class="hit" cx="112.0" cy="130.2" r="7"><title>Statistical bisect, top suspect is right: 13% at 40 replays</title></circle>
+<circle class="hit" cx="144.8" cy="119.7" r="7"><title>Statistical bisect, top suspect is right: 20% at 60 replays</title></circle>
+<circle class="hit" cx="168.0" cy="104.1" r="7"><title>Statistical bisect, top suspect is right: 31% at 80 replays</title></circle>
+<circle class="hit" cx="200.8" cy="81.9" r="7"><title>Statistical bisect, top suspect is right: 45% at 120 replays</title></circle>
+<circle class="hit" cx="224.0" cy="75.6" r="7"><title>Statistical bisect, top suspect is right: 50% at 160 replays</title></circle>
+<circle class="hit" cx="256.8" cy="52.8" r="7"><title>Statistical bisect, top suspect is right: 65% at 240 replays</title></circle>
 <circle class="hit" cx="280.0" cy="44.4" r="7"><title>Statistical bisect, top suspect is right: 70% at 320 replays</title></circle>
 <circle class="hit" cx="0.0" cy="141.3" r="7"><title>Plain bisect, repeats to fill the budget: 6% at 10 replays, wrong in 94% (471 of 500) accusations</title></circle>
 <circle class="hit" cx="56.0" cy="128.7" r="7"><title>Plain bisect, repeats to fill the budget: 14% at 20 replays, wrong in 86% (429 of 500) accusations</title></circle>
@@ -450,28 +450,28 @@
 <text class="tick muted" x="140.0" y="190" text-anchor="middle">replays allowed</text>
 <path class="line s-once" d="M0.0,145.2 L56.0,145.2 L88.8,146.7 L112.0,145.5 L144.8,146.1 L168.0,143.7 L200.8,145.2 L224.0,144.3 L256.8,143.7 L280.0,144.9"/>
 <path class="line s-repeat" d="M0.0,146.1 L56.0,144.0 L88.8,138.3 L112.0,140.1 L144.8,137.7 L168.0,138.9 L200.8,135.6 L224.0,139.8 L256.8,143.1 L280.0,144.9"/>
-<path class="line s-top" d="M0.0,149.1 L56.0,145.2 L88.8,143.1 L112.0,144.0 L144.8,141.0 L168.0,143.1 L200.8,138.6 L224.0,133.2 L256.8,133.2 L280.0,132.9"/>
-<path class="line s-named" d="M0.0,150.0 L56.0,150.0 L88.8,150.0 L112.0,150.0 L144.8,149.7 L168.0,149.4 L200.8,149.4 L224.0,148.5 L256.8,148.8 L280.0,148.8"/>
+<path class="line s-top" d="M0.0,149.1 L56.0,144.9 L88.8,144.3 L112.0,144.6 L144.8,141.3 L168.0,143.7 L200.8,137.4 L224.0,132.9 L256.8,132.0 L280.0,131.1"/>
+<path class="line s-named" d="M0.0,150.0 L56.0,150.0 L88.8,150.0 L112.0,150.0 L144.8,149.7 L168.0,149.4 L200.8,149.4 L224.0,148.5 L256.8,148.2 L280.0,148.8"/>
 <circle class="hit" cx="0.0" cy="150.0" r="7"><title>Statistical bisect, named at 95% and right: 0% at 10 replays</title></circle>
 <circle class="hit" cx="56.0" cy="150.0" r="7"><title>Statistical bisect, named at 95% and right: 0% at 20 replays</title></circle>
 <circle class="hit" cx="88.8" cy="150.0" r="7"><title>Statistical bisect, named at 95% and right: 0% at 30 replays</title></circle>
 <circle class="hit" cx="112.0" cy="150.0" r="7"><title>Statistical bisect, named at 95% and right: 0% at 40 replays, wrong in 100% (2 of 2) accusations</title></circle>
-<circle class="hit" cx="144.8" cy="149.7" r="7"><title>Statistical bisect, named at 95% and right: 0% at 60 replays, wrong in 88% (7 of 8) accusations</title></circle>
-<circle class="hit" cx="168.0" cy="149.4" r="7"><title>Statistical bisect, named at 95% and right: 0% at 80 replays, wrong in 85% (11 of 13) accusations</title></circle>
+<circle class="hit" cx="144.8" cy="149.7" r="7"><title>Statistical bisect, named at 95% and right: 0% at 60 replays, wrong in 86% (6 of 7) accusations</title></circle>
+<circle class="hit" cx="168.0" cy="149.4" r="7"><title>Statistical bisect, named at 95% and right: 0% at 80 replays, wrong in 83% (10 of 12) accusations</title></circle>
 <circle class="hit" cx="200.8" cy="149.4" r="7"><title>Statistical bisect, named at 95% and right: 0% at 120 replays, wrong in 82% (9 of 11) accusations</title></circle>
 <circle class="hit" cx="224.0" cy="148.5" r="7"><title>Statistical bisect, named at 95% and right: 1% at 160 replays, wrong in 50% (5 of 10) accusations</title></circle>
-<circle class="hit" cx="256.8" cy="148.8" r="7"><title>Statistical bisect, named at 95% and right: 1% at 240 replays, wrong in 79% (15 of 19) accusations</title></circle>
-<circle class="hit" cx="280.0" cy="148.8" r="7"><title>Statistical bisect, named at 95% and right: 1% at 320 replays, wrong in 86% (25 of 29) accusations</title></circle>
+<circle class="hit" cx="256.8" cy="148.2" r="7"><title>Statistical bisect, named at 95% and right: 1% at 240 replays, wrong in 73% (16 of 22) accusations</title></circle>
+<circle class="hit" cx="280.0" cy="148.8" r="7"><title>Statistical bisect, named at 95% and right: 1% at 320 replays, wrong in 85% (22 of 26) accusations</title></circle>
 <circle class="hit" cx="0.0" cy="149.1" r="7"><title>Statistical bisect, top suspect is right: 1% at 10 replays</title></circle>
-<circle class="hit" cx="56.0" cy="145.2" r="7"><title>Statistical bisect, top suspect is right: 3% at 20 replays</title></circle>
-<circle class="hit" cx="88.8" cy="143.1" r="7"><title>Statistical bisect, top suspect is right: 5% at 30 replays</title></circle>
-<circle class="hit" cx="112.0" cy="144.0" r="7"><title>Statistical bisect, top suspect is right: 4% at 40 replays</title></circle>
-<circle class="hit" cx="144.8" cy="141.0" r="7"><title>Statistical bisect, top suspect is right: 6% at 60 replays</title></circle>
-<circle class="hit" cx="168.0" cy="143.1" r="7"><title>Statistical bisect, top suspect is right: 5% at 80 replays</title></circle>
-<circle class="hit" cx="200.8" cy="138.6" r="7"><title>Statistical bisect, top suspect is right: 8% at 120 replays</title></circle>
-<circle class="hit" cx="224.0" cy="133.2" r="7"><title>Statistical bisect, top suspect is right: 11% at 160 replays</title></circle>
-<circle class="hit" cx="256.8" cy="133.2" r="7"><title>Statistical bisect, top suspect is right: 11% at 240 replays</title></circle>
-<circle class="hit" cx="280.0" cy="132.9" r="7"><title>Statistical bisect, top suspect is right: 11% at 320 replays</title></circle>
+<circle class="hit" cx="56.0" cy="144.9" r="7"><title>Statistical bisect, top suspect is right: 3% at 20 replays</title></circle>
+<circle class="hit" cx="88.8" cy="144.3" r="7"><title>Statistical bisect, top suspect is right: 4% at 30 replays</title></circle>
+<circle class="hit" cx="112.0" cy="144.6" r="7"><title>Statistical bisect, top suspect is right: 4% at 40 replays</title></circle>
+<circle class="hit" cx="144.8" cy="141.3" r="7"><title>Statistical bisect, top suspect is right: 6% at 60 replays</title></circle>
+<circle class="hit" cx="168.0" cy="143.7" r="7"><title>Statistical bisect, top suspect is right: 4% at 80 replays</title></circle>
+<circle class="hit" cx="200.8" cy="137.4" r="7"><title>Statistical bisect, top suspect is right: 8% at 120 replays</title></circle>
+<circle class="hit" cx="224.0" cy="132.9" r="7"><title>Statistical bisect, top suspect is right: 11% at 160 replays</title></circle>
+<circle class="hit" cx="256.8" cy="132.0" r="7"><title>Statistical bisect, top suspect is right: 12% at 240 replays</title></circle>
+<circle class="hit" cx="280.0" cy="131.1" r="7"><title>Statistical bisect, top suspect is right: 13% at 320 replays</title></circle>
 <circle class="hit" cx="0.0" cy="146.1" r="7"><title>Plain bisect, repeats to fill the budget: 3% at 10 replays, wrong in 97% (487 of 500) accusations</title></circle>
 <circle class="hit" cx="56.0" cy="144.0" r="7"><title>Plain bisect, repeats to fill the budget: 4% at 20 replays, wrong in 96% (480 of 500) accusations</title></circle>
 <circle class="hit" cx="88.8" cy="138.3" r="7"><title>Plain bisect, repeats to fill the budget: 8% at 30 replays, wrong in 92% (461 of 500) accusations</title></circle>

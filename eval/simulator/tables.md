@@ -98,11 +98,11 @@ The bug fails 100% of the time. In the first four rows each cell is right / wron
 
 | Replays allowed | 10 | 20 | 30 | 40 | 60 | 80 | 120 | 160 | 240 | 320 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Statistical bisect, named at 95% and right | 3% / 0% / 97% | 75% / 0% / 25% | 97% / 1% / 3% | 99% / 1% / 0% | 100% / 0% / 0% | 100% / 0% / 0% | 98% / 2% / 0% | 99% / 1% / 0% | 99% / 1% / 0% | 98% / 2% / 0% |
-| Statistical bisect, top suspect is right | 78% | 92% | 99% | 99% | 100% | 100% | 98% | 99% | 99% | 98% |
+| Statistical bisect, named at 95% and right | 3% / 0% / 97% | 60% / 0% / 39% | 96% / 1% / 3% | 99% / 1% / 0% | 100% / 0% / 0% | 100% / 0% / 0% | 98% / 2% / 0% | 99% / 1% / 0% | 99% / 1% / 0% | 98% / 2% / 0% |
+| Statistical bisect, top suspect is right | 69% | 90% | 99% | 99% | 100% | 100% | 98% | 99% | 99% | 98% |
 | Plain bisect, repeats to fill the budget | 85% / 15% / 0% | 64% / 36% / 0% | 50% / 50% / 0% | 46% / 54% / 0% | 27% / 73% / 0% | 22% / 78% / 0% | 11% / 89% / 0% | 9% / 91% / 0% | 5% / 95% / 0% | 3% / 97% / 0% |
 | Plain bisect, one replay per commit | 87% / 13% / 0% | 86% / 14% / 0% | 86% / 14% / 0% | 85% / 15% / 0% | 84% / 16% / 0% | 84% / 16% / 0% | 85% / 15% / 0% | 86% / 14% / 0% | 86% / 14% / 0% | 87% / 13% / 0% |
-| Statistical bisect: wrong, of accusations made | 0% (0 of 13) | 1% (2 of 377) | 1% (3 of 487) | 1% (7 of 500) | 0% (2 of 500) | 0% (2 of 500) | 2% (9 of 500) | 1% (3 of 500) | 1% (3 of 500) | 2% (8 of 500) |
+| Statistical bisect: wrong, of accusations made | 0% (0 of 13) | 1% (2 of 304) | 1% (3 of 485) | 1% (7 of 500) | 0% (2 of 500) | 0% (2 of 500) | 2% (9 of 500) | 1% (3 of 500) | 1% (3 of 500) | 2% (8 of 499) |
 | Plain bisect with repeats: wrong, of accusations made | 15% (74 of 500) | 36% (181 of 500) | 50% (250 of 500) | 54% (268 of 500) | 73% (365 of 500) | 78% (390 of 500) | 89% (447 of 500) | 91% (457 of 500) | 95% (473 of 500) | 97% (484 of 500) |
 | Plain bisect, one replay: wrong, of accusations made | 13% (65 of 500) | 14% (68 of 500) | 14% (70 of 500) | 15% (76 of 500) | 16% (80 of 500) | 16% (80 of 500) | 15% (73 of 500) | 14% (71 of 500) | 14% (68 of 500) | 13% (65 of 500) |
 
@@ -110,11 +110,11 @@ The bug fails 80% of the time. In the first four rows each cell is right / wrong
 
 | Replays allowed | 10 | 20 | 30 | 40 | 60 | 80 | 120 | 160 | 240 | 320 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Statistical bisect, named at 95% and right | 1% / 0% / 99% | 20% / 0% / 80% | 68% / 1% / 31% | 89% / 1% / 10% | 94% / 3% / 3% | 98% / 2% / 0% | 99% / 1% / 0% | 98% / 2% / 1% | 98% / 2% / 0% | 98% / 2% / 0% |
-| Statistical bisect, top suspect is right | 45% | 71% | 92% | 98% | 96% | 98% | 99% | 98% | 98% | 98% |
+| Statistical bisect, named at 95% and right | 1% / 0% / 99% | 19% / 0% / 81% | 64% / 1% / 35% | 87% / 1% / 12% | 94% / 3% / 3% | 98% / 2% / 0% | 99% / 1% / 0% | 98% / 2% / 1% | 98% / 2% / 0% | 98% / 2% / 0% |
+| Statistical bisect, top suspect is right | 41% | 62% | 86% | 97% | 96% | 98% | 99% | 98% | 98% | 98% |
 | Plain bisect, repeats to fill the budget | 51% / 49% / 0% | 62% / 38% / 0% | 51% / 49% / 0% | 44% / 56% / 0% | 30% / 70% / 0% | 23% / 77% / 0% | 13% / 87% / 0% | 9% / 91% / 0% | 5% / 95% / 0% | 4% / 96% / 0% |
 | Plain bisect, one replay per commit | 50% / 50% / 0% | 50% / 50% / 0% | 49% / 51% / 0% | 48% / 52% / 0% | 48% / 52% / 0% | 49% / 51% / 0% | 46% / 54% / 0% | 47% / 53% / 0% | 50% / 50% / 0% | 49% / 51% / 0% |
-| Statistical bisect: wrong, of accusations made | 0% (0 of 5) | 2% (2 of 100) | 1% (4 of 346) | 1% (5 of 452) | 3% (16 of 487) | 2% (8 of 499) | 1% (6 of 500) | 2% (9 of 497) | 2% (9 of 499) | 2% (10 of 500) |
+| Statistical bisect: wrong, of accusations made | 0% (0 of 5) | 2% (2 of 95) | 1% (4 of 323) | 1% (4 of 439) | 4% (17 of 485) | 2% (9 of 499) | 1% (6 of 500) | 2% (9 of 497) | 2% (8 of 499) | 2% (11 of 500) |
 | Plain bisect with repeats: wrong, of accusations made | 49% (246 of 500) | 38% (191 of 500) | 49% (244 of 500) | 56% (279 of 500) | 70% (351 of 500) | 77% (384 of 500) | 87% (433 of 500) | 91% (455 of 500) | 95% (475 of 500) | 96% (481 of 500) |
 | Plain bisect, one replay: wrong, of accusations made | 50% (252 of 500) | 50% (249 of 500) | 51% (257 of 500) | 52% (258 of 500) | 52% (259 of 500) | 51% (256 of 500) | 54% (271 of 500) | 53% (263 of 500) | 50% (250 of 500) | 51% (257 of 500) |
 
@@ -122,11 +122,11 @@ The bug fails 60% of the time. In the first four rows each cell is right / wrong
 
 | Replays allowed | 10 | 20 | 30 | 40 | 60 | 80 | 120 | 160 | 240 | 320 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Statistical bisect, named at 95% and right | 0% / 0% / 100% | 5% / 1% / 94% | 23% / 2% / 75% | 52% / 3% / 45% | 80% / 3% / 17% | 91% / 3% / 6% | 96% / 2% / 2% | 94% / 5% / 1% | 96% / 3% / 1% | 96% / 3% / 1% |
-| Statistical bisect, top suspect is right | 25% | 52% | 66% | 83% | 93% | 95% | 98% | 95% | 97% | 96% |
+| Statistical bisect, named at 95% and right | 0% / 0% / 100% | 5% / 1% / 95% | 20% / 2% / 78% | 45% / 3% / 52% | 75% / 2% / 23% | 90% / 3% / 7% | 95% / 2% / 2% | 95% / 4% / 1% | 96% / 3% / 1% | 95% / 4% / 1% |
+| Statistical bisect, top suspect is right | 21% | 43% | 57% | 76% | 92% | 95% | 97% | 96% | 96% | 96% |
 | Plain bisect, repeats to fill the budget | 27% / 73% / 0% | 57% / 43% / 0% | 49% / 51% / 0% | 44% / 56% / 0% | 26% / 74% / 0% | 20% / 80% / 0% | 13% / 87% / 0% | 8% / 92% / 0% | 5% / 95% / 0% | 4% / 96% / 0% |
 | Plain bisect, one replay per commit | 26% / 74% / 0% | 29% / 71% / 0% | 31% / 69% / 0% | 29% / 71% / 0% | 31% / 69% / 0% | 29% / 71% / 0% | 26% / 74% / 0% | 28% / 72% / 0% | 26% / 74% / 0% | 27% / 73% / 0% |
-| Statistical bisect: wrong, of accusations made | nobody named | 17% (5 of 29) | 7% (9 of 126) | 6% (16 of 274) | 4% (16 of 417) | 3% (15 of 471) | 2% (10 of 488) | 5% (23 of 494) | 3% (16 of 496) | 3% (17 of 495) |
+| Statistical bisect: wrong, of accusations made | nobody named | 15% (4 of 27) | 8% (9 of 111) | 6% (14 of 241) | 3% (12 of 387) | 3% (15 of 467) | 2% (12 of 489) | 4% (20 of 495) | 3% (17 of 497) | 4% (19 of 494) |
 | Plain bisect with repeats: wrong, of accusations made | 73% (367 of 500) | 43% (214 of 500) | 51% (254 of 500) | 56% (279 of 500) | 74% (369 of 500) | 80% (402 of 500) | 87% (434 of 500) | 92% (458 of 500) | 95% (474 of 500) | 96% (482 of 500) |
 | Plain bisect, one replay: wrong, of accusations made | 74% (370 of 500) | 71% (356 of 500) | 69% (345 of 500) | 71% (353 of 500) | 69% (347 of 500) | 71% (357 of 500) | 74% (372 of 500) | 72% (359 of 500) | 74% (370 of 500) | 73% (363 of 500) |
 
@@ -134,11 +134,11 @@ The bug fails 40% of the time. In the first four rows each cell is right / wrong
 
 | Replays allowed | 10 | 20 | 30 | 40 | 60 | 80 | 120 | 160 | 240 | 320 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Statistical bisect, named at 95% and right | 0% / 0% / 100% | 0% / 0% / 99% | 4% / 1% / 95% | 12% / 2% / 85% | 37% / 4% / 60% | 54% / 3% / 43% | 75% / 5% / 20% | 88% / 4% / 8% | 92% / 4% / 4% | 90% / 7% / 3% |
-| Statistical bisect, top suspect is right | 10% | 24% | 44% | 50% | 71% | 80% | 87% | 93% | 95% | 93% |
+| Statistical bisect, named at 95% and right | 0% / 0% / 100% | 0% / 0% / 99% | 3% / 1% / 96% | 10% / 2% / 88% | 31% / 4% / 65% | 49% / 4% / 47% | 76% / 5% / 19% | 88% / 4% / 8% | 92% / 4% / 3% | 91% / 6% / 3% |
+| Statistical bisect, top suspect is right | 9% | 19% | 34% | 42% | 66% | 77% | 88% | 93% | 95% | 93% |
 | Plain bisect, repeats to fill the budget | 12% / 88% / 0% | 36% / 64% / 0% | 42% / 58% / 0% | 41% / 59% / 0% | 29% / 71% / 0% | 20% / 80% / 0% | 13% / 87% / 0% | 9% / 91% / 0% | 5% / 95% / 0% | 4% / 96% / 0% |
 | Plain bisect, one replay per commit | 13% / 87% / 0% | 12% / 88% / 0% | 13% / 87% / 0% | 15% / 85% / 0% | 12% / 88% / 0% | 16% / 84% / 0% | 13% / 87% / 0% | 13% / 87% / 0% | 13% / 87% / 0% | 12% / 88% / 0% |
-| Statistical bisect: wrong, of accusations made | nobody named | 50% (2 of 4) | 24% (6 of 25) | 16% (12 of 74) | 9% (18 of 201) | 6% (17 of 287) | 6% (25 of 401) | 4% (20 of 462) | 5% (22 of 480) | 7% (34 of 486) |
+| Statistical bisect: wrong, of accusations made | nobody named | 50% (2 of 4) | 27% (6 of 22) | 15% (9 of 61) | 11% (19 of 174) | 7% (18 of 263) | 6% (25 of 404) | 5% (22 of 461) | 5% (22 of 484) | 6% (30 of 486) |
 | Plain bisect with repeats: wrong, of accusations made | 88% (441 of 500) | 64% (322 of 500) | 58% (290 of 500) | 59% (295 of 500) | 71% (355 of 500) | 80% (399 of 500) | 87% (435 of 500) | 91% (456 of 500) | 95% (475 of 500) | 96% (479 of 500) |
 | Plain bisect, one replay: wrong, of accusations made | 87% (437 of 500) | 88% (438 of 500) | 87% (436 of 500) | 85% (424 of 500) | 88% (441 of 500) | 84% (422 of 500) | 87% (435 of 500) | 87% (433 of 500) | 87% (437 of 500) | 88% (440 of 500) |
 
@@ -146,11 +146,11 @@ The bug fails 30% of the time. In the first four rows each cell is right / wrong
 
 | Replays allowed | 10 | 20 | 30 | 40 | 60 | 80 | 120 | 160 | 240 | 320 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Statistical bisect, named at 95% and right | 0% / 0% / 100% | 0% / 0% / 100% | 1% / 0% / 99% | 2% / 2% / 96% | 11% / 2% / 87% | 22% / 3% / 74% | 47% / 3% / 50% | 60% / 5% / 35% | 77% / 4% / 19% | 84% / 7% / 9% |
-| Statistical bisect, top suspect is right | 7% | 16% | 26% | 35% | 49% | 60% | 76% | 81% | 90% | 91% |
+| Statistical bisect, named at 95% and right | 0% / 0% / 100% | 0% / 0% / 100% | 1% / 0% / 99% | 2% / 1% / 96% | 11% / 2% / 87% | 22% / 2% / 76% | 47% / 2% / 51% | 62% / 5% / 33% | 78% / 4% / 18% | 86% / 6% / 8% |
+| Statistical bisect, top suspect is right | 6% | 14% | 23% | 27% | 48% | 58% | 78% | 80% | 90% | 92% |
 | Plain bisect, repeats to fill the budget | 8% / 92% / 0% | 20% / 80% / 0% | 27% / 73% / 0% | 31% / 69% / 0% | 27% / 73% / 0% | 20% / 80% / 0% | 12% / 88% / 0% | 8% / 92% / 0% | 5% / 95% / 0% | 4% / 96% / 0% |
 | Plain bisect, one replay per commit | 9% / 91% / 0% | 8% / 92% / 0% | 6% / 94% / 0% | 10% / 90% / 0% | 9% / 91% / 0% | 8% / 92% / 0% | 8% / 92% / 0% | 9% / 91% / 0% | 9% / 91% / 0% | 8% / 92% / 0% |
-| Statistical bisect: wrong, of accusations made | nobody named | nobody named | 20% (1 of 5) | 42% (8 of 19) | 18% (12 of 67) | 13% (17 of 129) | 6% (14 of 248) | 8% (25 of 327) | 5% (22 of 405) | 7% (33 of 455) |
+| Statistical bisect: wrong, of accusations made | nobody named | nobody named | 20% (1 of 5) | 37% (7 of 19) | 15% (10 of 65) | 8% (10 of 119) | 4% (10 of 247) | 7% (24 of 333) | 5% (21 of 410) | 7% (30 of 461) |
 | Plain bisect with repeats: wrong, of accusations made | 92% (458 of 500) | 80% (400 of 500) | 73% (363 of 500) | 69% (345 of 500) | 73% (367 of 500) | 80% (398 of 500) | 88% (441 of 500) | 92% (461 of 500) | 95% (473 of 500) | 96% (480 of 500) |
 | Plain bisect, one replay: wrong, of accusations made | 91% (455 of 500) | 92% (461 of 500) | 94% (470 of 500) | 90% (450 of 500) | 91% (453 of 500) | 92% (460 of 500) | 92% (461 of 500) | 91% (453 of 500) | 91% (453 of 500) | 92% (458 of 500) |
 
@@ -158,11 +158,11 @@ The bug fails 20% of the time. In the first four rows each cell is right / wrong
 
 | Replays allowed | 10 | 20 | 30 | 40 | 60 | 80 | 120 | 160 | 240 | 320 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Statistical bisect, named at 95% and right | 0% / 0% / 100% | 0% / 0% / 100% | 0% / 0% / 99% | 0% / 1% / 99% | 1% / 2% / 97% | 6% / 2% / 92% | 13% / 5% / 82% | 19% / 5% / 77% | 33% / 6% / 61% | 46% / 6% / 48% |
-| Statistical bisect, top suspect is right | 5% | 8% | 12% | 16% | 21% | 30% | 45% | 49% | 61% | 70% |
+| Statistical bisect, named at 95% and right | 0% / 0% / 100% | 0% / 0% / 100% | 0% / 0% / 99% | 0% / 1% / 99% | 1% / 2% / 97% | 6% / 1% / 93% | 13% / 4% / 83% | 18% / 5% / 77% | 34% / 5% / 61% | 48% / 6% / 47% |
+| Statistical bisect, top suspect is right | 5% | 6% | 10% | 13% | 20% | 31% | 45% | 50% | 65% | 70% |
 | Plain bisect, repeats to fill the budget | 6% / 94% / 0% | 14% / 86% / 0% | 19% / 81% / 0% | 20% / 80% / 0% | 22% / 78% / 0% | 18% / 82% / 0% | 9% / 91% / 0% | 9% / 91% / 0% | 4% / 96% / 0% | 4% / 96% / 0% |
 | Plain bisect, one replay per commit | 5% / 95% / 0% | 5% / 95% / 0% | 5% / 95% / 0% | 6% / 94% / 0% | 5% / 95% / 0% | 6% / 94% / 0% | 7% / 93% / 0% | 5% / 95% / 0% | 6% / 94% / 0% | 7% / 93% / 0% |
-| Statistical bisect: wrong, of accusations made | nobody named | nobody named | 33% (1 of 3) | 83% (5 of 6) | 62% (10 of 16) | 26% (11 of 42) | 27% (24 of 89) | 20% (23 of 117) | 15% (28 of 193) | 12% (30 of 259) |
+| Statistical bisect: wrong, of accusations made | nobody named | nobody named | 33% (1 of 3) | 83% (5 of 6) | 79% (11 of 14) | 20% (7 of 35) | 23% (20 of 86) | 21% (24 of 115) | 13% (26 of 194) | 10% (28 of 267) |
 | Plain bisect with repeats: wrong, of accusations made | 94% (471 of 500) | 86% (429 of 500) | 81% (404 of 500) | 80% (401 of 500) | 78% (389 of 500) | 82% (409 of 500) | 91% (454 of 500) | 91% (454 of 500) | 96% (480 of 500) | 96% (481 of 500) |
 | Plain bisect, one replay: wrong, of accusations made | 95% (475 of 500) | 95% (475 of 500) | 95% (475 of 500) | 94% (468 of 500) | 95% (474 of 500) | 94% (469 of 500) | 93% (466 of 500) | 95% (473 of 500) | 94% (468 of 500) | 93% (467 of 500) |
 
@@ -170,10 +170,10 @@ The bug fails 10% of the time. In the first four rows each cell is right / wrong
 
 | Replays allowed | 10 | 20 | 30 | 40 | 60 | 80 | 120 | 160 | 240 | 320 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| Statistical bisect, named at 95% and right | 0% / 0% / 100% | 0% / 0% / 100% | 0% / 0% / 100% | 0% / 0% / 100% | 0% / 1% / 98% | 0% / 2% / 97% | 0% / 2% / 98% | 1% / 1% / 98% | 1% / 3% / 96% | 1% / 5% / 94% |
-| Statistical bisect, top suspect is right | 1% | 3% | 5% | 4% | 6% | 5% | 8% | 11% | 11% | 11% |
+| Statistical bisect, named at 95% and right | 0% / 0% / 100% | 0% / 0% / 100% | 0% / 0% / 100% | 0% / 0% / 100% | 0% / 1% / 99% | 0% / 2% / 98% | 0% / 2% / 98% | 1% / 1% / 98% | 1% / 3% / 96% | 1% / 4% / 95% |
+| Statistical bisect, top suspect is right | 1% | 3% | 4% | 4% | 6% | 4% | 8% | 11% | 12% | 13% |
 | Plain bisect, repeats to fill the budget | 3% / 97% / 0% | 4% / 96% / 0% | 8% / 92% / 0% | 7% / 93% / 0% | 8% / 92% / 0% | 7% / 93% / 0% | 10% / 90% / 0% | 7% / 93% / 0% | 5% / 95% / 0% | 3% / 97% / 0% |
 | Plain bisect, one replay per commit | 3% / 97% / 0% | 3% / 97% / 0% | 2% / 98% / 0% | 3% / 97% / 0% | 3% / 97% / 0% | 4% / 96% / 0% | 3% / 97% / 0% | 4% / 96% / 0% | 4% / 96% / 0% | 3% / 97% / 0% |
-| Statistical bisect: wrong, of accusations made | nobody named | nobody named | nobody named | 100% (2 of 2) | 88% (7 of 8) | 85% (11 of 13) | 82% (9 of 11) | 50% (5 of 10) | 79% (15 of 19) | 86% (25 of 29) |
+| Statistical bisect: wrong, of accusations made | nobody named | nobody named | nobody named | 100% (2 of 2) | 86% (6 of 7) | 83% (10 of 12) | 82% (9 of 11) | 50% (5 of 10) | 73% (16 of 22) | 85% (22 of 26) |
 | Plain bisect with repeats: wrong, of accusations made | 97% (487 of 500) | 96% (480 of 500) | 92% (461 of 500) | 93% (467 of 500) | 92% (459 of 500) | 93% (463 of 500) | 90% (452 of 500) | 93% (466 of 500) | 95% (477 of 500) | 97% (483 of 500) |
 | Plain bisect, one replay: wrong, of accusations made | 97% (484 of 500) | 97% (484 of 500) | 98% (489 of 500) | 97% (485 of 500) | 97% (487 of 500) | 96% (479 of 500) | 97% (484 of 500) | 96% (481 of 500) | 96% (479 of 500) | 97% (483 of 500) |

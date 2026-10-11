@@ -54,7 +54,11 @@ if outage and os.environ.get("WHODUNIT_COMMIT", "").startswith(outage.split("|")
         else:
             print("Traceback (most recent call last):\\nprovider.ConnectionError: Connection error.", file=sys.stderr)
             sys.exit(int(amount))
-print(json.dumps({"reply": "done", "refunds": [{"order_id": "1001", "refunded": 42.0 + BONUS}]}))
+# STUB_MODEL plays the model behind the agent. "v2" overpays whatever the code says, the way a provider's
+# model change breaks every commit at once, the good ref included.
+model = os.environ.get("STUB_MODEL", "v1")
+drift = 5.0 if model == "v2" else 0.0
+print(json.dumps({"reply": "done", "model": model, "refunds": [{"order_id": "1001", "refunded": 42.0 + BONUS + drift}]}))
 '''
 
 

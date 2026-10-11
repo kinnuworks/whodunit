@@ -135,6 +135,31 @@ def short_range(trials: int = 2000) -> list[dict]:
         return to_rows(list(pool.map(run_cell, cells)))
 
 
+def _drift_cell(job: tuple[float, float, int, int, int]) -> dict:
+    """One row of no_culprit(): `rate` is how often every commit fails, or how often the bad side fails when there is a culprit."""
+    rate, good_rate, culprit, trials, budget = job
+    clear = accused = 0
+    for n in range(trials):
+        rng = random.Random(f"drift-{rate}-{good_rate}-{culprit}-{n}")
+        found = statistical_bisect(40, lambda position: FAIL if rng.random() < (rate if culprit < 0 or position >= culprit else good_rate) else PASS, budget)
+        clear += found.clear
+        accused += found.culprit is not None
+    return {"fails": rate, "good_commits_fail": good_rate, "has_a_culprit": culprit >= 0, "trials": trials, "budget": budget,
+            "said_clear": clear, "accused_a_commit": accused, "named_nobody": trials - clear - accused}
+
+
+def no_culprit(trials: int = 500, budget: int = 160) -> list[dict]:
+    """What the lineup says when no commit did it, and how often it says so when one did.
+
+    In the first rows every one of 40 commits fails at the same rate, the good ref included, as
+    after a change outside the repo. In the last rows there is a real culprit at suspect 20, on
+    a baseline where good commits fail 5% of the time, and "clear" would be the wrong answer.
+    """
+    jobs = [(rate, rate, -1, trials, budget) for rate in (1.0, 0.6, 0.33, 0.2, 0.1)] + [(rate, 0.05, 20, trials, budget) for rate in (1.0, 0.3, 0.1)]
+    with ProcessPoolExecutor() as pool:
+        return list(pool.map(_drift_cell, jobs))
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     parser.add_argument("--out", default="eval/simulator")
@@ -151,6 +176,7 @@ def main(argv: list[str] | None = None) -> int:
     (out / "results.json").write_text(json.dumps(results, indent=1) + "\n")
     (out / "fix-bar.json").write_text(json.dumps(fix_bar(), indent=1) + "\n")
     (out / "short-range.json").write_text(json.dumps(short_range(), indent=1) + "\n")
+    (out / "no-culprit.json").write_text(json.dumps(no_culprit(), indent=1) + "\n")
     from .chart import write_charts
 
     write_charts(results, out)

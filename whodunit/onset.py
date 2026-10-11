@@ -162,3 +162,68 @@ def witness(mcp: Mcp, workflow: str, positions: dict[str, int], inputs: list[tup
         wrong = any(abs(got.get(o, 0.0) - want.get(o, 0.0)) > 0.005 for o in set(got) | set(want))
         evidence.append((position, wrong))
     return evidence
+
+
+def environment_then(mcp: Mcp, workflow: str, good: str, inputs: list[tuple[str, list[dict]]]) -> list[dict]:
+    """What old passing runs at the good ref ran with: [{"model", "lock", "version"}], one per run.
+
+    These are ordinary runs of the case's inputs, on the good ref, that paid what the case
+    expects. `model` is a fingerprint of the id in the run's run_info and not the id, because a
+    case record names no model. `lock` is there only if the agent recorded a lockfile hash.
+    """
+    import hashlib
+
+    expected = {text: {str(r["order_id"]): float(r["refunded"]) for r in refunds} for text, refunds in inputs}
+    safe = workflow.replace("'", "''")
+    asked = ", ".join("'" + text.replace("'", "''") + "'" for text in expected) or "''"
+    rows = select_all(mcp, (
+        "select r.trace_id, r.input_preview, s.output_preview as info from runs r "
+        "join spans s on s.trace_id = r.trace_id and s.name = 'run_info' "
+        f"where r.workflow = '{safe}' and r.doctor = 0 and r.input_preview in ({asked}) and s.attributes not like '%case:%' "
+        f"and s.attributes like '%commit:{''.join(c for c in good if c.isalnum())}%'"
+    ), cap=500)
+    if not rows:
+        return []
+    ids = ", ".join("'" + row["trace_id"] + "'" for row in rows)
+    paid: dict[str, dict[str, float]] = {row["trace_id"]: {} for row in rows}
+    for span in select_all(mcp, f"select trace_id, output_preview from spans where name = 'issue_refund' and status_code != 2 and trace_id in ({ids})"):
+        try:
+            out = json.loads(span["output_preview"] or "{}")
+            order, amount = str(out["order_id"]), float(out["refunded"])
+        except (json.JSONDecodeError, KeyError, TypeError, ValueError):
+            continue
+        paid[span["trace_id"]][order] = paid[span["trace_id"]].get(order, 0.0) + amount
+    then = []
+    for row in rows:
+        want, got = expected[row["input_preview"]], paid[row["trace_id"]]
+        if any(abs(got.get(o, 0.0) - want.get(o, 0.0)) > 0.005 for o in set(got) | set(want)):
+            continue  # this old run did not pass, so it says nothing about a healthy environment
+        try:
+            info = json.loads(row["info"] or "{}")
+        except json.JSONDecodeError:
+            info = {}
+        model = str(info.get("model") or "")
+        then.append({"model": hashlib.sha256(model.encode()).hexdigest()[:8] if model else "", "lock": str(info.get("lock") or "")[:12], "version": str(info.get("version") or "")})
+    return then
+
+
+def what_differs(then: list[dict], now: list[dict]) -> list[str]:
+    """Sentences on how today's replays of the good ref differ from old runs of it that passed.
+
+    `then` and `now` are [{"model", "lock"}]. Model ids appear as fingerprints only.
+    """
+    if not then:
+        return ["No ordinary run of these requests that passed on the good ref is on record, so today's environment has nothing to be compared with."]
+    out = []
+    for key, name, what in (("model", "model id", "a model id"), ("lock", "lockfile", "a lockfile hash")):
+        before, today = sorted({run[key] for run in then if run.get(key)}), sorted({run[key] for run in now if run.get(key)})
+        if not before:
+            out.append(f"The old passing runs did not record {what}" + (f", so it cannot be compared. Today's replays ran with {name} {', '.join(today)}." if today else "."))
+        elif not today:
+            out.append(f"Today's replays did not report {what}, so it cannot be compared.")
+        elif before == today:
+            out.append(f"The {name} is the same as in the old passing runs.")
+        else:
+            out.append(f"The {name} differs. The old passing runs had {', '.join(before)} and today's replays have {', '.join(today)}."
+                       + (" Those are fingerprints of the ids, which are in the traces. A case file names no model." if key == "model" else ""))
+    return out

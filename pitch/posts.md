@@ -28,7 +28,7 @@ We simulated 500 cases per point to see when our statistical bisect beats plain 
 
 When good commits never fail: plain bisect wins. We put that in the README.
 
-When good commits fail 5% of the time on their own: plain bisect collapses to 4%. Ours reaches 84%. #neatHack
+When good commits fail 5% of the time on their own: plain bisect collapses to 4%. Ours reaches 86%. #neatHack
 
 Attach: `eval/simulator/accuracy-flaky-baseline.svg` as an image.
 

@@ -486,3 +486,27 @@ Stage 2, fourth item. Until now a case file was written by hand: someone had to 
 Tried on the real traces, on an ordinary run from the traffic that refunded 30.00 on someone else's order. From the trace id alone it wrote a case with the right request, an expected result of no refund taken from a run 11 hours of traffic earlier, and a range of 41 suspects that holds the real culprit. That file went to a scratch folder and is not in `cases/`.
 
 What it cannot do: the earlier runs of the same input are read from neatroots only. A trace that exists only in the cloud gets its input and its bad ref, and then has to be told the expected result and the good ref. And "passed" leans on neatroots' own flags, so a run that was wrong without being flagged, and wrong in a different way from the failing one, could be taken for the expected result. The file's first lines name the run the expectation came from, so a person can check it.
+
+### 6:21 PM, when no commit did it
+
+Stage 2, fifth item. The lineup assumed a culprit was somewhere in the range. So when something outside the repo breaks every commit at once, it had to pick one. With 20 suspects that all fail every time, the good ref too, it named the first suspect at 96.6% after 26 replays. That is as wrong as an answer gets, and it looked as sure as a right one.
+
+The lineup already replayed the good ref under today's environment as part of its warm-up, and did nothing with the result except feed the model. Now it reads it. Today's replays of the two ends are weighed between two stories: the good ref is a healthy commit and the bad ref is something else, or both fail at one rate. If the good ref has failed and the second story is 95% likely, nobody is named. The record says the range is clear, `whodunit investigate` stops there with its own exit code, and the page says "No commit did it." If the two stories are close, both ends get up to a dozen more replays first. Old evidence, traffic included, is left out of this, since the question is about today.
+
+Then it says what differs, as far as the runs themselves say. Each replay now keeps a fingerprint of the model id the agent reported and the hash of the lockfile it ran with. Those are set against the run_info of old ordinary runs on the good ref that passed. It is a fingerprint and not the id because a record names no model, and it is enough to say "the model id differs". The refund agent's run_info did not carry a lockfile hash, so the agent records one from now on, and for older runs the page says the old runs did not record it.
+
+Tested on a planted history with no bug in it, where an environment variable switches the scripted model to one that overpays. Every commit fails. The lineup stops after 12 replays, names nobody, and reports that the model id differs from the three old passing runs.
+
+From the simulator, 500 cases a row, 40 suspects, 160 replays:
+
+- Every commit fails every time: clear in all 500.
+- Every commit fails 60% of the time: clear in 97%, a commit accused in 1.8%.
+- Every commit fails 33% of the time: clear in 45%, nobody named in 52%, a commit accused in 3.0%.
+- Every commit fails 10 or 20% of the time: hardly ever called clear, nobody named in about nine cases of ten, a commit accused in about 3%.
+- With a real culprit on a flaky baseline, 1,500 cases: never called clear.
+
+So a loud drift is caught and a faint one mostly ends in "nobody named", which is safe and not helpful. About 3 innocent accusations in 100 remain in a faint drift.
+
+A side effect to own up to: a good ref that fails once in its warm-up now gets a few more replays, so the flaky-baseline numbers published this afternoon moved. Wrong accusations there went down a little, for instance 8.0% to 6.8% at a 30% bug and 80.4% to 77.8% at a 10% bug. The clean-baseline numbers did not change by a single case. `eval/simulator/README.md` and the tables have the new ones, and the 4:40 PM entry above has the old.
+
+What this does not catch: a change outside the repo that breaks only newer commits. That still looks like a regression in one of them.

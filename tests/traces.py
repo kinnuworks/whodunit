@@ -12,14 +12,14 @@ class Traces:
         self.db.execute("create table spans (trace_id, name, span_kind, parent_span_id, attributes, input_preview, output_preview, status_code, model, prompt_tokens, completion_tokens)")
         self.count = 0
 
-    def run(self, commit, asked, refunds=(), case="", status="ok", findings=0, tokens=(1000, 100), at=None, workflow="refund-agent"):
+    def run(self, commit, asked, refunds=(), case="", status="ok", findings=0, tokens=(1000, 100), at=None, workflow="refund-agent", info=None):
         """One run of the agent: the request, the commit it ran on, and the refunds it paid."""
         self.count += 1
         trace = f"{self.count:04d}" + "0" * 28
         tags = [f"commit:{commit}", "llm:fake"] + ([f"case:{case}"] if case else [])
         self.db.execute("insert into runs values (?, ?, 0, ?, ?, ?, ?, ?)", (trace, workflow, status, int(status == "error"), findings, at or self.count * 1000.0, asked))
         self.db.execute("insert into spans values (?, 'refund', 'WORKFLOW', null, '', ?, '', 0, null, 0, 0)", (trace, json.dumps({"request": asked, "max_steps": 3})))
-        self.db.execute("insert into spans values (?, 'run_info', 'CHAIN', 'root', ?, '{}', ?, 0, null, 0, 0)", (trace, " ".join(tags), json.dumps({"tags": tags})))
+        self.db.execute("insert into spans values (?, 'run_info', 'CHAIN', 'root', ?, '{}', ?, 0, null, 0, 0)", (trace, " ".join(tags), json.dumps({"tags": tags, **(info or {})})))
         self.db.execute("insert into spans values (?, 'chat', 'LLM', 'root', '', '', '', 0, 'small', ?, ?)", (trace, *tokens))
         for order, amount in refunds:
             self.db.execute("insert into spans values (?, 'issue_refund', 'TOOL', 'root', '', '', ?, 0, null, 0, 0)", (trace, json.dumps({"order_id": order, "refunded": amount})))
