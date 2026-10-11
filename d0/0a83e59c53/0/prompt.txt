@@ -1,0 +1,64 @@
+<pasted_content id="0964">
+Read AGENTS.md and the last three entries of hackathon.md first. This is a three-stage job that runs from now until Monday noon IST. Work through it in order. After each numbered item: run the fast tests, commit, and add a short entry to hackathon.md saying what changed and what was found, including what went wrong.
+
+Ground rules for this job
+
+- A review of the repo found the problems listed below. Check each one against the code before changing it, and say so in the log if one turns out to be wrong.
+- Nothing here needs a push, a post, a cfo.ai write or anything on AWS. If something seems to, stop and ask. cfo.ai stays as described under "Still to do" in AGENTS.md and waits for the owner's sign-in.
+- Use the scripted model for development and tests. Real-model replays are for rerunning cases at the end of stage 2. The gateway had about $6 left at midday on Sunday. Before any step that would spend more than $1, say what it will cost. Stop and ask before switching to the owner's key.
+- Do not rewrite git history. Leave the entire/checkpoints/v1 branch and every ref outside refs/heads alone.
+- If `entire session list` shows another active session in this folder, tell the owner before your first commit.
+- Keep the rule that a fix counts only when its failure rate is back within 5 points of the rate before the culprit.
+
+Stage 1, make every claim true (about 2 hours)
+
+1. Headline number. README.md line 3, and the pitch line and milestone 7 in AGENTS.md, say 41 commits. The headline case has 57 suspects. Use the real number everywhere, and keep "Suspects: 41. Cleared: 40." only where it is marked as sample copy.
+2. The headline brief contradicts its page. The brief for cases/whole-history calls the bug deterministic and says it fails every time, while the page reports 81% and 4 of 6 ordinary runs. Add a rule check in whodunit/brief.py: a brief that says always, every time or deterministic when the measured rate is under 95% is rejected and asked for again with the rates in view. Then rewrite that brief.
+3. Span ids in brief text. The cents-off brief names a span id inside a sentence that is not in the evidence, although its citation is right, and it misdescribes how Python rounds. Extend the citation check so every id-shaped token inside a sentence must resolve too, and rewrite that brief.
+4. What "proven" means. Thirty clean replays cross the 95% bar, and a simulation suggests a fix that still fails 4% of the time would cross it about one time in three. Keep the criterion. Change the wording on the page, in the README and in pitch/ to the observed count plus the 95% upper bound on the failure rate after the fix, worked out from the same posterior. For example: "0 failures in 30 replays. At most N% at 95%."
+5. Wrong accusations. eval/simulator/README.md reports wrong accusations as a share of all cases. Add them as a share of accusations made, per cell, and extend the grid down to bugs that fail 10% of the time, since two sealed cases sit near 12% and 14%. Report whatever comes out.
+6. Damages. whodunit/damages.py appears to count any finding after the culprit as damage from this case, so "25 of 147 runs went bad" would include the other regressions. Count only runs that fail this case's own check. Say on the page and in pitch/business-plan.md that the ordinary traffic was sent by eval/traffic.py, and stop calling those numbers measured without that note.
+7. Alibis. The page and the pitch say 22 of 57 commits had an alibi. Also say what that saved, from the ablation in the build log.
+8. Stale parts of pages. On turned-away the Fix section shows a revert after three tries and the Log says a patch was proven after one. On cents-off the Log says two tries and Fix shows one. Draw the Log from the record's attempts, or drop it.
+9. Names. The rendered pages print "Written by:" with a model id, and the records name a coding assistant. Pages, records, README, pitch/ and evidence/ should name no assistant, model or vendor. In code, keep such strings only where a command or an API call needs them.
+10. AGENTS.md describes things the code does not do (verdicts read from neatroots findings, a Brain mirror for rulings) and lists milestones as open that are done. Make it match the code, and change "in order of points" to plain wording.
+11. Build log. Remove the 1:21 AM entry of 11 October about other entries, in an ordinary commit. Move evidence/neathack-bingo.png to pitch/, since nothing in evidence/ links to it, and leave it to the owner.
+12. Getting ready to go public, without pushing:
+    - whodunit/fix.py commits with whatever git identity is around, so tests in tests/test_closing.py will likely fail on a clean CI runner. Fall back to a bot identity (the name whodunit and an address ending in .invalid) when none is set.
+    - The checkpoint link is worked out when the motive is recorded, and it is empty in all six records because there is no remote. Work it out when the page is rendered.
+    - Add a root LICENSE (Apache-2.0, the same as the victim) and mention it in the README.
+    - pitch/posts.md number 6 says customers were owed 60.00 each. Check the record and correct it.
+
+Stage 2, close the gaps in the method (Sunday evening and night)
+
+In this order. Each needs a test that fails before the change. If time runs short, drop from the bottom.
+
+1. Void infrastructure errors. In whodunit/replay.py a timeout and any non-zero exit count as a failure, so one burst of gateway errors can frame a commit. Add a void verdict for provider and network errors and retry them. The refund agent should exit with a code of its own for those, listed in the case file. A voided replay is never evidence. Retry a timeout once with double the limit and count it as a failure only if it times out again, because a commit that hangs is a real bug. Show the number of voided replays on the page.
+2. A fix must do no harm. Fix verification replays only the failing inputs, and in three cases the expected result is an empty list of refunds, so a patch that stopped all refunds would pass. After a fix clears its own case, replay the inputs of every other case in cases/ and a small set of ordinary requests that should succeed, on the fix commit. A fix that breaks any of them is rejected and the ladder moves on. Print "Checked against N other requests" with the result on the page.
+3. Trace the investigation itself to neatlogs cloud. One trace per `whodunit investigate`, tagged with the case id: a span per lineup round (commit, verdict, top three suspects with probabilities), and spans for the motive, the brief, the ruling, each fix attempt and its verification. Keep whodunit runnable with no SDK installed. Push each case's failing run and passing run from neatroots to neatlogs cloud. Store the cloud trace ids in the record and link them from the Evidence section.
+4. Start from one trace. `whodunit open-case --from-trace <id>` reads a failing run from neatlogs cloud or neatroots, takes the input from the root span and the bad ref from the run_info tags, finds the last good ref with whodunit/onset.py, and takes the expected result from the nearest earlier run of the same input that passed. If there is none, it asks the owner one question. It writes the case file and stops.
+5. No commit did it. The good ref is already replayed under today's environment before the bisect starts. If it now fails about as often as the bad ref, name no commit: report that the range is clear and say what differs between the old passing runs and today's (model id, lockfile hash) from run_info. Test it with a planted history where the scripted model changes behaviour through an environment variable.
+6. Line-level provenance. In whodunit/motive.py, run `entire why FILE:LINE --json` on the lines the culprit changed and check that it agrees with the checkpoint. Check that the quoted request is a verbatim substring of the session transcript, and print "quote checked against the transcript" on the page only when it is.
+7. Two culprits. Add a two-change-point model to whodunit/lineup.py (three segments, Beta priors, exact marginal over pairs) and a Bayes factor against one change point. Do it in whodunit/simulate.py first, with cases that have two regressions, and publish how often each model is right. Wire it into the lineup only if the simulator supports it. As a first cut, keep tallies per failing input and flag a case whose inputs point at different commits.
+
+When stage 2 is done: rerun `whodunit investigate` on cases/whole-history.toml with --fresh, rerun a sealed case only where its record is now out of date, regenerate the casebook, and bring README.md, evidence/README.md, pitch/demo-script.md and pitch/posts.md in line with what the code does. The script says some runs are "in neatlogs" that are in neatroots. After item 3 that can be made true. Say only what is true.
+
+Stage 3, the case file as a made object (Monday morning, about 4 hours)
+
+Keep the tokens and typefaces in AGENTS.md. Everything is still drawn from the record by `uv run whodunit casebook`.
+
+1. Light is the default, and dark applies only when chosen with a toggle. All screenshots are taken in light.
+2. The lineup is the centrepiece. Full width, directly under the header. Every suspect is a numbered position with its short SHA. Cleared suspects are struck through, alibis are hatched, and replays are typed marks, x for a failure and o for a pass, with a count when there are more than fit so nothing is under-drawn. The culprit is ringed with an uneven red pencil ellipse and a leader line to its commit subject. Remove the 0, 50 and 100% axis.
+3. A "Replay the investigation" control steps through the rounds stored in the record: each replay lands, the probabilities move, and the ring is drawn at the end. Off by default, pausable, and static under reduced motion. The video will use it.
+4. A stamp that reads as a stamp. Large, double border, turned about 6 degrees, overlapping the header rule. "CASE CLOSED" in red. "CULPRIT NAMED" and "OPEN, NOT FIXED" in ink, so an open case no longer looks like a closed one.
+5. A typed header form with dotted leaders: case number, opened, closed, suspects, replays, cost of the investigation, damage.
+6. Put the numbers that matter in large serif figures: replays, confidence, and how many commits a scan would have tested. They are in the smallest grey text now.
+7. Citations become superscript numbers with the ids in a footnote list, in the right margin on wide screens, with no chips after each sentence.
+8. Evidence becomes Exhibit A, the passing run, and Exhibit B, the failing run: typed step lists with the first step where they part marked in red and a margin note. The raw outlines go behind a toggle.
+9. Damages open with the money in serif, for example "120.00 refunded to the wrong people". The token cost comes second.
+10. The casebook becomes a docket: one row per case with number, stamp, what was reported, culprit and damage, under one typed summary line with cases named, closed and open, total replays and total cost. Drop the empty label column.
+11. Add a page title, a description and an og:image so links preview well.
+12. Check every page at desktop width and at 375 px with no sideways scroll except inside the lineup, visible keyboard focus, and a table alternative to the lineup. Retake everything in evidence/ and remove screenshots that show an old state.
+
+Done means: fast tests green, every case page regenerated, hackathon.md up to date, nothing pushed. Finish by Monday noon IST. After that, fixes only.
+</pasted_content id="0964">
