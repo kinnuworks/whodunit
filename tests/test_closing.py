@@ -42,6 +42,55 @@ def test_sentences_without_a_real_citation_are_cut():
     assert checked["dropped"] == ["Customers were furious.", "It cost millions."]
 
 
+def test_an_id_inside_a_sentence_has_to_be_real_too():
+    checked = briefs.check_citations({"headline": "cccccccccccc refunds strangers, as 99ff00aa shows", "sentences": [
+        {"text": "The refund went out at span 33cc44dd.", "cites": ["cccccccccccc"]},
+        {"text": "The passing run shows no refund at span 55ee66fe.", "cites": ["55ee66ff"]},  # one character off the id it cites
+        {"text": "Order 2002 cost 129.99 and the run used 1234567 tokens.", "cites": ["cccccccccccc"]},  # numbers, not ids
+        {"text": "The model was not defaced.", "cites": ["cccccccccccc"]},  # a word that happens to be hex
+    ]}, evidence())
+    assert [s["text"] for s in checked["sentences"]] == [
+        "The refund went out at span 33cc44dd.", "Order 2002 cost 129.99 and the run used 1234567 tokens.", "The model was not defaced."]
+    assert checked["sentences"][0]["cites"] == ["33cc44dd", "cccccccccccc"]  # the id in the text is added to the citations
+    assert [u["text"] for u in checked["unresolved"]][:1] == ["The passing run shows no refund at span 55ee66fe."]
+    assert "55ee66fe" in checked["unresolved"][0]["problem"]
+    assert "99ff00aa" in checked["unresolved"][-1]["problem"]  # the headline is checked as well
+    assert briefs.ids_in("paid 129.99 for order 2002 at 1791695776, see 0127ef29 and 367c64a5ae27") == ["0127ef29", "367c64a5ae27"]
+
+
+def test_words_in_quotation_marks_have_to_be_in_the_evidence():
+    held = evidence(request="Make issue_refund round the amount to the nearest whole unit before recording it,\nso what we log matches what the provider will pay.")
+    checked = briefs.check_citations({"headline": "h", "sentences": [
+        {"text": 'The request said "round the amount to the nearest whole unit before recording it".', "cites": ["abc123def456"]},
+        {"text": "It asked that \u201cwhat we log matches what the provider will pay.\u201d", "cites": ["abc123def456"]},
+        {"text": 'The request asked for "the logged amount only, never the amount recorded".', "cites": ["abc123def456"]},
+        {"text": 'It returned {"refunded": 65, "order_id": "5005"} and the customer\'s reply said the agent\'s refund was done.', "cites": ["cccccccccccc"]},
+        {"text": 'It said "Make issue_refund round ... what we log matches".', "cites": ["abc123def456"]},
+    ]}, held)
+    assert len(checked["sentences"]) == 4
+    assert [u["text"] for u in checked["unresolved"]] == ['The request asked for "the logged amount only, never the amount recorded".']
+    assert "not in the evidence as quoted" in checked["unresolved"][0]["problem"]
+
+
+def test_a_brief_that_names_a_span_not_in_the_evidence_is_asked_for_again(monkeypatch):
+    monkeypatch.setenv("WHODUNIT_LLM", "gateway")
+    asked = []
+    drafts = iter([
+        '{"headline": "h", "sentences": [{"text": "No refund went out at span 55ee66fe.", "cites": ["55ee66ff"]}]}',
+        '{"headline": "h", "sentences": [{"text": "No refund went out at span 55ee66ff.", "cites": ["55ee66ff"]}, {"text": "See 0badc0de.", "cites": ["cccccccccccc"]}]}',
+    ])
+
+    def ask(system, prompt, **kw):
+        asked.append(prompt)
+        return next(drafts)
+    monkeypatch.setattr(llm, "ask", ask)
+    written = briefs.write_brief(evidence(), "symptom")
+    assert len(asked) == 2 and "55ee66fe, which is not an id in the evidence" in asked[1]
+    assert [s["text"] for s in written["sentences"]] == ["No refund went out at span 55ee66ff."]
+    assert written["dropped"] == ["See 0badc0de."] and "unresolved" not in written
+    assert written["rejected"][0]["text"] == "No refund went out at span 55ee66fe."
+
+
 def test_template_brief_cites_everything_it_says():
     written = briefs.template_brief(evidence(), "Refunds go to the wrong customer")
     assert len(written["sentences"]) == 4

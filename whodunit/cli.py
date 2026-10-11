@@ -286,9 +286,9 @@ def _measured(record: dict) -> tuple[str, float | None]:
     text = (f"{report['replays']} replays across {report['commits_tested']} commits. From the culprit on, {bad_f} of {bad_f + bad_p} replays failed. "
             f"Before it, {good_f} of {good_f + good_p} replays failed.")
     seen = record.get("witnessed") or []
+    order = {s["sha"]: n for n, s in enumerate(record["suspects"])}
+    at = order[report["culprit"]["sha"]]
     if seen:
-        order = {s["sha"]: n for n, s in enumerate(record["suspects"])}
-        at = order[report["culprit"]["sha"]]
         after = [w["failed"] for w in seen if order.get(w["sha"], -1) >= at]
         before = [w["failed"] for w in seen if order.get(w["sha"], -1) < at]
         text += (f" Ordinary runs that asked the same thing were counted as well: {sum(after)} of {len(after)} runs went wrong from the culprit on, "
@@ -298,6 +298,10 @@ def _measured(record: dict) -> tuple[str, float | None]:
         text += (f" {report['traffic_runs']} ordinary runs that asked the same thing, on commits across the range, were counted as well, "
                  f"and {report['traffic_failures']} of them went wrong.")
     text += f" The estimated failure rate is {report['failure_rate_from']:.0%} from the culprit on and {report['failure_rate_before']:.0%} before it."
+    if bad_p == 0 and not any(not w["failed"] for w in seen if order.get(w["sha"], -1) >= at):
+        # Nothing passed on the bad side. The estimate still sits under 100%, and a brief should not read a pass into that.
+        text += (f" No run from the culprit on has been seen to pass. The estimate is below 100% only because {bad_f + bad_p} replays are too few to rule a pass out, "
+                 "so say that it failed in all of them and leave it there.")
     return text, report["failure_rate_from"]
 
 

@@ -283,3 +283,20 @@ What changed in `whodunit/brief.py`:
 What went wrong on the way: the first rewrite got the rate right and then made up a total, "across 26 total runs". Nothing in the measurements says 26. So the check now also holds any count of runs or replays in a sentence against the measurements, and the model is told not to add counts up into new ones. The second rewrite is the one in the record. It says 8 of 8 replays failed from the culprit on, gives the 81% estimate, and says the evidence does not show why some ordinary runs came out right.
 
 Two calls to the larger model, about 6 cents.
+
+### 2:35 PM, an id inside a sentence has to be real too
+
+The review was right on both counts. The `cents-off` brief said "as shown in span ad7eeb7e" and cited `ad7edb7e`. The citation was real and the id in the sentence was one character off, and the check only looked at citations. The same brief said "Python's round() rounds 0.5 and above up", which is not how it treats a half.
+
+What changed in the citation check:
+
+- Any token in a sentence that looks like an id, eight or more hex characters with a digit in them, has to match something in the evidence. If it does not, the sentence is cut and the draft is sent back once, the same way as for the measured rate. Ids that do match are added to the sentence's citations.
+- Words in quotation marks have to be in the evidence as quoted, once they are long enough to be a quotation. This was not on the review's list. It came from reading the rewrites: one said the request "did not ask for the recorded refund to differ", when the request's own words were "round the amount to the nearest whole unit before recording it". The model is now told to give the request in its own words, in quotes, and the quotes are checked.
+- The model is told not to explain from memory how a language behaves, and that a commit may simply have done what was asked. The old instruction told it to say where the request and the commit part ways, which made it find a gap when there was none.
+- When every run from the culprit on failed, the measurements now say that the estimate sits under 100% only because the replays are few. Before that, a rewrite spent a sentence on "the remaining 7% that may pass".
+
+Run over the eight briefs on record, the new check flags one sentence, the one the review named.
+
+Rewriting the `cents-off` brief took six drafts, and I read each one. What was wrong with the ones not kept: a headline that said `round()` "truncates", a claim about what the request had not asked for, "one dollar more" for a difference of 0.25, and one whose last sentence was muddled. The fifth is in the record. The model made the same slip again in it, `ad7eeb7e` for `ad7edb7e`, and this time the check sent the draft back and the second try had the id right. The page says so under the brief. What is still loose in the kept one: its headline says the commit "rounds refund amounts up", which is true of both requests in the case and not of every amount.
+
+Nothing checks arithmetic or meaning. A person still has to read a brief before it is quoted anywhere. About 30 cents of larger-model calls for this and the entry before it.

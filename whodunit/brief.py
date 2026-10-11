@@ -3,6 +3,7 @@
 It is written from three things: the culprit's diff, the part of the coding session that
 produced it, and a failing run set against a passing one. Every sentence has to cite a span id,
 a commit or a checkpoint that is actually in that evidence, and a sentence that does not is cut.
+The same goes for any id written inside a sentence, and for words in quotation marks.
 
 A second rule check sets the brief against what the lineup measured. A brief that says the bug
 fails always, every time or deterministically, when the measured rate is under 95%, is rejected
@@ -158,9 +159,11 @@ Rules:
 - Say which commit did it and why first. Then say how the failure shows up in the failing run.
 - Use only what the evidence shows. If the evidence does not show something, do not say it.
 - Read the diff line by line before describing it, including its indentation. If the bug fails only some of the time, say what in the code or the run makes it intermittent, or say that the evidence does not show why.
-- Every sentence must cite at least one id from the list of citable ids: a span id, a commit, a checkpoint or a session step.
+- Every sentence must cite at least one id from the list of citable ids: a span id, a commit, a checkpoint or a session step. An id written inside a sentence must be on that list too, copied exactly.
+- Say what this code and these runs did. Do not explain from memory how a language or a library behaves in general, such as how a function rounds. If it matters, give the value that went in and the value that came out, from the run. Do not stretch what one run shows into a claim about inputs you were not shown, in the headline either.
 - How often it fails is in "What the bisect measured". Do not say it fails always, every time or deterministically unless that rate is 95% or more. Give the measured rate, and say what in the evidence makes some runs come out right, or that the evidence does not show it. Use only the counts of runs and replays given there, and do not add them up into new ones.
-- If the request behind the commit is on record, give one sentence that sets what was asked for against what the commit did, and says where the two part ways. Cite the checkpoint.
+- If the request behind the commit is on record, give one sentence that sets what was asked for against what the commit did. Give what was asked for in the request's own words, in quotation marks. Say where the two part ways, or say that the commit did what was asked and the request itself is what led to the failure. Cite the checkpoint.
+- Anything in quotation marks must be copied exactly from the evidence. If you are putting it in your own words, do not use quotation marks.
 - Plain words, short sentences, no hype. Seven sentences at most.
 
 Answer with JSON only, in this shape:
@@ -189,9 +192,55 @@ def prompt_for(evidence: Evidence, symptom: str) -> str:
     return "\n\n".join(parts)
 
 
-def check_citations(brief: dict, evidence: Evidence) -> dict:
-    """Keep only sentences whose citations are real. A cite matches by prefix in either direction."""
+ID_SHAPED = re.compile(r"\b[0-9a-f]{8,40}\b")
+
+
+def ids_in(text: str) -> list[str]:
+    """Tokens in a sentence that look like a span id, a commit or a checkpoint.
+
+    That is eight or more hex characters with a digit among them. A run of digits alone counts
+    only at the lengths ids come in, so a price or a token count is not taken for one.
+    """
+    return [t for t in ID_SHAPED.findall(text) if any(c.isdigit() for c in t) and (any(c in "abcdef" for c in t) or len(t) in (8, 12, 32, 40))]
+
+
+def _flat(text: str) -> str:
+    """Lower case, straight quotes and single spaces, so a quotation can be looked for as a substring."""
+    for curly, straight in (("\u2018", "'"), ("\u2019", "'"), ("\u201c", '"'), ("\u201d", '"')):
+        text = text.replace(curly, straight)
+    return " ".join(text.lower().split())
+
+
+def quotes_in(text: str) -> list[str]:
+    """What a sentence puts in quotation marks, when it is long enough to be a quotation: 20 characters and four words."""
+    text = text.replace("\u201c", '"').replace("\u201d", '"').replace("\u2018", "'").replace("\u2019", "'")
+    found = re.findall(r'"([^"\n]*)"', text) + re.findall(r"(?<!\w)'([^'\n]*)'(?!\w)", text)
+    return [q.strip() for q in found if len(q.strip()) >= 20 and q.strip().count(" ") >= 3]
+
+
+def check_citations(brief: dict, evidence: Evidence, symptom: str = "") -> dict:
+    """Keep only sentences whose citations are real. A cite matches by prefix in either direction.
+
+    An id written inside a sentence has to be real as well, whatever the sentence cites: a brief
+    once named a span that was one character off from the one it cited. And words in quotation
+    marks have to be in the evidence as quoted, because a brief that paraphrases a request can
+    make it ask for something else. A sentence that fails either way is cut, and listed under
+    "unresolved" so the model can be asked again. Ids that do resolve are added to the sentence's
+    citations.
+    """
     allowed = evidence.citable()
+    said = _flat("\n".join(filter(None, [
+        symptom, evidence.subject, evidence.request, evidence.message, evidence.diff, evidence.after, evidence.comparison,
+        *(s.get("text", "") for s in evidence.steps), *(run.get("outline", "") + "\n" + run.get("input", "") for run in (evidence.failing_run, evidence.passing_run) if run),
+    ])))
+
+    def misquoted(text: str) -> list[str]:
+        out = []
+        for quote in quotes_in(text):
+            parts = [part.strip(" .,;:!?") for part in re.split(r"\.\.\.|\u2026", _flat(quote))]
+            if any(len(part) >= 12 and part not in said for part in parts):
+                out.append(quote)
+        return out
 
     def real(cite: str) -> str | None:
         cite = str(cite).strip().strip("[]`")
@@ -199,11 +248,27 @@ def check_citations(brief: dict, evidence: Evidence) -> dict:
             return None
         return next((a for a in allowed if a.startswith(cite) or cite.startswith(a)), None)
 
-    kept, dropped = [], []
+    def strangers(text: str) -> list[str]:
+        return [named for named in ids_in(text) if real(named) is None]
+
+    def problem(text: str) -> str:
+        unknown, loose = strangers(text), misquoted(text)
+        if unknown:
+            return f"names {', '.join(unknown)}, which is not an id in the evidence"
+        return f'puts "{loose[0]}" in quotation marks, and those words are not in the evidence as quoted' if loose else ""
+
+    kept, dropped, unresolved = [], [], []
     for sentence in brief.get("sentences", []):
-        cites = sorted({c for c in (real(c) for c in sentence.get("cites", [])) if c})
-        (kept if cites and sentence.get("text", "").strip() else dropped).append({"text": sentence.get("text", "").strip(), "cites": cites})
-    return {"headline": str(brief.get("headline", "")).strip(), "sentences": kept, "dropped": [d["text"] for d in dropped]}
+        text = sentence.get("text", "").strip()
+        wrong = problem(text)
+        if wrong:
+            unresolved.append({"text": text, "problem": wrong})
+        cites = sorted({c for c in (real(c) for c in list(sentence.get("cites", [])) + ids_in(text)) if c})
+        (kept if cites and text and not wrong else dropped).append({"text": text, "cites": cites})
+    headline = str(brief.get("headline", "")).strip()
+    if problem(headline):
+        unresolved.append({"text": headline, "problem": problem(headline)})
+    return {"headline": headline, "sentences": kept, "dropped": [d["text"] for d in dropped], "unresolved": unresolved}
 
 
 ABSOLUTE = re.compile(r"(?<![Nn]on)(?<![Nn]on-)\b(always|every (?:single )?(?:time|run)|each time|deterministic(?:ally)?|invariably|without fail|100%)", re.I)
@@ -274,42 +339,48 @@ def _draft(evidence: Evidence, symptom: str, objections: list[dict] = ()) -> dic
             "\n\nYour earlier answer was rejected by a rule check, for these sentences:\n"
             + "\n".join(f'- "{o["text"]}": it {o["problem"]}.' for o in objections)
             + f"\nWhat was measured: {evidence.measured or 'not recorded'}"
-            + "\nWrite the whole brief again. Where it says how often the failure happens, give the measured rate, and use only counts that are in the measurements."
+            + "\nWrite the whole brief again. Copy every id exactly from the list of citable ids. Where it says how often the failure happens, give the measured rate, and use only counts that are in the measurements."
         )
     answer = llm.ask(SYSTEM, prompt)
     found = re.search(r"\{.*\}", answer, flags=re.S)
-    return check_citations(json.loads(found.group(0)), evidence)
+    return check_citations(json.loads(found.group(0)), evidence, symptom)
 
 
 def write_brief(evidence: Evidence, symptom: str) -> dict:
     """Ask the model for the brief and check it. Falls back to the template, and says so.
 
-    A draft that contradicts the measured failure rate is rejected and asked for once more. If
-    the second draft still does, the sentences that say so are cut like any other unbacked one.
+    A draft that names an id the evidence does not hold, or contradicts what the lineup measured,
+    is rejected and asked for once more. Whatever the second draft still gets wrong is cut, like
+    a sentence that cites nothing real. "dropped" lists what was cut from the draft that was
+    kept, and "rejected" what the checks said about a first draft that was sent back.
     """
     if llm.choice() == "none":
         return template_brief(evidence, symptom)
+    plain_headline = f"{evidence.subject}: {symptom}"[:90]
+
+    def objections(draft: dict) -> list[dict]:
+        return draft["unresolved"] + unbacked_claims(draft, evidence.rate_from, evidence.measured)
+
     try:
         brief = _draft(evidence, symptom)
-        rejected = unbacked_claims(brief, evidence.rate_from, evidence.measured)
+        rejected = objections(brief)
         if rejected:
-            cut_before = brief["dropped"]
             brief = _draft(evidence, symptom, rejected)
-            brief["dropped"] = cut_before + brief["dropped"]
-            still = {o["text"] for o in unbacked_claims(brief, evidence.rate_from, evidence.measured)}
+            still = {o["text"] for o in objections(brief)}
             brief["dropped"] += [s["text"] for s in brief["sentences"] if s["text"] in still]
             brief["sentences"] = [s for s in brief["sentences"] if s["text"] not in still]
             if brief["headline"] in still:
-                brief["headline"] = f"{evidence.subject}: {symptom}"[:90]
+                brief["headline"] = plain_headline
     except (llm.LlmError, AttributeError, json.JSONDecodeError, KeyError) as exc:
         fallback = template_brief(evidence, symptom)
         fallback["model"] = f"none, fixed template (the model step failed: {exc})"
         return fallback
+    del brief["unresolved"]
     if not brief["sentences"]:
         fallback = template_brief(evidence, symptom)
         fallback["model"] = "none, fixed template (the model's sentences had no valid citations)"
         fallback["dropped"] = brief["dropped"]
         return fallback
     brief["model"] = llm.model_name()
-    brief["rejected"] = rejected  # what the rule check said about the first draft, if it was sent back
+    brief["rejected"] = rejected  # what the checks said about the first draft, if it was sent back
     return brief
