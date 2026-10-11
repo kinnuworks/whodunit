@@ -55,3 +55,21 @@ So four of five were closed, one of them only by giving up on the patch the owne
 ## The same culprit across the whole history
 
 `cases/whole-history.toml` takes the `strangers-paid` regression and widens the range to the whole grown history, 57 suspects. With alibis from entire-graph for 22 of them and 18 ordinary runs as evidence, 20 replays across 5 commits named the culprit at 99.8%. A scan from the oldest suspect would have tested 37 commits. This is the run that speaks to savings on a longer history, and it is one run.
+
+## Against plain bisect with retries
+
+The same five cases were then given to plain bisect, with each commit replayed up to 5 times over and called bad on the first failure. It ran once per case, so this is one sample and not a rate.
+
+| Case | Plain bisect, 5 retries | Its replays | Statistical bisect | Its replays |
+| --- | --- | ---: | --- | ---: |
+| cents-off | right | 15 | right | 21 |
+| strangers-paid | right | 15 | right | 30 |
+| turned-away | right | 25 | right | 24 |
+| wrong-order-refunded | wrong commit named | 19 | right | 168 |
+| half-done-batch | could not start: the bad ref passed 10 replays in a row | 10 | right | 168 |
+
+On the three bugs that fail most of the time, plain bisect was right and used 55 replays in all against 75. That matches the simulator: with a clean baseline, and this one was clean (0 failures in 211 replays of commits before a culprit), plain bisect with retries is the cheaper tool.
+
+On the two bugs that fail about one run in eight, it went wrong in the two ways it can. For `wrong-order-refunded` a bad commit passed all 5 tries, the search went the wrong way, and it named an innocent commit three places from the real one, with nothing to say it was unsure. For `half-done-batch` the bad ref itself passed 10 replays in a row, so there was nothing to bisect.
+
+More retries would have fixed both, at a cost. The trouble is that the number has to be picked before the failure rate is known. The statistical bisect does not need it picked: it spent 21 to 30 replays on the frequent bugs and 168 on the rare ones, and on the rare ones it said "not sure yet" at 120 instead of naming someone.

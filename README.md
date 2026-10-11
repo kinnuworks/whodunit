@@ -12,7 +12,7 @@ It was built for neatHack between 10 and 12 October 2026. `hackathon.md` is the 
 
 Whodunit replays the failing inputs against suspect commits and keeps a probability for each suspect being the first bad one. It names a commit only when it is 95% sure. If the replay budget runs out first, it hands back the suspects still in the lineup with their probabilities.
 
-How well that works is measured two ways. [eval/sealed](eval/sealed/README.md) is five regressions planted by a separate session with a sealed answer key: three were named inside 120 replays, all five after more, and no commit was wrongly accused. [eval/simulator](eval/simulator/README.md) is simulated cases with a known culprit. The short version: when good commits never fail, plain bisect with repeats is cheaper. When good commits fail 5% of the time on their own, it falls apart and the statistical bisect does not.
+How well that works is measured two ways. [eval/sealed](eval/sealed/README.md) is five regressions planted by a separate session with a sealed answer key: three were named inside 120 replays, all five after more, and no commit was wrongly accused. Plain bisect with five retries, on the same five, got three right with fewer replays, named an innocent commit on the fourth and could not start on the fifth. [eval/simulator](eval/simulator/README.md) is simulated cases with a known culprit. The short version: when good commits never fail, plain bisect with repeats is cheaper. When good commits fail 5% of the time on their own, it falls apart and the statistical bisect does not.
 
 ## How a case runs
 

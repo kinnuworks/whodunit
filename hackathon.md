@@ -243,3 +243,19 @@ What went wrong, which is most of what was learned:
 Also in: `eval/traffic.py --cases` sends the requests customers were making, so the damages can be read in the shop's currency from the `issue_refund` spans. The entire-graph agent guide is installed with `entire graph init-agents`. `.mcp.json` names the cfo.ai server, which still needs the owner's sign-in.
 
 Spend so far on the gateway is about $13 of $20 by estimate: about $9.80 of small-model calls traced locally, about $1.30 traced to neatlogs cloud, and about $2 of larger-model briefs and patches.
+
+### 1:16 PM, plain bisect on the same sealed cases
+
+Two measurements that bear on the main claim.
+
+The baseline on this agent was clean. Across the six cases, commits before a culprit were replayed 211 times with no failures. The simulator says that in that world plain bisect with retries is the cheaper tool, so it was run on the five sealed cases, with each commit replayed up to 5 times over and called bad on the first failure. One run per case.
+
+- `cents-off`, `strangers-paid` and `turned-away`, which fail most of the time: right on all three, with 55 replays in all against the statistical bisect's 75.
+- `wrong-order-refunded`, which fails about one run in eight: a bad commit passed all 5 tries, and plain bisect named "Add a get_order_status tool", an innocent commit three places from the culprit. Nothing in its output says it might be wrong.
+- `half-done-batch`, about one run in seven: the bad ref passed 10 replays in a row, so plain bisect had nothing to bisect.
+
+So the honest version of the pitch is narrower than the one this started with. Where a bug fails often, plain bisect with a few retries is enough and costs less. Where it fails rarely, the number of retries has to be guessed before the rate is known, and guessing low gives a confident wrong answer. The statistical bisect spent more there, 168 replays each, and did not name anyone until it was sure. `eval/sealed/README.md` has the table and `eval/sealed/plain/` has the records.
+
+The second measurement: `whole-history` was run again without the entire-graph alibis and without traffic. It took 30 replays across 8 commits to reach 95.4%, against 20 replays across 5 commits and 99.8% with them. One run each way.
+
+Other things since the last entry: a casebook page at `cases/index.html` lists every case, `whodunit investigate --fresh` starts a case over for the video, queries to neatroots now page past its 200-row limit, and the fast tests run in a GitHub Actions workflow. The onset from traffic alone is not sharp on this history: with five regressions in it and only "errored or flagged" to go on, it brackets the whole range. The per-case witness, which judges each run against what the case expects, is what the headline run used.

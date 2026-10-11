@@ -62,3 +62,15 @@ Reading damage from @neatlogs traces instead of guessing:
 Finding the commit cost 18 cents. #neatHack
 
 Attach: the Damages sections of two case files.
+
+## 7, the head to head
+
+We gave the same 5 sealed cases to plain bisect with 5 retries per commit.
+
+3 right, and cheaper than us: 55 replays against our 75.
+1 innocent commit named, with full confidence.
+1 it couldn't start, because the broken version passed 10 times in a row.
+
+Ours: 5 right, 0 wrong. On rare bugs it said "not sure yet" until it was. #neatHack
+
+Attach: the last table in `eval/sealed/README.md`.

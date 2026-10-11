@@ -1,0 +1,361 @@
+{
+ "case": {
+  "id": "turned-away",
+  "symptom": "Customers asking for a refund on an order that has shipped get a kind reply and no refund.",
+  "good": "4c5adbcc2b967732cd0ae9a9544d765851ebad0b",
+  "bad": "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
+  "target": "victims/refund-agent",
+  "file": "cases/turned-away.toml",
+  "repo": "."
+ },
+ "suspects": [
+  {
+   "sha": "fedf89729b98beb2fe11d7e016c997cbe5225b2a",
+   "subject": "Check currency codes and positive amounts in smoke.py",
+   "checkpoint": "2a120fdb85c4",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "5cfdd5acf608c70102c5a609aa579b0b3a9ed9a4",
+   "subject": "Mention smoke.py in the refund agent README",
+   "checkpoint": "9fcae62e846a",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "e4a3e567223eab74001e8e0d47d607a3bcd141c8",
+   "subject": "Label SYSTEM_RULES groups with one-line comments",
+   "checkpoint": "7317b1f17593",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "c0fb4a11007e62e9b6b401d335e8c3e21ccf220b",
+   "subject": "Cache agent_version so it doesn't reread pyproject.toml every call",
+   "checkpoint": "1dab4a27d094",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "38d1b4f23bfcdcc9756fcf59dd23407c3e36df0f",
+   "subject": "Add order 1212 for cust_4",
+   "checkpoint": "9fea3dfc829b",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "ca0a2d6288aad40896ccd6d015ef5bd43c4e56fd",
+   "subject": "Reassure customers instead of refunding orders still in transit",
+   "checkpoint": "6b2050de3c0b",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "a7b2b34584f03ac5eab1cf49e35dc9aa5626e42b",
+   "subject": "Turn the refund-agent order list into a table",
+   "checkpoint": "b2627c1c6659",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "95b3ca73b1fd470565810af86e18a290d451522d",
+   "subject": "Fail smoke.py on duplicate order_id keys or key/field mismatches",
+   "checkpoint": "16710143c303",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "fe9564a05b58723889be8cf1869d48a31c3177f3",
+   "subject": "Warn on stderr when WHODUNIT_ENV points to a missing file",
+   "checkpoint": "37d636ad652b",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "c1f5a526ee7685fab9ce494c9c8817115a953610",
+   "subject": "Update agent.py docstring: document --json and orders.json",
+   "checkpoint": "c48ebff2204a",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "6a4e489058122b3672690033e4a9dd769fed23ec",
+   "subject": "Bump refund-agent version to 0.3.0",
+   "checkpoint": "20bb9557155f",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "f7b69ac79ec34a28950e2de4137ef72b1cd8aecb",
+   "subject": "refund-agent: add How refunds are decided section to README",
+   "checkpoint": "04752b5408c4",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "216855eccf7c93f3f2980418fdeacf33cd4f7291",
+   "subject": "refund-agent: ignore __pycache__ and .venv",
+   "checkpoint": "1f2c6a9ae475",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
+   "subject": "refund-agent: print a one-line summary on smoke.py success",
+   "checkpoint": "9c8bde92951d",
+   "touches_target": true,
+   "alibi": ""
+  }
+ ],
+ "lineup": {
+  "case": "turned-away",
+  "method": "plain",
+  "suspects": 14,
+  "commits_tested": 6,
+  "replays": 25,
+  "seconds": 151.8,
+  "culprit": {
+   "sha": "ca0a2d6288aad40896ccd6d015ef5bd43c4e56fd",
+   "subject": "Reassure customers instead of refunding orders still in transit",
+   "checkpoint": "6b2050de3c0b",
+   "files": [
+    "victims/refund-agent/agent.py"
+   ]
+  },
+  "remaining": [
+   {
+    "sha": "ca0a2d6288aad40896ccd6d015ef5bd43c4e56fd",
+    "subject": "Reassure customers instead of refunding orders still in transit"
+   }
+  ],
+  "linear_scan_commits": 6
+ },
+ "replays": [
+  {
+   "sha": "4c5adbcc2b967732cd0ae9a9544d765851ebad0b",
+   "input": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 90, \"order_id\": \"8008\", \"reason\": \"ordered by mistake\"}]",
+   "seconds": 5.826708708977094,
+   "started": 1791704391.101602,
+   "tag": "turned-away/4391001"
+  },
+  {
+   "sha": "4c5adbcc2b967732cd0ae9a9544d765851ebad0b",
+   "input": "Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"ordered wrong item by mistake\"}]",
+   "seconds": 5.476114791003056,
+   "started": 1791704396.936987,
+   "tag": "turned-away/4391002"
+  },
+  {
+   "sha": "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
+   "input": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+   "verdict": "fail",
+   "reason": "refunds were [], expected [{\"order_id\": \"8008\", \"refunded\": 90.0}]",
+   "seconds": 6.410468084010063,
+   "started": 1791704402.430948,
+   "tag": "turned-away/4391003"
+  },
+  {
+   "sha": "a7b2b34584f03ac5eab1cf49e35dc9aa5626e42b",
+   "input": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+   "verdict": "fail",
+   "reason": "refunds were [], expected [{\"order_id\": \"8008\", \"refunded\": 90.0}]",
+   "seconds": 5.841467667021789,
+   "started": 1791704408.850185,
+   "tag": "turned-away/4391004"
+  },
+  {
+   "sha": "e4a3e567223eab74001e8e0d47d607a3bcd141c8",
+   "input": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 90, \"order_id\": \"8008\", \"reason\": \"ordered by mistake\"}]",
+   "seconds": 5.912612208980136,
+   "started": 1791704414.7009752,
+   "tag": "turned-away/4391005"
+  },
+  {
+   "sha": "e4a3e567223eab74001e8e0d47d607a3bcd141c8",
+   "input": "Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"ordered wrong item by mistake\"}]",
+   "seconds": 5.998352583992528,
+   "started": 1791704420.624137,
+   "tag": "turned-away/4391006"
+  },
+  {
+   "sha": "e4a3e567223eab74001e8e0d47d607a3bcd141c8",
+   "input": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 90, \"order_id\": \"8008\", \"reason\": \"ordered by mistake\"}]",
+   "seconds": 5.921791166998446,
+   "started": 1791704426.630131,
+   "tag": "turned-away/4391007"
+  },
+  {
+   "sha": "e4a3e567223eab74001e8e0d47d607a3bcd141c8",
+   "input": "Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"ordered wrong item by mistake\"}]",
+   "seconds": 5.667619915999239,
+   "started": 1791704432.561663,
+   "tag": "turned-away/4391008"
+  },
+  {
+   "sha": "e4a3e567223eab74001e8e0d47d607a3bcd141c8",
+   "input": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 90, \"order_id\": \"8008\", \"reason\": \"ordered by mistake\"}]",
+   "seconds": 6.304166916990653,
+   "started": 1791704438.237615,
+   "tag": "turned-away/4391009"
+  },
+  {
+   "sha": "e4a3e567223eab74001e8e0d47d607a3bcd141c8",
+   "input": "Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"ordered wrong item by mistake\"}]",
+   "seconds": 5.940304457995808,
+   "started": 1791704444.552226,
+   "tag": "turned-away/4391010"
+  },
+  {
+   "sha": "e4a3e567223eab74001e8e0d47d607a3bcd141c8",
+   "input": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 90, \"order_id\": \"8008\", \"reason\": \"Ordered by mistake\"}]",
+   "seconds": 6.828191416017944,
+   "started": 1791704450.499982,
+   "tag": "turned-away/4391011"
+  },
+  {
+   "sha": "e4a3e567223eab74001e8e0d47d607a3bcd141c8",
+   "input": "Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"ordered wrong item by mistake\"}]",
+   "seconds": 5.566803083987907,
+   "started": 1791704457.339784,
+   "tag": "turned-away/4391012"
+  },
+  {
+   "sha": "e4a3e567223eab74001e8e0d47d607a3bcd141c8",
+   "input": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 90, \"order_id\": \"8008\", \"reason\": \"ordered by mistake\"}]",
+   "seconds": 5.50894545900519,
+   "started": 1791704462.914957,
+   "tag": "turned-away/4391013"
+  },
+  {
+   "sha": "e4a3e567223eab74001e8e0d47d607a3bcd141c8",
+   "input": "Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"ordered wrong item\"}]",
+   "seconds": 5.845822125003906,
+   "started": 1791704468.433912,
+   "tag": "turned-away/4391014"
+  },
+  {
+   "sha": "38d1b4f23bfcdcc9756fcf59dd23407c3e36df0f",
+   "input": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 90, \"order_id\": \"8008\", \"reason\": \"ordered by mistake\"}]",
+   "seconds": 6.330839875008678,
+   "started": 1791704474.288434,
+   "tag": "turned-away/4391015"
+  },
+  {
+   "sha": "38d1b4f23bfcdcc9756fcf59dd23407c3e36df0f",
+   "input": "Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"ordered wrong item\"}]",
+   "seconds": 5.963864374993136,
+   "started": 1791704480.63211,
+   "tag": "turned-away/4391016"
+  },
+  {
+   "sha": "38d1b4f23bfcdcc9756fcf59dd23407c3e36df0f",
+   "input": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 90, \"order_id\": \"8008\", \"reason\": \"ordered by mistake\"}]",
+   "seconds": 6.076414459006628,
+   "started": 1791704486.604585,
+   "tag": "turned-away/4391017"
+  },
+  {
+   "sha": "38d1b4f23bfcdcc9756fcf59dd23407c3e36df0f",
+   "input": "Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"ordered wrong item by mistake\"}]",
+   "seconds": 5.649169499985874,
+   "started": 1791704492.6902962,
+   "tag": "turned-away/4391018"
+  },
+  {
+   "sha": "38d1b4f23bfcdcc9756fcf59dd23407c3e36df0f",
+   "input": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 90, \"order_id\": \"8008\", \"reason\": \"ordered by mistake\"}]",
+   "seconds": 6.288898666010937,
+   "started": 1791704498.352993,
+   "tag": "turned-away/4391019"
+  },
+  {
+   "sha": "38d1b4f23bfcdcc9756fcf59dd23407c3e36df0f",
+   "input": "Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"ordered wrong item by mistake\"}]",
+   "seconds": 5.65574149999884,
+   "started": 1791704504.651241,
+   "tag": "turned-away/4391020"
+  },
+  {
+   "sha": "38d1b4f23bfcdcc9756fcf59dd23407c3e36df0f",
+   "input": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 90, \"order_id\": \"8008\", \"reason\": \"ordered by mistake\"}]",
+   "seconds": 6.204281624988653,
+   "started": 1791704510.319808,
+   "tag": "turned-away/4391021"
+  },
+  {
+   "sha": "38d1b4f23bfcdcc9756fcf59dd23407c3e36df0f",
+   "input": "Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"ordered wrong item by mistake\"}]",
+   "seconds": 9.436206792015582,
+   "started": 1791704516.540819,
+   "tag": "turned-away/4391022"
+  },
+  {
+   "sha": "38d1b4f23bfcdcc9756fcf59dd23407c3e36df0f",
+   "input": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 90, \"order_id\": \"8008\", \"reason\": \"ordered by mistake\"}]",
+   "seconds": 5.822988667001482,
+   "started": 1791704525.995693,
+   "tag": "turned-away/4391023"
+  },
+  {
+   "sha": "38d1b4f23bfcdcc9756fcf59dd23407c3e36df0f",
+   "input": "Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"ordered wrong item\"}]",
+   "seconds": 5.811401582992403,
+   "started": 1791704531.827672,
+   "tag": "turned-away/4391024"
+  },
+  {
+   "sha": "ca0a2d6288aad40896ccd6d015ef5bd43c4e56fd",
+   "input": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+   "verdict": "fail",
+   "reason": "refunds were [], expected [{\"order_id\": \"8008\", \"refunded\": 90.0}]",
+   "seconds": 5.46223570901202,
+   "started": 1791704537.646869,
+   "tag": "turned-away/4391025"
+  }
+ ]
+}

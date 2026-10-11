@@ -1,0 +1,250 @@
+{
+ "case": {
+  "id": "strangers-paid",
+  "symptom": "Refunds are going out on orders that belong to someone else, usually when the person asking quotes an amount.",
+  "good": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+  "bad": "593d827f6f3d870dbc591f3e5a8d2893cfe58e32",
+  "target": "victims/refund-agent",
+  "file": "cases/strangers-paid.toml",
+  "repo": "."
+ },
+ "suspects": [
+  {
+   "sha": "32f8faafcb06462cf43dba5de49e1e9c67367976",
+   "subject": "Report model_calls in --json output for cost tracking",
+   "checkpoint": "412d52930049",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "0a12ddea74f5b68fd4afb82a53a85b65233a746f",
+   "subject": "Hoist tool registry in call_tool to module-level TOOL_FUNCTIONS",
+   "checkpoint": "9a3cbd1e9c14",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "463076906c7823c256e43331b1aae393ace08dee",
+   "subject": "Refresh refund-agent README's list of changes from the neatroots example",
+   "checkpoint": "400923d529ce",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "7d719e7aacb7acfb7a9221cac0dde7660dbc3857",
+   "subject": "Catch invalid JSON in tool call arguments instead of crashing the run",
+   "checkpoint": "77506d8caa4c",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+   "subject": "Show an example --json line in refund-agent README",
+   "checkpoint": "d24473f3fca4",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
+   "subject": "Let the agent skip lookup_order when the customer gives order number and amount",
+   "checkpoint": "bfbe27725663",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "edba68bc32c8e7208fe4149fda60dfcf059b8708",
+   "subject": "Carry max_steps in the run_info span",
+   "checkpoint": "17a231c53730",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "0c0aa898ca70d2faacfb75eda7b42fa34d3ab1bb",
+   "subject": "Move the default refund request into a DEFAULT_REQUEST constant",
+   "checkpoint": "485add6c4c2e",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "19facbc193e838a7df936fb350d452d342a78afc",
+   "subject": "Add order 1111 for cust_8 to the refund agent",
+   "checkpoint": "bfe874c6b7f8",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "03a169ce83ba866bf62dcf4774676b010da86196",
+   "subject": "Include order_id in tool failure stderr when present",
+   "checkpoint": "328a10c88154",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "593d827f6f3d870dbc591f3e5a8d2893cfe58e32",
+   "subject": "Add a pytest-free smoke check for orders.json and the lookup helpers",
+   "checkpoint": "be89e7107d7f",
+   "touches_target": true,
+   "alibi": ""
+  }
+ ],
+ "lineup": {
+  "case": "strangers-paid",
+  "method": "plain",
+  "suspects": 11,
+  "commits_tested": 5,
+  "replays": 15,
+  "seconds": 71.2,
+  "culprit": {
+   "sha": "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
+   "subject": "Let the agent skip lookup_order when the customer gives order number and amount",
+   "checkpoint": "bfbe27725663",
+   "files": [
+    "victims/refund-agent/agent.py"
+   ]
+  },
+  "remaining": [
+   {
+    "sha": "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
+    "subject": "Let the agent skip lookup_order when the customer gives order number and amount"
+   }
+  ],
+  "linear_scan_commits": 6
+ },
+ "replays": [
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Refund order 9009 please, it was 45 dollars. Customer cust_1.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.27020587498555,
+   "started": 1791704319.429276,
+   "tag": "strangers-paid/4319001"
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.24568087499938,
+   "started": 1791704324.7084029,
+   "tag": "strangers-paid/4319002"
+  },
+  {
+   "sha": "593d827f6f3d870dbc591f3e5a8d2893cfe58e32",
+   "input": "Refund order 9009 please, it was 45 dollars. Customer cust_1.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 45, \"order_id\": \"9009\", \"reason\": \"Customer requested refund\"}], expected []",
+   "seconds": 4.140932625014102,
+   "started": 1791704329.973195,
+   "tag": "strangers-paid/4319003"
+  },
+  {
+   "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+   "input": "Refund order 9009 please, it was 45 dollars. Customer cust_1.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.914077916997485,
+   "started": 1791704334.121681,
+   "tag": "strangers-paid/4319004"
+  },
+  {
+   "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.22807583300164,
+   "started": 1791704339.046462,
+   "tag": "strangers-paid/4319005"
+  },
+  {
+   "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+   "input": "Refund order 9009 please, it was 45 dollars. Customer cust_1.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.946623041993007,
+   "started": 1791704344.283974,
+   "tag": "strangers-paid/4319006"
+  },
+  {
+   "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.578103417006787,
+   "started": 1791704349.238894,
+   "tag": "strangers-paid/4319007"
+  },
+  {
+   "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+   "input": "Refund order 9009 please, it was 45 dollars. Customer cust_1.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.681764040986309,
+   "started": 1791704353.8265102,
+   "tag": "strangers-paid/4319008"
+  },
+  {
+   "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.82976945900009,
+   "started": 1791704358.5153909,
+   "tag": "strangers-paid/4319009"
+  },
+  {
+   "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+   "input": "Refund order 9009 please, it was 45 dollars. Customer cust_1.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.939637583011063,
+   "started": 1791704363.355546,
+   "tag": "strangers-paid/4319010"
+  },
+  {
+   "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.958707415993558,
+   "started": 1791704368.308182,
+   "tag": "strangers-paid/4319011"
+  },
+  {
+   "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+   "input": "Refund order 9009 please, it was 45 dollars. Customer cust_1.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.9466393329785205,
+   "started": 1791704373.275945,
+   "tag": "strangers-paid/4319012"
+  },
+  {
+   "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.5738639579794835,
+   "started": 1791704378.232342,
+   "tag": "strangers-paid/4319013"
+  },
+  {
+   "sha": "0c0aa898ca70d2faacfb75eda7b42fa34d3ab1bb",
+   "input": "Refund order 9009 please, it was 45 dollars. Customer cust_1.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 45, \"order_id\": \"9009\", \"reason\": \"Customer requested refund\"}], expected []",
+   "seconds": 3.907091417000629,
+   "started": 1791704382.8185441,
+   "tag": "strangers-paid/4319014"
+  },
+  {
+   "sha": "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
+   "input": "Refund order 9009 please, it was 45 dollars. Customer cust_1.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 45, \"order_id\": \"9009\", \"reason\": \"Customer requested refund\"}], expected []",
+   "seconds": 4.007924334000563,
+   "started": 1791704386.734858,
+   "tag": "strangers-paid/4319015"
+  }
+ ]
+}

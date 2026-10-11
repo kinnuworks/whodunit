@@ -1,0 +1,264 @@
+{
+ "case": {
+  "id": "cents-off",
+  "symptom": "Full refunds on orders priced with cents pay out the wrong amount. Order 3003 cost 129.99 and the customer was refunded 130.",
+  "good": "e6e88a7cc5aede4fed4ea4f0fe8e41a9db73b9a7",
+  "bad": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+  "target": "victims/refund-agent",
+  "file": "cases/cents-off.toml",
+  "repo": "."
+ },
+ "suspects": [
+  {
+   "sha": "06fd9c05bcd9bfee9715385a95a34497a70760db",
+   "subject": "Add orders 6006 and 7007 for cust_9 to the refund agent's sample data",
+   "checkpoint": "6750704bca95",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "f80bac48a744f26c2756aa5b1cd4f82e7dc3a35a",
+   "subject": "Split the refund agent's system prompt into a list of rules",
+   "checkpoint": "13d4eabb94f6",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "f6a90121d4272fdfb32e8cb9d35dd28ea7aac620",
+   "subject": "Make lookup_order and issue_refund tool descriptions more helpful",
+   "checkpoint": "6ac6f756c64f",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "e875aa7e2a59ec7c6b6fd07a99c6749068b0c967",
+   "subject": "Document order status meaning for refunds in refund-agent README",
+   "checkpoint": "4bcdc4a7d40e",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "d6bcbdbfd31edbbaca83ad6e9e667b591849dab1",
+   "subject": "Print tool call failures to stderr in refund agent",
+   "checkpoint": "7e64d6001eac",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "0d8eb7150bfa9c5d2c8480ae5513633f3cb12c3e",
+   "subject": "Add --quiet flag to refund agent to skip printing the reply",
+   "checkpoint": "2ea39cee1030",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "367c64a5ae2702ae2d1142f0877bb5c56e946b21",
+   "subject": "Round refund amount to whole currency units in issue_refund",
+   "checkpoint": "414aea6e5e59",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "d871f17de10b583e37ce053b47ab52f109fd3c14",
+   "subject": "Add docstrings to tool functions in refund agent",
+   "checkpoint": "15cb2b8ba0c1",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "eb819b28dacfdc3b7e6ad0daa5ca9be49115d027",
+   "subject": "Move ORDERS out of agent.py into orders.json",
+   "checkpoint": "fee39ce05493",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "8619484f9eb4609ee48571a4bb83f93c9c4ceb8a",
+   "subject": "Document orders.json location in refund agent README",
+   "checkpoint": "a23981624a12",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "bdd8d4dd9fed0be42669bb52e54759be20a800f3",
+   "subject": "Give the OpenAI client a timeout and retry on transient errors",
+   "checkpoint": "96357218120b",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "909dd7607b8c3fc56f248ec7b28ff4fda5e6d53e",
+   "subject": "Add order 8008 for cust_6",
+   "checkpoint": "4277ef4e0d0a",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "subject": "Bump refund agent version to 0.2.0",
+   "checkpoint": "2e014f99ae2c",
+   "touches_target": true,
+   "alibi": ""
+  }
+ ],
+ "lineup": {
+  "case": "cents-off",
+  "method": "plain",
+  "suspects": 13,
+  "commits_tested": 5,
+  "replays": 15,
+  "seconds": 82.3,
+  "culprit": {
+   "sha": "367c64a5ae2702ae2d1142f0877bb5c56e946b21",
+   "subject": "Round refund amount to whole currency units in issue_refund",
+   "checkpoint": "414aea6e5e59",
+   "files": [
+    "victims/refund-agent/agent.py"
+   ]
+  },
+  "remaining": [
+   {
+    "sha": "367c64a5ae2702ae2d1142f0877bb5c56e946b21",
+    "subject": "Round refund amount to whole currency units in issue_refund"
+   }
+  ],
+  "linear_scan_commits": 7
+ },
+ "replays": [
+  {
+   "sha": "e6e88a7cc5aede4fed4ea4f0fe8e41a9db73b9a7",
+   "input": "Please refund order 3003 in full for customer cust_7.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 129.99, \"order_id\": \"3003\"}]",
+   "seconds": 5.230078042019159,
+   "started": 1791704236.666829,
+   "tag": "cents-off/4236001"
+  },
+  {
+   "sha": "e6e88a7cc5aede4fed4ea4f0fe8e41a9db73b9a7",
+   "input": "Please refund order 5005 in full for customer cust_3.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 64.75, \"order_id\": \"5005\"}]",
+   "seconds": 5.457487707986729,
+   "started": 1791704241.90878,
+   "tag": "cents-off/4236002"
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Please refund order 3003 in full for customer cust_7.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 130, \"order_id\": \"3003\"}], expected [{\"order_id\": \"3003\", \"refunded\": 129.99}]",
+   "seconds": 9.600138708017766,
+   "started": 1791704247.381403,
+   "tag": "cents-off/4236003"
+  },
+  {
+   "sha": "0d8eb7150bfa9c5d2c8480ae5513633f3cb12c3e",
+   "input": "Please refund order 3003 in full for customer cust_7.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 129.99, \"order_id\": \"3003\"}]",
+   "seconds": 5.529032792022917,
+   "started": 1791704257.00086,
+   "tag": "cents-off/4236004"
+  },
+  {
+   "sha": "0d8eb7150bfa9c5d2c8480ae5513633f3cb12c3e",
+   "input": "Please refund order 5005 in full for customer cust_3.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 64.75, \"order_id\": \"5005\"}]",
+   "seconds": 5.378647167002782,
+   "started": 1791704262.537201,
+   "tag": "cents-off/4236005"
+  },
+  {
+   "sha": "0d8eb7150bfa9c5d2c8480ae5513633f3cb12c3e",
+   "input": "Please refund order 3003 in full for customer cust_7.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 129.99, \"order_id\": \"3003\"}]",
+   "seconds": 5.022955874999752,
+   "started": 1791704267.927831,
+   "tag": "cents-off/4236006"
+  },
+  {
+   "sha": "0d8eb7150bfa9c5d2c8480ae5513633f3cb12c3e",
+   "input": "Please refund order 5005 in full for customer cust_3.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 64.75, \"order_id\": \"5005\"}]",
+   "seconds": 4.991788249986712,
+   "started": 1791704272.958461,
+   "tag": "cents-off/4236007"
+  },
+  {
+   "sha": "0d8eb7150bfa9c5d2c8480ae5513633f3cb12c3e",
+   "input": "Please refund order 3003 in full for customer cust_7.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 129.99, \"order_id\": \"3003\"}]",
+   "seconds": 5.075652208994143,
+   "started": 1791704277.9605188,
+   "tag": "cents-off/4236008"
+  },
+  {
+   "sha": "0d8eb7150bfa9c5d2c8480ae5513633f3cb12c3e",
+   "input": "Please refund order 5005 in full for customer cust_3.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 64.75, \"order_id\": \"5005\"}]",
+   "seconds": 5.078372416988714,
+   "started": 1791704283.043461,
+   "tag": "cents-off/4236009"
+  },
+  {
+   "sha": "0d8eb7150bfa9c5d2c8480ae5513633f3cb12c3e",
+   "input": "Please refund order 3003 in full for customer cust_7.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 129.99, \"order_id\": \"3003\"}]",
+   "seconds": 5.266020750015741,
+   "started": 1791704288.129995,
+   "tag": "cents-off/4236010"
+  },
+  {
+   "sha": "0d8eb7150bfa9c5d2c8480ae5513633f3cb12c3e",
+   "input": "Please refund order 5005 in full for customer cust_3.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 64.75, \"order_id\": \"5005\"}]",
+   "seconds": 4.935177583975019,
+   "started": 1791704293.403059,
+   "tag": "cents-off/4236011"
+  },
+  {
+   "sha": "0d8eb7150bfa9c5d2c8480ae5513633f3cb12c3e",
+   "input": "Please refund order 3003 in full for customer cust_7.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 129.99, \"order_id\": \"3003\"}]",
+   "seconds": 4.865656584006501,
+   "started": 1791704298.349716,
+   "tag": "cents-off/4236012"
+  },
+  {
+   "sha": "0d8eb7150bfa9c5d2c8480ae5513633f3cb12c3e",
+   "input": "Please refund order 5005 in full for customer cust_3.",
+   "verdict": "pass",
+   "reason": "refunds match: [{\"refunded\": 64.75, \"order_id\": \"5005\"}]",
+   "seconds": 5.0643198330071755,
+   "started": 1791704303.2227788,
+   "tag": "cents-off/4236013"
+  },
+  {
+   "sha": "eb819b28dacfdc3b7e6ad0daa5ca9be49115d027",
+   "input": "Please refund order 3003 in full for customer cust_7.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 130, \"order_id\": \"3003\"}], expected [{\"order_id\": \"3003\", \"refunded\": 129.99}]",
+   "seconds": 5.336417792015709,
+   "started": 1791704308.295398,
+   "tag": "cents-off/4236014"
+  },
+  {
+   "sha": "367c64a5ae2702ae2d1142f0877bb5c56e946b21",
+   "input": "Please refund order 3003 in full for customer cust_7.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 130, \"order_id\": \"3003\"}], expected [{\"order_id\": \"3003\", \"refunded\": 129.99}]",
+   "seconds": 5.476501583005302,
+   "started": 1791704313.6401222,
+   "tag": "cents-off/4236015"
+  }
+ ]
+}

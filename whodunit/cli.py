@@ -46,14 +46,21 @@ def _plain(args, case, repo, suspects, runner, say):
     if verdict != PASS:
         say("The good ref does not pass, so there is no clean starting point.")
         return None
-    verdict, results = runner.test_commit(case.bad)
+    for _ in range(max(1, args.repeats)):  # a bad ref that fails only sometimes gets the same number of chances
+        verdict, results = runner.test_commit(case.bad)
+        if verdict != PASS:
+            break
     say(f"  first bad  {suspects[-1].short}  {verdict}  {results[-1].reason}")
     if verdict != FAIL:
         say("The bad ref does not fail, so there is nothing to find.")
         return None
 
     def test(index: int) -> str:
-        verdict, results = runner.test_commit(suspects[index].sha)
+        # With --repeats, a commit is called good only after passing that many times over.
+        for _ in range(max(1, args.repeats)):
+            verdict, results = runner.test_commit(suspects[index].sha)
+            if verdict != PASS:
+                break
         say(f"  suspect {index + 1:>2}  {suspects[index].short}  {verdict}  {results[-1].reason}")
         return verdict
 
@@ -398,6 +405,7 @@ def investigate(args) -> int:
         path.rename(path.with_name(path.name + time.strftime(".%H%M%S.old")))
     record = load_record(path)
     args.method, args.confidence, args.no_priors, args.keep, args.json = "statistical", 0.95, False, False, False
+    args.repeats = 1
     args.no_runs, args.since_ms = False, None
     if not (record.get("lineup") or {}).get("culprit"):
         args.resume = bool(record.get("replays"))
@@ -552,6 +560,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("case", help="path to a case file (TOML)")
     p.add_argument("--repo", default=".", help="the git repo that holds the agent (default: here)")
     p.add_argument("--method", choices=("statistical", "plain"), default="statistical", help="plain is for bugs that fail every time")
+    p.add_argument("--repeats", type=int, default=1, help="with --method plain, how many times a commit must pass all inputs to be called good")
     p.add_argument("--budget", type=int, default=120, help="most replays the statistical bisect may spend (default 120)")
     p.add_argument("--confidence", type=float, default=0.95, help="posterior needed to name a culprit (default 0.95)")
     p.add_argument("--parallel", type=int, default=1, help="replays to run at once")

@@ -64,6 +64,8 @@ Back to the first case file, scroll to Damages. Then show `eval/sealed/README.md
 
 > We did not grade our own homework. A separate coding session grew this history through 53 ordinary requests, planted five regressions and sealed the answer key. Whodunit named all five and accused nobody wrongly.
 
+> Plain bisect with five retries got three of them, and cheaper. On the fourth it named an innocent commit. On the fifth the broken version passed ten times in a row, so it never started.
+
 ## Scene 6, close (2:25 to 2:35)
 
 Show the cfo.ai model, then the repo URL.

@@ -130,6 +130,34 @@ Before and after neatlogs traces with numbers, trace links or screenshots, an En
 
 If milestone 3 slips past Sunday 2 PM, drop the stretch target and the AWS runner and keep everything else.
 
+## Where things stand, Sunday 11 October, midday
+
+Read this before the milestones above, which were written before the build started.
+
+Done and committed locally:
+
+- Milestones 1 to 4, and the eval part of 5. `hackathon.md` has every step, including what went wrong.
+- The victim has a real history: 55 commits made through `eval/ask.sh`, one fresh coding session per request. Five regressions were planted by a second session and sealed. `eval/sealed/README.md` has the result: 5 of 5 named, no wrong accusations, 4 of 5 fixed and proven.
+- `whodunit investigate` runs a whole case. `cases/whole-history.toml` is the headline run and the one the video should show.
+- `pitch/` has the video script, post drafts and the business plan numbers.
+
+Still to do, in order of points:
+
+1. cfo.ai. Required, and nothing is in it yet. `.mcp.json` names the server. A new session in this folder should offer it, and the owner signs in. Build the plan from `pitch/business-plan.md`: pricing, costs, revenue and runway, with the three scenarios. Each write needs the owner's yes.
+2. Screenshots from neatlogs cloud. 232 traffic runs are there and the `Execution Failed` detection has fired 27 times. The owner is signed in to the dashboard and this session is not.
+3. The push. The owner still has to read the list of personal items in the transcripts: home folder path, connector names, the titles of the private notes index, and `ownerAccountUuid` and `ownerOrganizationUuid` in `bridge-session` entries. After the push, turn on GitHub Pages for `cases/` so the casebook has a public address, and collect the Entire checkpoint link for commit `ced2ecd21c3e`, checkpoint `bfbe27725663`.
+4. The video, from `pitch/demo-script.md`.
+5. More #neatHack posts, from `pitch/posts.md`.
+
+Rules that came out of the build:
+
+- Two sessions in this folder at once end up in each other's checkpoints. Do unrelated work, such as research, from another folder.
+- Do not edit `whodunit/` while a long `whodunit` run is in flight. Each case starts a new process that picks up the edit.
+- neatroots returns at most 200 rows per query. Use `select_all` in `whodunit/neat.py`.
+- A fix is proven only when its failure rate is back within 5 points of the rate before the culprit. Do not loosen that.
+- Gateway spend was about $14 of $20 at midday on Sunday. A full investigation costs 20 cents to a dollar, and a rare bug can cost several dollars.
+- Entire Brain is not installed. Its installer is a script piped from the network into a shell, which needs the owner's yes.
+
 ## Case file design
 
 This direction is a proposal and the owner has not signed it off yet.

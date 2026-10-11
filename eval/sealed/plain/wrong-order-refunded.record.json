@@ -1,0 +1,294 @@
+{
+ "case": {
+  "id": "wrong-order-refunded",
+  "symptom": "A customer asked about an order number we have no record of, and every so often the agent refunds one of their other orders instead.",
+  "good": "367c64a5ae2702ae2d1142f0877bb5c56e946b21",
+  "bad": "42978be0a2352c8c6291703b61f31d1978e3ba19",
+  "target": "victims/refund-agent",
+  "file": "cases/wrong-order-refunded.toml",
+  "repo": "."
+ },
+ "suspects": [
+  {
+   "sha": "d871f17de10b583e37ce053b47ab52f109fd3c14",
+   "subject": "Add docstrings to tool functions in refund agent",
+   "checkpoint": "15cb2b8ba0c1",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "eb819b28dacfdc3b7e6ad0daa5ca9be49115d027",
+   "subject": "Move ORDERS out of agent.py into orders.json",
+   "checkpoint": "fee39ce05493",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "8619484f9eb4609ee48571a4bb83f93c9c4ceb8a",
+   "subject": "Document orders.json location in refund agent README",
+   "checkpoint": "a23981624a12",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "bdd8d4dd9fed0be42669bb52e54759be20a800f3",
+   "subject": "Give the OpenAI client a timeout and retry on transient errors",
+   "checkpoint": "96357218120b",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "909dd7607b8c3fc56f248ec7b28ff4fda5e6d53e",
+   "subject": "Add order 8008 for cust_6",
+   "checkpoint": "4277ef4e0d0a",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "subject": "Bump refund agent version to 0.2.0",
+   "checkpoint": "2e014f99ae2c",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "subject": "Try digit-swap and digit-double corrections on order lookup misses",
+   "checkpoint": "d248e108a420",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "ded7b9bf18b408b3101249f37c35412df21ccdea",
+   "subject": "Make the too-many-steps message clearer for customers",
+   "checkpoint": "e5c915db0e2b",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "7d991542f6e7d12f6c4c8d62baac9ff8deb8638c",
+   "subject": "Refresh uv.lock to match refund-agent 0.2.0",
+   "checkpoint": "aa53eb8980b9",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "aaa4031687f026a0e08b126c9fa09e63933625bf",
+   "subject": "Add a get_order_status tool for where-is-my-order questions",
+   "checkpoint": "485899b3c448",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "923ccb8d2385e07f969417638008d370563442c8",
+   "subject": "Add agent version to the run_info span, read from pyproject.toml",
+   "checkpoint": "004ae8972d75",
+   "touches_target": true,
+   "alibi": ""
+  },
+  {
+   "sha": "42978be0a2352c8c6291703b61f31d1978e3ba19",
+   "subject": "Add a troubleshooting section to the refund-agent README",
+   "checkpoint": "1ff64aa3f19e",
+   "touches_target": true,
+   "alibi": ""
+  }
+ ],
+ "lineup": {
+  "case": "wrong-order-refunded",
+  "method": "plain",
+  "suspects": 12,
+  "commits_tested": 5,
+  "replays": 19,
+  "seconds": 103.5,
+  "culprit": {
+   "sha": "aaa4031687f026a0e08b126c9fa09e63933625bf",
+   "subject": "Add a get_order_status tool for where-is-my-order questions",
+   "checkpoint": "485899b3c448",
+   "files": [
+    "victims/refund-agent/README.md",
+    "victims/refund-agent/agent.py"
+   ]
+  },
+  "remaining": [
+   {
+    "sha": "aaa4031687f026a0e08b126c9fa09e63933625bf",
+    "subject": "Add a get_order_status tool for where-is-my-order questions"
+   }
+  ],
+  "linear_scan_commits": 10
+ },
+ "replays": [
+  {
+   "sha": "367c64a5ae2702ae2d1142f0877bb5c56e946b21",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.193482083996059,
+   "started": 1791704594.581404,
+   "tag": "wrong-order-refunded/4594001"
+  },
+  {
+   "sha": "42978be0a2352c8c6291703b61f31d1978e3ba19",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.741915874998085,
+   "started": 1791704598.789066,
+   "tag": "wrong-order-refunded/4594002"
+  },
+  {
+   "sha": "42978be0a2352c8c6291703b61f31d1978e3ba19",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 6.026350875006756,
+   "started": 1791704604.5399868,
+   "tag": "wrong-order-refunded/4594003"
+  },
+  {
+   "sha": "42978be0a2352c8c6291703b61f31d1978e3ba19",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 60, \"order_id\": \"7007\"}], expected []",
+   "seconds": 6.8593256669992115,
+   "started": 1791704610.57811,
+   "tag": "wrong-order-refunded/4594004"
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.743156957993051,
+   "started": 1791704617.449526,
+   "tag": "wrong-order-refunded/4594005"
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.162385624978924,
+   "started": 1791704622.204319,
+   "tag": "wrong-order-refunded/4594006"
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.8643634589971043,
+   "started": 1791704626.374101,
+   "tag": "wrong-order-refunded/4594007"
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.6156712920055725,
+   "started": 1791704630.2466629,
+   "tag": "wrong-order-refunded/4594008"
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.1098221669963095,
+   "started": 1791704633.871679,
+   "tag": "wrong-order-refunded/4594009"
+  },
+  {
+   "sha": "7d991542f6e7d12f6c4c8d62baac9ff8deb8638c",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 6.377667666994967,
+   "started": 1791704637.989995,
+   "tag": "wrong-order-refunded/4594010"
+  },
+  {
+   "sha": "7d991542f6e7d12f6c4c8d62baac9ff8deb8638c",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.802989208023064,
+   "started": 1791704644.376539,
+   "tag": "wrong-order-refunded/4594011"
+  },
+  {
+   "sha": "7d991542f6e7d12f6c4c8d62baac9ff8deb8638c",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.912008874991443,
+   "started": 1791704650.1885052,
+   "tag": "wrong-order-refunded/4594012"
+  },
+  {
+   "sha": "7d991542f6e7d12f6c4c8d62baac9ff8deb8638c",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.855039874993963,
+   "started": 1791704656.111126,
+   "tag": "wrong-order-refunded/4594013"
+  },
+  {
+   "sha": "7d991542f6e7d12f6c4c8d62baac9ff8deb8638c",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.714611582981888,
+   "started": 1791704661.9755552,
+   "tag": "wrong-order-refunded/4594014"
+  },
+  {
+   "sha": "aaa4031687f026a0e08b126c9fa09e63933625bf",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.677056499989703,
+   "started": 1791704667.6986508,
+   "tag": "wrong-order-refunded/4594015"
+  },
+  {
+   "sha": "aaa4031687f026a0e08b126c9fa09e63933625bf",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.91013654199196,
+   "started": 1791704673.3898208,
+   "tag": "wrong-order-refunded/4594016"
+  },
+  {
+   "sha": "aaa4031687f026a0e08b126c9fa09e63933625bf",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.822538416017778,
+   "started": 1791704679.308956,
+   "tag": "wrong-order-refunded/4594017"
+  },
+  {
+   "sha": "aaa4031687f026a0e08b126c9fa09e63933625bf",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 6.101719750004122,
+   "started": 1791704685.144352,
+   "tag": "wrong-order-refunded/4594018"
+  },
+  {
+   "sha": "aaa4031687f026a0e08b126c9fa09e63933625bf",
+   "input": "Can you refund order 707? I'm cust_9.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 60, \"order_id\": \"7007\"}], expected []",
+   "seconds": 6.974375332996715,
+   "started": 1791704691.254673,
+   "tag": "wrong-order-refunded/4594019"
+  }
+ ]
+}
