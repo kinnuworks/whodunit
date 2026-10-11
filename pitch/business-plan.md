@@ -2,6 +2,8 @@
 
 These are the numbers and assumptions to build the cfo.ai model from. The measured ones come from this repo's runs on 10 and 11 October 2026. The assumed ones are marked and are the owner's to change.
 
+One thing to keep in view when quoting any of it: no real customer has used the refund agent. Its ordinary traffic was sent by `eval/traffic.py`, a script that plays customers against each commit, and the shop and its orders are test data. The replay costs below are real spend on real model calls. The refund amounts are what a script's requests cost a test shop.
+
 ## What is being sold
 
 Whodunit Cloud: hosted investigations for teams that run an AI agent in production. The command line tool stays open source and free with your own keys. The paid product is the hosted replay workers, the case file pages, the regression checks in CI, and the standing rulings shared across a team.
@@ -24,13 +26,13 @@ Six full investigations on the refund agent, with replays on a small hosted mode
 - Replay worker: one t3.large at about $61 a month runs three replays at a time. Assumed: one worker per 15 paying teams.
 - So the cost of one investigation is about $1.20 on average for an agent on a small model. An agent on a large model costs roughly 5 to 15 times more to replay, which is why replays are billed at cost above the included amount.
 
-## What a regression costs the customer, measured
+## What a regression costs the customer, counted from scripted traffic
 
-From ordinary traffic through the refund agent's history:
+The requests were sent by `eval/traffic.py`, not by customers, so these show the size of the thing and are not a measurement of any real shop. Each line counts only the runs that failed that case's own check:
 
-- One prompt change refunded 120.00 to the wrong people in 4 of 6 matching requests.
-- One "friendlier replies" change withheld 360.00 across 6 customers who were owed it.
-- These are from a few hundred simulated requests. A real shop would see them at its own volume until someone noticed.
+- One prompt change refunded 120.00 to the wrong people, in 4 of the 6 scripted requests that asked for it.
+- One "friendlier replies" change withheld 360.00, across all 6 scripted requests that were owed a refund: three of 90.00 and three of 30.00.
+- These come from a few hundred scripted requests spread over the history. A real shop would see them at its own volume until someone noticed.
 
 ## Pricing, assumed
 

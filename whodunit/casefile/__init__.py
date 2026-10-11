@@ -105,6 +105,7 @@ def render(record: dict) -> str:
     ruling = record.get("ruling") or {}
     fix = record.get("fix") or {}
     damages = record.get("damages") or {}
+    sent_by = damages.get("sent_by") or case.get("traffic_sent_by")  # who sent the ordinary runs, when it was a script
     parts = []
 
     # Suspects
@@ -122,8 +123,9 @@ def render(record: dict) -> str:
             rates = f' From this commit on it fails about {lineup["failure_rate_from"]:.0%} of the time. Before it, about {lineup["failure_rate_before"]:.0%}.'
         scan = f' A scan from the oldest suspect would have tested {lineup["linear_scan_commits"]} commits.' if "linear_scan_commits" in lineup else ""
         if lineup.get("traffic_runs"):
+            who = f' The ordinary runs were sent by <code>{escape(sent_by)}</code>, a script that plays customers.' if sent_by else ""
             named += (f'<p class="small">Before any replay, {lineup["traffic_runs"]} ordinary runs had already asked this, '
-                      f'and {lineup["traffic_failures"]} of them went wrong. They were used as evidence at no cost.</p>')
+                      f'and {lineup["traffic_failures"]} of them went wrong. They were used as evidence at no cost.{who}</p>')
         named += (f'<p class="small">{lineup.get("replays", 0)} replays across {lineup.get("commits_tested", 0)} commits, '
                   f'{lineup.get("seconds", 0) / 60:.1f} minutes of replay time.{rates}{scan}</p>')
         named += f'<div class="scroll">{lineup_svg(record)}</div>'
@@ -230,16 +232,28 @@ def render(record: dict) -> str:
         body = '<p class="empty">Not fixed yet.</p>'
     parts.append(_field("Fix", body))
 
-    # Damages
+    # Damages: only runs that fail this case's own check
     if damages:
-        if damages["runs"]:
-            body = (f'<p>{damages["bad_runs"]} of {damages["runs"]} runs on the culprit or later went bad, which is {damages["bad_share"]:.0%}. '
-                    f'They cost about ${damages["wasted_usd"]:.2f} of the ${damages["cost_usd"]:.2f} spent.</p>')
-        else:
+        if not damages["runs"]:
             body = '<p>No ordinary runs are recorded on the culprit or the commits after it, so there is no damage to count.</p>'
-        if damages.get("case_runs"):
-            body += (f'<p>{damages["case_bad"]} of the {damages["case_runs"]} ordinary runs that asked what this case asks paid out wrongly. '
-                     f'{damages["wrongly_paid"]:.2f} was refunded that should not have been, and {damages["withheld"]:.2f} was owed and not refunded.</p>')
+        elif not damages.get("case_runs"):
+            body = (f'<p>{damages["runs"]} ordinary runs are on record for the culprit or later, and none of them asked what this case asks. '
+                    'No damage can be counted from them.</p>')
+        elif not damages["case_bad"]:
+            body = (f'<p>None of the {damages["case_runs"]} ordinary runs that asked what this case asks, on the culprit or later, failed its check. '
+                    'The replays show the bug. No ordinary run happened to hit it.</p>')
+        else:
+            money = [f'{damages[key]:.2f} {words}' for key, words in (("wrongly_paid", "was refunded that should not have been"), ("withheld", "was owed and not refunded")) if damages[key]]
+            body = (f'<p>{damages["case_bad"]} of the {damages["case_runs"]} ordinary runs that asked what this case asks, on the culprit or later, failed its check. '
+                    f'{", and ".join(money).capitalize()}.</p>')
+            if "case_bad_usd" in damages:
+                body += f'<p class="small">Those {damages["case_bad"]} runs cost about ${damages["case_bad_usd"]:.2f} in tokens.</p>'
+        if damages["runs"]:
+            body += (f'<p class="small">{damages["runs"]} ordinary runs of every kind are on record for the same commits. '
+                     'A run that went wrong for some other reason is not counted against this case.</p>')
+            if sent_by:
+                body += (f'<p class="small">The ordinary runs were sent by <code>{escape(sent_by)}</code>, a script that plays customers against each commit. '
+                         'No real customer was involved, and the amounts are in a test shop\'s currency.</p>')
         body += (f'<p class="small">The investigation used {damages["replay_runs"]} replays, about ${damages["replay_usd"]:.2f}. {escape(damages["note"])}</p>')
     else:
         body = '<p class="empty">Not counted yet.</p>'

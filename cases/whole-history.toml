@@ -5,6 +5,7 @@ symptom = "Refunds are going out on orders that belong to someone else, when the
 good = "e5542b7f40b7e37b5eea8d66ea754230cf4411c0"
 bad = "df4f4fa601c658b196090b937f8854ed1e5d4f9c"
 target = "victims/refund-agent"
+traffic_sent_by = "eval/traffic.py"  # the ordinary runs were sent by this script, which plays customers
 build = ["uv", "run", "-q", "python", "-m", "py_compile", "agent.py"]
 run = ["uv", "run", "-q", "agent.py", "--json", "{input}"]
 

@@ -56,7 +56,7 @@ Attach: the "What it took" part of `cases/turned-away.casefile.html`.
 
 Reading damage from @neatlogs traces instead of guessing:
 
-4 of 6 ordinary runs refunded someone else's order. 120.00 gone.
+4 of 6 scripted customer requests got someone else's order refunded. 120.00 gone, in a test shop.
 6 of 6 turned away a customer who was owed 60.00 each.
 
 Finding the commit cost 18 cents. #neatHack

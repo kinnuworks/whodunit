@@ -1831,18 +1831,17 @@
   "workflow": "refund-agent",
   "since_ms": null,
   "runs": 42,
-  "bad_runs": 10,
-  "bad_share": 0.2381,
   "tokens": 140476,
-  "bad_tokens": 37040,
   "cost_usd": 0.1829,
-  "wasted_usd": 0.0501,
   "replay_runs": 240,
   "replay_usd": 0.849,
   "case_runs": 2,
   "case_bad": 1,
   "wrongly_paid": 60.0,
   "withheld": 0.0,
+  "case_bad_tokens": 4962,
+  "case_bad_usd": 0.0066,
+  "sent_by": "eval/traffic.py",
   "note": "Dollar figures are estimates from token counts."
  },
  "checks": [
@@ -1852,5 +1851,6 @@
    "runs": 8,
    "failures": 0
   }
- ]
+ ],
+ "replays_until_ms": 1791695949000
 }

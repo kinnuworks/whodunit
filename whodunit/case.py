@@ -29,6 +29,7 @@ class Case:
     env: dict = field(default_factory=dict)
     timeout: float = 120.0
     fixed: str = ""  # the commit that fixed it, once the case is closed and kept as a regression test
+    traffic_sent_by: str = ""  # who sent the agent's ordinary runs, when it was a script and not real users
 
     @classmethod
     def load(cls, path: str | Path) -> "Case":

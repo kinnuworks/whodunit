@@ -5,6 +5,7 @@ symptom = "Full refunds on orders priced with cents pay out the wrong amount. Or
 good = "e6e88a7cc5aede4fed4ea4f0fe8e41a9db73b9a7"
 bad = "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea"
 target = "victims/refund-agent"
+traffic_sent_by = "eval/traffic.py"  # the ordinary runs were sent by this script, which plays customers
 build = ["uv", "run", "-q", "python", "-m", "py_compile", "agent.py"]
 run = ["uv", "run", "-q", "agent.py", "--json", "{input}"]
 

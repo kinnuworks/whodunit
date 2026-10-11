@@ -1,4 +1,9 @@
-"""The damages: how many runs went bad, and what they cost.
+"""The damages: which runs this regression broke, and what they cost.
+
+A run counts as damage only if it fails this case's own check: it asked what one of the case's
+inputs asks, on the culprit or a later commit, and paid out something other than what the case
+expects. A run that errored or raised a finding for some other reason is not this case's damage.
+A history can hold several regressions at once, and each case answers for its own.
 
 Counts come from the traces neatroots holds. The dollar figures are estimates from token
 counts and a price per million tokens, and are labelled as estimates wherever they appear.
@@ -19,19 +24,18 @@ PRICES = {"claude-haiku": (1.00, 5.00), "claude-sonnet-4.6": (3.00, 15.00), "fak
 class Damages:
     workflow: str
     since_ms: float | None
-    runs: int
-    bad_runs: int
-    bad_share: float
+    runs: int  # ordinary runs on the culprit or later, whatever they asked. This is the setting, not the damage.
     tokens: int
-    bad_tokens: int
-    cost_usd: float  # of all runs in the window
-    wasted_usd: float  # of the bad runs
+    cost_usd: float  # of all those runs
     replay_runs: int = 0  # runs Whodunit itself made while investigating
     replay_usd: float = 0.0
-    case_runs: int = 0  # ordinary runs on the culprit or later whose request is one of the case's inputs
-    case_bad: int = 0  # of those, the ones that paid out something other than what the case expects
+    case_runs: int = 0  # of the ordinary runs, the ones whose request is one of the case's inputs
+    case_bad: int = 0  # of those, the ones that fail the case's check. This is the damage.
     wrongly_paid: float = 0.0  # money refunded that should not have been, in the orders' currency
     withheld: float = 0.0  # money that should have been refunded and was not
+    case_bad_tokens: int = 0
+    case_bad_usd: float = 0.0  # what the runs that failed the check cost to make
+    sent_by: str = ""  # who sent the ordinary runs, when it was a script and not real users
     note: str = "Dollar figures are estimates from token counts."
 
     def to_dict(self) -> dict:
@@ -42,31 +46,31 @@ def _cost(prompt_tokens: int, completion_tokens: int, price: tuple[float, float]
     return (prompt_tokens * price[0] + completion_tokens * price[1]) / 1_000_000
 
 
-BAD = "(r.status = 'error' or r.error_count > 0 or r.finding_count > 0)"
 REPLAY = "exists (select 1 from spans i where i.trace_id = r.trace_id and i.name = 'run_info' and i.attributes like '{like}')"
 
 
-def _spend(mcp: Mcp, where: str, prices: dict) -> tuple[float, float, int, int]:
-    """(cost of all runs, cost of bad runs, tokens, bad tokens) for the runs that match, priced per model."""
+def _spend(mcp: Mcp, where: str, prices: dict) -> tuple[float, int]:
+    """(cost, tokens) of the runs that match, priced per model."""
     rows = mcp.call("query_sql", sql=(
-        f"select s.model as model, {BAD} as bad, coalesce(sum(s.prompt_tokens), 0) as pt, coalesce(sum(s.completion_tokens), 0) as ct "
-        f"from runs r join spans s on s.trace_id = r.trace_id and s.span_kind = 'LLM' where {where} group by s.model, bad"
+        "select s.model as model, coalesce(sum(s.prompt_tokens), 0) as pt, coalesce(sum(s.completion_tokens), 0) as ct "
+        f"from runs r join spans s on s.trace_id = r.trace_id and s.span_kind = 'LLM' where {where} group by s.model"
     ))["rows"]
-    cost = bad_cost = tokens = bad_tokens = 0
+    cost = tokens = 0
     for row in rows:
-        spent = _cost(row["pt"], row["ct"], prices.get(row["model"] or "", (0.0, 0.0)))
-        cost, tokens = cost + spent, tokens + row["pt"] + row["ct"]
-        if row["bad"]:
-            bad_cost, bad_tokens = bad_cost + spent, bad_tokens + row["pt"] + row["ct"]
-    return cost, bad_cost, tokens, bad_tokens
+        cost += _cost(row["pt"], row["ct"], prices.get(row["model"] or "", (0.0, 0.0)))
+        tokens += row["pt"] + row["ct"]
+    return cost, tokens
 
 
 def count(mcp: Mcp, workflow: str, commits: list[str] | None = None, since_ms: float | None = None, case_id: str | None = None,
-          prices: dict | None = None) -> Damages:
-    """Count the workflow's ordinary runs on the culprit and the commits after it.
+          prices: dict | None = None, replays_between: tuple[float | None, float | None] = (None, None)) -> Damages:
+    """Count the workflow's ordinary runs on the culprit and the commits after it, and the replays the case made.
 
-    `commits` are those SHAs. A run is bad if it errored or neatroots raised a finding on it.
-    Replays made for a case are left out of the damage and reported on their own line.
+    `commits` are those SHAs. This is only the setting. Which of the runs are damage is for
+    `count_case` to say, by the case's own check. Replays made for a case are left out of the
+    ordinary runs and reported on their own line. `replays_between` is the time, in ms, from
+    the investigation's first replay to its last, so that a later experiment run under the same
+    case id is not billed to it.
     """
     prices = prices or PRICES
     safe = workflow.replace("'", "''")
@@ -75,26 +79,27 @@ def count(mcp: Mcp, workflow: str, commits: list[str] | None = None, since_ms: f
     if commits is not None:
         on_bad = " or ".join(f"i.attributes like '%commit:{sha}%'" for sha in commits if sha.isalnum()) or "0"
         production += f" and exists (select 1 from spans i where i.trace_id = r.trace_id and i.name = 'run_info' and ({on_bad}))"
-    row = mcp.call("query_sql", sql=f"select count(*) as runs, coalesce(sum({BAD}), 0) as bad from runs r where {production}")["rows"][0]
-    cost, bad_cost, tokens, bad_tokens = _spend(mcp, production, prices)
-    damages = Damages(
-        workflow=workflow, since_ms=since_ms, runs=row["runs"], bad_runs=row["bad"],
-        bad_share=round(row["bad"] / row["runs"], 4) if row["runs"] else 0.0,
-        tokens=tokens, bad_tokens=bad_tokens, cost_usd=round(cost, 4), wasted_usd=round(bad_cost, 4),
-    )
+    runs = mcp.call("query_sql", sql=f"select count(*) as runs from runs r where {production}")["rows"][0]["runs"]
+    cost, tokens = _spend(mcp, production, prices)
+    damages = Damages(workflow=workflow, since_ms=since_ms, runs=runs, tokens=tokens, cost_usd=round(cost, 4))
     if case_id:
         mine = REPLAY.format(like=f"%case:{case_id}%".replace("'", "''"))
+        if replays_between[0] is not None:
+            mine += f" and r.started_ms >= {float(replays_between[0])}"
+        if replays_between[1] is not None:
+            mine += f" and r.started_ms <= {float(replays_between[1])}"
         damages.replay_runs = mcp.call("query_sql", sql=f"select count(*) as runs from runs r where {mine}")["rows"][0]["runs"]
         damages.replay_usd = round(_spend(mcp, mine, prices)[0], 4)
     return damages
 
 
-def count_case(mcp: Mcp, damages: Damages, workflow: str, commits: list[str], inputs: list[tuple[str, list[dict]]]) -> Damages:
+def count_case(mcp: Mcp, damages: Damages, workflow: str, commits: list[str], inputs: list[tuple[str, list[dict]]],
+               prices: dict | None = None) -> Damages:
     """Judge the ordinary runs that asked exactly what the case asks, and add up the money.
 
     `inputs` are (request text, refunds a correct run pays). What a run paid is read from its
-    issue_refund tool spans. This is the part of the damage that is in the shop's currency and
-    not in tokens: refunds that went out wrongly, and refunds that should have and did not.
+    issue_refund tool spans. The runs that paid something else are the damage: refunds that
+    went out wrongly, refunds that should have and did not, and what those runs cost to make.
     """
     expected = {text: {str(r["order_id"]): float(r["refunded"]) for r in refunds} for text, refunds in inputs}
     safe = workflow.replace("'", "''")
@@ -116,6 +121,7 @@ def count_case(mcp: Mcp, damages: Damages, workflow: str, commits: list[str], in
         except (json.JSONDecodeError, KeyError, TypeError, ValueError):
             continue
         paid[span["trace_id"]][order] = paid[span["trace_id"]].get(order, 0.0) + amount
+    failed = []
     for run in runs:
         want, got = expected[run["input_preview"]], paid[run["trace_id"]]
         over = sum(max(0.0, got.get(o, 0.0) - want.get(o, 0.0)) for o in set(got) | set(want))
@@ -125,5 +131,9 @@ def count_case(mcp: Mcp, damages: Damages, workflow: str, commits: list[str], in
             damages.case_bad += 1
             damages.wrongly_paid += over
             damages.withheld += under
+            failed.append(run["trace_id"])
     damages.wrongly_paid, damages.withheld = round(damages.wrongly_paid, 2), round(damages.withheld, 2)
+    if failed:
+        cost, damages.case_bad_tokens = _spend(mcp, "r.trace_id in (" + ", ".join("'" + trace + "'" for trace in failed) + ")", prices or PRICES)
+        damages.case_bad_usd = round(cost, 4)
     return damages

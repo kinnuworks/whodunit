@@ -335,3 +335,19 @@ Two of the sealed cases sit near 12% and 14%, so a smaller run copies their shap
 The README's list of what the tool does not do has this in it, with the numbers.
 
 What went wrong: the regeneration takes about ten minutes now, up from two, and the README had said two. The seventh chart panel sits alone on a third row.
+
+### 5:00 PM, damages that belonged to other cases
+
+The review was right. `whodunit/damages.py` counted a run as bad if it errored or neatroots raised any finding on it, on the culprit or any later commit. The history has five regressions in it, so "25 of 147 runs went bad" on the headline page was the sum of all of them, and the token cost beside it was too.
+
+Now a run is this case's damage only if it fails this case's own check: it asked what one of the case's inputs asks, on the culprit or later, and paid out something other than what the case expects. The lumped count is gone from the record and the page. What the page says for the headline case: 4 of the 6 ordinary runs that asked this failed the check, 120.00 was refunded that should not have been, and those 4 runs cost about a cent in tokens. It still gives the 147 as the number of ordinary runs on those commits, and says that runs that went wrong for other reasons are not counted.
+
+The money figures did not change, because they were already judged against the case. `half-done-batch` now says plainly that none of its 5 matching runs failed.
+
+The traffic. Every ordinary run was sent by `eval/traffic.py`, a script that plays customers against each commit. The agent at an old commit cannot be made to tag its runs differently, so the case file carries it: `traffic_sent_by = "eval/traffic.py"`. The page says under Suspects and under Damages that no real customer was involved and that the amounts are a test shop's. `pitch/business-plan.md` no longer calls the refund amounts measured. It says they were counted from scripted traffic, and that the replay costs are the part that is real spend.
+
+Found on the way, and not on the review's list: the line "the investigation used N replays" counted every run ever tagged with the case id. Recounting today gave 80 for the headline case where the page said 50, because the run without alibis, from this afternoon, used the same case id. The five sealed cases had picked up the plain-bisect replays the same way. The count is now bounded by the time of the record's own first and last replays. With that bound all six came back to what they were: 50, 65, 74, 119, 240 and 558. The existing records got their upper bound from the time they were last committed.
+
+Also wrong in my own first draft of the plan note: I wrote "232 scripted requests over 58 commits". neatroots holds 411 ordinary runs over 60 commits, and 232 is the number that went to neatlogs cloud. The note says "a few hundred".
+
+`tests/test_damages.py` runs the queries against a small SQLite database with a second regression in it.

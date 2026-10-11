@@ -5,6 +5,7 @@ symptom = "Customers asking for a refund on an order that has shipped get a kind
 good = "4c5adbcc2b967732cd0ae9a9544d765851ebad0b"
 bad = "df4f4fa601c658b196090b937f8854ed1e5d4f9c"
 target = "victims/refund-agent"
+traffic_sent_by = "eval/traffic.py"  # the ordinary runs were sent by this script, which plays customers
 build = ["uv", "run", "-q", "python", "-m", "py_compile", "agent.py"]
 run = ["uv", "run", "-q", "agent.py", "--json", "{input}"]
 

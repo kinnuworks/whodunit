@@ -39,6 +39,13 @@ def save_record(path: Path, record: dict) -> None:
     path.write_text(json.dumps(record, indent=1) + "\n")
 
 
+def _replayed(record: dict) -> None:
+    """Note that this record's own steps have made replays up to now. The damages count the investigation's cost up to here."""
+    import time
+
+    record["replays_until_ms"] = round(time.time() * 1000)
+
+
 def _plain(args, case, repo, suspects, runner, say):
     # Check the alibis first. If the good ref fails or the bad ref passes, the case is wrong.
     verdict, results = runner.test_commit(case.good)
@@ -169,7 +176,8 @@ def lineup(args) -> int:
         for i in found.remaining:
             say(f"  {suspects[i].short}  {suspects[i].subject}")
     record = load_record(record_path(args))
-    record["case"] = {"id": case.id, "symptom": case.symptom, "good": resolve(repo, case.good), "bad": resolve(repo, case.bad), "target": case.target, "file": os.path.relpath(Path(args.case).resolve()), "repo": os.path.relpath(repo)}
+    record["case"] = {"id": case.id, "symptom": case.symptom, "good": resolve(repo, case.good), "bad": resolve(repo, case.bad), "target": case.target, "file": os.path.relpath(Path(args.case).resolve()), "repo": os.path.relpath(repo),
+                      "traffic_sent_by": case.traffic_sent_by}
     record["suspects"] = [
         {"sha": s.sha, "subject": s.subject, "checkpoint": s.checkpoint, "touches_target": s.touches_target, "alibi": s.alibi,
          **({"probability": round(found.posterior[i], 5)} if found.posterior else {})}
@@ -182,6 +190,7 @@ def lineup(args) -> int:
         record["witnessed"] = [{"sha": record["case"]["good"] if position < 0 else suspects[position].sha, "failed": bool(failed)} for position, failed in witnessed]
     record["lineup"] = report
     record["replays"] = every_replay
+    _replayed(record)
     save_record(record_path(args), record)
     say(f"Record: {record_path(args)}")
     if args.json:
@@ -265,6 +274,7 @@ def brief(args) -> int:
                 if runner.trial(parent) == PASS:
                     break
             record.setdefault("replays", []).extend(asdict(r) for r in runner.replays)
+        _replayed(record)
         order = [s["sha"] for s in record["suspects"]]
         evidence = briefs.gather(repo, case.id, culprit, case.target, record["replays"], found, neatroots(), order=order)
     evidence.measured, evidence.rate_from = _measured(record)
@@ -413,6 +423,7 @@ def fix(args) -> int:
     final = next((a for a in reversed(attempts) if _proven(a)), attempts[-1])
     record["fix"] = final
     record["attempts"] = attempts
+    _replayed(record)
     if _proven(final):
         kept = Path.cwd() / "cases" / f"{case.id}.toml"
         kept.parent.mkdir(exist_ok=True)
@@ -507,6 +518,7 @@ def check(args) -> int:
     record = load_record(path)
     if record:
         record.setdefault("checks", []).append({"at": time.strftime("%Y-%m-%d %H:%M"), "ref": sha, "runs": len(verdicts), "failures": failures})
+        _replayed(record)
         save_record(path, record)
     return 0 if failures == 0 and "skip" not in verdicts else 1
 
@@ -519,20 +531,26 @@ def damages(args) -> int:
     try:
         order = [s["sha"] for s in record["suspects"]]
         since_culprit = order[order.index(record["lineup"]["culprit"]["sha"]):]
-        counted = damage.count(neatroots(), args.workflow, commits=since_culprit, since_ms=args.since_ms, case_id=case.id)
+        started = [r["started"] * 1000 for r in record.get("replays", []) if r.get("started")]
+        mine = (min(started) - 2000 if started else None, record.get("replays_until_ms"))
+        counted = damage.count(neatroots(), args.workflow, commits=since_culprit, since_ms=args.since_ms, case_id=case.id, replays_between=mine)
         counted = damage.count_case(neatroots(), counted, args.workflow, since_culprit, [(i.text, i.expect.get("refunds", [])) for i in case.inputs])
     except NeatError as exc:
         print(f"neatroots could not be asked: {exc}")
         return 1
+    counted.sent_by = case.traffic_sent_by
     record["damages"] = counted.to_dict()
     save_record(path, record)
-    if counted.runs:
-        print(f"{counted.bad_runs} of {counted.runs} {args.workflow} runs on the culprit or later went bad ({counted.bad_share:.0%}), about ${counted.wasted_usd:.4f} of ${counted.cost_usd:.4f} spent.")
-    else:
+    if not counted.runs:
         print("No ordinary runs are recorded on the culprit or the commits after it, so there is no damage to count.")
-    if counted.case_runs:
-        print(f"Of {counted.case_runs} ordinary runs that asked what this case asks, {counted.case_bad} paid out wrongly: "
-              f"{counted.wrongly_paid:.2f} refunded that should not have been, and {counted.withheld:.2f} owed and not refunded.")
+    elif not counted.case_runs:
+        print(f"{counted.runs} ordinary {args.workflow} runs are on record for the culprit or later, and none of them asked what this case asks, so no damage can be counted.")
+    else:
+        print(f"{counted.runs} ordinary {args.workflow} runs are on record for the culprit or later. {counted.case_runs} of them asked what this case asks, "
+              f"and {counted.case_bad} failed its check: {counted.wrongly_paid:.2f} refunded that should not have been, {counted.withheld:.2f} owed and not refunded, "
+              f"about ${counted.case_bad_usd:.4f} of tokens.")
+    if counted.sent_by:
+        print(f"Those ordinary runs were sent by {counted.sent_by}, not by real customers.")
     print(f"The investigation itself used {counted.replay_runs} replays, about ${counted.replay_usd:.4f}. {counted.note}")
     return 0
 
