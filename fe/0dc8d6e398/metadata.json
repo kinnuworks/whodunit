@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "fe0dc8d6e398",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "pitch/business-plan.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/fe/0dc8d6e398/0/metadata.json",
+      "transcript": "/fe/0dc8d6e398/0/full.jsonl",
+      "compact_transcript": "/fe/0dc8d6e398/0/transcript.jsonl",
+      "content_hash": "/fe/0dc8d6e398/0/content_hash.txt",
+      "prompt": ""
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 4,
+    "cache_creation_tokens": 6539,
+    "cache_read_tokens": 1294640,
+    "output_tokens": 2055,
+    "api_call_count": 2
+  }
+}
