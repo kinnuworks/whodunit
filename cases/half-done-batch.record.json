@@ -1679,15 +1679,19 @@
  "damages": {
   "workflow": "refund-agent",
   "since_ms": null,
-  "runs": 24,
-  "bad_runs": 2,
-  "bad_share": 0.0833,
-  "tokens": 72063,
-  "bad_tokens": 7517,
-  "cost_usd": 0.09,
-  "wasted_usd": 0.0095,
-  "replay_runs": 228,
-  "replay_usd": 1.4238,
+  "runs": 49,
+  "bad_runs": 7,
+  "bad_share": 0.1429,
+  "tokens": 165112,
+  "bad_tokens": 32841,
+  "cost_usd": 0.2069,
+  "wasted_usd": 0.0424,
+  "replay_runs": 558,
+  "replay_usd": 3.5296,
+  "case_runs": 5,
+  "case_bad": 0,
+  "wrongly_paid": 0.0,
+  "withheld": 0.0,
   "note": "Dollar figures are estimates from token counts."
  }
 }

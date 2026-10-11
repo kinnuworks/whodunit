@@ -160,3 +160,10 @@ These cover UI copy, the README, the pitch, scripts, commit messages and code co
 - The repo stays private until just before submission (the owner's ruling on 10 October). Sessions are still written as if public, because the checkpoints go up with it.
 - The owner does browser signups and enters any card or password personally.
 - Report failures as plainly as successes. The eval is only worth something if the misses are in it.
+
+<!-- entire-graph:begin -->
+This repo has the entire-graph code graph installed. Before exploring code with
+grep/find/whole-file reads, read .entire/graph-agent.md — resolution-first guidance
+for using graph retrieval, focused source inspection, and verification.
+@.entire/graph-agent.md
+<!-- entire-graph:end -->

@@ -238,7 +238,12 @@ def render(record: dict) -> str:
         body = '<p class="empty">Not counted yet.</p>'
     parts.append(_field("Damages", body))
 
-    stamp = "Culprit named" if culprit else "Open"
+    # Log: what the agent did, in order, when the case was run as one investigation
+    if record.get("log"):
+        rows = "".join(f'<li><span class="cite">{escape(e["at"][11:16])}</span> {escape(e["step"])}: {escape(e["outcome"])}</li>' for e in record["log"])
+        parts.append(_field("Log", f'<ul class="steps">{rows}</ul>'))
+
+    stamp = ("Closed" if (fix.get("verification") or {}).get("fixed") else "Culprit named") if culprit else "Open"
     return f"""<!doctype html>
 <html lang="en">
 <head>

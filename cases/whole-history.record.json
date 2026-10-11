@@ -1,0 +1,987 @@
+{
+ "case": {
+  "id": "whole-history",
+  "symptom": "Refunds are going out on orders that belong to someone else, when the person asking quotes an amount",
+  "good": "e5542b7f40b7e37b5eea8d66ea754230cf4411c0",
+  "bad": "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
+  "target": "victims/refund-agent",
+  "file": "cases/whole-history.toml",
+  "repo": "."
+ },
+ "suspects": [
+  {
+   "sha": "be0ca1755cf5250416fdaa025668ba32a41495b9",
+   "subject": "Give each order a currency",
+   "checkpoint": "a92ce0d6c149",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.0
+  },
+  {
+   "sha": "787bef54114735bab45e970cec139b0cac4f359e",
+   "subject": "Add the helpers the second session uses",
+   "checkpoint": "2542324171ea",
+   "touches_target": false,
+   "alibi": "never touched the agent's folder",
+   "probability": 0.0
+  },
+  {
+   "sha": "d261c3c7843ec1b7f874aafa934f9d14baf8d3d0",
+   "subject": "Add placed_on date to refund agent orders",
+   "checkpoint": "18b7f9792d7d",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.0
+  },
+  {
+   "sha": "1a06f55b805fb149412d19b99fc94d038c0eec33",
+   "subject": "Tell the second session how to use its helpers",
+   "checkpoint": "2abb3d34a84c",
+   "touches_target": false,
+   "alibi": "never touched the agent's folder",
+   "probability": 0.0
+  },
+  {
+   "sha": "e6e88a7cc5aede4fed4ea4f0fe8e41a9db73b9a7",
+   "subject": "Add orders 4004 and 5005 to the refund agent's sample data",
+   "checkpoint": "ee335dd173c2",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.0
+  },
+  {
+   "sha": "06fd9c05bcd9bfee9715385a95a34497a70760db",
+   "subject": "Add orders 6006 and 7007 for cust_9 to the refund agent's sample data",
+   "checkpoint": "6750704bca95",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.0
+  },
+  {
+   "sha": "f80bac48a744f26c2756aa5b1cd4f82e7dc3a35a",
+   "subject": "Split the refund agent's system prompt into a list of rules",
+   "checkpoint": "13d4eabb94f6",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.0
+  },
+  {
+   "sha": "f6a90121d4272fdfb32e8cb9d35dd28ea7aac620",
+   "subject": "Make lookup_order and issue_refund tool descriptions more helpful",
+   "checkpoint": "6ac6f756c64f",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.0
+  },
+  {
+   "sha": "e875aa7e2a59ec7c6b6fd07a99c6749068b0c967",
+   "subject": "Document order status meaning for refunds in refund-agent README",
+   "checkpoint": "4bcdc4a7d40e",
+   "touches_target": true,
+   "alibi": "only touched README.md, which the agent does not run",
+   "probability": 0.0
+  },
+  {
+   "sha": "d6bcbdbfd31edbbaca83ad6e9e667b591849dab1",
+   "subject": "Print tool call failures to stderr in refund agent",
+   "checkpoint": "7e64d6001eac",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.0
+  },
+  {
+   "sha": "0d8eb7150bfa9c5d2c8480ae5513633f3cb12c3e",
+   "subject": "Add --quiet flag to refund agent to skip printing the reply",
+   "checkpoint": "2ea39cee1030",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.0
+  },
+  {
+   "sha": "367c64a5ae2702ae2d1142f0877bb5c56e946b21",
+   "subject": "Round refund amount to whole currency units in issue_refund",
+   "checkpoint": "414aea6e5e59",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.0
+  },
+  {
+   "sha": "d871f17de10b583e37ce053b47ab52f109fd3c14",
+   "subject": "Add docstrings to tool functions in refund agent",
+   "checkpoint": "15cb2b8ba0c1",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.0
+  },
+  {
+   "sha": "eb819b28dacfdc3b7e6ad0daa5ca9be49115d027",
+   "subject": "Move ORDERS out of agent.py into orders.json",
+   "checkpoint": "fee39ce05493",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.0
+  },
+  {
+   "sha": "8619484f9eb4609ee48571a4bb83f93c9c4ceb8a",
+   "subject": "Document orders.json location in refund agent README",
+   "checkpoint": "a23981624a12",
+   "touches_target": true,
+   "alibi": "only touched README.md, which the agent does not run",
+   "probability": 0.0
+  },
+  {
+   "sha": "bdd8d4dd9fed0be42669bb52e54759be20a800f3",
+   "subject": "Give the OpenAI client a timeout and retry on transient errors",
+   "checkpoint": "96357218120b",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 1e-05
+  },
+  {
+   "sha": "909dd7607b8c3fc56f248ec7b28ff4fda5e6d53e",
+   "subject": "Add order 8008 for cust_6",
+   "checkpoint": "4277ef4e0d0a",
+   "touches_target": true,
+   "alibi": "changed orders.json, a data or dependency file the graph cannot follow",
+   "probability": 1e-05
+  },
+  {
+   "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
+   "subject": "Bump refund agent version to 0.2.0",
+   "checkpoint": "2e014f99ae2c",
+   "touches_target": true,
+   "alibi": "changed pyproject.toml, a data or dependency file the graph cannot follow",
+   "probability": 1e-05
+  },
+  {
+   "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
+   "subject": "Try digit-swap and digit-double corrections on order lookup misses",
+   "checkpoint": "d248e108a420",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 1e-05
+  },
+  {
+   "sha": "ded7b9bf18b408b3101249f37c35412df21ccdea",
+   "subject": "Make the too-many-steps message clearer for customers",
+   "checkpoint": "e5c915db0e2b",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 1e-05
+  },
+  {
+   "sha": "7d991542f6e7d12f6c4c8d62baac9ff8deb8638c",
+   "subject": "Refresh uv.lock to match refund-agent 0.2.0",
+   "checkpoint": "aa53eb8980b9",
+   "touches_target": true,
+   "alibi": "changed uv.lock, a data or dependency file the graph cannot follow",
+   "probability": 1e-05
+  },
+  {
+   "sha": "aaa4031687f026a0e08b126c9fa09e63933625bf",
+   "subject": "Add a get_order_status tool for where-is-my-order questions",
+   "checkpoint": "485899b3c448",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 2e-05
+  },
+  {
+   "sha": "923ccb8d2385e07f969417638008d370563442c8",
+   "subject": "Add agent version to the run_info span, read from pyproject.toml",
+   "checkpoint": "004ae8972d75",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 2e-05
+  },
+  {
+   "sha": "42978be0a2352c8c6291703b61f31d1978e3ba19",
+   "subject": "Add a troubleshooting section to the refund-agent README",
+   "checkpoint": "1ff64aa3f19e",
+   "touches_target": true,
+   "alibi": "only touched README.md, which the agent does not run",
+   "probability": 0.0
+  },
+  {
+   "sha": "31ac827491687d9ae6282568d676baaa576d928e",
+   "subject": "Prefix failed tool call stderr line with a timestamp",
+   "checkpoint": "c4c54f1457ea",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 2e-05
+  },
+  {
+   "sha": "2664898a8d0c95720e08db03c95309f5dd62e67b",
+   "subject": "Warm up the refund agent's system prompt",
+   "checkpoint": "71fa230aebcf",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 2e-05
+  },
+  {
+   "sha": "d223a27c687f4dd55d9a23f5f20d20a8531bb2d6",
+   "subject": "Give customers the benefit of the doubt on small details",
+   "checkpoint": "472b5c282a4b",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 5e-05
+  },
+  {
+   "sha": "46bd74355ea7eaef3608322ce257a6cab6ffa5d1",
+   "subject": "Acknowledge the problem first and offer refund or replacement where it fits",
+   "checkpoint": "a425eaec40d0",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 5e-05
+  },
+  {
+   "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
+   "subject": "Keep refund agent from naming other customers when it can't help",
+   "checkpoint": "6f89d7d1f88f",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 5e-05
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "subject": "Require a reason on every refund and cut model calls to save on gateway spend",
+   "checkpoint": "d098c3973305",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 5e-05
+  },
+  {
+   "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
+   "subject": "Add order 9009 for cust_5",
+   "checkpoint": "deb685ab53a3",
+   "touches_target": true,
+   "alibi": "changed orders.json, a data or dependency file the graph cannot follow",
+   "probability": 6e-05
+  },
+  {
+   "sha": "32f8faafcb06462cf43dba5de49e1e9c67367976",
+   "subject": "Report model_calls in --json output for cost tracking",
+   "checkpoint": "412d52930049",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.00011
+  },
+  {
+   "sha": "0a12ddea74f5b68fd4afb82a53a85b65233a746f",
+   "subject": "Hoist tool registry in call_tool to module-level TOOL_FUNCTIONS",
+   "checkpoint": "9a3cbd1e9c14",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.00024
+  },
+  {
+   "sha": "463076906c7823c256e43331b1aae393ace08dee",
+   "subject": "Refresh refund-agent README's list of changes from the neatroots example",
+   "checkpoint": "400923d529ce",
+   "touches_target": true,
+   "alibi": "only touched README.md, which the agent does not run",
+   "probability": 3e-05
+  },
+  {
+   "sha": "7d719e7aacb7acfb7a9221cac0dde7660dbc3857",
+   "subject": "Catch invalid JSON in tool call arguments instead of crashing the run",
+   "checkpoint": "77506d8caa4c",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.00057
+  },
+  {
+   "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+   "subject": "Show an example --json line in refund-agent README",
+   "checkpoint": "d24473f3fca4",
+   "touches_target": true,
+   "alibi": "only touched README.md, which the agent does not run",
+   "probability": 0.00064
+  },
+  {
+   "sha": "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
+   "subject": "Let the agent skip lookup_order when the customer gives order number and amount",
+   "checkpoint": "bfbe27725663",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.99777
+  },
+  {
+   "sha": "edba68bc32c8e7208fe4149fda60dfcf059b8708",
+   "subject": "Carry max_steps in the run_info span",
+   "checkpoint": "17a231c53730",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 9e-05
+  },
+  {
+   "sha": "0c0aa898ca70d2faacfb75eda7b42fa34d3ab1bb",
+   "subject": "Move the default refund request into a DEFAULT_REQUEST constant",
+   "checkpoint": "485add6c4c2e",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 9e-05
+  },
+  {
+   "sha": "19facbc193e838a7df936fb350d452d342a78afc",
+   "subject": "Add order 1111 for cust_8 to the refund agent",
+   "checkpoint": "bfe874c6b7f8",
+   "touches_target": true,
+   "alibi": "changed orders.json, a data or dependency file the graph cannot follow",
+   "probability": 1e-05
+  },
+  {
+   "sha": "03a169ce83ba866bf62dcf4774676b010da86196",
+   "subject": "Include order_id in tool failure stderr when present",
+   "checkpoint": "328a10c88154",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 1e-05
+  },
+  {
+   "sha": "593d827f6f3d870dbc591f3e5a8d2893cfe58e32",
+   "subject": "Add a pytest-free smoke check for orders.json and the lookup helpers",
+   "checkpoint": "be89e7107d7f",
+   "touches_target": true,
+   "alibi": "changed main in smoke.py, which the agent never calls",
+   "probability": 0.0
+  },
+  {
+   "sha": "4c5adbcc2b967732cd0ae9a9544d765851ebad0b",
+   "subject": "Tell the agent lookup_order is how it checks order ownership",
+   "checkpoint": "9be487409d16",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 1e-05
+  },
+  {
+   "sha": "fedf89729b98beb2fe11d7e016c997cbe5225b2a",
+   "subject": "Check currency codes and positive amounts in smoke.py",
+   "checkpoint": "2a120fdb85c4",
+   "touches_target": true,
+   "alibi": "changed main in smoke.py, which the agent never calls",
+   "probability": 0.0
+  },
+  {
+   "sha": "5cfdd5acf608c70102c5a609aa579b0b3a9ed9a4",
+   "subject": "Mention smoke.py in the refund agent README",
+   "checkpoint": "9fcae62e846a",
+   "touches_target": true,
+   "alibi": "only touched README.md, which the agent does not run",
+   "probability": 0.0
+  },
+  {
+   "sha": "e4a3e567223eab74001e8e0d47d607a3bcd141c8",
+   "subject": "Label SYSTEM_RULES groups with one-line comments",
+   "checkpoint": "7317b1f17593",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.0
+  },
+  {
+   "sha": "c0fb4a11007e62e9b6b401d335e8c3e21ccf220b",
+   "subject": "Cache agent_version so it doesn't reread pyproject.toml every call",
+   "checkpoint": "1dab4a27d094",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.0
+  },
+  {
+   "sha": "38d1b4f23bfcdcc9756fcf59dd23407c3e36df0f",
+   "subject": "Add order 1212 for cust_4",
+   "checkpoint": "9fea3dfc829b",
+   "touches_target": true,
+   "alibi": "changed orders.json, a data or dependency file the graph cannot follow",
+   "probability": 0.0
+  },
+  {
+   "sha": "ca0a2d6288aad40896ccd6d015ef5bd43c4e56fd",
+   "subject": "Reassure customers instead of refunding orders still in transit",
+   "checkpoint": "6b2050de3c0b",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.0
+  },
+  {
+   "sha": "a7b2b34584f03ac5eab1cf49e35dc9aa5626e42b",
+   "subject": "Turn the refund-agent order list into a table",
+   "checkpoint": "b2627c1c6659",
+   "touches_target": true,
+   "alibi": "only touched README.md, which the agent does not run",
+   "probability": 0.0
+  },
+  {
+   "sha": "95b3ca73b1fd470565810af86e18a290d451522d",
+   "subject": "Fail smoke.py on duplicate order_id keys or key/field mismatches",
+   "checkpoint": "16710143c303",
+   "touches_target": true,
+   "alibi": "changed check_raw_orders_json in smoke.py, which the agent never calls",
+   "probability": 0.0
+  },
+  {
+   "sha": "fe9564a05b58723889be8cf1869d48a31c3177f3",
+   "subject": "Warn on stderr when WHODUNIT_ENV points to a missing file",
+   "checkpoint": "37d636ad652b",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.0
+  },
+  {
+   "sha": "c1f5a526ee7685fab9ce494c9c8817115a953610",
+   "subject": "Update agent.py docstring: document --json and orders.json",
+   "checkpoint": "c48ebff2204a",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.0
+  },
+  {
+   "sha": "6a4e489058122b3672690033e4a9dd769fed23ec",
+   "subject": "Bump refund-agent version to 0.3.0",
+   "checkpoint": "20bb9557155f",
+   "touches_target": true,
+   "alibi": "changed pyproject.toml, a data or dependency file the graph cannot follow",
+   "probability": 0.0
+  },
+  {
+   "sha": "f7b69ac79ec34a28950e2de4137ef72b1cd8aecb",
+   "subject": "refund-agent: add How refunds are decided section to README",
+   "checkpoint": "04752b5408c4",
+   "touches_target": true,
+   "alibi": "only touched README.md, which the agent does not run",
+   "probability": 0.0
+  },
+  {
+   "sha": "216855eccf7c93f3f2980418fdeacf33cd4f7291",
+   "subject": "refund-agent: ignore __pycache__ and .venv",
+   "checkpoint": "1f2c6a9ae475",
+   "touches_target": true,
+   "alibi": "only touched .gitignore, which the agent does not run",
+   "probability": 0.0
+  },
+  {
+   "sha": "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
+   "subject": "refund-agent: print a one-line summary on smoke.py success",
+   "checkpoint": "9c8bde92951d",
+   "touches_target": true,
+   "alibi": "changed main in smoke.py, which the agent never calls",
+   "probability": 0.0
+  }
+ ],
+ "lineup": {
+  "case": "whole-history",
+  "method": "statistical",
+  "suspects": 57,
+  "commits_tested": 5,
+  "replays": 20,
+  "seconds": 117.4,
+  "culprit": {
+   "sha": "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
+   "subject": "Let the agent skip lookup_order when the customer gives order number and amount",
+   "checkpoint": "bfbe27725663",
+   "files": [
+    "victims/refund-agent/agent.py"
+   ],
+   "probability": 0.9978
+  },
+  "remaining": [
+   {
+    "sha": "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
+    "subject": "Let the agent skip lookup_order when the customer gives order number and amount",
+    "probability": 0.9978
+   }
+  ],
+  "failure_rate_before": 0.015,
+  "failure_rate_from": 0.812,
+  "linear_scan_commits": 37,
+  "traffic_runs": 18,
+  "traffic_failures": 4
+ },
+ "replays": [
+  {
+   "sha": "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"Customer refund request\"}], expected []",
+   "seconds": 5.012925792019814,
+   "started": 1791695776.789957,
+   "tag": "whole-history/95776001"
+  },
+  {
+   "sha": "e5542b7f40b7e37b5eea8d66ea754230cf4411c0",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.216925541986711,
+   "started": 1791695776.790085,
+   "tag": "whole-history/95776002"
+  },
+  {
+   "sha": "e5542b7f40b7e37b5eea8d66ea754230cf4411c0",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.30235837501823,
+   "started": 1791695776.790121,
+   "tag": "whole-history/95776003"
+  },
+  {
+   "sha": "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"customer requested\"}], expected []",
+   "seconds": 4.703639667015523,
+   "started": 1791695781.817059,
+   "tag": "whole-history/95776004"
+  },
+  {
+   "sha": "e5542b7f40b7e37b5eea8d66ea754230cf4411c0",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.559135374991456,
+   "started": 1791695782.0231302,
+   "tag": "whole-history/95776005"
+  },
+  {
+   "sha": "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"Customer requested refund\"}], expected []",
+   "seconds": 4.811194458976388,
+   "started": 1791695782.109248,
+   "tag": "whole-history/95776006"
+  },
+  {
+   "sha": "e5542b7f40b7e37b5eea8d66ea754230cf4411c0",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.260528084007092,
+   "started": 1791695786.5363781,
+   "tag": "whole-history/95776007"
+  },
+  {
+   "sha": "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"Customer requested refund\"}], expected []",
+   "seconds": 4.511190124991117,
+   "started": 1791695786.5958169,
+   "tag": "whole-history/95776008"
+  },
+  {
+   "sha": "e5542b7f40b7e37b5eea8d66ea754230cf4411c0",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.9396112079848535,
+   "started": 1791695786.935174,
+   "tag": "whole-history/95776009"
+  },
+  {
+   "sha": "e5542b7f40b7e37b5eea8d66ea754230cf4411c0",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.333814750018064,
+   "started": 1791695791.122133,
+   "tag": "whole-history/95776011"
+  },
+  {
+   "sha": "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"Customer requested refund\"}], expected []",
+   "seconds": 5.642872625001473,
+   "started": 1791695790.813271,
+   "tag": "whole-history/95776010"
+  },
+  {
+   "sha": "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"Customer requested refund\"}], expected []",
+   "seconds": 10.491245833982248,
+   "started": 1791695796.47266,
+   "tag": "whole-history/95776013"
+  },
+  {
+   "sha": "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"customer requested refund\"}], expected []",
+   "seconds": 10.492927040992072,
+   "started": 1791695796.472439,
+   "tag": "whole-history/95776012"
+  },
+  {
+   "sha": "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"Customer requested refund\"}], expected []",
+   "seconds": 10.49363633300527,
+   "started": 1791695796.472675,
+   "tag": "whole-history/95776014"
+  },
+  {
+   "sha": "7d719e7aacb7acfb7a9221cac0dde7660dbc3857",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.496071292000124,
+   "started": 1791695806.983745,
+   "tag": "whole-history/95776017"
+  },
+  {
+   "sha": "7d719e7aacb7acfb7a9221cac0dde7660dbc3857",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.648463665973395,
+   "started": 1791695806.983706,
+   "tag": "whole-history/95776016"
+  },
+  {
+   "sha": "7d719e7aacb7acfb7a9221cac0dde7660dbc3857",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.971267334010918,
+   "started": 1791695806.982888,
+   "tag": "whole-history/95776015"
+  },
+  {
+   "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.748865667002974,
+   "started": 1791695811.971603,
+   "tag": "whole-history/95776019"
+  },
+  {
+   "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.825788375019329,
+   "started": 1791695811.9704902,
+   "tag": "whole-history/95776018"
+  },
+  {
+   "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.94099037500564,
+   "started": 1791695811.971621,
+   "tag": "whole-history/95776020"
+  }
+ ],
+ "log": [
+  {
+   "at": "2026-10-11 10:46:57",
+   "step": "lineup",
+   "outcome": "Named ced2ecd21c3e (Let the agent skip lookup_order when the customer gives order number and amount) after 20 replays across 5 commits."
+  },
+  {
+   "at": "2026-10-11 10:47:05",
+   "step": "brief",
+   "outcome": "Written by claude-sonnet-4.6. Motive: on record"
+  },
+  {
+   "at": "2026-10-11 10:47:05",
+   "step": "ruling",
+   "outcome": "patch for a prompt change, from the standing rule"
+  },
+  {
+   "at": "2026-10-11 10:48:06",
+   "step": "fix",
+   "outcome": "Proven with a patch after 1 try."
+  }
+ ],
+ "motive": {
+  "sha": "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
+  "subject": "Let the agent skip lookup_order when the customer gives order number and amount",
+  "checkpoint": "bfbe27725663",
+  "session": "4261be53-364d-4f30-b200-2ac5d4dda405",
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5",
+  "request": "victims/refund-agent: since we capped the loop at 3 model calls, simple refunds feel slow, and most customers already tell us the order number and the amount. Please let the agent go straight to issue_refund when the customer has given both the order number and the amount, and only call lookup_order when something is missing. Update the system prompt for that. Check agent.py still compiles, then commit.",
+  "message": "",
+  "request_id": "efc2775d",
+  "request_time": "2026-10-10T18:12:50.262000+00:00",
+  "earlier_requests": [],
+  "steps": [
+   {
+    "id": "f0234fd7",
+    "kind": "ran",
+    "text": "find victims/refund-agent -maxdepth 2 -type f | sort",
+    "file": null
+   },
+   {
+    "id": "f0bf3870",
+    "kind": "read",
+    "text": "victims/refund-agent/agent.py",
+    "file": "victims/refund-agent/agent.py"
+   },
+   {
+    "id": "83585e74",
+    "kind": "edited",
+    "text": "    \"If the customer has already given both an order number and an amount, call issue_refund directly with \"\n    \"those, without calling lookup_order first.\",\n    \"Only call lookup_order when the order number or the amount is missing or unclear, to find or confirm it \"\n    \"before refunding.\",",
+    "file": "victims/refund-agent/agent.py"
+   },
+   {
+    "id": "6f90aa4b",
+    "kind": "said",
+    "text": "Now let's verify agent.py compiles and commit.",
+    "file": null
+   },
+   {
+    "id": "e52b4028",
+    "kind": "ran",
+    "text": "cd victims/refund-agent && python3 -m py_compile agent.py && echo COMPILE_OK",
+    "file": null
+   },
+   {
+    "id": "3b686cb1",
+    "kind": "ran",
+    "text": "cd . && git status victims/refund-agent && git diff victims/refund-agent",
+    "file": null
+   },
+   {
+    "id": "1f6c6f80",
+    "kind": "ran",
+    "text": "git -C . status victims/refund-agent && git -C . diff victims/refund-agent",
+    "file": null
+   },
+   {
+    "id": "3fa108e3",
+    "kind": "ran",
+    "text": "git -C . status victims/refund-agent",
+    "file": null
+   },
+   {
+    "id": "d95f9915",
+    "kind": "ran",
+    "text": "git -C . diff -- victims/refund-agent/agent.py",
+    "file": null
+   },
+   {
+    "id": "2ab1bc5b",
+    "kind": "ran",
+    "text": "git diff -- agent.py",
+    "file": null
+   }
+  ],
+  "link": null,
+  "note": ""
+ },
+ "evidence": {
+  "culprit": "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
+  "parent": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+  "subject": "Let the agent skip lookup_order when the customer gives order number and amount",
+  "diff": "diff --git a/victims/refund-agent/agent.py b/victims/refund-agent/agent.py\nindex 7c4a00a..6dffc69 100644\n--- a/victims/refund-agent/agent.py\n+++ b/victims/refund-agent/agent.py\n@@ -134,8 +134,10 @@ SYSTEM_RULES = [\n     \"Give customers the benefit of the doubt on small details, like a mistyped order number or an imprecise \"\n     \"amount or date. Try to resolve the request fully in this one reply rather than asking the customer to \"\n     \"double-check something and write back.\",\n-    \"Use lookup_order to find an order before refunding it.\",\n-    \"Only call issue_refund after lookup_order confirms the order exists and belongs to the customer.\",\n+    \"If the customer has already given both an order number and an amount, call issue_refund directly with \"\n+    \"those, without calling lookup_order first.\",\n+    \"Only call lookup_order when the order number or the amount is missing or unclear, to find or confirm it \"\n+    \"before refunding.\",\n     \"When you call issue_refund, give a short reason for the refund in a few words, such as 'arrived damaged', \"\n     \"based on what the customer told you.\",\n     \"If the customer is only asking where an order is, use get_order_status instead of lookup_order or issue_refund.\",\n",
+  "after": "victims/refund-agent/agent.py, lines 127 to 151 after the commit:\n 127  client = OpenAI(base_url=LLM_BASE_URL, api_key=LLM_API_KEY, timeout=30.0, max_retries=2)\n 128  \n 129  SYSTEM_RULES = [\n 130      \"You are a refund agent for an online shop. Customers who reach you are often frustrated, \"\n 131      \"so be warm and empathetic, and make clear you're on their side and will do what it takes to sort things out.\",\n 132      \"Start your reply by acknowledging what went wrong for the customer, in your own words, before you say \"\n 133      \"what you did about it.\",\n 134      \"Give customers the benefit of the doubt on small details, like a mistyped order number or an imprecise \"\n 135      \"amount or date. Try to resolve the request fully in this one reply rather than asking the customer to \"\n 136      \"double-check something and write back.\",\n 137      \"If the customer has already given both an order number and an amount, call issue_refund directly with \"\n 138      \"those, without calling lookup_order first.\",\n 139      \"Only call lookup_order when the order number or the amount is missing or unclear, to find or confirm it \"\n 140      \"before refunding.\",\n 141      \"When you call issue_refund, give a short reason for the refund in a few words, such as 'arrived damaged', \"\n 142      \"based on what the customer told you.\",\n 143      \"If the customer is only asking where an order is, use get_order_status instead of lookup_order or issue_refund.\",\n 144      \"Customers often mistype order numbers. If lookup_order says an order was not found, \"\n 145      \"try a few likely corrections of the number, such as two digits swapped or a digit doubled, \"\n 146      \"with lookup_order. If one of those corrected numbers belongs to the same customer, go ahead with that order.\",\n 147      \"If an order doesn't belong to this customer, or you can't confirm it does, never say whose it is or mention \"\n 148      \"another customer or any internal id. Don't suggest the customer did anything wrong. Just let them know you \"\n 149      \"can't apply it to their account and that you'll get them sorted, and ask for whatever you need to find the \"\n 150      \"right order.\",\n 151      \"Never refund more than the order amount.\",",
+  "checkpoint": "bfbe27725663",
+  "request": "victims/refund-agent: since we capped the loop at 3 model calls, simple refunds feel slow, and most customers already tell us the order number and the amount. Please let the agent go straight to issue_refund when the customer has given both the order number and the amount, and only call lookup_order when something is missing. Update the system prompt for that. Check agent.py still compiles, then commit.",
+  "message": "",
+  "steps": [
+   {
+    "id": "f0234fd7",
+    "kind": "ran",
+    "text": "find victims/refund-agent -maxdepth 2 -type f | sort",
+    "file": null
+   },
+   {
+    "id": "f0bf3870",
+    "kind": "read",
+    "text": "victims/refund-agent/agent.py",
+    "file": "victims/refund-agent/agent.py"
+   },
+   {
+    "id": "83585e74",
+    "kind": "edited",
+    "text": "    \"If the customer has already given both an order number and an amount, call issue_refund directly with \"\n    \"those, without calling lookup_order first.\",\n    \"Only call lookup_order when the order number or the amount is missing or unclear, to find or confirm it \"\n    \"before refunding.\",",
+    "file": "victims/refund-agent/agent.py"
+   },
+   {
+    "id": "6f90aa4b",
+    "kind": "said",
+    "text": "Now let's verify agent.py compiles and commit.",
+    "file": null
+   },
+   {
+    "id": "e52b4028",
+    "kind": "ran",
+    "text": "cd victims/refund-agent && python3 -m py_compile agent.py && echo COMPILE_OK",
+    "file": null
+   },
+   {
+    "id": "3b686cb1",
+    "kind": "ran",
+    "text": "cd . && git status victims/refund-agent && git diff victims/refund-agent",
+    "file": null
+   },
+   {
+    "id": "1f6c6f80",
+    "kind": "ran",
+    "text": "git -C . status victims/refund-agent && git -C . diff victims/refund-agent",
+    "file": null
+   },
+   {
+    "id": "3fa108e3",
+    "kind": "ran",
+    "text": "git -C . status victims/refund-agent",
+    "file": null
+   },
+   {
+    "id": "d95f9915",
+    "kind": "ran",
+    "text": "git -C . diff -- victims/refund-agent/agent.py",
+    "file": null
+   },
+   {
+    "id": "2ab1bc5b",
+    "kind": "ran",
+    "text": "git diff -- agent.py",
+    "file": null
+   }
+  ],
+  "failing_run": {
+   "trace_id": "47e39d7c784aca0845746dd84a646bfd",
+   "commit": "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "reason": "refunds were [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"Customer requested refund\"}], expected []",
+   "outline": "aefb7bbf WORKFLOW refund ok 8938ms\n  in: {\"request\":\"Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.\",\"max_steps\":3}\n  out: Perfect! I've processed a $30 refund for order 2002 for you. You should see that back in your account shortly!\n  d1a339c0 CHAIN run_info ok 1ms\n    in: {}\n    out: {\"tags\":[\"commit:ced2ecd21c3ed165a1a729e17f68d2000cdc19ca\",\"llm:gateway\",\"case:whole-history/95776013\"],\"commit_short\":\"ced2ecd21c3e\",\"model\":\"claude-haiku\",\"v\u2026\n  56f402ce LLM openai.chat.completions.create ok 1411tok 4782ms\n    in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you're on their side\u2026\n    out: assistant: I'm happy to help you out with that refund right away! \u2192 issue_refund({\"order_id\":\"2002\",\"amount\":30,\"reason\":\"Customer requested refund\"})\n  5dedf0ce TOOL issue_refund ok 0ms\n    in: {\"order_id\":\"2002\",\"amount\":30,\"reason\":\"Customer requested refund\"}\n    out: {\"refunded\":30,\"order_id\":\"2002\",\"reason\":\"Customer requested refund\"}\n  e9bfbd91 LLM openai.chat.completions.create ok 1481tok 4152ms\n    in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you're on their side\u2026\n    out: assistant: Perfect! I've processed a $30 refund for order 2002 for you. You should see that back in your account shortly!"
+  },
+  "passing_run": {
+   "trace_id": "463025bf71f1ec263e1cc5eb44109eff",
+   "commit": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "outline": "0da21512 WORKFLOW refund ok 4584ms\n  in: {\"request\":\"Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.\",\"max_steps\":3}\n  out: I'm sorry, but that order doesn't appear to be attached to your account. Could you double-check the order number for me? Or if you have a few other details han\u2026\n  d86d1db1 CHAIN run_info ok 1ms\n    in: {}\n    out: {\"tags\":[\"commit:92122ad24b01eabd7a0c4952fa8904b013c5b63d\",\"llm:gateway\",\"case:whole-history/95776019\"],\"commit_short\":\"92122ad24b01\",\"model\":\"claude-haiku\",\"v\u2026\n  26412387 LLM openai.chat.completions.create ok 1359tok 2947ms\n    in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you're on their side\u2026\n    out: assistant: I'll help you with that refund right away. Let me look up your order first to confirm the details. \u2192 lookup_order({\"order_id\":\"2002\"})\n  371b31be TOOL lookup_order ok 0ms\n    in: {\"order_id\":\"2002\"}\n    out: {\"order_id\":\"2002\",\"owner\":\"cust_4\",\"amount\":30,\"currency\":\"USD\",\"status\":\"shipped\",\"placed_on\":\"2026-09-15\"}\n  d62617bd LLM openai.chat.completions.create ok 1491tok 1633ms\n    in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you're on their side\u2026\n    out: assistant: I'm sorry, but that order doesn't appear to be attached to your account. Could you double-check the order number for me? Or if you have a few other \u2026"
+  },
+  "comparison": "{\n \"a\": {\n  \"summary\": {\n   \"trace_id\": \"463025bf71f1ec263e1cc5eb44109eff\",\n   \"session_id\": null,\n   \"project\": \"refund-agent\",\n   \"workflow\": \"refund-agent\",\n   \"root_span_id\": \"0da215121e524296\",\n   \"root_name\": \"refund\",\n   \"status\": \"ok\",\n   \"complete\": 1,\n   \"root_ended\": 1,\n   \"started_ms\": 1791695812997.257,\n   \"ended_ms\": 1791695817581.707,\n   \"last_span_ms\": 1791695817606.387,\n   \"span_count\": 5,\n   \"llm_calls\": 2,\n   \"tool_calls\": 1,\n   \"error_count\": 0,\n   \"prompt_tokens\": 2701,\n   \"completion_tokens\": 149,\n   \"total_tokens\": 2850,\n   \"input_preview\": \"Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.\",\n   \"output_preview\": \"I'm sorry, but that order doesn't appear to be attached to your account. Could you double-check the order number for me? Or if you have a few other details handy\\u2014like roughly when you placed the order or what you bought\\u2014I can help track down the right one and get your refund sorted.\",\n   \"interrupted\": 0,\n   \"termination_reason\": null,\n   \"finding_count\": 0,\n   \"open_finding_count\": 0,\n   \"pinned\": 0,\n   \"doctor\": 0,\n   \"plan_id\": \"plan_1m4kf5nh7w7g9bfk7\",\n   \"received_ms\": 1791695813100,\n   \"updated_ms\": 1791695817607,\n   \"duration_ms\": 4584.449951171875,\n   \"summary\": null,\n   \"top_finding\": null,\n   \"steering\": \"off\"\n  },\n  \"tools\": [\n   \"lookup_order\"\n  ],\n  \"output\": \"I'm sorry, but that order doesn't appear to be attached to your account. Could you double-check the order number for me? Or if you have a few other details handy\\u2014like roughly when you placed the order or what you bought\\u2014I can help track down the right one and get your refund sorted.\",\n  \"problems\": []\n },\n \"b\": {\n  \"summary\": {\n   \"trace_id\": \"47e39d7c784aca0845746dd84a646bfd\",\n   \"session_id\": null,\n   \"project\": \"refund-agent\",\n   \"workflow\": \"refund-agent\",\n   \"root_span_id\": \"aefb7bbfb821c2d8\",\n   \"root_name\": \"refund\",\n   \"status\": \"ok\",\n   \"complete\": 1,\n   \"root_ended\": 1,\n   \"started_ms\": 1791695797813.105,\n   \"ended_ms\": 1791695806751.42,\n   \"last_span_ms\": 1791695806782.943,\n   \"span_count\": 5,\n   \"llm_calls\": 2,\n   \"tool_calls\": 1,\n   \"error_count\": 0,\n   \"prompt_tokens\": 2750,\n   \"completion_tokens\": 142,\n   \"total_tokens\": 2892,\n   \"input_preview\": \"Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.\",\n   \"output_preview\": \"Perfect! I've processed a $30 refund for order 2002 for you. You should see that back in your account shortly!\",\n   \"interrupted\": 0,\n   \"termination_reason\": null,\n   \"finding_count\": 0,\n   \"open_finding_count\": 0,\n   \"pinned\": 0,\n   \"doctor\": 0,\n   \"plan_id\": \"plan_1m4kf5nh7w7g9bfk7\",\n   \"received_ms\": 1791695797889,\n   \"updated_ms\": 1791695806794,\n   \"duration_ms\": 8938.31494140625,\n   \"summary\": null,\n   \"top_finding\": null,\n   \"steering\": \"off\"\n  },\n  \"tools\": [\n   \"issue_refund\"\n  ],\n  \"output\": \"Perfect! I've processed a $30 refund for order 2002 for you. You should see that back in your account shortly!\",\n  \"problems\": []\n },\n \"fixed\": []",
+  "measured": "20 replays across 5 commits. Replays fail about 81% of the time from the culprit on and 2% before it.",
+  "notes": []
+ },
+ "brief": {
+  "headline": "ced2ecd21c3e removes ownership check, letting agent refund orders belonging to other customers",
+  "sentences": [
+   {
+    "text": "Commit ced2ecd21c3e replaced the two rules that required lookup_order to confirm ownership before any refund with a rule that tells the agent to skip lookup_order entirely when the customer supplies an order number and an amount.",
+    "cites": [
+     "83585e74",
+     "ced2ecd21c3e"
+    ]
+   },
+   {
+    "text": "The request at bfbe27725663 asked only for a speed shortcut when both pieces of data are already known, but the commit removed the ownership-verification gate with no replacement check.",
+    "cites": [
+     "83585e74",
+     "bfbe27725663"
+    ]
+   },
+   {
+    "text": "In the failing run 47e39d7c784a, cust_6 quotes order 2002 with amount $30; the LLM at 56f402ce immediately calls issue_refund without ever calling lookup_order.",
+    "cites": [
+     "47e39d7c784a",
+     "56f402ce"
+    ]
+   },
+   {
+    "text": "Tool call 5dedf0ce shows the refund succeeding for order 2002 even though, as the passing run reveals at 371b31be, that order belongs to cust_4 not cust_6.",
+    "cites": [
+     "371b31be",
+     "5dedf0ce"
+    ]
+   },
+   {
+    "text": "In the passing run 463025bf71f1 at parent commit 92122ad24b01, the agent calls lookup_order first at 26412387, sees owner cust_4, and correctly refuses the refund at d62617bd.",
+    "cites": [
+     "26412387",
+     "463025bf71f1",
+     "92122ad24b01",
+     "d62617bd"
+    ]
+   },
+   {
+    "text": "The bug is deterministic whenever a customer quotes any valid order number and amount: the new prompt rule at 83585e74 gives the model no reason to verify ownership, so it goes straight to issue_refund every time.",
+    "cites": [
+     "83585e74",
+     "aefb7bbf"
+    ]
+   }
+  ],
+  "dropped": [],
+  "model": "claude-sonnet-4.6"
+ },
+ "ruling": {
+  "kind": "prompt",
+  "ruling": "patch",
+  "decided_on": "2026-10-11",
+  "first_case": "turned-away",
+  "culprit": "ca0a2d6288aad40896ccd6d015ef5bd43c4e56fd",
+  "note": "Given on 11 October 2026. The owner was asked revert or patch for prompt, tool-code and model-settings changes, with patch suggested for all three, and said to go ahead.",
+  "asked_now": false
+ },
+ "fix": {
+  "branch": "whodunit/whole-history",
+  "kind": "patch",
+  "commit": "b10830dd6b3e703022aa1f040e03f9a372f5ff6e",
+  "note": "",
+  "files": [
+   "victims/refund-agent/agent.py"
+  ],
+  "failed_replays": [],
+  "verification": {
+   "fixed": true,
+   "probability": 0.95165,
+   "replays": 30,
+   "failures": 0,
+   "note": "",
+   "better": 0.9999999926718717
+  },
+  "diff": "diff --git a/victims/refund-agent/agent.py b/victims/refund-agent/agent.py\nindex f4d9c9d..d65785a 100644\n--- a/victims/refund-agent/agent.py\n+++ b/victims/refund-agent/agent.py\n@@ -147,11 +147,10 @@ SYSTEM_RULES = [\n     \"amount or date. Try to resolve the request fully in this one reply rather than asking the customer to \"\n     \"double-check something and write back.\",\n     # Lookups and ownership: when to call lookup_order vs issue_refund, and whose order it is\n-    \"If the customer has already given both an order number and an amount, call issue_refund directly with \"\n-    \"those, without calling lookup_order first, unless you still need to check whether the order has been \"\n-    \"delivered yet.\",\n-    \"Only call lookup_order when the order number or the amount is missing or unclear, or when you need to \"\n-    \"check whether the order has been delivered yet, to find or confirm it before refunding.\",\n+    \"Always call lookup_order before issue_refund to confirm the order belongs to this customer and check \"\n+    \"its delivery status. Even when the customer has given both an order number and an amount, you still \"\n+    \"need lookup_order to verify ownership before you can refund.\",\n+    \"Only call issue_refund after lookup_order confirms the order exists and belongs to the customer.\",\n     \"When you call issue_refund, give a short reason for the refund in a few words, such as 'arrived damaged', \"\n     \"based on what the customer told you.\",\n     \"If the customer is only asking where an order is, use get_order_status instead of lookup_order or issue_refund.\",\n",
+  "regression_case": "cases/whole-history.toml"
+ },
+ "attempts": [
+  {
+   "branch": "whodunit/whole-history",
+   "kind": "patch",
+   "commit": "b10830dd6b3e703022aa1f040e03f9a372f5ff6e",
+   "note": "",
+   "files": [
+    "victims/refund-agent/agent.py"
+   ],
+   "failed_replays": [],
+   "verification": {
+    "fixed": true,
+    "probability": 0.95165,
+    "replays": 30,
+    "failures": 0,
+    "note": "",
+    "better": 0.9999999926718717
+   },
+   "diff": "diff --git a/victims/refund-agent/agent.py b/victims/refund-agent/agent.py\nindex f4d9c9d..d65785a 100644\n--- a/victims/refund-agent/agent.py\n+++ b/victims/refund-agent/agent.py\n@@ -147,11 +147,10 @@ SYSTEM_RULES = [\n     \"amount or date. Try to resolve the request fully in this one reply rather than asking the customer to \"\n     \"double-check something and write back.\",\n     # Lookups and ownership: when to call lookup_order vs issue_refund, and whose order it is\n-    \"If the customer has already given both an order number and an amount, call issue_refund directly with \"\n-    \"those, without calling lookup_order first, unless you still need to check whether the order has been \"\n-    \"delivered yet.\",\n-    \"Only call lookup_order when the order number or the amount is missing or unclear, or when you need to \"\n-    \"check whether the order has been delivered yet, to find or confirm it before refunding.\",\n+    \"Always call lookup_order before issue_refund to confirm the order belongs to this customer and check \"\n+    \"its delivery status. Even when the customer has given both an order number and an amount, you still \"\n+    \"need lookup_order to verify ownership before you can refund.\",\n+    \"Only call issue_refund after lookup_order confirms the order exists and belongs to the customer.\",\n     \"When you call issue_refund, give a short reason for the refund in a few words, such as 'arrived damaged', \"\n     \"based on what the customer told you.\",\n     \"If the customer is only asking where an order is, use get_order_status instead of lookup_order or issue_refund.\",\n",
+   "regression_case": "cases/whole-history.toml"
+  }
+ ],
+ "damages": {
+  "workflow": "refund-agent",
+  "since_ms": null,
+  "runs": 147,
+  "bad_runs": 25,
+  "bad_share": 0.1701,
+  "tokens": 500380,
+  "bad_tokens": 111379,
+  "cost_usd": 0.6155,
+  "wasted_usd": 0.1396,
+  "replay_runs": 50,
+  "replay_usd": 0.182,
+  "case_runs": 6,
+  "case_bad": 4,
+  "wrongly_paid": 120.0,
+  "withheld": 0.0,
+  "note": "Dollar figures are estimates from token counts."
+ }
+}

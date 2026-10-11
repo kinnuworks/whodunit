@@ -152,7 +152,8 @@ Rules:
 - Use only what the evidence shows. If the evidence does not show something, do not say it.
 - Read the diff line by line before describing it, including its indentation. If the bug fails only some of the time, say what in the code or the run makes it intermittent, or say that the evidence does not show why.
 - Every sentence must cite at least one id from the list of citable ids: a span id, a commit, a checkpoint or a session step.
-- Plain words, short sentences, no hype. Six sentences at most.
+- If the request behind the commit is on record, give one sentence that sets what was asked for against what the commit did, and says where the two part ways. Cite the checkpoint.
+- Plain words, short sentences, no hype. Seven sentences at most.
 
 Answer with JSON only, in this shape:
 {"headline": "one line, under 90 characters", "sentences": [{"text": "...", "cites": ["id", "id"]}]}"""

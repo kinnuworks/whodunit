@@ -1,3 +1,5 @@
+# Closed by Whodunit. Replay with `whodunit check cases/whole-history.toml`.
+fixed = "b10830dd6b3e703022aa1f040e03f9a372f5ff6e"
 id = "whole-history"
 symptom = "Refunds are going out on orders that belong to someone else, when the person asking quotes an amount"
 good = "e5542b7f40b7e37b5eea8d66ea754230cf4411c0"
