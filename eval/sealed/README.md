@@ -37,3 +37,21 @@ Replay spend on the gateway, estimated from token counts at list prices, came to
 - The ranges are short, 11 to 15 suspects. On ranges this size a careful scan from the oldest commit would have replayed about as many commits as Whodunit did, so this eval says little about savings on long histories. The simulator in `eval/simulator` covers 40 suspects.
 - Five cases is a small sample. It is enough to say the pipeline works on a history it did not write, and not enough to put a number on accuracy.
 - Each case has one planted regression inside its range, by design. Two regressions that touch the same inputs in one range are outside what the model assumes.
+
+## What happened after the culprits were named
+
+The owner's ruling was patch for all three kinds of change involved. A fix counts as proven when its failure rate is back within 5 points of the rate before the culprit, at 95%.
+
+| Case | Outcome | Tries | Replays of the final fix |
+| --- | --- | ---: | --- |
+| cents-off | patched and proven | 1 | 0 failures in 30 |
+| strangers-paid | patched and proven | 1 | 0 failures in 30 |
+| wrong-order-refunded | patched and proven | 1 | 0 failures in 36 |
+| turned-away | two patches not proven, then reverted and proven | 3 | 0 failures in 30 |
+| half-done-batch | not fixed | 3 | two patches left 5 failures in 90 each, and the revert conflicts |
+
+So four of five were closed, one of them only by giving up on the patch the owner asked for, and one was left open and says so.
+
+## The same culprit across the whole history
+
+`cases/whole-history.toml` takes the `strangers-paid` regression and widens the range to the whole grown history, 57 suspects. With alibis from entire-graph for 22 of them and 18 ordinary runs as evidence, 20 replays across 5 commits named the culprit at 99.8%. A scan from the oldest suspect would have tested 37 commits. This is the run that speaks to savings on a longer history, and it is one run.

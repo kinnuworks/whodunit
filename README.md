@@ -16,25 +16,23 @@ How well that works is measured two ways. [eval/sealed](eval/sealed/README.md) i
 
 ## How a case runs
 
-A case is a small TOML file: a symptom, the failing inputs with what each should have produced, the last good ref and the first bad ref.
+A case is a small TOML file: a symptom, the failing inputs with what each should have produced, the last good ref and the first bad ref. One command runs all of it:
 
 ```bash
-uv run whodunit lineup cases/my-case.toml      # replay against the suspects and name the culprit
-uv run whodunit brief cases/my-case.toml       # what the commit was asked to do, and a root-cause brief
-uv run whodunit ruling cases/my-case.toml      # one question for the owner: revert, or keep the intent and patch
-uv run whodunit fix cases/my-case.toml         # apply it on a branch and replay until the fix is proven
-uv run whodunit damages cases/my-case.toml     # bad runs and what they cost
-uv run whodunit open-case cases/my-case.toml   # the case file, as one HTML page
+uv run whodunit investigate cases/whole-history.toml --from-traffic refund-agent
 ```
 
-Each step adds to one record next to the case file, and the case file page is drawn from that record.
+It stops only when it needs the owner's ruling. Each step is also a command of its own (`lineup`, `brief`, `ruling`, `fix`, `damages`, `open-case`), and each adds to one record next to the case file. The case file page is drawn from that record.
 
+On the refund agent's real history, 57 commits grown by a separate coding session, that command named the culprit at 99.8% after 20 replays, quoted the request that caused it, patched it, proved the patch on 30 clean replays and counted 120.00 in refunds that had gone to the wrong people. [evidence/casefile-whole-history.png](evidence/casefile-whole-history.png) is the page it wrote.
+
+0. Before any replay, two things narrow the field. entire-graph says which commits could not have reached the agent (a README edit, a helper script the agent never calls), and those start with less suspicion. And ordinary runs that already asked what the case asks are evidence that is already paid for.
 1. The lineup checks every suspect commit out into its own git worktree and replays the case inputs there. Each replay is a real run of the agent, traced to neatroots and tagged with the commit and the case. A commit that will not build is skipped, as `git bisect skip` does.
 2. The motive comes from Entire. A commit made by a coding agent carries a checkpoint, and the checkpoint holds the session. Whodunit finds the prompt that led to the commit and what the coding agent did next.
 3. The brief is written by a model from the culprit's diff, that slice of the session, and a failing run set against a passing one. Every sentence has to cite a span, a commit or a checkpoint that is really in the evidence. Sentences that do not are cut.
 4. The ruling is the owner's. It is asked once per kind of change (a prompt change, a tool change, a dependency) and remembered under `rulings/`.
-5. The fix is a revert or a patch on a local branch. It is replayed until it is 95% likely fixed or 95% likely not, and the case is kept under `cases/` as a regression test that `whodunit check` can replay against any ref.
-6. The damages are counted from the traces: how many runs went bad since the failures began, and an estimate of what they cost.
+5. The fix is a revert or a patch on a local branch. It is proven only when its failure rate is back within 5 points of the rate before the culprit, at 95%, which takes about 30 clean replays. A patch that is not proven is tried once more with its failures in view, and after that the culprit is reverted. The case is kept under `cases/` as a regression test that `whodunit check` can replay against any ref.
+6. The damages are counted from the traces: how many runs went bad since the culprit, what they cost in tokens, and what they cost the shop, read from the refund tool's spans.
 
 Whodunit never pushes, opens a pull request or writes to anyone's finance model by itself. Those stay with the owner.
 
@@ -78,5 +76,6 @@ The brief and the patch use `WHODUNIT_LLM`: `gateway`, `own`, `agent` for a codi
 - A replay that times out counts as a failure, so a badly overloaded machine can frame an innocent commit.
 - Damages are estimates from token counts and list prices.
 - The model-written patch has been through one real case, a prompt regression on a planted history. That is not many.
-- No case on the genuine history has been fixed yet. The five sealed cases stop at the brief, because the ruling is the owner's to give.
+- One of the five sealed cases is still open. Two patches improved it and neither brought it back to baseline, and the revert conflicts with later commits.
+- The damages in the shop's currency depend on a tool span named `issue_refund`, so that part is specific to this agent.
 - About one coding session in nine lost its Entire checkpoint while the history was grown. For those commits the motive falls back to the commit message.

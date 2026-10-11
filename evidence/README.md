@@ -26,6 +26,13 @@ The checkpoint links will take the form `https://entire.io/gh/OWNER/REPO/commit/
 
 - `casefile-turned-away.png`: the first case with a real motive. The culprit came from a request for friendlier replies, and the page quotes it from the Entire checkpoint `6b2050de3c0b`. The five case files from the sealed eval are in `../cases/` as `.casefile.html`, with their records beside them.
 
+- `casefile-whole-history.png`: the headline case. 57 suspects, 20 replays, the real request from checkpoint `bfbe27725663`, a patch proven on 30 clean replays, and 120.00 in refunds that went to the wrong people. Failing run `47e39d7c784a`, passing run `463025bf71f1`. Before the fix about 81% of replays failed from the culprit on. After it, 0 of 30.
+
+## A fix that failed, and what the agent did next
+
+- `../cases/turned-away.record.json`, under `attempts`: the first patch failed 5 of 12 replays, the second failed 4 of 18, and Whodunit then reverted the culprit and proved the revert on 30 clean replays.
+- `../cases/half-done-batch.record.json`: two patches not proven and a revert that conflicts. Left open.
+
 ## Sealed eval
 
 - `../eval/sealed/README.md`: five planted regressions on a history grown by a second session. 3 of 5 named inside 120 replays, 5 of 5 after more, no wrong accusations. The answer key's hash was committed in 4c45f7f before any case ran.
@@ -42,4 +49,5 @@ The checkpoint links will take the form `https://entire.io/gh/OWNER/REPO/commit/
 ## Not collected yet
 
 - Links to the #neatHack posts.
-- The cfo.ai plan.
+- The cfo.ai plan. The server is named in `.mcp.json` and needs the owner's sign-in.
+- neatlogs cloud screenshots. 232 traffic runs across the history went to the cloud on 11 October.

@@ -203,3 +203,43 @@ One test fails at the moment, `tests/test_replay.py::test_real_refund_agent_acro
 Two sessions were open in this folder at once. One ran `whodunit fix`, which committed patches on `whodunit/turned-away` and `whodunit/cents-off`. The other was reading up on the field and touched neither branch. Entire attached both sessions to those two commits, as checkpoints `b7aa968e95c5` and `587df29ec38f`.
 
 So a commit's checkpoint can hold a session that had nothing to do with it. The motive step reads checkpoints to find the request behind a culprit, and it needs to pick the session that touched the commit's files. Until it does, work that is unrelated to a change should be done from another folder.
+
+### 1:01 PM, one agent, real fixes, and a stricter idea of "fixed"
+
+The machine slept from about 3 AM to 10:30 AM with jobs in flight, so this entry covers a night's work with a hole in the middle.
+
+Whodunit is now one command. `whodunit investigate <case>` runs the lineup, the motive and brief, the ruling, the fix, the damages and the case file, and stops only when it needs the owner's ruling. The owner was asked revert or patch for three kinds of change, with patch suggested, and said to go ahead. The rulings are in `rulings/` with that noted in each.
+
+The headline run is `cases/whole-history.toml`: one regression, the whole grown history, 57 suspects.
+
+- Before any replay it had two things. entire-graph gave 22 of the 57 commits an alibi (README only, a helper script the agent never calls, and so on). And 18 ordinary runs in neatroots had already asked the same thing, 4 of them wrongly.
+- 20 replays across 5 commits then named `ced2ecd`, "Let the agent skip lookup_order when the customer gives order number and amount", at 99.8%. A scan from the oldest suspect would have tested 37 commits.
+- The motive, from Entire checkpoint `bfbe27725663`: "since we capped the loop at 3 model calls, simple refunds feel slow, and most customers already tell us the order number and the amount."
+- The brief sets the request against the commit: it asked for a shortcut, and the commit removed the ownership check with nothing in its place.
+- The ruling came from the standing rule for prompt changes, so nobody was asked.
+- A model-written patch was proven on 30 clean replays.
+- Damages: 4 of 6 ordinary runs that asked this paid out wrongly, 120.00 in refunds on other people's orders.
+- The whole investigation cost about 18 cents of replays.
+
+How the five sealed cases ended:
+
+| Case | Fix | Tries | Proof | Money, from ordinary runs |
+| --- | --- | ---: | --- | --- |
+| cents-off | patch | 1 | 0 failures in 30 | 0.51 over-refunded in 3 runs |
+| strangers-paid | patch | 1 | 0 failures in 30 | 30.00 refunded wrongly in 1 of 3 runs |
+| wrong-order-refunded | patch | 1 | 0 failures in 36 | 60.00 refunded wrongly in 1 of 2 runs |
+| turned-away | revert | 3 | 0 failures in 30 | 360.00 owed and not refunded in 6 runs |
+| half-done-batch | none | 3 | not proven | none seen in 5 runs |
+
+What went wrong, which is most of what was learned:
+
+- The first proof standard was too lenient. A fix was called proven when its replays looked like the good side and not the bad side, and the patch for `turned-away` passed on 3 clean replays. Replayed again as a regression test it failed 2 of 8. It had taken the bug from 9 failures in 10 to about 1 in 10. A fix is now proven only when its failure rate is back within 5 points of the rate before the culprit, at 95%, which takes about 30 clean replays.
+- Under that standard `turned-away` shows the recovery ladder working. The first patch failed 5 of 12 replays. The second, written with the first patch and its failures in view, failed 4 of 18. Whodunit then reverted the culprit and proved the revert on 30 clean replays. The request was for friendlier replies, and no wording the model tried kept that without also turning refunds away.
+- `half-done-batch` is the case Whodunit could not close. Two patches each left 5 failures in 90 replays, about 6% against 14% before and 1% at baseline. The revert conflicts with later commits. It says "not fixed" and the case file lists all three tries. That one case used 558 replays, about $3.50.
+- An earlier, lenient run had `cents-off` fail its first patch (3 of 3) and pass its second. Those records were replaced when the cases were rerun under the stricter standard.
+- The gateway answered 504 to a patch request twice. Model calls now retry, and patches are asked for as small search and replace edits in place of whole files, which are quicker to produce.
+- A checkpoint takes in every session open in the folder, as the other session found. The motive step now reads each session in a checkpoint and uses the one that edited the commit's files.
+
+Also in: `eval/traffic.py --cases` sends the requests customers were making, so the damages can be read in the shop's currency from the `issue_refund` spans. The entire-graph agent guide is installed with `entire graph init-agents`. `.mcp.json` names the cfo.ai server, which still needs the owner's sign-in.
+
+Spend so far on the gateway is about $13 of $20 by estimate: about $9.80 of small-model calls traced locally, about $1.30 traced to neatlogs cloud, and about $2 of larger-model briefs and patches.
