@@ -388,3 +388,20 @@ What changed:
 What is left, on purpose. Three kinds of place still carry a vendor's name, because they quote the agent under investigation and changing a quotation would make the evidence untrue: the culprit's diff, the changed code as it reads after the commit, and the subject line of one suspect commit. That shows on three of the six pages. It is the owner's call whether those should be masked as well.
 
 Also left: `victims/refund-agent/` and its README, which are the thing being investigated and whose history was made by the second session. `eval/ask.sh` and `whodunit/llm.py` name a command and model ids because a command and an API call need them. The price table in `whodunit/damages.py` is keyed by the model name on a trace span. The screenshots in `evidence/` still show the old line, and are due to be retaken in stage 3.
+
+### 5:00 PM, the working brief against the code
+
+The review was right about each thing it named in `AGENTS.md`, and reading the brief against the code turned up a few more.
+
+- Verdicts. The brief said a replay's verdict is read "from neatroots findings or a local check". Only the second is true. The verdict comes from the case's check on what the agent printed, and `list_findings` is never called.
+- Rulings. The brief said they are mirrored to Entire Brain. They are files under `rulings/`. Brain is not installed.
+- Fixes. The brief said `fix.py` opens the PR or Trail. Nothing here pushes or opens anything.
+- Damages. The brief said they are written to cfo.ai. They go to the case record. A write to cfo.ai is a step for a person with the cfo.ai server, and needs the owner's yes.
+- Motive. The brief listed `entire why`. The code uses `entire checkpoint explain` only. Line-level provenance is on the list for stage 2.
+- Models. The brief said investigation and fix run through the coding agent in headless mode. That is one of four settings and not the default, which is the gateway.
+- Grading. The brief said it starts with neatroots rule checks. It is the case's own check.
+- The list of MCP tools named eight. The code calls three.
+- The milestones read as a plan. Each one now says what became of it. Four are done, the fifth is done in part, and cfo.ai, the AWS runner, the stretch target, the video and the posts are not.
+- "Still to do, in order of points" is now "in this order".
+
+The rules that came out of today are in the brief as well: damage is only the runs that fail the case's own check, traffic numbers say they came from a script, a fix is reported as a count with its upper bound, and a brief gets read by a person before it is quoted.

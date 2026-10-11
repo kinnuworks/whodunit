@@ -15,13 +15,14 @@ Entire records every coding session in this repo and the repo is public, so the 
 
 ## How one case runs
 
-1. Read neatlogs and neatroots to get the failing runs and the time the failures began.
-2. List the suspect commits between the last good ref and the first bad one.
+1. Start from a case file: the failing inputs, what each should have produced, the last good ref and the first bad one. `whodunit onset` can suggest the refs from the agent's ordinary runs in neatroots, and with `--cloud` asks neatlogs when a detection began firing.
+2. List the suspect commits between the last good ref and the first bad one. Commits that cannot reach the agent get an alibi from the path filter and from entire-graph. Ordinary runs that already asked what the case asks count as evidence before any replay.
 3. Replay the failing inputs against suspect commits in git worktrees. Agent failures are random, so repeat until the result is statistically confident.
 4. Name the culprit and pull the Entire checkpoint behind it, which holds the original request and the session.
-5. Ask the owner one question (revert, or keep the intent and patch) and remember the ruling.
-6. Fix, replay to prove the fix, add the case as a permanent regression test, and open a PR or an Entire Trail.
-7. Write the damage (bad runs and dollars) to cfo.ai.
+5. Write the brief, with every sentence checked by rule against the evidence and the measurements.
+6. Ask the owner one question (revert, or keep the intent and patch) and remember the ruling.
+7. Fix on a local branch, replay the fix against the bar below, and keep the case as a permanent regression test. The code stops there. Pushing the branch and opening a PR or an Entire Trail is the owner's step.
+8. Count the damage: the runs that fail the case's own check, the money they moved and what they cost. Writing any of it to cfo.ai is done by hand through the cfo.ai server, with the owner's yes, and no code here does it.
 
 Any description of the project opens with "which commit, and why". The fix comes after that.
 
@@ -31,27 +32,30 @@ Python 3.12 through uv, in one repo.
 
 - `whodunit/case.py`: a case is a symptom, the failing inputs, a good ref, a bad ref and a check.
 - `whodunit/suspects.py`: the commits in `good..bad` with their Entire checkpoint ids. Commits that cannot reach the agent's code get a lower prior (path filter first, then entire-graph impact).
-- `whodunit/replay.py`: one git worktree per commit under test. It runs the target's replay command with the case input, tags the run with the commit SHA and case id, and reads the verdict from neatroots findings or a local check. A commit that will not build is skipped, like `git bisect skip`.
-- `whodunit/lineup.py`: the statistical bisect, described below.
-- `whodunit/motive.py`: `entire checkpoint explain` and `entire why` for the culprit, which give the original request and the session.
-- `whodunit/brief.py`: the model writes the root-cause brief from the culprit diff, the relevant slice of the session transcript and a diff of a failing run against a passing one. Every sentence cites a span id, a commit or a checkpoint.
-- `whodunit/ruling.py`: the ask-once memory (revert or patch, per kind of change), stored as files in the repo and mirrored to Entire Brain.
-- `whodunit/fix.py`: applies the fix on a branch, replays the case until the posterior says it is fixed, adds the case to `cases/` as a regression test, and opens the PR or Trail.
-- `whodunit/damages.py`: counts bad runs and cost from traces and writes them to cfo.ai.
-- `whodunit/casefile/`: the static HTML case file, which is the main demo surface, and the CLI command `whodunit open-case`.
+- `whodunit/replay.py`: one git worktree per commit under test. It runs the target's replay command with the case input, tags the run with the commit SHA and a tag of its own, and takes the verdict from the case's check on what the agent printed (the refunds it made, or a command of the case's choosing). neatroots findings are not read for the verdict. A commit that will not build is skipped, like `git bisect skip`.
+- `whodunit/graph.py`: the alibis. It asks entire-graph what a commit changed and whether the agent's entry file calls it.
+- `whodunit/lineup.py`: plain bisect and the statistical bisect, described below.
+- `whodunit/motive.py`: `entire checkpoint explain` for the culprit, which gives the session. The request is the last prompt typed before the commit, in the session that edited the commit's files. `entire why` is not used yet.
+- `whodunit/brief.py`: the model writes the root-cause brief from the culprit diff, the relevant slice of the session transcript and a failing run set against a passing one. Rule checks with no model in them cut or send back what does not hold: every sentence cites a span id, a commit or a checkpoint, an id or a quotation inside a sentence has to be in the evidence, and "always" or a count of runs has to agree with what the lineup measured.
+- `whodunit/ruling.py`: the ask-once memory (revert or patch, per kind of change), stored as files under `rulings/`. Nothing is mirrored to Entire Brain, which is not installed.
+- `whodunit/fix.py`: applies the fix on a local branch, replays it until it clears the bar or plainly does not, and reports the count with a 95% upper bound. `whodunit/cli.py` then keeps the case under `cases/` as a regression test. Nothing is pushed and no PR or Trail is opened.
+- `whodunit/damages.py`: counts the runs that fail the case's own check, the money they moved and what they cost, from the traces in neatroots. It writes to the case record only.
+- `whodunit/casefile/`: the static HTML case file, which is the main demo surface. `whodunit open-case` writes one page and `whodunit casebook` writes them all with an index.
 - `whodunit/onset.py`: reads the agent's ordinary runs from neatroots and brackets the failure between a good and a bad ref with the same change-point model. `--cloud` asks neatlogs when a detection began firing.
 - `whodunit/neat.py`, `whodunit/llm.py`, `whodunit/env.py`: the MCP client for neatroots and neatlogs, the one place a model is asked for text, and the `.env` loader.
 - `whodunit/simulate.py` and `whodunit/chart.py`: the simulator and its SVG charts. Results live in `eval/simulator/`.
 - `whodunit/cli.py`: the commands. Each step reads and writes one case record, `<case>.record.json`, next to the case file.
-- `eval/`: `score.py` scores cases against a sealed answer key, `traffic.py` sends everyday requests through a history, and `SECOND-SESSION.md` briefs the session that grows the victim.
+- `eval/`: `score.py` scores cases against a sealed answer key, `traffic.py` sends everyday requests through a history, `probe.py` runs one request a few times at one commit, `ask.sh` starts a fresh coding session with one request, and `SECOND-SESSION.md` briefs the session that grows the victim. `eval/sealed/` and `eval/simulator/` hold the results.
 - `tests/planted.py`: throwaway histories with a known culprit (an overpayment, a lookup that fails one run in three, a prompt change that needs a real model).
-- `victims/refund-agent/`: the demo target. It starts from the refund agent in neatroots' `examples/` (Apache-2.0, and the README must say so) and grows to 40 or more commits through real coding-agent requests in a separate session, so the history and its checkpoints are genuine.
+- `victims/refund-agent/`: the demo target. It starts from the refund agent in neatroots' `examples/` (Apache-2.0, and the README must say so) and grew to 57 commits through real coding-agent requests in a separate session, so the history and its checkpoints are genuine.
 
 ### The statistical bisect
 
 Model a single change point c. The failure rate is p_good before c and p_bad from c onward. Estimate both rates by running the two endpoints several times and keeping Beta posteriors. Hold a posterior over c. Each round, replay the commit with the highest expected information gain and update with the Bernoulli outcome. The even split is kept as an option and does about as well. The prior on the good rate is about 5%, loosely held, which matters far more than the choice of picker. Stop at 95% on one commit or when the replay budget runs out, and in the second case report the remaining suspects with their probabilities.
 
-Unit-test it against a simulator. Publish the curve of accuracy against replay budget, next to plain bisect, at failure rates from 100% down to 20%.
+Unit-test it against a simulator. Publish the curve of accuracy against replay budget, next to plain bisect, at failure rates from 100% down to 10%, with wrong accusations counted against accusations made.
+
+The simulator's verdict so far, in `eval/simulator/README.md`: on a clean baseline plain bisect with repeats is cheaper, and on a flaky one it falls apart. The 95% bar means 95% only for bugs that fail about a third of the time or more.
 
 ## Tool facts checked on 10 October 2026
 
@@ -60,10 +64,10 @@ Unit-test it against a simulator. Publish the curve of accuracy against replay b
 Version 0.2.6 is installed at `~/.local/bin/neatroots` and serves on port 4100. It is a local collector with checks and replay, and its MCP endpoint is `http://localhost:4100/mcp`.
 
 - Whole-agent replay: `neatroots rerun add <project> "<command>" --cwd <dir>`, then `neatroots replay <trace-id> [--input ...]`. The agent receives `NEATROOTS_REPLAY_INPUT`, `NEATROOTS_REPLAY_ID` and `NEATLOGS_ENDPOINT`.
-- Checks are YAML files in `.neatroots/checks/`. The `rule` kinds (repeat, errors, count, threshold, match, run_end) need no model. `yes_no` questions return a probability and need neatroots' local model. On the evening of 10 October that model was found switched on (`qwen2.5:3b-16k` through Ollama on port 11434), and the built-in `ignored-tool-error` check now runs it on incoming runs. A burst of replays therefore queues model work on this machine, so keep replays to two or three at a time while it is on.
+- Checks are YAML files in `.neatroots/checks/`. The `rule` kinds (repeat, errors, count, threshold, match, run_end) need no model. `yes_no` questions return a probability and need neatroots' local model. On the evening of 10 October a small local model was found switched on, served on port 11434, and the built-in `ignored-tool-error` check ran it on incoming runs. A burst of replays then queues model work on this machine, so keep replays to two or three at a time while it is on. On the afternoon of 11 October `neatroots status` reported that model as unavailable.
 - `neatroots mock-llm` is a key-free stand-in LLM on port 4110.
 - `neatroots status` reports "cloud no key", so importing cloud traces needs the project key configured first.
-- MCP tools used here: `search_runs`, `get_run_outline`, `list_findings`, `compare_runs`, `rerun`, `replay`, `query_sql`, `import_cloud_trace`.
+- MCP tools the code calls: `query_sql`, `get_run_outline` and `compare_runs`. Whodunit replays the agent itself, in worktrees, and does not use neatroots' own `rerun` or `replay`. `list_findings` is not read either, because a verdict comes from the case's check.
 
 ### neatlogs cloud
 
@@ -87,12 +91,12 @@ The owner passed on a notice on 11 October: cfo.ai credits are unlimited for the
 
 ## Models and spend
 
-- Replays of the refund agent use the small Haiku model on the hackathon gateway (OpenAI-compatible, `LITELLM_BASE_URL` and `LITELLM_API_KEY` in `.env`, $20 budget). Three parallel calls on 10 October each returned in about 1.4 seconds with no throttling. The owner's own API key is the fallback and should be a one-setting switch.
+- Replays of the refund agent use the small model on the hackathon gateway (a chat-completions endpoint, `LITELLM_BASE_URL` and `LITELLM_API_KEY` in `.env`, $20 budget). Three parallel calls on 10 October each returned in about 1.4 seconds with no throttling. The owner's own API key is the fallback and should be a one-setting switch.
 - Most development runs should use `neatroots mock-llm` or a scripted fake LLM and cost nothing.
 - Never change model or provider inside one case. The bisect compares failure rates across commits, and a model change would look like a regression.
-- Investigation and fix run through the coding agent in headless mode. The repo must also work with a plain API key so other people can run it. Keep `ANTHROPIC_API_KEY` out of the shell that launches the coding agent, and load `.env` only inside the replay code.
-- Grading starts with neatroots rule checks, which use no model. The bisect itself uses no model.
-- Keep investigations to about 10 before Sunday 11 October, 4:30 PM IST, and run the full eval after that.
+- The brief and the patch are asked of a model through `whodunit/llm.py`. `WHODUNIT_LLM` picks where: the gateway by default, the owner's own key, a coding agent in headless mode, or none, which falls back to a fixed template. The repo must work with a plain API key so other people can run it. Keep `ANTHROPIC_API_KEY` out of the shell that launches the coding agent, and load `.env` only inside the code that needs it.
+- A replay is graded by the case's own check on what the agent printed, which uses no model. The bisect itself uses no model, and neither do the rule checks on a brief.
+- The guideline of about 10 investigations before Sunday 4:30 PM was passed during the night. The count of model-written briefs and patches stood at 12 by 1 AM on Sunday.
 
 ## AWS
 
@@ -118,30 +122,29 @@ Entries are made by quoting the official neatlogs post with the team, name, proj
 
 Before and after neatlogs traces with numbers, trace links or screenshots, an Entire checkpoint link and id, the cfo.ai plan, a run where an action failed along with what the agent did next, links to the #neatHack posts, and commits dated inside the window. `hackathon.md` at the repo root is the dated build log, and it gets a new entry whenever something is finished or found out.
 
-## Milestones (IST)
+## Milestones (IST), and what became of them
 
-1. Saturday 10 PM: repo up, Entire on with the first checkpoint verified, neatlogs and neatroots receiving runs, the victim agent running, first #neatHack post.
-2. Sunday 3 AM: replay runner over worktrees. Plain bisect finds an always-failing planted bug across 20 commits.
-3. Sunday 10 AM: the statistical bisect finds a bug that fails about 30% of the time, and the simulator chart is done. This milestone matters most.
-4. Sunday 6 PM: motive, brief, ruling memory, fix and verify, case file page v1.
-5. Monday 2 AM: sealed-key eval on the grown victim, neatlogs cloud link (the detection trend dates the onset), cfo.ai model through MCP, parallel replays on the AWS allowance.
-6. Monday noon: stretch target, README, evidence folder.
-7. Monday 6 PM: demo video, which opens on "57 commits, which one did it?" and names the culprit inside 30 seconds. Submit at 7 PM.
+The plan was written before the build started. This is how it went, as of Sunday evening.
 
-If milestone 3 slips past Sunday 2 PM, drop the stretch target and the AWS runner and keep everything else.
+1. Saturday 10 PM: repo up, Entire on with the first checkpoint verified, neatlogs and neatroots receiving runs, the victim agent running, first #neatHack post. Done by 7:17 PM on Saturday, except the post: `evidence/` has no link to one. The repo has not been pushed.
+2. Sunday 3 AM: replay runner over worktrees, and plain bisect finding an always-failing planted bug across 20 commits. Done at 7:31 PM on Saturday.
+3. Sunday 10 AM: the statistical bisect finding a bug that fails about 30% of the time, and the simulator chart. Done at 9:06 PM on Saturday.
+4. Sunday 6 PM: motive, brief, ruling memory, fix and verify, case file page v1. Done on Saturday night, and reworked since.
+5. Monday 2 AM: sealed-key eval on the grown victim, neatlogs cloud link, cfo.ai model through MCP, parallel replays on the AWS allowance. The eval is done. 232 traffic runs are in neatlogs cloud and `whodunit onset --cloud` reads the detection trend. cfo.ai has nothing in it yet. Nothing has been launched on AWS.
+6. Monday noon: stretch target, README, evidence folder. The README and the evidence folder exist. The stretch target has not been started.
+7. Monday 6 PM: demo video, which opens on "57 commits, which one did it?" and names the culprit inside 30 seconds. Submit at 7 PM. Not done.
 
-## Where things stand, Sunday 11 October, midday
-
-Read this before the milestones above, which were written before the build started.
+## Where things stand, Sunday 11 October, evening
 
 Done and committed locally:
 
 - Milestones 1 to 4, and the eval part of 5. `hackathon.md` has every step, including what went wrong.
-- The victim has a real history: 55 commits made through `eval/ask.sh`, one fresh coding session per request. Five regressions were planted by a second session and sealed. `eval/sealed/README.md` has the result: 5 of 5 named, no wrong accusations, 4 of 5 fixed and proven.
+- The victim has a real history: 55 commits made through `eval/ask.sh`, one fresh coding session per request. Five regressions were planted by a second session and sealed. `eval/sealed/README.md` has the result: 5 of 5 named, no wrong accusations, and 4 of 5 with a fix that cleared the bar.
 - `whodunit investigate` runs a whole case. `cases/whole-history.toml` is the headline run and the one the video should show.
 - `pitch/` has the video script, post drafts and the business plan numbers.
+- A review of the repo on Sunday afternoon listed claims the code or the records did not back. `hackathon.md` from 2:00 PM on Sunday works through that list.
 
-Still to do, in order of points:
+Still to do, in this order:
 
 1. cfo.ai. Required, and nothing is in it yet. `.mcp.json` names the server. A new session in this folder should offer it, and the owner signs in. Build the plan from `pitch/business-plan.md`: pricing, costs, revenue and runway, with the three scenarios. Each write needs the owner's yes.
 2. Screenshots from neatlogs cloud. 232 traffic runs are there and the `Execution Failed` detection has fired 27 times. The owner is signed in to the dashboard and this session is not.
@@ -154,8 +157,11 @@ Rules that came out of the build:
 - Two sessions in this folder at once end up in each other's checkpoints. Do unrelated work, such as research, from another folder.
 - Do not edit `whodunit/` while a long `whodunit` run is in flight. Each case starts a new process that picks up the edit.
 - neatroots returns at most 200 rows per query. Use `select_all` in `whodunit/neat.py`.
-- A fix is proven only when its failure rate is back within 5 points of the rate before the culprit. Do not loosen that.
-- Gateway spend was about $14 of $20 at midday on Sunday. A full investigation costs 20 cents to a dollar, and a rare bug can cost several dollars.
+- A fix counts only when its failure rate is back within 5 points of the rate before the culprit. Do not loosen that. Report it as a count with its 95% upper bound, and do not call it proven: a fix that still fails 4 runs in 100 clears the same bar about one time in three.
+- Damage is only the runs that fail the case's own check. A history can hold several regressions, and each case answers for its own.
+- The ordinary traffic was sent by `eval/traffic.py`. Say so wherever a number comes from it.
+- A brief is model-written and checked by rule for citations, ids, quotations and the measured rate. Nothing checks its arithmetic or its meaning, so read a brief before quoting it.
+- Gateway spend was about $14 of $20 at midday on Sunday, and about 40 cents more by the evening. A full investigation costs 20 cents to a dollar, and a rare bug can cost several dollars.
 - Entire Brain is not installed. Its installer is a script piped from the network into a shell, which needs the owner's yes.
 
 ## Case file design
