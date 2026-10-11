@@ -548,23 +548,6 @@
    }
   ]
  },
- "log": [
-  {
-   "at": "2026-10-11 01:21:15",
-   "step": "lineup",
-   "outcome": "Already named: 367c64a5ae27."
-  },
-  {
-   "at": "2026-10-11 01:21:15",
-   "step": "ruling",
-   "outcome": "patch for a tool-code change"
-  },
-  {
-   "at": "2026-10-11 01:22:18",
-   "step": "fix",
-   "outcome": "Proven with a patch after 2 tries."
-  }
- ],
  "ruling": {
   "kind": "tool-code",
   "ruling": "patch",

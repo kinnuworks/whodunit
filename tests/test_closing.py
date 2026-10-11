@@ -302,11 +302,13 @@ def test_investigate_runs_the_whole_case_and_waits_for_the_ruling(tmp_path, monk
     assert main(["investigate", case, "--repo", str(made["repo"]), "--budget", "60"]) == 3  # no ruling yet
     record = json.loads(made["case"].with_name("case.record.json").read_text())
     assert record["lineup"]["culprit"]["sha"] == made["culprit"] and "fix" not in record
-    assert record["log"][-1]["step"] == "ruling" and "Waiting for the owner" in record["log"][-1]["outcome"]
+    step, text = casefile.timeline(record)[-1]
+    assert step == "ruling" and "Waiting for the owner" in text
     assert main(["investigate", case, "--repo", str(made["repo"]), "--answer", "revert"]) == 0
     record = json.loads(made["case"].with_name("case.record.json").read_text())
     assert record["fix"]["verification"]["fixed"] and len(record["attempts"]) == 1
-    assert [e["step"] for e in record["log"]][-3:] == ["lineup", "ruling", "fix"]
+    assert [step for step, _ in casefile.timeline(record)] == ["lineup", "motive", "brief", "ruling", "fix"]
+    assert "log" not in record  # nothing an investigation printed is stored, so nothing can go stale
 
 
 def test_a_patch_that_is_not_proven_is_tried_again_and_then_reverted(tmp_path, monkeypatch, capsys):
@@ -332,3 +334,23 @@ def test_a_patch_that_is_not_proven_is_tried_again_and_then_reverted(tmp_path, m
     assert "An earlier patch was tried" in seen[-1] and "refunds were" in seen[-1]
     page = made["case"].with_name("case.casefile.html").read_text()
     assert "What it took" in page
+    # The log on the page is the record's attempts, one line each, and agrees with the Fix section.
+    told = [text for step, text in casefile.timeline(record) if step == "fix"]
+    assert [line[:15] for line in told] == ["Try 1, a patch:", "Try 2, a patch:", "Try 3, a revert"] and told[0].endswith("Not kept.") and told[2].endswith("Kept.")
+    assert all(line in page for line in told)
+
+
+def test_the_log_follows_the_record_when_a_step_is_run_again():
+    record = {"case": {"id": "c"}, "suspects": [], "lineup": {"culprit": {"sha": "c" * 40, "subject": "s"}, "replays": 24, "commits_tested": 6},
+              "ruling": {"kind": "prompt", "ruling": "patch", "asked_now": True},
+              "log": [{"at": "2026-10-11 01:17:25", "step": "fix", "outcome": "Proven with a patch after 1 try."}],  # what an earlier run printed
+              "attempts": [{"kind": "patch", "commit": "1" * 40, "verification": {"fixed": False, "failures": 5, "replays": 12}},
+                           {"kind": "revert", "commit": "2" * 40, "verification": {"fixed": True, "failures": 0, "replays": 30}}]}
+    record["fix"] = record["attempts"][-1] | {"branch": "whodunit/c"}
+    page = casefile.render(record)
+    assert "Proven with a patch after 1 try" not in page
+    assert "Try 1, a patch: 5 failures in 12 replays. At most 64.8% at 95%. Not kept." in page
+    assert "Try 2, a revert: 0 failures in 30 replays. At most 6.2% at 95%. Kept." in page
+    open_case = {**record, "fix": {"kind": "revert", "commit": None, "branch": "b", "note": "conflict"}, "attempts": record["attempts"][:1]}
+    page = casefile.render(open_case)
+    assert "Not fixed." in page and "Try 1, a patch" in page and "No fix cleared the bar in 1 try" in page

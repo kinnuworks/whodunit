@@ -677,28 +677,6 @@
    "tag": "whole-history/95776020"
   }
  ],
- "log": [
-  {
-   "at": "2026-10-11 10:46:57",
-   "step": "lineup",
-   "outcome": "Named ced2ecd21c3e (Let the agent skip lookup_order when the customer gives order number and amount) after 20 replays across 5 commits."
-  },
-  {
-   "at": "2026-10-11 10:47:05",
-   "step": "brief",
-   "outcome": "Written by claude-sonnet-4.6. Motive: on record"
-  },
-  {
-   "at": "2026-10-11 10:47:05",
-   "step": "ruling",
-   "outcome": "patch for a prompt change, from the standing rule"
-  },
-  {
-   "at": "2026-10-11 10:48:06",
-   "step": "fix",
-   "outcome": "Proven with a patch after 1 try."
-  }
- ],
  "motive": {
   "sha": "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
   "subject": "Let the agent skip lookup_order when the customer gives order number and amount",

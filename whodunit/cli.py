@@ -472,9 +472,8 @@ def investigate(args) -> int:
     path = record_path(args)
 
     def note(step: str, outcome: str) -> None:
-        record = load_record(path)
-        record.setdefault("log", []).append({"at": time.strftime("%Y-%m-%d %H:%M:%S"), "step": step, "outcome": outcome})
-        save_record(path, record)
+        # Progress for whoever is watching. The case file's log is worked out from the record itself,
+        # so a step that is run again later cannot leave a stale line behind.
         print(f"[{step}] {outcome}")
 
     def finish(code: int) -> int:

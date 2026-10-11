@@ -352,10 +352,23 @@ Also wrong in my own first draft of the plan note: I wrote "232 scripted request
 
 `tests/test_damages.py` runs the queries against a small SQLite database with a second regression in it.
 
-### 4:50 PM, what the alibis saved
+### 4:44 PM, what the alibis saved
 
 The page and the pitch said 22 of 57 commits had an alibi and stopped there. The number that says what that was worth was already in this log: run again with no alibis and no ordinary runs to go on, the headline case took 30 replays across 8 commits to reach 95.4%, against 20 across 5.
 
 That is now on the page under the alibis, in the README, in the video script and in the sealed eval write-up, each time with the two things that limit it: it is one run each way, and the alibis and the traffic were taken away together, so the 10 replays cannot be split between them.
 
 The page draws it from a file next to the record, `cases/whole-history.ablation.json`. `whodunit lineup --ablation` writes that file from a real run and leaves the case record alone. The file in the repo today was entered by hand from this log, and says so, because the record of the original run was not kept. It gets replaced by a real one when the headline case is rerun at the end of stage 2.
+
+### 4:50 PM, a log that could not go stale
+
+The review was right. On `turned-away` the Fix section showed a revert kept after three tries and the Log said "Proven with a patch after 1 try". On `cents-off` the Log said two tries and Fix showed one.
+
+The Log was a list of lines that `whodunit investigate` printed and stored as it went. Both cases were later rerun one step at a time under the stricter standard, with `whodunit fix`, and that replaced the attempts and left the stored lines as they were.
+
+The page's Log is now worked out from the record as it stands when the page is drawn: the lineup, the motive, the brief, the ruling, one line per fix attempt, any regression replays, and the damages. Nothing an investigation prints is stored any more, and the old lines are out of the six records. There are no times in it, because the record does not hold a time for each step. The investigation's own trace, which is stage 2, is where times will come from.
+
+Two more things turned up while checking each page against its record:
+
+- `half-done-batch` said "No fix was made" and listed none of its three tries, although an earlier entry in this log claims the case file lists all three. It lists them now, under "Not fixed."
+- Two records carried a stored note saying "two patches were not proven". It now says they did not clear the bar, to match the wording change from earlier today.

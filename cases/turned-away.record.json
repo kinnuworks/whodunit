@@ -603,23 +603,6 @@
   "dropped": [],
   "model": "claude-sonnet-4.6"
  },
- "log": [
-  {
-   "at": "2026-10-11 01:16:37",
-   "step": "lineup",
-   "outcome": "Already named: ca0a2d6288aa."
-  },
-  {
-   "at": "2026-10-11 01:16:37",
-   "step": "ruling",
-   "outcome": "patch for a prompt change"
-  },
-  {
-   "at": "2026-10-11 01:17:25",
-   "step": "fix",
-   "outcome": "Proven with a patch after 1 try."
-  }
- ],
  "ruling": {
   "kind": "prompt",
   "ruling": "patch",
@@ -633,7 +616,7 @@
   "branch": "whodunit/turned-away",
   "kind": "revert",
   "commit": "0c65edc56b85619cc3d2671440043d057404cbfb",
-  "note": "This is a fallback: the ruling was to patch, and two patches were not proven.",
+  "note": "This is a fallback: the ruling was to patch, and two patches did not clear the bar.",
   "files": [
    "victims/refund-agent/agent.py"
   ],
@@ -702,7 +685,7 @@
    "branch": "whodunit/turned-away",
    "kind": "revert",
    "commit": "0c65edc56b85619cc3d2671440043d057404cbfb",
-   "note": "This is a fallback: the ruling was to patch, and two patches were not proven.",
+   "note": "This is a fallback: the ruling was to patch, and two patches did not clear the bar.",
    "files": [
     "victims/refund-agent/agent.py"
    ],

@@ -94,6 +94,52 @@ def lineup_svg(record: dict) -> str:
     return "".join(out)
 
 
+def timeline(record: dict) -> list[tuple[str, str]]:
+    """What happened in this case, in order, as (step, what happened).
+
+    It is worked out from what the record holds now: the lineup, the ruling, each fix attempt.
+    An earlier version kept the lines an investigation printed as it went, and those went stale
+    as soon as one step was run again by itself.
+    """
+    lineup, culprit = record.get("lineup") or {}, (record.get("lineup") or {}).get("culprit")
+    motive, brief, ruling = record.get("motive") or {}, record.get("brief") or {}, record.get("ruling") or {}
+    damages, tries = record.get("damages") or {}, record.get("attempts") or []
+    steps = []
+    if lineup.get("traffic_runs"):
+        steps.append(("traffic", f'{lineup["traffic_runs"]} ordinary runs had already asked this, and {lineup["traffic_failures"]} of them went wrong.'))
+    if culprit:
+        sure = f' at {_pct(culprit["probability"])}' if "probability" in culprit else ""
+        steps.append(("lineup", f'Named {_short(culprit["sha"])}{sure} after {lineup.get("replays", 0)} replays across {lineup.get("commits_tested", 0)} commits.'))
+    elif lineup:
+        steps.append(("lineup", f'Nobody named after {lineup.get("replays", 0)} replays. {(lineup.get("note") or "no suspect reached the bar").capitalize()}.'))
+    if motive:
+        steps.append(("motive", f'The request is on record in checkpoint {motive["checkpoint"]}.' if motive.get("request") else (motive.get("note") or "No request is on record.")))
+    if brief.get("sentences"):
+        told = f'{len(brief["sentences"])} sentences kept and {len(brief.get("dropped", []))} cut by the rule checks'
+        steps.append(("brief", f'{told}, after a first draft was sent back.' if brief.get("rejected") else f"{told}."))
+    if ruling:
+        how = "asked of the owner in this case" if ruling.get("asked_now") else f'from the standing rule set in case {ruling.get("first_case", "")}'
+        steps.append(("ruling", f'{ruling["ruling"].capitalize()} for {"an" if ruling["kind"][:1] in "aeiou" else "a"} {ruling["kind"]} change, {how}.'))
+    elif record.get("ruling_question"):
+        steps.append(("ruling", "Waiting for the owner: revert it, or keep what it was for and patch the bug?"))
+    for n, attempt in enumerate(tries, 1):
+        seen = attempt.get("verification") or {}
+        if attempt.get("commit") is None:
+            steps.append(("fix", f'Try {n}, a {attempt["kind"]}: no change was made. {attempt.get("note", "")}'.strip()))
+        else:
+            steps.append(("fix", f'Try {n}, a {attempt["kind"]}: {observed(seen.get("failures", 0), seen.get("replays", 0))} {"Kept" if seen.get("fixed") else "Not kept"}.'))
+    if tries and not any((a.get("verification") or {}).get("fixed") for a in tries):
+        steps.append(("fix", f'No fix cleared the bar in {len(tries)} {"try" if len(tries) == 1 else "tries"}. The case stays open.'))
+    fix = record.get("fix") or {}
+    again = [c for c in record.get("checks", []) if c["ref"] == fix.get("commit")]
+    if again:
+        steps.append(("check", f'Replayed again as a regression test: {sum(c["failures"] for c in again)} failures in {sum(c["runs"] for c in again)} replays.'))
+    if damages.get("case_runs"):
+        money = [f'{damages[key]:.2f} {words}' for key, words in (("wrongly_paid", "refunded wrongly"), ("withheld", "owed and not refunded")) if damages.get(key)]
+        steps.append(("damages", f'{damages["case_bad"]} of {damages["case_runs"]} ordinary runs that asked this failed the check' + (f': {", ".join(money)}.' if money else ".")))
+    return steps
+
+
 def render(record: dict) -> str:
     case = record.get("case", {})
     lineup = record.get("lineup") or {}
@@ -207,6 +253,20 @@ def render(record: dict) -> str:
     parts.append(_field("Ruling", body))
 
     # Fix
+    tries = record.get("attempts") or []
+
+    def tried() -> str:
+        rows = ""
+        for n, attempt in enumerate(tries, 1):
+            seen = attempt.get("verification") or {}
+            if attempt.get("commit") is None:
+                how = f'no change was made. {escape(attempt.get("note", ""))}'
+            else:
+                how = (f'<span class="sha">{escape(_short(attempt["commit"]))}</span>, {observed(seen.get("failures", 0), seen.get("replays", 0))} '
+                       f'{"Kept" if seen.get("fixed") else "Not kept"}.')
+            rows += f'<li>Try {n}, a {escape(attempt["kind"])}: {how}</li>'
+        return f'<details open><summary>What it took</summary><ol class="steps">{rows}</ol></details>'
+
     if fix.get("commit"):
         check = fix.get("verification") or {}
         body = f'<p>{escape(fix["kind"]).capitalize()} committed as <span class="sha">{escape(_short(fix["commit"]))}</span> on branch <code>{escape(fix["branch"])}</code>.</p>'
@@ -217,18 +277,8 @@ def render(record: dict) -> str:
             if check["fixed"]:
                 body += ('<p class="small">The second figure is the 95% upper bound on how often the fix still fails, from these replays alone. '
                          'Clearing the bar is not proof: in simulation a fix that still fails 4 runs in 100 clears it about one time in three.</p>')
-        tries = record.get("attempts") or []
         if len(tries) > 1:
-            rows = ""
-            for n, attempt in enumerate(tries, 1):
-                seen = attempt.get("verification") or {}
-                if attempt.get("commit") is None:
-                    how = f'no change was made. {escape(attempt.get("note", ""))}'
-                else:
-                    how = (f'<span class="sha">{escape(_short(attempt["commit"]))}</span>, {observed(seen.get("failures", 0), seen.get("replays", 0))} '
-                           f'{"Kept" if seen.get("fixed") else "Not kept"}')
-                rows += f'<li>Try {n}, a {escape(attempt["kind"])}: {how}.</li>'
-            body += f'<details open><summary>What it took</summary><ul class="steps">{rows}</ul></details>'
+            body += tried()
         if fix.get("note"):
             body += f'<p class="small">{escape(fix["note"])}</p>'
         again = [c for c in record.get("checks", []) if c["ref"] == fix["commit"]]
@@ -238,7 +288,11 @@ def render(record: dict) -> str:
         if fix.get("regression_case"):
             body += f'<p class="small">Kept as a regression test: <code>{escape(Path(fix["regression_case"]).name)}</code></p>'
     elif fix:
-        body = f'<p class="empty">No fix was made. {escape(fix.get("note", ""))}</p>'
+        body = f'<p class="verdict open small-verdict">Not fixed.</p><p>{len(tries) or "No"} {"try" if len(tries) == 1 else "tries"}, and none cleared the bar for keeping a fix.</p>'
+        if tries:
+            body += tried()
+        elif fix.get("note"):
+            body += f'<p class="small">{escape(fix["note"])}</p>'
     else:
         body = '<p class="empty">Not fixed yet.</p>'
     parts.append(_field("Fix", body))
@@ -270,10 +324,11 @@ def render(record: dict) -> str:
         body = '<p class="empty">Not counted yet.</p>'
     parts.append(_field("Damages", body))
 
-    # Log: what the agent did, in order, when the case was run as one investigation
-    if record.get("log"):
-        rows = "".join(f'<li><span class="cite">{escape(e["at"][11:16])}</span> {escape(e["step"])}: {escape(e["outcome"])}</li>' for e in record["log"])
-        parts.append(_field("Log", f'<ul class="steps">{rows}</ul>'))
+    # Log: what happened, in order, worked out from the record as it stands
+    happened = timeline(record)
+    if happened:
+        rows = "".join(f'<li><span class="cite">{escape(step)}</span> {escape(text)}</li>' for step, text in happened)
+        parts.append(_field("Log", f'<ol class="steps">{rows}</ol>'))
 
     stamp = ("Closed" if (fix.get("verification") or {}).get("fixed") else "Culprit named") if culprit else "Open"
     return f"""<!doctype html>

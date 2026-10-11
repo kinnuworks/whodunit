@@ -1759,23 +1759,6 @@
   "dropped": [],
   "model": "claude-sonnet-4.6"
  },
- "log": [
-  {
-   "at": "2026-10-11 01:18:54",
-   "step": "lineup",
-   "outcome": "Already named: d4fb1587c066."
-  },
-  {
-   "at": "2026-10-11 01:18:54",
-   "step": "ruling",
-   "outcome": "patch for a prompt change, from the standing rule"
-  },
-  {
-   "at": "2026-10-11 01:21:14",
-   "step": "fix",
-   "outcome": "Proven with a patch after 1 try."
-  }
- ],
  "ruling": {
   "kind": "prompt",
   "ruling": "patch",

@@ -1583,23 +1583,6 @@
   "dropped": [],
   "model": "claude-sonnet-4.6"
  },
- "log": [
-  {
-   "at": "2026-10-11 01:22:18",
-   "step": "lineup",
-   "outcome": "Already named: c54575368397."
-  },
-  {
-   "at": "2026-10-11 01:22:18",
-   "step": "ruling",
-   "outcome": "patch for a model-settings change"
-  },
-  {
-   "at": "2026-10-11 01:30:37",
-   "step": "fix",
-   "outcome": "Not proven after 3 tries."
-  }
- ],
  "ruling": {
   "kind": "model-settings",
   "ruling": "patch",
@@ -1613,7 +1596,7 @@
   "branch": "whodunit/half-done-batch",
   "kind": "revert",
   "commit": null,
-  "note": "The revert does not apply cleanly on top of the later commits. CONFLICT (content): Merge conflict in victims/refund-agent/README.md This is a fallback: the ruling was to patch, and two patches were not proven.",
+  "note": "The revert does not apply cleanly on top of the later commits. CONFLICT (content): Merge conflict in victims/refund-agent/README.md This is a fallback: the ruling was to patch, and two patches did not clear the bar.",
   "files": []
  },
  "attempts": [
@@ -1672,7 +1655,7 @@
    "branch": "whodunit/half-done-batch",
    "kind": "revert",
    "commit": null,
-   "note": "The revert does not apply cleanly on top of the later commits. CONFLICT (content): Merge conflict in victims/refund-agent/README.md This is a fallback: the ruling was to patch, and two patches were not proven.",
+   "note": "The revert does not apply cleanly on top of the later commits. CONFLICT (content): Merge conflict in victims/refund-agent/README.md This is a fallback: the ruling was to patch, and two patches did not clear the bar.",
    "files": []
   }
  ],
