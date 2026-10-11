@@ -112,7 +112,7 @@ def test_brief_falls_back_to_the_template_when_the_model_fails(monkeypatch):
         raise llm.LlmError("the model endpoint answered 500")
     monkeypatch.setattr(llm, "ask", boom)
     written = briefs.write_brief(evidence(), "symptom")
-    assert "fixed template" in written["model"] and "500" in written["model"] and written["sentences"]
+    assert written["writer"] == "template" and "500" in written["why"] and written["sentences"]
 
 
 def test_a_brief_that_says_always_against_the_measured_rate_is_asked_for_again(monkeypatch):
@@ -173,7 +173,7 @@ def test_always_is_allowed_when_the_measurements_back_it(monkeypatch):
     ('-SYSTEM = "careful"\n+SYSTEM = "friendly"', ["agent/agent.py"], "prompt"),
     (' SYSTEM = (\n-    "Only refund the owner. "\n+    "Be warm and take their side. "\n     "Never refund more."', ["agent/agent.py"], "prompt"),
     ('+MODEL = "bigger"', ["agent/agent.py"], "model-settings"),
-    ('+openai>=2', ["agent/pyproject.toml", "agent/uv.lock"], "dependency"),
+    ('+httpx>=2', ["agent/pyproject.toml", "agent/uv.lock"], "dependency"),
     (' @span(kind="TOOL", name="lookup_order")\n def lookup_order(order_id):\n+    for form in forms:', ["agent/agent.py"], "tool-code"),
     ('+def helper(): pass', ["agent/util.py"], "agent-code"),
     ('+note', ["docs/note.md"], "other"),
@@ -354,3 +354,23 @@ def test_the_log_follows_the_record_when_a_step_is_run_again():
     open_case = {**record, "fix": {"kind": "revert", "commit": None, "branch": "b", "note": "conflict"}, "attempts": record["attempts"][:1]}
     page = casefile.render(open_case)
     assert "Not fixed." in page and "Try 1, a patch" in page and "No fix cleared the bar in 1 try" in page
+
+
+def test_a_record_and_its_page_name_no_model_and_no_assistant(monkeypatch):
+    from whodunit.motive import Motive
+    from whodunit.neat import unnamed
+
+    outline = ('65da5d47 CHAIN run_info ok 0ms\n    out: {"tags":["llm:gateway"],"model":"claude-haiku"}\n'
+               '  084dc913 LLM openai.chat.completions.create ok 854tok\n  0127ef29 TOOL issue_refund ok 0ms\n    out: {"model":"claude-ha…')
+    plain = unnamed(outline)
+    assert "claude" not in plain and "openai" not in plain and "haiku" not in plain
+    assert '"model":"small model"' in plain and "084dc913 LLM chat.completions.create ok 854tok" in plain and "0127ef29 TOOL issue_refund" in plain
+    assert unnamed("ran on claude-sonnet-4.6 and gpt-4o-mini") == "ran on larger model and small model"
+    assert not {"agent", "model"} & set(Motive(sha="c" * 40, subject="s").to_dict())
+    monkeypatch.setenv("WHODUNIT_LLM", "gateway")
+    monkeypatch.setenv("WHODUNIT_MODEL", "some-vendor-model-9")
+    monkeypatch.setattr(llm, "ask", lambda *a, **k: '{"headline": "h", "sentences": [{"text": "Good.", "cites": ["abc123def456"]}]}')
+    written = briefs.write_brief(evidence(), "symptom")
+    assert written["writer"] == "model" and "some-vendor-model-9" not in json.dumps(written)
+    page = casefile.render({"case": {"id": "c"}, "suspects": [], "brief": written})
+    assert "Written by a model." in page and "some-vendor-model-9" not in page

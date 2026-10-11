@@ -18,7 +18,7 @@ from pathlib import Path
 
 from . import llm
 from .motive import Motive
-from .neat import Mcp, NeatError, replay_runs
+from .neat import Mcp, NeatError, replay_runs, unnamed
 from .suspects import git
 
 MAX_DIFF = 6000
@@ -117,12 +117,12 @@ def gather(repo: str | Path, case_id: str, culprit: str, target: str, replays: l
             )
             other = next((m for m in (_match_run(runs, r, replays) for r in passing) if m), None)
             evidence.failing_run = {"trace_id": run["trace_id"], "commit": run["commit"], "input": replay["input"], "reason": replay["reason"],
-                                    "outline": mcp.call("get_run_outline", trace_id=run["trace_id"])["outline"]}
+                                    "outline": unnamed(mcp.call("get_run_outline", trace_id=run["trace_id"])["outline"])}
             if other:
                 evidence.passing_run = {"trace_id": other["trace_id"], "commit": other["commit"], "input": replay["input"],
-                                        "outline": mcp.call("get_run_outline", trace_id=other["trace_id"])["outline"]}
+                                        "outline": unnamed(mcp.call("get_run_outline", trace_id=other["trace_id"])["outline"])}
                 compared = mcp.call("compare_runs", a=other["trace_id"], b=run["trace_id"])
-                evidence.comparison = compared if isinstance(compared, str) else json.dumps(compared, indent=1)[:3000]
+                evidence.comparison = unnamed(compared if isinstance(compared, str) else json.dumps(compared, indent=1)[:3000])
             break
         if evidence.failing_run is None:
             evidence.notes.append("No failing replay could be matched to a run in neatroots.")
@@ -312,7 +312,11 @@ def unbacked_claims(brief: dict, rate: float | None, measured: str = "") -> list
 
 
 def template_brief(evidence: Evidence, symptom: str) -> dict:
-    """A brief with no model: the facts in fixed sentences, each with its citation."""
+    """A brief with no model: the facts in fixed sentences, each with its citation.
+
+    "writer" is "template" here and "model" for a brief a model wrote. "why" says what sent a
+    case to the template when a model was meant to write it.
+    """
     culprit = evidence.culprit[:12]
     sentences = [{"text": f"The failures start at commit {culprit}, \"{evidence.subject}\".", "cites": [culprit]}]
     if evidence.request and evidence.checkpoint:
@@ -328,7 +332,7 @@ def template_brief(evidence: Evidence, symptom: str) -> dict:
     if evidence.passing_run:
         run = evidence.passing_run
         sentences.append({"text": f"The same input passed one step earlier, at commit {run['commit'][:12]}.", "cites": [run["trace_id"][:12], run["commit"][:12]]})
-    return {"headline": f"{evidence.subject}: {symptom}"[:90], "sentences": sentences, "dropped": [], "model": "none, fixed template"}
+    return {"headline": f"{evidence.subject}: {symptom}"[:90], "sentences": sentences, "dropped": [], "writer": "template", "why": ""}
 
 
 def _draft(evidence: Evidence, symptom: str, objections: list[dict] = ()) -> dict:
@@ -373,14 +377,14 @@ def write_brief(evidence: Evidence, symptom: str) -> dict:
                 brief["headline"] = plain_headline
     except (llm.LlmError, AttributeError, json.JSONDecodeError, KeyError) as exc:
         fallback = template_brief(evidence, symptom)
-        fallback["model"] = f"none, fixed template (the model step failed: {exc})"
+        fallback["why"] = f"the model step failed: {exc}"
         return fallback
     del brief["unresolved"]
     if not brief["sentences"]:
         fallback = template_brief(evidence, symptom)
-        fallback["model"] = "none, fixed template (the model's sentences had no valid citations)"
+        fallback["why"] = "none of the model's sentences passed the checks"
         fallback["dropped"] = brief["dropped"]
         return fallback
-    brief["model"] = llm.model_name()
+    brief["writer"] = "model"  # which model is a setting, and is not written into the record
     brief["rejected"] = rejected  # what the checks said about the first draft, if it was sent back
     return brief

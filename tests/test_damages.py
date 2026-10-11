@@ -6,6 +6,7 @@ import sqlite3
 from whodunit import damages
 
 CULPRIT, LATER, EARLIER = "c" * 40, "d" * 40, "a" * 40
+PRICES = {"small": (1.0, 5.0)}  # dollars per million tokens in and out, for the one model these traces name
 ASKED = "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks."
 
 
@@ -25,7 +26,7 @@ class Traces:
         tags = f"commit:{commit}" + (f" case:{case}" if case else "")
         self.db.execute("insert into runs values (?, 'refund-agent', 0, ?, ?, ?, ?, ?)", (trace, status, int(status == "error"), findings, at or self.count * 1000.0, asked))
         self.db.execute("insert into spans values (?, 'run_info', 'CHAIN', ?, '{}', 0, null, 0, 0)", (trace, tags))
-        self.db.execute("insert into spans values (?, 'chat', 'LLM', '', '', 0, 'claude-haiku', ?, ?)", (trace, *tokens))
+        self.db.execute("insert into spans values (?, 'chat', 'LLM', '', '', 0, 'small', ?, ?)", (trace, *tokens))
         for order, amount in refunds:
             self.db.execute("insert into spans values (?, 'issue_refund', 'TOOL', '', ?, 0, null, 0, 0)", (trace, json.dumps({"order_id": order, "refunded": amount})))
         return trace
@@ -44,8 +45,8 @@ def test_only_runs_that_fail_this_cases_check_are_its_damage():
     traces.run(EARLIER, ASKED, refunds=[("2002", 30.0)])  # before the culprit, so not in the window
     traces.run(CULPRIT, ASKED, refunds=[("2002", 30.0)], case="strangers-paid/1")  # Whodunit's own replay
     since_culprit = [CULPRIT, LATER]
-    counted = damages.count(traces, "refund-agent", commits=since_culprit, case_id="strangers-paid")
-    counted = damages.count_case(traces, counted, "refund-agent", since_culprit, [(ASKED, [])])
+    counted = damages.count(traces, "refund-agent", commits=since_culprit, case_id="strangers-paid", prices=PRICES)
+    counted = damages.count_case(traces, counted, "refund-agent", since_culprit, [(ASKED, [])], prices=PRICES)
     assert counted.runs == 4 and counted.replay_runs == 1
     assert (counted.case_runs, counted.case_bad) == (2, 1)  # the two runs that errored or were flagged for other reasons are not counted
     assert (counted.wrongly_paid, counted.withheld) == (30.0, 0.0)
@@ -67,6 +68,6 @@ def test_replays_from_a_later_experiment_are_not_billed_to_the_investigation():
     for at in (10_000.0, 11_000.0, 12_000.0):
         traces.run(CULPRIT, ASKED, case="strangers-paid/1", at=at)
     traces.run(CULPRIT, ASKED, case="strangers-paid/2", at=90_000.0)  # plain bisect, tried on the same case hours later
-    everything = damages.count(traces, "refund-agent", commits=[CULPRIT], case_id="strangers-paid")
-    mine = damages.count(traces, "refund-agent", commits=[CULPRIT], case_id="strangers-paid", replays_between=(9_000.0, 13_000.0))
+    everything = damages.count(traces, "refund-agent", commits=[CULPRIT], case_id="strangers-paid", prices=PRICES)
+    mine = damages.count(traces, "refund-agent", commits=[CULPRIT], case_id="strangers-paid", prices=PRICES, replays_between=(9_000.0, 13_000.0))
     assert (everything.replay_runs, mine.replay_runs) == (4, 3) and mine.replay_usd < everything.replay_usd + 1e-9

@@ -6,6 +6,7 @@ nothing outside the standard library.
 
 import json
 import os
+import re
 import urllib.error
 import urllib.request
 
@@ -67,6 +68,27 @@ class Mcp:
             return json.loads(text)
         except json.JSONDecodeError:
             return text
+
+
+MODEL_ID = re.compile(r"\b(?:claude|gpt|gemini|qwen|llama|mistral)(?:[-:.]?\d[\w.:\-]*|-[a-z][\w.:\-]*)", re.I)  # a family name with a version or a variant after it
+SDK_PREFIX = re.compile(r"\b(?:openai|anthropic|litellm)\.(?=[a-z_]+\.)", re.I)
+
+
+def unnamed(text: str) -> str:
+    """Trace text with model ids and SDK names taken out, for anything that ends up in a record.
+
+    A case file names no model and no vendor. An id becomes "small model" or "larger model" when
+    its name says which, and a span called after an SDK keeps only the call's own name. Span ids
+    are untouched, so the run can still be looked up as it was traced.
+    """
+    def tier(match: re.Match) -> str:
+        name = match.group(0).lower().rstrip(".:-")
+        rest = match.group(0)[len(name):]  # a full stop that ended the sentence, say
+        if any(word in name for word in ("haiku", "mini", "nano", "-ha")):
+            return "small model" + rest
+        return ("larger model" if any(word in name for word in ("sonnet", "opus", "-so", "-op")) else "model") + rest
+
+    return SDK_PREFIX.sub("", MODEL_ID.sub(tier, text))
 
 
 def select_all(mcp: Mcp, sql: str, cap: int = 5000) -> list[dict]:

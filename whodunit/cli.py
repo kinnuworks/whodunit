@@ -229,7 +229,7 @@ def motive(args) -> int:
         print(found.note)
     if not found.request:
         return 1
-    print(f"Asked of {found.agent or 'the coding agent'} ({found.model or 'model unknown'}) at {found.request_time}:")
+    print(f"Asked of the coding agent at {found.request_time}:")
     print()
     for line in found.request.splitlines():
         print(f"    {line}")
@@ -343,7 +343,8 @@ def _print_brief(written: dict, evidence) -> None:
     print()
     for objection in written.get("rejected") or []:
         print(f"A first draft was sent back: \"{objection['text']}\" {objection['problem']}.")
-    print(f"Written by: {written['model']}. Sentences cut by the rule checks: {len(written.get('dropped', []))}.")
+    how = "Written by a model" if written.get("writer") == "model" else "Written from the fixed template" + (f", because {written['why']}" if written.get("why") else "")
+    print(f"{how}. Sentences cut by the rule checks: {len(written.get('dropped', []))}.")
     for note in evidence.notes:
         print(f"Note: {note}")
 
@@ -503,7 +504,7 @@ def investigate(args) -> int:
     if not load_record(path).get("brief") or args.redo_brief:
         brief(args)
         written = load_record(path)
-        note("brief", f"Written by {written['brief']['model']}. Motive: {'on record' if written['motive'].get('request') else written['motive'].get('note') or 'none'}")
+        note("brief", f"Written by {'a model' if written['brief'].get('writer') == 'model' else 'the fixed template'}. Motive: {'on record' if written['motive'].get('request') else written['motive'].get('note') or 'none'}")
     code = ruling(args)
     if code != 0:
         note("ruling", "Waiting for the owner. Give it with `whodunit ruling <case> --answer revert` or `--answer patch`, then run investigate again.")

@@ -11,7 +11,7 @@ The project is Whodunit: given an AI agent that used to work and now fails, find
 Checked before writing any code:
 
 - neatroots 0.2.6 is running on port 4100 with 0 runs so far. Its local model is not installed, so checks will be rule checks for now.
-- The hackathon model gateway lists a small Haiku model. Three parallel calls came back in about 1.4 seconds each, so replays can run a few at a time.
+- The hackathon model gateway lists a small model. Three parallel calls came back in about 1.4 seconds each, so replays can run a few at a time.
 - In a throwaway repo, `entire enable` kept the redaction settings that were already in `.entire/settings.json` and installed 9 agent hooks plus 5 git hooks. Email and phone redaction is on here from the first commit because the session transcripts in this repo are public.
 
 Next: turn Entire on, get the refund agent running with traces going to neatlogs and neatroots, and verify the first checkpoint.
@@ -24,7 +24,7 @@ What was run and what came back:
 
 - neatroots: `python -m neatlogs doctor --probe` passed all 8 checks against port 4100. Ten agent runs landed under the `refund-agent` workflow (54 spans) with the full span tree, for example run `ffbdcba4` (3 model calls, 2 tool calls, 156 tokens).
 - neatlogs cloud: the same probe passed against `ingest.neatlogs.com`, and `search_traces` over MCP found the run that refunded order 1002 through the gateway (trace `61e879c3`, 6 spans, 2,792 tokens).
-- Gateway model `claude-haiku` refunded order 1001 for 42.00 and refused order 2002 because it belongs to another customer. Both answers are correct.
+- The gateway's small model refunded order 1001 for 42.00 and refused order 2002 because it belongs to another customer. Both answers are correct.
 - Whole-agent replay works: `neatroots replay ffbdcba4... --input "..."` started run `5b20f1eb` and the agent picked the new input up from `NEATROOTS_REPLAY_INPUT`.
 
 Found out along the way:
@@ -86,7 +86,7 @@ Two changes from the brief, both made because of the simulator. The prior on the
 
 The first try at bisecting a flaky bug in the real agent was thrown away. Three things were going on:
 
-- neatroots now has a local model switched on (`qwen2.5:3b-16k` through Ollama), which it did not at 7 PM. Its `ignored-tool-error` check runs that model on incoming runs, so 4 replays at a time queued model work behind every run, on a machine already busy with other jobs. Load average passed 300 and a 3 second replay took over 2 minutes.
+- neatroots now has a small local model switched on, which it did not at 7 PM. Its `ignored-tool-error` check runs that model on incoming runs, so 4 replays at a time queued model work behind every run, on a machine already busy with other jobs. Load average passed 300 and a 3 second replay took over 2 minutes.
 - Replays then hit the 120 second timeout and were counted as failures, which they were not.
 - The timeout killed `uv` and left the agent process running. `run_command` now stops the whole process group, with a test.
 
@@ -372,3 +372,19 @@ Two more things turned up while checking each page against its record:
 
 - `half-done-batch` said "No fix was made" and listed none of its three tries, although an earlier entry in this log claims the case file lists all three. It lists them now, under "Not fixed."
 - Two records carried a stored note saying "two patches were not proven". It now says they did not clear the bar, to match the wording change from earlier today.
+
+### 4:55 PM, no model and no assistant by name
+
+The review was right. Every case page printed "Written by:" followed by a model id. Every record with a motive named the coding assistant and its model. The trace outlines in the records carried the replay model's id and a span named after an SDK.
+
+What changed:
+
+- A brief records who wrote it as "model" or "template", and for a template why. Which model it was is a setting and stays out of the record. The page says "Written by a model."
+- The motive no longer has fields for the assistant or its model. `whodunit motive` says "the coding agent".
+- Trace outlines and run comparisons go through one function on their way into a record. A model id becomes "small model" or "larger model", and a span named after an SDK keeps only the call's own name. Span ids are untouched, so the run can still be looked up as it was traced.
+- The eight records in `cases/` and `evidence/` were rewritten the same way, and the six pages redrawn.
+- Three earlier entries in this log named a model. They now say "a small model".
+
+What is left, on purpose. Three kinds of place still carry a vendor's name, because they quote the agent under investigation and changing a quotation would make the evidence untrue: the culprit's diff, the changed code as it reads after the commit, and the subject line of one suspect commit. That shows on three of the six pages. It is the owner's call whether those should be masked as well.
+
+Also left: `victims/refund-agent/` and its README, which are the thing being investigated and whose history was made by the second session. `eval/ask.sh` and `whodunit/llm.py` name a command and model ids because a command and an API call need them. The price table in `whodunit/damages.py` is keyed by the model name on a trace span. The screenshots in `evidence/` still show the old line, and are due to be retaken in stage 3.

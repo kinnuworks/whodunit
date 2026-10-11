@@ -33,8 +33,6 @@ class Motive:
     subject: str
     checkpoint: str | None = None
     session: str | None = None
-    agent: str | None = None
-    model: str | None = None
     request: str | None = None  # the prompt that led to the commit
     message: str = ""  # the commit message body, which is all there is when no session can be read
     request_id: str | None = None
@@ -183,7 +181,7 @@ def find_motive(repo: str | Path, sha: str) -> Motive:
         motive.note = "The checkpoint has no transcript with a prompt from before this commit."
         return motive
     found = best
-    motive.session, motive.agent, motive.model = (sessions[chosen].get(k) for k in ("session_id", "agent", "model"))
+    motive.session = sessions[chosen].get("session_id")  # which assistant and model it was is left out of the record
     if len(sessions) > 1:
         motive.note = (f"This checkpoint holds {len(sessions)} sessions. " + (
             "The one that edited the commit's files was used." if best_score >= 1 else "None of them edited the commit's files, so the request shown may not be the cause of this commit."))
