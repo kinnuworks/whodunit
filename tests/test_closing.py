@@ -241,6 +241,24 @@ def test_edits_are_applied_only_when_they_match_once(tmp_path):
     assert "matched 2 places" in problems and "b.py is not one of the files" in problems
 
 
+def test_a_fix_is_committed_as_a_bot_when_the_machine_has_no_git_identity(tmp_path, monkeypatch):
+    # A clean CI runner: no name, no address, and git told not to guess them.
+    nobody = tmp_path / "gitconfig"
+    nobody.write_text("[user]\n\tuseConfigOnly = true\n")
+    monkeypatch.setenv("GIT_CONFIG_GLOBAL", str(nobody))
+    monkeypatch.setenv("GIT_CONFIG_NOSYSTEM", "1")
+    for name in ("GIT_AUTHOR_NAME", "GIT_AUTHOR_EMAIL", "GIT_COMMITTER_NAME", "GIT_COMMITTER_EMAIL", "EMAIL"):
+        monkeypatch.delenv(name, raising=False)
+    made = stub_history(tmp_path / "repo", suspects=4, culprit=2)
+    done = fixes.revert(made["repo"], made["culprit"], made["shas"][-1], "stub-bonus")
+    assert done.commit, done.note
+    assert git(made["repo"], "log", "-1", "--format=%an <%ae> / %cn <%ce>", done.commit) == "whodunit <whodunit@whodunit.invalid> / whodunit <whodunit@whodunit.invalid>"
+    # An identity that is set is left alone.
+    nobody.write_text("[user]\n\tuseConfigOnly = true\n\tname = Ada\n\temail = ada@example.invalid\n")
+    again = fixes.revert(made["repo"], made["culprit"], made["shas"][-1], "stub-bonus")
+    assert git(made["repo"], "log", "-1", "--format=%an <%ae>", again.commit) == "Ada <ada@example.invalid>"
+
+
 def test_revert_fixes_the_stub_and_the_whole_pipeline_runs(tmp_path, monkeypatch, capsys):
     monkeypatch.setenv("WHODUNIT_LLM", "none")
     monkeypatch.chdir(tmp_path)  # rulings/ and cases/ are written where the command runs

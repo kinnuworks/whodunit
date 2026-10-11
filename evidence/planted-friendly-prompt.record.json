@@ -585,7 +585,6 @@
   "request_time": null,
   "earlier_requests": [],
   "steps": [],
-  "link": null,
   "note": "This commit has no Entire checkpoint, so there is no recorded request behind it."
  },
  "evidence": {

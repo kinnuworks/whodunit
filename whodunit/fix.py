@@ -5,6 +5,7 @@ checked the same way. Nothing here pushes or opens a pull request. That stays wi
 """
 
 import math
+import os
 import random
 import re
 import shutil
@@ -153,9 +154,26 @@ class Fix:
     files: list[str] = field(default_factory=list)
 
 
+BOT = {"user.name": "whodunit", "user.email": "whodunit@whodunit.invalid"}  # .invalid is reserved, so this can never be someone's address
+
+
+def _identity(worktree: Path) -> list[str]:
+    """Git options that sign the commit as a bot, for whichever of name and address the machine has not set.
+
+    A clean CI runner has no git identity, and `git commit` refuses to guess one there. An
+    identity that is set, in git's config or in the environment, is always left alone.
+    """
+    options = []
+    for key, variables in (("user.name", ("GIT_AUTHOR_NAME", "GIT_COMMITTER_NAME")), ("user.email", ("GIT_AUTHOR_EMAIL", "GIT_COMMITTER_EMAIL"))):
+        configured = subprocess.run(["git", "-C", str(worktree), "config", "--get", key], capture_output=True, text=True).stdout.strip()
+        if not configured and not all(os.environ.get(name) for name in variables):
+            options += ["-c", f"{key}={BOT[key]}"]
+    return options
+
+
 def _commit(worktree: Path, message: str) -> str:
     subprocess.run(["git", "-C", str(worktree), "add", "-A"], check=True, capture_output=True)
-    done = subprocess.run(["git", "-C", str(worktree), "commit", "-q", "-m", message], capture_output=True, text=True)
+    done = subprocess.run(["git", "-C", str(worktree), *_identity(worktree), "commit", "-q", "-m", message], capture_output=True, text=True)
     if done.returncode != 0:
         raise RuntimeError(f"the fix could not be committed: {(done.stderr or done.stdout).strip()[:300]}")
     return git(worktree, "rev-parse", "HEAD").strip()

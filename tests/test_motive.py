@@ -64,3 +64,23 @@ def test_commit_without_a_checkpoint_says_so(tmp_path):
     assert motive.checkpoint is None and motive.request is None
     assert "no Entire checkpoint" in motive.note
     assert checkpoint_link(made["repo"], made["culprit"]) is None
+
+
+def test_the_checkpoint_link_is_worked_out_when_the_page_is_drawn(tmp_path, monkeypatch):
+    import json
+    import subprocess
+
+    from whodunit.cli import main
+
+    made = stub_history(tmp_path / "repo", suspects=2, culprit=1)
+    record_file = tmp_path / "c.record.json"
+    record = {"case": {"id": "c", "repo": str(made["repo"])}, "suspects": [],
+              "motive": {"sha": made["culprit"], "subject": "s", "checkpoint": "abc123def456", "request": "Make it friendlier", "request_time": "2026-10-10T12:00:00+00:00"}}
+    record_file.write_text(json.dumps(record))
+    monkeypatch.chdir(tmp_path)
+    assert main(["open-case", "c.toml", "--record", str(record_file), "--no-open"]) == 0
+    assert "entire.io" not in (tmp_path / "c.casefile.html").read_text()  # no remote yet, so no link, and none is made up
+    subprocess.run(["git", "-C", str(made["repo"]), "remote", "add", "origin", "git@github.com:someone/whodunit.git"], check=True)
+    assert main(["open-case", "c.toml", "--record", str(record_file), "--no-open"]) == 0
+    assert f'https://entire.io/gh/someone/whodunit/commit/{made["culprit"]}' in (tmp_path / "c.casefile.html").read_text()
+    assert "link" not in json.loads(record_file.read_text())["motive"]  # the record is not touched, so it cannot go stale

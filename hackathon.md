@@ -402,3 +402,14 @@ The rules that came out of today are in the brief as well: damage is only the ru
 The entry of 1:21 AM on 11 October, about other teams' entries, is removed from this log in an ordinary commit. The history is not rewritten, so the text is still in the earlier commits. One line of it was about this build and is kept, moved into the 1:40 AM entry: a test was failing at the time. That test, the end to end run on the real agent with a scripted model, was run again just now and passes in 38 seconds.
 
 `evidence/neathack-bingo.png` is moved to `pitch/`. Nothing in `evidence/` linked to it. What happens to it is the owner's call.
+
+### 4:56 PM, getting ready to go public, without pushing
+
+Four small things, each checked against the code first. All four were as the review said.
+
+- The fix commit took whatever git identity was around, and a clean CI runner has none. `whodunit/fix.py` now signs as `whodunit <whodunit@whodunit.invalid>` for whichever of name and address is not set, and leaves a set identity alone. The test hides the machine's git config and tells git not to guess. It fails without the change.
+- The checkpoint link was worked out when the motive was recorded, and there was no remote then, so all six records held an empty link that would have stayed empty after the push. The link is no longer stored. It is worked out from the repo's remote each time a page is drawn. With no remote there is still no link on any page, which is the truth for now.
+- A root `LICENSE`, Apache-2.0, the same text as the victim's, and a short section in the README.
+- `pitch/posts.md` number 6 said six customers were owed 60.00 each. The record has 360.00 withheld across six runs: three requests owed 90.00 and three owed 30.00. The average is 60.00 and nobody was owed that. Corrected.
+
+That is the end of stage 1. Nothing was pushed, posted, written to cfo.ai or launched. Larger-model calls for the two rewritten briefs came to about 40 cents, and no replays were made.

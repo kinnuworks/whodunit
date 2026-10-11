@@ -39,7 +39,6 @@ class Motive:
     request_time: str | None = None
     earlier_requests: list[str] = field(default_factory=list)  # prompts before it in the same session, oldest first
     steps: list[Step] = field(default_factory=list)
-    link: str | None = None
     note: str = ""  # why something is missing
 
     def to_dict(self) -> dict:
@@ -56,7 +55,11 @@ def entire(repo: str | Path, *args: str) -> str | None:
 
 
 def checkpoint_link(repo: str | Path, sha: str) -> str | None:
-    """https://entire.io/gh/OWNER/REPO/commit/FULL_SHA, if the repo has a GitHub remote."""
+    """https://entire.io/gh/OWNER/REPO/commit/FULL_SHA, if the repo has a GitHub remote.
+
+    This is asked for when a page is drawn and is not kept in the record. A record written
+    before the repo had a remote would otherwise carry an empty link for good.
+    """
     try:
         url = git(repo, "remote", "get-url", "origin").strip()
     except RuntimeError:
@@ -145,7 +148,7 @@ def find_motive(repo: str | Path, sha: str) -> Motive:
     ).strip().split("\x00")
     body = git(repo, "show", "-s", "--format=%b", full)
     body = "\n".join(line for line in body.splitlines() if not re.match(r"^[A-Za-z-]+: ", line)).strip()  # drop trailers
-    motive = Motive(sha=full, subject=subject, link=checkpoint_link(repo, full), message=body)
+    motive = Motive(sha=full, subject=subject, message=body)
     if not trailer.strip():
         motive.note = "This commit has no Entire checkpoint, so there is no recorded request behind it."
         return motive

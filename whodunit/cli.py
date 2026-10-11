@@ -14,7 +14,7 @@ from . import casefile
 from . import damages as damage
 from . import fix as fixes
 from . import ruling as rulings
-from .motive import find_motive
+from .motive import checkpoint_link, find_motive
 from .neat import NeatError, neatroots
 from .onset import cloud_trend, find_onset, traffic, witness
 from .lineup import linear_scan_cost, plain_bisect, statistical_bisect
@@ -44,10 +44,22 @@ def ablation_path(record_file: Path) -> Path:
     return record_file.with_name(record_file.name.replace(".record.json", "") + ".ablation.json")
 
 
-def with_ablation(record: dict, record_file: Path) -> dict:
-    """The record, plus the ablation run if there is one on disk. It is shown on the page and not saved into the record."""
+def for_page(record: dict, record_file: Path) -> dict:
+    """The record as the page needs it, with two things added that are looked up fresh and never saved.
+
+    One is the ablation run, if there is one on disk. The other is the link to the culprit's
+    Entire checkpoint, which depends on the repo's remote and so can change after the record
+    was written.
+    """
+    shown = dict(record)
     path = ablation_path(record_file)
-    return {**record, "ablation": json.loads(path.read_text())} if path.is_file() else record
+    if path.is_file():
+        shown["ablation"] = json.loads(path.read_text())
+    motive = record.get("motive") or {}
+    if motive.get("checkpoint") and motive.get("sha"):
+        repo = Path((record.get("case") or {}).get("repo") or ".")
+        shown["motive"] = {**motive, "link": checkpoint_link(repo if repo.is_dir() else Path.cwd(), motive["sha"])}
+    return shown
 
 
 def _replayed(record: dict) -> None:
@@ -224,7 +236,8 @@ def motive(args) -> int:
         print(json.dumps(found.to_dict(), indent=2))
         return 0 if found.request else 1
     print(f"Commit {found.sha[:12]}  {found.subject}")
-    print(f"Checkpoint: {found.checkpoint or 'none'}" + (f"  {found.link}" if found.link and found.checkpoint else ""))
+    link = checkpoint_link(Path(args.repo).resolve(), found.sha) if found.checkpoint else None
+    print(f"Checkpoint: {found.checkpoint or 'none'}" + (f"  {link}" if link else ""))
     if found.note:
         print(found.note)
     if not found.request:
@@ -614,7 +627,7 @@ def open_case(args) -> int:
     if not record:
         print("No cases yet. Lucky you." if not Path(args.case).is_file() else f"No record for this case yet. Run `whodunit lineup {args.case}` first.")
         return 2
-    page = casefile.write(with_ablation(record, path), path.with_name(path.name.replace(".record.json", "") + ".casefile.html"))
+    page = casefile.write(for_page(record, path), path.with_name(path.name.replace(".record.json", "") + ".casefile.html"))
     print(page)
     if not args.no_open:
         import webbrowser
@@ -628,7 +641,7 @@ def casebook(args) -> int:
     folder = Path(args.folder)
     records = []
     for path in sorted(folder.glob("*.record.json")):
-        record = with_ablation(load_record(path), path)
+        record = for_page(load_record(path), path)
         page = casefile.write(record, path.with_name(path.name.replace(".record.json", "") + ".casefile.html"))
         records.append((page.name, record))
     records.sort(key=lambda item: -len(item[1].get("suspects", [])))

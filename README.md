@@ -62,6 +62,10 @@ Add `flaky-lookup 40 27` to the `planted.py` line for 40 commits with a bug at c
 - `tests/planted.py` builds histories with a known culprit. The tests and the demo use the same builder.
 - `AGENTS.md` is the working brief for anyone writing code here.
 
+## Licence
+
+Whodunit is licensed under Apache-2.0. The text is in [LICENSE](LICENSE). The refund agent in `victims/refund-agent/` began as an example from neatroots, which is under the same licence, and keeps its own copy.
+
 ## Models and keys
 
 Keys live in `.env`, which git ignores. `.env.example` lists them. The code that needs a key reads the file itself.
