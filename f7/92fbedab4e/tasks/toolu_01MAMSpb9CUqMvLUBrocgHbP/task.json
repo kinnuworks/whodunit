@@ -1,0 +1,15 @@
+{
+  "tool_use_id": "toolu_01MAMSpb9CUqMvLUBrocgHbP",
+  "agent_id": "aaa842fc56163dfc8",
+  "subagent_type": "general-purpose",
+  "task_description": "Score the top field entries",
+  "token_usage": {
+    "input_tokens": 110,
+    "cache_creation_tokens": 278090,
+    "cache_read_tokens": 10002248,
+    "output_tokens": 1568,
+    "api_call_count": 55
+  },
+  "started_at": "2026-10-11T13:15:49.611854+05:30",
+  "completed_at": "2026-10-11T13:30:54.452525+05:30"
+}
