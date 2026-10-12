@@ -1,0 +1,35 @@
+# An agent Whodunit did not write, with a history it did not grow.
+# The repo is https://github.com/jaxsonsprinkles/support-agent-demo by Jaxson Sprinkles. Run this with
+# `whodunit lineup cases/outside/refund-amount.toml --repo <a clone of it> --no-graph`.
+# The request and what a right run looks like are that repo's own eval case `rw1`, from evals/cases.jsonl.
+id = "outside-refund-amount"
+symptom = "Refunds inside the return window go out for the wrong amount: 6400 on an order of 64.00."
+good = "1b40b27"
+bad = "0ecffc0"
+build = ["uv", "run", "-q", "python", "-c", "import agent, tools"]
+run = ["uv", "run", "-q", "python", "-m", "agent", "{input}"]
+# This agent has no exit code for "the provider failed". It dies on the exception, which is then the last line it prints.
+void_stderr = ["APIConnectionError", "APITimeoutError", "RateLimitError", "InternalServerError", "AuthenticationError", "PermissionDeniedError", "NotFoundError", "Budget", "overloaded"]
+void_waits = [20, 45]  # the gateway limits by the minute
+timeout = 180.0
+
+[check]
+kind = "calls"  # the agent prints {"reply": ..., "tool_calls": [{"name": ..., "args": ...}]}
+
+[env]
+ANTHROPIC_BASE_URL = "https://litellm.vision.aivar.app"  # the hackathon gateway, which answers in the shape this agent's SDK speaks
+AGENT_MODEL = "claude-haiku"  # the gateway's name for the small model. The same one at every commit.
+NEATLOGS_API_KEY = ""  # the agent's own tracing stays off, so its runs go to nobody's project
+
+[env_from]
+ANTHROPIC_API_KEY = "LITELLM_API_KEY"  # a name in the runner's .env. The value is never written down.
+
+[[inputs]]
+text = "Order 1007 arrived broken, I want my money back"
+first_call = "lookup_order"
+must_call = ["lookup_order", "issue_refund"]
+must_not_call = ["escalate_to_human", "cancel_order"]
+call_counts = { issue_refund = 1 }
+call_args = [{ tool = "issue_refund", args = { order_id = "1007", amount = 64.0 } }]
+reply_regex = ['\$\s?64(\.00)?(?![\d,])']
+reply_not_regex = ['6,?400']

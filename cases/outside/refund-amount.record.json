@@ -1,0 +1,1057 @@
+{
+ "case": {
+  "id": "outside-refund-amount",
+  "symptom": "Refunds inside the return window go out for the wrong amount: 6400 on an order of 64.00.",
+  "good": "1b40b27761bfad9a0b81ba694e36579ea09628c8",
+  "bad": "0ecffc0942a5554f963b38601206813855f6bc90",
+  "target": ".",
+  "file": "cases/outside/refund-amount.toml",
+  "repo": "../../../private/tmp/outside/support-agent-demo",
+  "traffic_sent_by": ""
+ },
+ "suspects": [
+  {
+   "sha": "deba2d571258eaabfa09af61dc25568cb6cc8885",
+   "subject": "Make order lookup by email tolerant of case and whitespace",
+   "checkpoint": "01M4KHGDF631V4069BWJCMXEBY",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 9e-05
+  },
+  {
+   "sha": "99c4f3834e7c90c51d8d80431b9fa6ab745660e5",
+   "subject": "Warm up agent tone: friendly opener and 'anything else' closer",
+   "checkpoint": "01M4KHHCHPDDQPEMK9KT4002F9",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 9e-05
+  },
+  {
+   "sha": "c4bbc0ea8628e6f18eb366aec7909d09ac2c0538",
+   "subject": "Add gift cards help-center article",
+   "checkpoint": "01M4KHQB2VKKM7T1GZS63WRWB4",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 9e-05
+  },
+  {
+   "sha": "2790cf2aac58c67b1b3eed707d095cbc4590d280",
+   "subject": "Normalise order ids in lookup_order ('#1042', 'order 1042')",
+   "checkpoint": "01M4KHRRDTRNZ4YC3A9BSGGNTV",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 9e-05
+  },
+  {
+   "sha": "ec19917417dd698353933ed7c40637895b49a8fd",
+   "subject": "Add cancel_order tool for unshipped (processing) orders",
+   "checkpoint": "01M4KHVVPVJ2KT7NQTV6299MZ4",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 9e-05
+  },
+  {
+   "sha": "2051557f27904a86306a4f3f7de3150e447edad7",
+   "subject": "Add --verbose flag to CLI to print readable tool calls after the reply",
+   "checkpoint": "01M4KJ72N94B06V90X5GC7MPEY",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 9e-05
+  },
+  {
+   "sha": "96de44a0d622d2fff27c1de9f2521b8475a54183",
+   "subject": "Apologise and ask to double-check when an order id is unknown",
+   "checkpoint": "01M4KJ8RQY3FNC5FPARPYPMY9W",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 9e-05
+  },
+  {
+   "sha": "d73d989a1bf2b9640a1bd5ee882d16a69dea89b5",
+   "subject": "Add cancel_order edge-case tests: unknown, shipped, delivered, already cancelled",
+   "checkpoint": "01M4KJA1W47CMJCM6P5MJTRGFK",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 9e-05
+  },
+  {
+   "sha": "2f49adb5354949f7c6b3320e4edae0ab0166c507",
+   "subject": "Add address changes help-center article",
+   "checkpoint": "01M4KJEKHN5GHYR96RGRJ6EJ0Q",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 9e-05
+  },
+  {
+   "sha": "59c8b10ccbd078f574b98a4770c84ef2b1d2bad2",
+   "subject": "Make the agent verify replies with search_help and retry uncertain calls",
+   "checkpoint": "01M4KJHJ8HBM3ZFRXF12XWPS0T",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 9e-05
+  },
+  {
+   "sha": "ca150c73c62dc5946ca7b64a7de53fdd7f49792c",
+   "subject": "Cap customer messages at 2000 characters",
+   "checkpoint": "01M4KJK6EVYNM9SCKB1ETM0ZNJ",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 9e-05
+  },
+  {
+   "sha": "22f7fbd223555ae4d10eb2e37e1cd7b7ffa71962",
+   "subject": "Add estimated delivery date to lookup_order for shipped orders",
+   "checkpoint": "01M4KJMSTF1SNY8K8WCRNM5K3M",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 9e-05
+  },
+  {
+   "sha": "875f4bd19ab61f472faa07236851ccf39f441e94",
+   "subject": "Report total wall-clock latency_ms in CLI JSON output",
+   "checkpoint": "01M4KJP80X72EJ5EXZBKXRQ9YN",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.0008
+  },
+  {
+   "sha": "fd61e9c89ae471782d19dd894217ea49ecc6e16c",
+   "subject": "Tell customers refunds typically appear within 5 to 7 business days",
+   "checkpoint": "01M4KJQEN1KXJDPDRP48RYZQFW",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.01319
+  },
+  {
+   "sha": "b0be626692328e15644a54f3100ab7ad6fc09a5b",
+   "subject": "Take and return issue_refund amounts in integer cents to match Stripe",
+   "checkpoint": "01M4KJSW7ZK3SZMTNMAEXEB6EV",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.97934
+  },
+  {
+   "sha": "d80dad7f9e6a1d78b7a4eab3cee69dda38b25651",
+   "subject": "Add tests for issue_refund policy limits and escalate_to_human tickets",
+   "checkpoint": "01M4KJVM527VZ2PHY76PYFJPEJ",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.00177
+  },
+  {
+   "sha": "1cda36a34d48d484524d692ac96688f9b98953c9",
+   "subject": "Include the order id in escalate_to_human ticket summaries",
+   "checkpoint": "01M4KJXM4GD7KBK5H77R3EMRM8",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.00177
+  },
+  {
+   "sha": "f95fc868f7486818b672fd71c0005f91189989ad",
+   "subject": "Add international shipping help-center article",
+   "checkpoint": "01M4KK1GT2ZDEMQDVH6CCYR32S",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.00177
+  },
+  {
+   "sha": "5cee99b62464515ef4e5f5bd60fd28ca136a3c6d",
+   "subject": "Add tools reference and changelog to README",
+   "checkpoint": "01M4KK30VVM1MBA53CS5EG4HFN",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 3e-05
+  },
+  {
+   "sha": "432b0836560343823c8de54f20431177cd5ff4b3",
+   "subject": "Align system prompt refund timing with help center (within 5 business days)",
+   "checkpoint": "01M4KRMSNDVXGTM0S5NM46NZAG",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 3e-05
+  },
+  {
+   "sha": "d9b1680e5c22ce061f752ad7b1ac54fe94d386f5",
+   "subject": "Make search_help tie-break explicit: returns, shipping, warranty, then by id",
+   "checkpoint": "01M4KRQDT8658YEW243Z1TC18P",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 3e-05
+  },
+  {
+   "sha": "f7d82b789e2cb42d7911e4e2831331c5be7dcecc",
+   "subject": "Clarify Tone paragraph: acknowledgement and closing never replace the facts",
+   "checkpoint": "01M4KRRC5QF232A8291EW4ADGY",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 3e-05
+  },
+  {
+   "sha": "67f35219b2a9464f3f978e188b0a22bae8d1d49b",
+   "subject": "Trace each eval case as one neatlogs trace: support_case parent span with tool:<name> and model-call children",
+   "checkpoint": null,
+   "touches_target": true,
+   "alibi": "",
+   "probability": 3e-05
+  },
+  {
+   "sha": "997886d3561f040cd770965103f38dabdf838322",
+   "subject": "Add deliberately flaky search_help (30% timeout, seeded per case/repeat) with retry guidance",
+   "checkpoint": null,
+   "touches_target": true,
+   "alibi": "",
+   "probability": 3e-05
+  },
+  {
+   "sha": "0ecffc0942a5554f963b38601206813855f6bc90",
+   "subject": "Proactively cancel unshipped orders when a customer asks for order status",
+   "checkpoint": "01M4MB8TTG7387FW5J000ES4Z7",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 3e-05
+  }
+ ],
+ "lineup": {
+  "case": "outside-refund-amount",
+  "method": "statistical",
+  "suspects": 25,
+  "commits_tested": 7,
+  "replays": 22,
+  "voided": 1,
+  "timeouts": 0,
+  "seconds": 153.0,
+  "culprit": {
+   "sha": "b0be626692328e15644a54f3100ab7ad6fc09a5b",
+   "subject": "Take and return issue_refund amounts in integer cents to match Stripe",
+   "checkpoint": "01M4KJSW7ZK3SZMTNMAEXEB6EV",
+   "files": [
+    "tests/test_agent.py",
+    "tools/impl.py"
+   ],
+   "probability": 0.9793
+  },
+  "remaining": [
+   {
+    "sha": "b0be626692328e15644a54f3100ab7ad6fc09a5b",
+    "subject": "Take and return issue_refund amounts in integer cents to match Stripe",
+    "probability": 0.9793
+   }
+  ],
+  "failure_rate_before": 0.023,
+  "failure_rate_from": 0.917,
+  "per_input": [
+   {
+    "input": "Order 1007 arrived broken, I want my money back",
+    "replays": 22,
+    "failures": 10,
+    "top": "b0be626692328e15644a54f3100ab7ad6fc09a5b",
+    "probability": 0.9793
+   }
+  ],
+  "linear_scan_commits": 15
+ },
+ "replays": [
+  {
+   "sha": "1b40b27761bfad9a0b81ba694e36579ea09628c8",
+   "input": "Order 1007 arrived broken, I want my money back",
+   "verdict": "pass",
+   "reason": "called lookup_order, issue_refund, and the reply holds what it should",
+   "seconds": 6.1423103749984875,
+   "started": 1791805388.311411,
+   "tag": "outside-refund-amount/5388002",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 4686,
+   "tokens_out": 304
+  },
+  {
+   "sha": "0ecffc0942a5554f963b38601206813855f6bc90",
+   "input": "Order 1007 arrived broken, I want my money back",
+   "verdict": "fail",
+   "reason": "no call to issue_refund had {\"order_id\": \"1007\", \"amount\": 64.0}. It was called with [{\"order_id\": \"1007\", \"amount\": 6400, \"reason\": \"Item arrived broken\"}]",
+   "seconds": 6.152091416995972,
+   "started": 1791805388.311279,
+   "tag": "outside-refund-amount/5388001",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 7180,
+   "tokens_out": 256
+  },
+  {
+   "sha": "0ecffc0942a5554f963b38601206813855f6bc90",
+   "input": "Order 1007 arrived broken, I want my money back",
+   "verdict": "fail",
+   "reason": "no call to issue_refund had {\"order_id\": \"1007\", \"amount\": 64.0}. It was called with [{\"order_id\": \"1007\", \"amount\": 6400, \"reason\": \"Item arrived broken\"}]",
+   "seconds": 5.660743582993746,
+   "started": 1791805394.476992,
+   "tag": "outside-refund-amount/5388004",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 7180,
+   "tokens_out": 256
+  },
+  {
+   "sha": "1b40b27761bfad9a0b81ba694e36579ea09628c8",
+   "input": "Order 1007 arrived broken, I want my money back",
+   "verdict": "pass",
+   "reason": "called lookup_order, issue_refund, and the reply holds what it should",
+   "seconds": 5.879267749958672,
+   "started": 1791805394.4693959,
+   "tag": "outside-refund-amount/5388003",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 4686,
+   "tokens_out": 304
+  },
+  {
+   "sha": "0ecffc0942a5554f963b38601206813855f6bc90",
+   "input": "Order 1007 arrived broken, I want my money back",
+   "verdict": "fail",
+   "reason": "no call to issue_refund had {\"order_id\": \"1007\", \"amount\": 64.0}. It was called with [{\"order_id\": \"1007\", \"amount\": 6400, \"reason\": \"Item arrived broken\"}]",
+   "seconds": 5.578794499975629,
+   "started": 1791805400.363018,
+   "tag": "outside-refund-amount/5388006",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 7180,
+   "tokens_out": 256
+  },
+  {
+   "sha": "1b40b27761bfad9a0b81ba694e36579ea09628c8",
+   "input": "Order 1007 arrived broken, I want my money back",
+   "verdict": "pass",
+   "reason": "called lookup_order, issue_refund, and the reply holds what it should",
+   "seconds": 5.858636417018715,
+   "started": 1791805400.151595,
+   "tag": "outside-refund-amount/5388005",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 4686,
+   "tokens_out": 304
+  },
+  {
+   "sha": "0ecffc0942a5554f963b38601206813855f6bc90",
+   "input": "Order 1007 arrived broken, I want my money back",
+   "verdict": "fail",
+   "reason": "no call to issue_refund had {\"order_id\": \"1007\", \"amount\": 64.0}. It was called with [{\"order_id\": \"1007\", \"amount\": 6400, \"reason\": \"Item arrived broken\"}]",
+   "seconds": 5.482565834012348,
+   "started": 1791805406.0253692,
+   "tag": "outside-refund-amount/5388008",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 7180,
+   "tokens_out": 256
+  },
+  {
+   "sha": "1b40b27761bfad9a0b81ba694e36579ea09628c8",
+   "input": "Order 1007 arrived broken, I want my money back",
+   "verdict": "pass",
+   "reason": "called lookup_order, issue_refund, and the reply holds what it should",
+   "seconds": 5.72031279100338,
+   "started": 1791805405.9588401,
+   "tag": "outside-refund-amount/5388007",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 4686,
+   "tokens_out": 304
+  },
+  {
+   "sha": "0ecffc0942a5554f963b38601206813855f6bc90",
+   "input": "Order 1007 arrived broken, I want my money back",
+   "verdict": "fail",
+   "reason": "no call to issue_refund had {\"order_id\": \"1007\", \"amount\": 64.0}. It was called with [{\"order_id\": \"1007\", \"amount\": 6400, \"reason\": \"Item arrived broken\"}]",
+   "seconds": 5.451750500011258,
+   "started": 1791805411.6936178,
+   "tag": "outside-refund-amount/5388010",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 7180,
+   "tokens_out": 256
+  },
+  {
+   "sha": "1b40b27761bfad9a0b81ba694e36579ea09628c8",
+   "input": "Order 1007 arrived broken, I want my money back",
+   "verdict": "pass",
+   "reason": "called lookup_order, issue_refund, and the reply holds what it should",
+   "seconds": 5.8534837500192225,
+   "started": 1791805411.522432,
+   "tag": "outside-refund-amount/5388009",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 4686,
+   "tokens_out": 304
+  },
+  {
+   "sha": "1b40b27761bfad9a0b81ba694e36579ea09628c8",
+   "input": "Order 1007 arrived broken, I want my money back",
+   "verdict": "pass",
+   "reason": "called lookup_order, issue_refund, and the reply holds what it should",
+   "seconds": 5.551469458034262,
+   "started": 1791805417.1592221,
+   "tag": "outside-refund-amount/5388011",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 4686,
+   "tokens_out": 304
+  },
+  {
+   "sha": "0ecffc0942a5554f963b38601206813855f6bc90",
+   "input": "Order 1007 arrived broken, I want my money back",
+   "verdict": "fail",
+   "reason": "no call to issue_refund had {\"order_id\": \"1007\", \"amount\": 64.0}. It was called with [{\"order_id\": \"1007\", \"amount\": 6400, \"reason\": \"Item arrived broken\"}]",
+   "seconds": 5.616833249980118,
+   "started": 1791805417.39049,
+   "tag": "outside-refund-amount/5388012",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 7180,
+   "tokens_out": 256
+  },
+  {
+   "sha": "22f7fbd223555ae4d10eb2e37e1cd7b7ffa71962",
+   "input": "Order 1007 arrived broken, I want my money back",
+   "verdict": "pass",
+   "reason": "called lookup_order, issue_refund, and the reply holds what it should",
+   "seconds": 5.581791208998766,
+   "started": 1791805423.022593,
+   "tag": "outside-refund-amount/5388013",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 5974,
+   "tokens_out": 258
+  },
+  {
+   "sha": "22f7fbd223555ae4d10eb2e37e1cd7b7ffa71962",
+   "input": "Order 1007 arrived broken, I want my money back",
+   "verdict": "pass",
+   "reason": "called lookup_order, issue_refund, and the reply holds what it should",
+   "seconds": 5.792833624989726,
+   "started": 1791805423.023503,
+   "tag": "outside-refund-amount/5388014",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 5974,
+   "tokens_out": 258
+  },
+  {
+   "sha": "f95fc868f7486818b672fd71c0005f91189989ad",
+   "input": "Order 1007 arrived broken, I want my money back",
+   "verdict": "fail",
+   "reason": "no call to issue_refund had {\"order_id\": \"1007\", \"amount\": 64.0}. It was called with [{\"order_id\": \"1007\", \"amount\": 6400, \"reason\": \"Item arrived broken\"}]",
+   "seconds": 6.54713958298089,
+   "started": 1791805428.831716,
+   "tag": "outside-refund-amount/5388016",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 6564,
+   "tokens_out": 273
+  },
+  {
+   "sha": "f95fc868f7486818b672fd71c0005f91189989ad",
+   "input": "Order 1007 arrived broken, I want my money back",
+   "verdict": "fail",
+   "reason": "no call to issue_refund had {\"order_id\": \"1007\", \"amount\": 64.0}. It was called with [{\"order_id\": \"1007\", \"amount\": 6400, \"reason\": \"Item arrived broken\"}]",
+   "seconds": 6.8320922090206295,
+   "started": 1791805428.831619,
+   "tag": "outside-refund-amount/5388015",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 6564,
+   "tokens_out": 273
+  },
+  {
+   "sha": "b0be626692328e15644a54f3100ab7ad6fc09a5b",
+   "input": "Order 1007 arrived broken, I want my money back",
+   "verdict": "fail",
+   "reason": "no call to issue_refund had {\"order_id\": \"1007\", \"amount\": 64.0}. It was called with [{\"order_id\": \"1007\", \"amount\": 6400, \"reason\": \"Item arrived broken\"}]",
+   "seconds": 5.573196417011786,
+   "started": 1791805435.680994,
+   "tag": "outside-refund-amount/5388018",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 6216,
+   "tokens_out": 272
+  },
+  {
+   "sha": "b0be626692328e15644a54f3100ab7ad6fc09a5b",
+   "input": "Order 1007 arrived broken, I want my money back",
+   "verdict": "fail",
+   "reason": "no call to issue_refund had {\"order_id\": \"1007\", \"amount\": 64.0}. It was called with [{\"order_id\": \"1007\", \"amount\": 6400, \"reason\": \"Item arrived broken\"}]",
+   "seconds": 5.63519429101143,
+   "started": 1791805435.6800718,
+   "tag": "outside-refund-amount/5388017",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 6216,
+   "tokens_out": 272
+  },
+  {
+   "sha": "875f4bd19ab61f472faa07236851ccf39f441e94",
+   "input": "Order 1007 arrived broken, I want my money back",
+   "verdict": "pass",
+   "reason": "called lookup_order, issue_refund, and the reply holds what it should",
+   "seconds": 5.560409249970689,
+   "started": 1791805441.330693,
+   "tag": "outside-refund-amount/5388019",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 5974,
+   "tokens_out": 258
+  },
+  {
+   "sha": "875f4bd19ab61f472faa07236851ccf39f441e94",
+   "input": "Order 1007 arrived broken, I want my money back",
+   "verdict": "pass",
+   "reason": "called lookup_order, issue_refund, and the reply holds what it should",
+   "seconds": 5.631306667055469,
+   "started": 1791805441.330786,
+   "tag": "outside-refund-amount/5388020",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 5974,
+   "tokens_out": 258
+  },
+  {
+   "sha": "fd61e9c89ae471782d19dd894217ea49ecc6e16c",
+   "input": "Order 1007 arrived broken, I want my money back",
+   "verdict": "pass",
+   "reason": "called lookup_order, issue_refund, and the reply holds what it should",
+   "seconds": 7.412342916009948,
+   "started": 1791805446.978215,
+   "tag": "outside-refund-amount/5388022",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 6044,
+   "tokens_out": 282
+  },
+  {
+   "sha": "fd61e9c89ae471782d19dd894217ea49ecc6e16c",
+   "input": "Order 1007 arrived broken, I want my money back",
+   "verdict": "pass",
+   "reason": "called lookup_order, issue_refund, and the reply holds what it should",
+   "seconds": 29.499850250023883,
+   "started": 1791805446.978084,
+   "tag": "outside-refund-amount/5388021",
+   "voided": 1,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 6044,
+   "tokens_out": 282
+  }
+ ],
+ "rounds": [
+  {
+   "commits": [
+    "1b40b27761bfad9a0b81ba694e36579ea09628c8",
+    "0ecffc0942a5554f963b38601206813855f6bc90",
+    "1b40b27761bfad9a0b81ba694e36579ea09628c8",
+    "0ecffc0942a5554f963b38601206813855f6bc90",
+    "1b40b27761bfad9a0b81ba694e36579ea09628c8",
+    "0ecffc0942a5554f963b38601206813855f6bc90",
+    "1b40b27761bfad9a0b81ba694e36579ea09628c8",
+    "0ecffc0942a5554f963b38601206813855f6bc90",
+    "1b40b27761bfad9a0b81ba694e36579ea09628c8",
+    "0ecffc0942a5554f963b38601206813855f6bc90",
+    "1b40b27761bfad9a0b81ba694e36579ea09628c8",
+    "0ecffc0942a5554f963b38601206813855f6bc90"
+   ],
+   "verdicts": [
+    "pass",
+    "fail",
+    "pass",
+    "fail",
+    "pass",
+    "fail",
+    "pass",
+    "fail",
+    "pass",
+    "fail",
+    "pass",
+    "fail"
+   ],
+   "top": [
+    [
+     "deba2d571258eaabfa09af61dc25568cb6cc8885",
+     0.04
+    ],
+    [
+     "99c4f3834e7c90c51d8d80431b9fa6ab745660e5",
+     0.04
+    ],
+    [
+     "c4bbc0ea8628e6f18eb366aec7909d09ac2c0538",
+     0.04
+    ]
+   ],
+   "posterior": [
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04
+   ]
+  },
+  {
+   "commits": [
+    "22f7fbd223555ae4d10eb2e37e1cd7b7ffa71962",
+    "22f7fbd223555ae4d10eb2e37e1cd7b7ffa71962"
+   ],
+   "verdicts": [
+    "pass",
+    "pass"
+   ],
+   "top": [
+    [
+     "875f4bd19ab61f472faa07236851ccf39f441e94",
+     0.0749
+    ],
+    [
+     "fd61e9c89ae471782d19dd894217ea49ecc6e16c",
+     0.0749
+    ],
+    [
+     "b0be626692328e15644a54f3100ab7ad6fc09a5b",
+     0.0749
+    ]
+   ],
+   "posterior": [
+    0.0022,
+    0.0022,
+    0.0022,
+    0.0022,
+    0.0022,
+    0.0022,
+    0.0022,
+    0.0022,
+    0.0022,
+    0.0022,
+    0.0022,
+    0.0022,
+    0.0749,
+    0.0749,
+    0.0749,
+    0.0749,
+    0.0749,
+    0.0749,
+    0.0749,
+    0.0749,
+    0.0749,
+    0.0749,
+    0.0749,
+    0.0749,
+    0.0749
+   ]
+  },
+  {
+   "commits": [
+    "f95fc868f7486818b672fd71c0005f91189989ad",
+    "f95fc868f7486818b672fd71c0005f91189989ad"
+   ],
+   "verdicts": [
+    "fail",
+    "fail"
+   ],
+   "top": [
+    [
+     "875f4bd19ab61f472faa07236851ccf39f441e94",
+     0.16
+    ],
+    [
+     "fd61e9c89ae471782d19dd894217ea49ecc6e16c",
+     0.16
+    ],
+    [
+     "b0be626692328e15644a54f3100ab7ad6fc09a5b",
+     0.16
+    ]
+   ],
+   "posterior": [
+    0.0031,
+    0.0031,
+    0.0031,
+    0.0031,
+    0.0031,
+    0.0031,
+    0.0031,
+    0.0031,
+    0.0031,
+    0.0031,
+    0.0031,
+    0.0031,
+    0.16,
+    0.16,
+    0.16,
+    0.16,
+    0.16,
+    0.16,
+    0.0005,
+    0.0005,
+    0.0005,
+    0.0005,
+    0.0005,
+    0.0005,
+    0.0005
+   ]
+  },
+  {
+   "commits": [
+    "b0be626692328e15644a54f3100ab7ad6fc09a5b",
+    "b0be626692328e15644a54f3100ab7ad6fc09a5b"
+   ],
+   "verdicts": [
+    "fail",
+    "fail"
+   ],
+   "top": [
+    [
+     "875f4bd19ab61f472faa07236851ccf39f441e94",
+     0.3152
+    ],
+    [
+     "fd61e9c89ae471782d19dd894217ea49ecc6e16c",
+     0.3152
+    ],
+    [
+     "b0be626692328e15644a54f3100ab7ad6fc09a5b",
+     0.3152
+    ]
+   ],
+   "posterior": [
+    0.0043,
+    0.0043,
+    0.0043,
+    0.0043,
+    0.0043,
+    0.0043,
+    0.0043,
+    0.0043,
+    0.0043,
+    0.0043,
+    0.0043,
+    0.0043,
+    0.3152,
+    0.3152,
+    0.3152,
+    0.0008,
+    0.0008,
+    0.0008,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "commits": [
+    "875f4bd19ab61f472faa07236851ccf39f441e94",
+    "875f4bd19ab61f472faa07236851ccf39f441e94"
+   ],
+   "verdicts": [
+    "pass",
+    "pass"
+   ],
+   "top": [
+    [
+     "fd61e9c89ae471782d19dd894217ea49ecc6e16c",
+     0.4925
+    ],
+    [
+     "b0be626692328e15644a54f3100ab7ad6fc09a5b",
+     0.4925
+    ],
+    [
+     "875f4bd19ab61f472faa07236851ccf39f441e94",
+     0.0067
+    ]
+   ],
+   "posterior": [
+    0.0004,
+    0.0004,
+    0.0004,
+    0.0004,
+    0.0004,
+    0.0004,
+    0.0004,
+    0.0004,
+    0.0004,
+    0.0004,
+    0.0004,
+    0.0004,
+    0.0067,
+    0.4925,
+    0.4925,
+    0.0011,
+    0.0011,
+    0.0011,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "commits": [
+    "fd61e9c89ae471782d19dd894217ea49ecc6e16c",
+    "fd61e9c89ae471782d19dd894217ea49ecc6e16c"
+   ],
+   "verdicts": [
+    "pass",
+    "pass"
+   ],
+   "top": [
+    [
+     "b0be626692328e15644a54f3100ab7ad6fc09a5b",
+     0.9793
+    ],
+    [
+     "fd61e9c89ae471782d19dd894217ea49ecc6e16c",
+     0.0132
+    ],
+    [
+     "d80dad7f9e6a1d78b7a4eab3cee69dda38b25651",
+     0.0018
+    ]
+   ],
+   "posterior": [
+    0.0001,
+    0.0001,
+    0.0001,
+    0.0001,
+    0.0001,
+    0.0001,
+    0.0001,
+    0.0001,
+    0.0001,
+    0.0001,
+    0.0001,
+    0.0001,
+    0.0008,
+    0.0132,
+    0.9793,
+    0.0018,
+    0.0018,
+    0.0018,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ],
+ "replays_until_ms": 1791805476592,
+ "replay_windows": [
+  [
+   1791805386284,
+   1791805476592
+  ]
+ ],
+ "motive": {
+  "sha": "b0be626692328e15644a54f3100ab7ad6fc09a5b",
+  "subject": "Take and return issue_refund amounts in integer cents to match Stripe",
+  "checkpoint": "01M4KJSW7ZK3SZMTNMAEXEB6EV",
+  "session": "582738a6-3219-4e0a-8d75-c2022255cd41",
+  "request": "You are a developer on this repo. Implement the following request, run the tests (uv run pytest), and commit with a clear message. Do not push.\n\nRequest: Return refund amounts in cents to match Stripe: issue_refund should take and return integer cents, with the schema, tool implementation and tests updated. Keep the change contained to the refund tool and its tests.",
+  "message": "issue_refund's amount is now an integer number of US cents (schema type\n\"integer\", e.g. 6400 for $64.00), and the result returns \"amount\" in cents\nplus \"currency\": \"usd\" in place of the old \"amount_usd\" dollar float.\nFloats, strings and bools are rejected rather than guessed at, so a dollar\nvalue passed by mistake (64.0) errors instead of refunding 64 cents. The\norder-total check compares against the total converted to cents.",
+  "request_id": "cc388f60",
+  "request_time": "2026-10-10T18:55:54.654000+00:00",
+  "earlier_requests": [],
+  "steps": [
+   {
+    "id": "47951c04",
+    "kind": "ran",
+    "text": "List files and find refund references",
+    "file": null
+   },
+   {
+    "id": "1a1e0c11",
+    "kind": "read",
+    "text": "tools/impl.py",
+    "file": "tools/impl.py"
+   },
+   {
+    "id": "b9d9e612",
+    "kind": "ran",
+    "text": "Inspect evals reference, cases, and prompt",
+    "file": null
+   },
+   {
+    "id": "164c173d",
+    "kind": "read",
+    "text": "tests/test_agent.py",
+    "file": "tests/test_agent.py"
+   },
+   {
+    "id": "603885a6",
+    "kind": "said",
+    "text": "I've read the refund tool and its tests. Next I'll switch `issue_refund` to integer cents and update the tests.",
+    "file": null
+   },
+   {
+    "id": "9019b320",
+    "kind": "edited",
+    "text": "            \"Refund money to the customer for a delivered order. amount is an integer number of US cents, as in \"\n            \"Stripe (e.g. 6400 for $64.00; convert the order's total_usd by multiplying by 100). \"\n            \"Allowed only if the order was delivered within the last 30 days, has not been refunded already, and \"\n            \"amount does not exceed the order total. Refunds over $500 (50000 cents) must be escalated instead. \"\n            \"Returns a refund id and the refunded amount in integer cents with currency 'usd'.\"\n        ),\n        \"input_schema\": {\n            \"type\": \"object\",\n            \"properties\": {\n                \"order_id\": {\"type\": \"string\"},\n                \"amount\": {\"type\": \"integer\", \"description\": \"Refund amount in US cents, e.g. 6400 for $64.00.\"},",
+    "file": "tools/impl.py"
+   },
+   {
+    "id": "016f3904",
+    "kind": "edited",
+    "text": "    def _tool_issue_refund(self, order_id: str, amount: int, reason: str) -> dict[str, Any]:",
+    "file": "tools/impl.py"
+   },
+   {
+    "id": "64659959",
+    "kind": "edited",
+    "text": "        # Integer cents only, like Stripe: a float (e.g. 64.0) is most likely dollars passed by mistake.\n        if isinstance(amount, bool) or not isinstance(amount, int) or amount <= 0:\n            return {\"error\": \"amount must be a positive integer number of US cents (e.g. 6400 for $64.00)\"}\n        total_cents = round(o[\"total_usd\"] * 100)\n        if amount > total_cents:\n            return {\"error\": f\"amount {amount} cents (${amount / 100:.2f}) exceeds order total \"\n                             f\"{total_cents} cents (${total_cents / 100:.2f})\"}\n        self._refund_seq += 1\n        rid = f\"RF-{self._refund_seq:04d}\"\n        o[\"refund_id\"] = rid\n        return {\"refund_id\": rid, \"order_id\": order_id, \"amount\": amount, \"currency\": \"usd\", \"reason\": reason}",
+    "file": "tools/impl.py"
+   },
+   {
+    "id": "ddd7718b",
+    "kind": "said",
+    "text": "Now the tests:",
+    "file": null
+   },
+   {
+    "id": "183f54ea",
+    "kind": "edited",
+    "text": "def test_refund_ok_in_cents_and_partial():\n    tb = ToolBox()\n    r = tb.call(\"issue_refund\", {\"order_id\": \"1007\", \"amount\": 6400, \"reason\": \"broken\"})\n    assert r[\"amount\"] == 6400 and type(r[\"amount\"]) is int and r[\"currency\"] == \"usd\"\n    assert r[\"refund_id\"].startswith(\"RF-\") and \"amount_usd\" not in r\n    assert \"already refunded\" in tb.call(\"issue_refund\", {\"order_id\": \"1007\", \"amount\": 1, \"reason\": \"x\"})[\"error\"]\n    assert ToolBox().call(\"issue_refund\", {\"order_id\": \"1015\", \"amount\": 7999, \"reason\": \"x\"})[\"amount\"] == 7999  # full $79.99\n    assert ToolBox().call(\"issue_refund\", {\"order_id\": \"1015\", \"amount\": 2000, \"reason\": \"x\"})[\"amount\"] == 2000\n\n\ndef test_refund_schema_takes_integer_cents():\n    schema = next(s for s in TOOL_SCHEMAS if s[\"name\"] == \"issue_refund\")\n    assert schema[\"input_schema\"][\"properties\"][\"amount\"][\"type\"] == \"integer\"\n    assert \"cents\" in schema[\"description\"] and \"6400\" in schema[\"description\"]\n\n\n@pytest.mark.parametrize(\"oid,amt,frag\", [\n    (\"0991\", 8800, \"refund window\"),       # delivered 45 days ago\n    (\"1012\", 2500, \"already refunded\"),\n    (\"1042\", 12900, \"not delivered\"),      # shipped\n    (\"1001\", 4500, \"not delivered\"),       # pro",
+    "file": "tests/test_agent.py"
+   },
+   {
+    "id": "3aa248a2",
+    "kind": "edited",
+    "text": "    ToolBox().call(\"issue_refund\", {\"order_id\": \"1007\", \"amount\": 6400, \"reason\": \"r\"})\n    assert \"error\" not in ToolBox().call(\"issue_refund\", {\"order_id\": \"1007\", \"amount\": 6400, \"reason\": \"r\"})",
+    "file": "tests/test_agent.py"
+   },
+   {
+    "id": "afe167a8",
+    "kind": "edited",
+    "text": "                          tu(\"issue_refund\", {\"order_id\": \"1007\", \"amount\": 6400, \"reason\": \"broken\"}, \"t2\"),\n                          text(\"Refunded $64.00\")])\n    r = run_agent(\"1007 arrived broken\", p)\n    assert r.tool_calls[1][\"result\"][\"amount\"] == 6400 and r.steps == 3",
+    "file": "tests/test_agent.py"
+   },
+   {
+    "id": "72fee4c0",
+    "kind": "edited",
+    "text": "    (\"issue_refund\", {\"order_id\": \"9999\", \"amount\": 500, \"reason\": \"r\"}),",
+    "file": "tests/test_agent.py"
+   },
+   {
+    "id": "629d7b57",
+    "kind": "ran",
+    "text": "Run the test suite",
+    "file": null
+   },
+   {
+    "id": "5edd9c9e",
+    "kind": "said",
+    "text": "All 222 tests pass. Before committing, I'll check how the scripted eval reference behaves now, since it still sends dollar amounts.",
+    "file": null
+   },
+   {
+    "id": "8dcb8adf",
+    "kind": "ran",
+    "text": "Check eval reference refund calls against new tool",
+    "file": null
+   },
+   {
+    "id": "83fc4263",
+    "kind": "said",
+    "text": "The float check works as intended: dollar amounts now get an error instead of silently refunding 64 cents. Next I'll run the scripted reference eval to see what that means end to end.",
+    "file": null
+   },
+   {
+    "id": "6b3d4be8",
+    "kind": "ran",
+    "text": "Run reference evals for refund cases",
+    "file": null
+   },
+   {
+    "id": "b5e25900",
+    "kind": "ran",
+    "text": "Commit the change",
+    "file": null
+   }
+  ],
+  "note": "",
+  "quote_checked": true,
+  "provenance": {
+   "lines": 12,
+   "agree": 12,
+   "disagree": [],
+   "request_agrees": true,
+   "session_agrees": true,
+   "note": ""
+  }
+ }
+}

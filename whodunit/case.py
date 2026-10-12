@@ -38,6 +38,7 @@ class Case:
     # that ends this way is voided and run again, and is never evidence about the commit.
     void_exit_codes: tuple[int, ...] = ()  # exit codes the agent keeps for that
     void_stderr: tuple[str, ...] = ()  # for commits from before it had one: text on the last line of stderr, with a non-zero exit
+    void_waits: tuple[float, ...] = ()  # seconds to wait before each further attempt, for a provider that limits by the minute (default: 2, then 8)
 
     @classmethod
     def load(cls, path: str | Path) -> "Case":
@@ -45,7 +46,7 @@ class Case:
         inputs = tuple(
             CaseInput(text=i["text"], expect={k: v for k, v in i.items() if k != "text"}) for i in data.pop("inputs")
         )
-        for key in ("build", "run", "void_exit_codes", "void_stderr"):
+        for key in ("build", "run", "void_exit_codes", "void_stderr", "void_waits"):
             data[key] = tuple(data.get(key, ()))
         return cls(inputs=inputs, **data)
 

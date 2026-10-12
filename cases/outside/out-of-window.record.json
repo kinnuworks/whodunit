@@ -1,0 +1,502 @@
+{
+ "case": {
+  "id": "outside-out-of-window",
+  "symptom": "A refund request on an order past the return window gets a reply that never mentions the window or a person.",
+  "good": "1b40b27761bfad9a0b81ba694e36579ea09628c8",
+  "bad": "0ecffc0942a5554f963b38601206813855f6bc90",
+  "target": ".",
+  "file": "cases/outside/out-of-window.toml",
+  "repo": "../../../private/tmp/outside/support-agent-demo",
+  "traffic_sent_by": ""
+ },
+ "suspects": [
+  {
+   "sha": "deba2d571258eaabfa09af61dc25568cb6cc8885",
+   "subject": "Make order lookup by email tolerant of case and whitespace",
+   "checkpoint": "01M4KHGDF631V4069BWJCMXEBY",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.04
+  },
+  {
+   "sha": "99c4f3834e7c90c51d8d80431b9fa6ab745660e5",
+   "subject": "Warm up agent tone: friendly opener and 'anything else' closer",
+   "checkpoint": "01M4KHHCHPDDQPEMK9KT4002F9",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.04
+  },
+  {
+   "sha": "c4bbc0ea8628e6f18eb366aec7909d09ac2c0538",
+   "subject": "Add gift cards help-center article",
+   "checkpoint": "01M4KHQB2VKKM7T1GZS63WRWB4",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.04
+  },
+  {
+   "sha": "2790cf2aac58c67b1b3eed707d095cbc4590d280",
+   "subject": "Normalise order ids in lookup_order ('#1042', 'order 1042')",
+   "checkpoint": "01M4KHRRDTRNZ4YC3A9BSGGNTV",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.04
+  },
+  {
+   "sha": "ec19917417dd698353933ed7c40637895b49a8fd",
+   "subject": "Add cancel_order tool for unshipped (processing) orders",
+   "checkpoint": "01M4KHVVPVJ2KT7NQTV6299MZ4",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.04
+  },
+  {
+   "sha": "2051557f27904a86306a4f3f7de3150e447edad7",
+   "subject": "Add --verbose flag to CLI to print readable tool calls after the reply",
+   "checkpoint": "01M4KJ72N94B06V90X5GC7MPEY",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.04
+  },
+  {
+   "sha": "96de44a0d622d2fff27c1de9f2521b8475a54183",
+   "subject": "Apologise and ask to double-check when an order id is unknown",
+   "checkpoint": "01M4KJ8RQY3FNC5FPARPYPMY9W",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.04
+  },
+  {
+   "sha": "d73d989a1bf2b9640a1bd5ee882d16a69dea89b5",
+   "subject": "Add cancel_order edge-case tests: unknown, shipped, delivered, already cancelled",
+   "checkpoint": "01M4KJA1W47CMJCM6P5MJTRGFK",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.04
+  },
+  {
+   "sha": "2f49adb5354949f7c6b3320e4edae0ab0166c507",
+   "subject": "Add address changes help-center article",
+   "checkpoint": "01M4KJEKHN5GHYR96RGRJ6EJ0Q",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.04
+  },
+  {
+   "sha": "59c8b10ccbd078f574b98a4770c84ef2b1d2bad2",
+   "subject": "Make the agent verify replies with search_help and retry uncertain calls",
+   "checkpoint": "01M4KJHJ8HBM3ZFRXF12XWPS0T",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.04
+  },
+  {
+   "sha": "ca150c73c62dc5946ca7b64a7de53fdd7f49792c",
+   "subject": "Cap customer messages at 2000 characters",
+   "checkpoint": "01M4KJK6EVYNM9SCKB1ETM0ZNJ",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.04
+  },
+  {
+   "sha": "22f7fbd223555ae4d10eb2e37e1cd7b7ffa71962",
+   "subject": "Add estimated delivery date to lookup_order for shipped orders",
+   "checkpoint": "01M4KJMSTF1SNY8K8WCRNM5K3M",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.04
+  },
+  {
+   "sha": "875f4bd19ab61f472faa07236851ccf39f441e94",
+   "subject": "Report total wall-clock latency_ms in CLI JSON output",
+   "checkpoint": "01M4KJP80X72EJ5EXZBKXRQ9YN",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.04
+  },
+  {
+   "sha": "fd61e9c89ae471782d19dd894217ea49ecc6e16c",
+   "subject": "Tell customers refunds typically appear within 5 to 7 business days",
+   "checkpoint": "01M4KJQEN1KXJDPDRP48RYZQFW",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.04
+  },
+  {
+   "sha": "b0be626692328e15644a54f3100ab7ad6fc09a5b",
+   "subject": "Take and return issue_refund amounts in integer cents to match Stripe",
+   "checkpoint": "01M4KJSW7ZK3SZMTNMAEXEB6EV",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.04
+  },
+  {
+   "sha": "d80dad7f9e6a1d78b7a4eab3cee69dda38b25651",
+   "subject": "Add tests for issue_refund policy limits and escalate_to_human tickets",
+   "checkpoint": "01M4KJVM527VZ2PHY76PYFJPEJ",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.04
+  },
+  {
+   "sha": "1cda36a34d48d484524d692ac96688f9b98953c9",
+   "subject": "Include the order id in escalate_to_human ticket summaries",
+   "checkpoint": "01M4KJXM4GD7KBK5H77R3EMRM8",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.04
+  },
+  {
+   "sha": "f95fc868f7486818b672fd71c0005f91189989ad",
+   "subject": "Add international shipping help-center article",
+   "checkpoint": "01M4KK1GT2ZDEMQDVH6CCYR32S",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.04
+  },
+  {
+   "sha": "5cee99b62464515ef4e5f5bd60fd28ca136a3c6d",
+   "subject": "Add tools reference and changelog to README",
+   "checkpoint": "01M4KK30VVM1MBA53CS5EG4HFN",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.04
+  },
+  {
+   "sha": "432b0836560343823c8de54f20431177cd5ff4b3",
+   "subject": "Align system prompt refund timing with help center (within 5 business days)",
+   "checkpoint": "01M4KRMSNDVXGTM0S5NM46NZAG",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.04
+  },
+  {
+   "sha": "d9b1680e5c22ce061f752ad7b1ac54fe94d386f5",
+   "subject": "Make search_help tie-break explicit: returns, shipping, warranty, then by id",
+   "checkpoint": "01M4KRQDT8658YEW243Z1TC18P",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.04
+  },
+  {
+   "sha": "f7d82b789e2cb42d7911e4e2831331c5be7dcecc",
+   "subject": "Clarify Tone paragraph: acknowledgement and closing never replace the facts",
+   "checkpoint": "01M4KRRC5QF232A8291EW4ADGY",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.04
+  },
+  {
+   "sha": "67f35219b2a9464f3f978e188b0a22bae8d1d49b",
+   "subject": "Trace each eval case as one neatlogs trace: support_case parent span with tool:<name> and model-call children",
+   "checkpoint": null,
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.04
+  },
+  {
+   "sha": "997886d3561f040cd770965103f38dabdf838322",
+   "subject": "Add deliberately flaky search_help (30% timeout, seeded per case/repeat) with retry guidance",
+   "checkpoint": null,
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.04
+  },
+  {
+   "sha": "0ecffc0942a5554f963b38601206813855f6bc90",
+   "subject": "Proactively cancel unshipped orders when a customer asks for order status",
+   "checkpoint": "01M4MB8TTG7387FW5J000ES4Z7",
+   "touches_target": true,
+   "alibi": "",
+   "probability": 0.04
+  }
+ ],
+ "lineup": {
+  "case": "outside-out-of-window",
+  "method": "statistical",
+  "suspects": 25,
+  "commits_tested": 2,
+  "replays": 12,
+  "voided": 0,
+  "timeouts": 0,
+  "seconds": 51.3,
+  "culprit": null,
+  "remaining": [],
+  "per_input": [
+   {
+    "input": "Refund order 0991",
+    "replays": 12,
+    "failures": 12,
+    "top": "deba2d571258eaabfa09af61dc25568cb6cc8885",
+    "probability": 0.04
+   }
+  ],
+  "clear": true,
+  "note": "the last good ref now fails about as often as the first bad one, 6 of 6 replays against 6 of 6, so no commit in this range did it",
+  "differs": [
+   "No ordinary run of these requests that passed on the good ref is on record, so today's environment has nothing to be compared with."
+  ]
+ },
+ "replays": [
+  {
+   "sha": "0ecffc0942a5554f963b38601206813855f6bc90",
+   "input": "Refund order 0991",
+   "verdict": "fail",
+   "reason": "the reply does not match [\"30[- ]day|window|human|escalat|review\"]",
+   "seconds": 4.712617582990788,
+   "started": 1791805570.473095,
+   "tag": "outside-out-of-window/5570001",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 4576,
+   "tokens_out": 120
+  },
+  {
+   "sha": "1b40b27761bfad9a0b81ba694e36579ea09628c8",
+   "input": "Refund order 0991",
+   "verdict": "fail",
+   "reason": "the reply does not match [\"30[- ]day|window|human|escalat|review\"]",
+   "seconds": 4.975783083005808,
+   "started": 1791805570.473236,
+   "tag": "outside-out-of-window/5570002",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 2904,
+   "tokens_out": 169
+  },
+  {
+   "sha": "0ecffc0942a5554f963b38601206813855f6bc90",
+   "input": "Refund order 0991",
+   "verdict": "fail",
+   "reason": "the reply does not match [\"30[- ]day|window|human|escalat|review\"]",
+   "seconds": 3.9960526670329273,
+   "started": 1791805575.464798,
+   "tag": "outside-out-of-window/5570004",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 4576,
+   "tokens_out": 120
+  },
+  {
+   "sha": "1b40b27761bfad9a0b81ba694e36579ea09628c8",
+   "input": "Refund order 0991",
+   "verdict": "fail",
+   "reason": "the reply does not match [\"30[- ]day|window|human|escalat|review\"]",
+   "seconds": 4.388625584018882,
+   "started": 1791805575.202077,
+   "tag": "outside-out-of-window/5570003",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 2904,
+   "tokens_out": 169
+  },
+  {
+   "sha": "0ecffc0942a5554f963b38601206813855f6bc90",
+   "input": "Refund order 0991",
+   "verdict": "fail",
+   "reason": "the reply does not match [\"30[- ]day|window|human|escalat|review\"]",
+   "seconds": 3.9726665830239654,
+   "started": 1791805579.606924,
+   "tag": "outside-out-of-window/5570006",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 4576,
+   "tokens_out": 120
+  },
+  {
+   "sha": "1b40b27761bfad9a0b81ba694e36579ea09628c8",
+   "input": "Refund order 0991",
+   "verdict": "fail",
+   "reason": "the reply does not match [\"30[- ]day|window|human|escalat|review\"]",
+   "seconds": 4.105603208008688,
+   "started": 1791805579.482709,
+   "tag": "outside-out-of-window/5570005",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 2904,
+   "tokens_out": 169
+  },
+  {
+   "sha": "0ecffc0942a5554f963b38601206813855f6bc90",
+   "input": "Refund order 0991",
+   "verdict": "fail",
+   "reason": "the reply does not match [\"30[- ]day|window|human|escalat|review\"]",
+   "seconds": 4.308631666994188,
+   "started": 1791805583.605091,
+   "tag": "outside-out-of-window/5570008",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 4576,
+   "tokens_out": 120
+  },
+  {
+   "sha": "1b40b27761bfad9a0b81ba694e36579ea09628c8",
+   "input": "Refund order 0991",
+   "verdict": "fail",
+   "reason": "the reply does not match [\"30[- ]day|window|human|escalat|review\"]",
+   "seconds": 4.394201375020202,
+   "started": 1791805583.5980558,
+   "tag": "outside-out-of-window/5570007",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 2904,
+   "tokens_out": 169
+  },
+  {
+   "sha": "0ecffc0942a5554f963b38601206813855f6bc90",
+   "input": "Refund order 0991",
+   "verdict": "fail",
+   "reason": "the reply does not match [\"30[- ]day|window|human|escalat|review\"]",
+   "seconds": 3.832940707972739,
+   "started": 1791805588.0081291,
+   "tag": "outside-out-of-window/5570010",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 4576,
+   "tokens_out": 120
+  },
+  {
+   "sha": "1b40b27761bfad9a0b81ba694e36579ea09628c8",
+   "input": "Refund order 0991",
+   "verdict": "fail",
+   "reason": "the reply does not match [\"30[- ]day|window|human|escalat|review\"]",
+   "seconds": 4.246398790972307,
+   "started": 1791805587.93411,
+   "tag": "outside-out-of-window/5570009",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 2904,
+   "tokens_out": 169
+  },
+  {
+   "sha": "1b40b27761bfad9a0b81ba694e36579ea09628c8",
+   "input": "Refund order 0991",
+   "verdict": "fail",
+   "reason": "the reply does not match [\"30[- ]day|window|human|escalat|review\"]",
+   "seconds": 4.223037375020795,
+   "started": 1791805591.861886,
+   "tag": "outside-out-of-window/5570011",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 2904,
+   "tokens_out": 169
+  },
+  {
+   "sha": "0ecffc0942a5554f963b38601206813855f6bc90",
+   "input": "Refund order 0991",
+   "verdict": "fail",
+   "reason": "the reply does not match [\"30[- ]day|window|human|escalat|review\"]",
+   "seconds": 4.176041583996266,
+   "started": 1791805592.197502,
+   "tag": "outside-out-of-window/5570012",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "",
+   "lock": "dc03e0ad0a6c",
+   "tokens_in": 4576,
+   "tokens_out": 120
+  }
+ ],
+ "rounds": [
+  {
+   "commits": [
+    "1b40b27761bfad9a0b81ba694e36579ea09628c8",
+    "0ecffc0942a5554f963b38601206813855f6bc90",
+    "1b40b27761bfad9a0b81ba694e36579ea09628c8",
+    "0ecffc0942a5554f963b38601206813855f6bc90",
+    "1b40b27761bfad9a0b81ba694e36579ea09628c8",
+    "0ecffc0942a5554f963b38601206813855f6bc90",
+    "1b40b27761bfad9a0b81ba694e36579ea09628c8",
+    "0ecffc0942a5554f963b38601206813855f6bc90",
+    "1b40b27761bfad9a0b81ba694e36579ea09628c8",
+    "0ecffc0942a5554f963b38601206813855f6bc90",
+    "1b40b27761bfad9a0b81ba694e36579ea09628c8",
+    "0ecffc0942a5554f963b38601206813855f6bc90"
+   ],
+   "verdicts": [
+    "fail",
+    "fail",
+    "fail",
+    "fail",
+    "fail",
+    "fail",
+    "fail",
+    "fail",
+    "fail",
+    "fail",
+    "fail",
+    "fail"
+   ],
+   "top": [
+    [
+     "deba2d571258eaabfa09af61dc25568cb6cc8885",
+     0.04
+    ],
+    [
+     "99c4f3834e7c90c51d8d80431b9fa6ab745660e5",
+     0.04
+    ],
+    [
+     "c4bbc0ea8628e6f18eb366aec7909d09ac2c0538",
+     0.04
+    ]
+   ],
+   "posterior": [
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04,
+    0.04
+   ]
+  }
+ ],
+ "replays_until_ms": 1791805596428,
+ "replay_windows": [
+  [
+   1791805568438,
+   1791805596428
+  ]
+ ]
+}

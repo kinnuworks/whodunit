@@ -1,0 +1,61 @@
+{
+ "written": "2026-10-12T17:17:53+05:30",
+ "repo": "https://github.com/jaxsonsprinkles/support-agent-demo",
+ "good": "1b40b27",
+ "bad": "0ecffc0",
+ "note": "Written and committed before the answer key in jaxsonsprinkles/agentbisect was opened. That repo, the target's README and its history before the good ref had not been read. Its README is said to describe three seeded regressions. These cases name one commit, twice, and call one range clear.",
+ "price_per_million_tokens": {
+  "in": 1.0,
+  "out": 5.0
+ },
+ "cases": [
+  {
+   "case": "outside-refund-amount",
+   "case_file": "cases/outside/refund-amount.toml",
+   "their_eval_case": "rw1",
+   "named": "b0be626692328e15644a54f3100ab7ad6fc09a5b",
+   "subject": "Take and return issue_refund amounts in integer cents to match Stripe",
+   "probability": 0.9793,
+   "range_clear": false,
+   "suspects": 25,
+   "commits_replayed": 7,
+   "replays": 22,
+   "voided_attempts": 1,
+   "tokens_in": 132740,
+   "tokens_out": 6046,
+   "replay_usd": 0.163
+  },
+  {
+   "case": "outside-escalation-skipped",
+   "case_file": "cases/outside/escalation-skipped.toml",
+   "their_eval_case": "es2",
+   "named": "b0be626692328e15644a54f3100ab7ad6fc09a5b",
+   "subject": "Take and return issue_refund amounts in integer cents to match Stripe",
+   "probability": 0.9793,
+   "range_clear": false,
+   "suspects": 25,
+   "commits_replayed": 7,
+   "replays": 22,
+   "voided_attempts": 0,
+   "tokens_in": 152454,
+   "tokens_out": 7184,
+   "replay_usd": 0.1884
+  },
+  {
+   "case": "outside-out-of-window",
+   "case_file": "cases/outside/out-of-window.toml",
+   "their_eval_case": "ro1",
+   "named": null,
+   "subject": null,
+   "probability": null,
+   "range_clear": true,
+   "suspects": 25,
+   "commits_replayed": 2,
+   "replays": 12,
+   "voided_attempts": 0,
+   "tokens_in": 44880,
+   "tokens_out": 1734,
+   "replay_usd": 0.0536
+  }
+ ]
+}

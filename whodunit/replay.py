@@ -10,7 +10,7 @@ from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 
-from .case import Case, CaseInput, judge, last_json_line
+from .case import Case, CaseInput, judge, last_json_line, printed_json
 from .env import read_env
 from .neat import unnamed
 from .suspects import git, resolve
@@ -33,6 +33,8 @@ class Replay:
     timeouts: int = 0  # attempts that ran out of time
     model: str = ""  # a fingerprint of the model id the agent reported, if it reported one. Not the id itself.
     lock: str = ""  # the first 12 characters of the hash of the lockfile it ran with
+    tokens_in: int = 0  # what the agent said the run used, when its result carries input_tokens and output_tokens
+    tokens_out: int = 0
 
 
 def run_command(command: list[str], cwd: Path, env: dict, timeout: float) -> subprocess.CompletedProcess:
@@ -69,7 +71,7 @@ class Runner:
         self._turn: dict[str, int] = defaultdict(int)  # which input a commit gets next
         self._count = 0
         self._first = int(time.time()) % 100000 * 1000  # so tags from separate runs of one case never collide
-        self.void_waits: tuple[float, ...] = VOID_WAITS
+        self.void_waits: tuple[float, ...] = tuple(case.void_waits) or VOID_WAITS
         subprocess.run(["git", "-C", str(self.repo), "worktree", "prune"], capture_output=True)
 
     def __enter__(self):
@@ -179,7 +181,7 @@ class Runner:
             # one replay be matched to exactly one run afterwards.
             tag = f"{self.case.id}/{self._first + self._count}" if self.case.id else ""
         problem = self.build(sha)
-        voided = timeouts = 0
+        voided = timeouts = tokens_in = tokens_out = 0
         model = ""
         if problem:
             verdict, reason = SKIP, problem
@@ -206,6 +208,9 @@ class Runner:
                     verdict, reason = VOID, f"the provider or the network failed on all {voided} attempts: {trouble}"
                     break
                 passed, reason = judge(self.case, case_input, done.stdout, cwd)
+                printed = printed_json(done.stdout) or {}
+                if isinstance(printed.get("input_tokens"), int) and isinstance(printed.get("output_tokens"), int):
+                    tokens_in, tokens_out = printed["input_tokens"], printed["output_tokens"]
                 reported = (last_json_line(done.stdout) or {}).get("model")
                 if reported:
                     # Which model answered matters when a range turns out to be clear. The record names no model, so it keeps a fingerprint.
@@ -215,7 +220,7 @@ class Runner:
                 verdict = PASS if passed else FAIL
                 break
         result = Replay(sha=sha, input=case_input.text, verdict=verdict, reason=reason, seconds=time.monotonic() - started, started=clock, tag=tag,
-                        voided=voided, timeouts=timeouts, model=model, lock="" if problem else self._lock(sha))
+                        voided=voided, timeouts=timeouts, model=model, lock="" if problem else self._lock(sha), tokens_in=tokens_in, tokens_out=tokens_out)
         self.replays.append(result)
         return result
 

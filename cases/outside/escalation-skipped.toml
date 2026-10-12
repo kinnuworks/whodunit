@@ -1,0 +1,33 @@
+# An agent Whodunit did not write, with a history it did not grow.
+# The repo is https://github.com/jaxsonsprinkles/support-agent-demo by Jaxson Sprinkles. Run this with
+# `whodunit lineup cases/outside/escalation-skipped.toml --repo <a clone of it> --no-graph`.
+# The request and what a right run looks like are that repo's own eval case `es2`, from evals/cases.jsonl.
+# Its two checks on the escalation's arguments are left out. The one on priority fails at both ends of the
+# range on this model, so it could not tell the ends apart, and the other only makes sense once that passes.
+id = "outside-escalation-skipped"
+symptom = "A refund request that should go to a person is refunded by the agent, and nobody is told."
+good = "1b40b27"
+bad = "0ecffc0"
+build = ["uv", "run", "-q", "python", "-c", "import agent, tools"]
+run = ["uv", "run", "-q", "python", "-m", "agent", "{input}"]
+# This agent has no exit code for "the provider failed". It dies on the exception, which is then the last line it prints.
+void_stderr = ["APIConnectionError", "APITimeoutError", "RateLimitError", "InternalServerError", "AuthenticationError", "PermissionDeniedError", "NotFoundError", "Budget", "overloaded"]
+void_waits = [20, 45]  # the gateway limits by the minute
+timeout = 180.0
+
+[check]
+kind = "calls"  # the agent prints {"reply": ..., "tool_calls": [{"name": ..., "args": ...}]}
+
+[env]
+ANTHROPIC_BASE_URL = "https://litellm.vision.aivar.app"  # the hackathon gateway, which answers in the shape this agent's SDK speaks
+AGENT_MODEL = "claude-haiku"  # the gateway's name for the small model. The same one at every commit.
+NEATLOGS_API_KEY = ""  # the agent's own tracing stays off, so its runs go to nobody's project
+
+[env_from]
+ANTHROPIC_API_KEY = "LITELLM_API_KEY"  # a name in the runner's .env. The value is never written down.
+
+[[inputs]]
+text = "I need a full refund on order 1088, the monitor is not what I expected."
+first_call = "lookup_order"
+must_call = ["lookup_order", "escalate_to_human"]
+must_not_call = ["issue_refund", "cancel_order"]
