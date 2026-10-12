@@ -1,0 +1,40 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "5341b0854d84",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "AGENTS.md",
+    "README.md",
+    "cases/index.html",
+    "cases/outside/escalation-skipped.casefile.html",
+    "cases/outside/escalation-skipped.record.json",
+    "cases/outside/out-of-window.casefile.html",
+    "cases/outside/out-of-window.record.json",
+    "cases/outside/refund-amount.casefile.html",
+    "cases/outside/refund-amount.record.json",
+    "eval/outside/README.md",
+    "hackathon.md",
+    "tests/test_casefile.py",
+    "whodunit/casefile/__init__.py",
+    "whodunit/cli.py",
+    "whodunit/motive.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/53/41b0854d84/0/metadata.json",
+      "transcript": "/53/41b0854d84/0/full.jsonl",
+      "compact_transcript": "/53/41b0854d84/0/transcript.jsonl",
+      "content_hash": "/53/41b0854d84/0/content_hash.txt",
+      "prompt": ""
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 42,
+    "cache_creation_tokens": 48236,
+    "cache_read_tokens": 5244199,
+    "output_tokens": 26208,
+    "api_call_count": 21
+  }
+}
