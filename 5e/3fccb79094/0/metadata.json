@@ -1,0 +1,110 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "5e3fccb79094",
+  "session_id": "bd0b4425-f8b2-45dc-bfb7-caa96d1e41a5",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-12T12:06:52.389716Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    ".neatroots/checks/refund-without-lookup.yaml",
+    "AGENTS.md",
+    "README.md",
+    "eval/standing_check.py",
+    "evidence/README.md",
+    "hackathon.md",
+    "pitch/plan.json",
+    "tests/test_plan.py",
+    "whodunit/casefile/__init__.py",
+    "whodunit/cli.py",
+    "whodunit/lineup.py",
+    "whodunit/plan.py"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "d7c4300a2b60",
+  "checkpoint_transcript_start": 430,
+  "transcript_lines_at_start": 430,
+  "compact_transcript_start": 67,
+  "token_usage": {
+    "input_tokens": 74,
+    "cache_creation_tokens": 81228,
+    "cache_read_tokens": 10411568,
+    "output_tokens": 37416,
+    "api_call_count": 34
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_017DRt5cjQdUEsRYXtczHJB7",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "neatroots-write-check"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "d7c4300a2b60",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 434,
+        "end": 435,
+        "entry_ids": [
+          "bbcd0744-a223-4b30-a720-59c350d4ffcf"
+        ],
+        "tool_use_id": "toolu_017DRt5cjQdUEsRYXtczHJB7"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_017DRt5cjQdUEsRYXtczHJB7"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: neatroots-write-check",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 2
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-12T12:06:52.346007Z",
+    "agent_lines": 43,
+    "agent_removed": 1,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 4,
+    "total_committed": 43,
+    "total_lines_changed": 48,
+    "agent_percentage": 91.66666666666666,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 337,
+      "user_lines_removed": 4,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".neatroots/checks/refund-without-lookup.yaml": 22,
+        "CLAUDE.md": 5,
+        "eval/standing_check.py": 51,
+        "evidence/README.md": 8,
+        "pitch/plan.json": 16,
+        "tests/test_plan.py": 90,
+        "whodunit/casefile/__init__.py": 5,
+        "whodunit/cli.py": 39,
+        "whodunit/lineup.py": 7,
+        "whodunit/plan.py": 94
+      },
+      "user_removed_per_file": {
+        "whodunit/cli.py": 3,
+        "whodunit/lineup.py": 1
+      }
+    }
+  ]
+}

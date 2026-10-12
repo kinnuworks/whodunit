@@ -1,0 +1,37 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "5e3fccb79094",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    ".neatroots/checks/refund-without-lookup.yaml",
+    "AGENTS.md",
+    "README.md",
+    "eval/standing_check.py",
+    "evidence/README.md",
+    "hackathon.md",
+    "pitch/plan.json",
+    "tests/test_plan.py",
+    "whodunit/casefile/__init__.py",
+    "whodunit/cli.py",
+    "whodunit/lineup.py",
+    "whodunit/plan.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/5e/3fccb79094/0/metadata.json",
+      "transcript": "/5e/3fccb79094/0/full.jsonl",
+      "compact_transcript": "/5e/3fccb79094/0/transcript.jsonl",
+      "content_hash": "/5e/3fccb79094/0/content_hash.txt",
+      "prompt": "/5e/3fccb79094/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 74,
+    "cache_creation_tokens": 81228,
+    "cache_read_tokens": 10411568,
+    "output_tokens": 37416,
+    "api_call_count": 34
+  }
+}
