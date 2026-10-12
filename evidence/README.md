@@ -93,3 +93,4 @@ The headline bug, as something to watch for: `issue_refund` called in a run wher
 - Day 1, 10 October: https://x.com/heykinnu/status/2108892698963071343
 - Bingo, 11 October: https://x.com/heykinnu/status/2109010623833297271
 - The pitch, 12 October: https://x.com/heykinnu/status/2109552985152119291
+- The submission, 12 October, 8:56 PM IST, with the demo film attached: https://x.com/heykinnu/status/2109666939660648948

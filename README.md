@@ -57,7 +57,7 @@ On the headline case that took 10 minutes 46 seconds and 176 replays. Each step 
 | Entire checkpoints | [The checkpoint behind the culprit](https://entire.io/gh/kinnuworks/whodunit/commit/ced2ecd21c3ed165a1a729e17f68d2000cdc19ca): checkpoint `bfbe27725663`, with the request that was typed |
 | The cfo.ai plan | [Read-only link to the model](https://app.cfo.ai/s/aQEB_E_N_TMjakaV): six pages, eight tables, four scenarios and a simulator. Its prices and costs set the default spend limit of an investigation, below |
 | An action that failed, and what happened next | [evidence/README.md](evidence/README.md#a-fix-that-failed-and-what-the-agent-did-next): a patch thrown out and written again, two patches given up for a revert, and a case left open |
-| Public posts | [Day 1, 10 October](https://x.com/heykinnu/status/2108892698963071343), [Bingo, 11 October](https://x.com/heykinnu/status/2109010623833297271), [the pitch, 12 October](https://x.com/heykinnu/status/2109552985152119291) |
+| Public posts | [Day 1, 10 October](https://x.com/heykinnu/status/2108892698963071343), [Bingo, 11 October](https://x.com/heykinnu/status/2109010623833297271), [the pitch, 12 October](https://x.com/heykinnu/status/2109552985152119291), [the submission, with the demo film, 12 October](https://x.com/heykinnu/status/2109666939660648948) |
 | Commits dated inside the hackathon | [The commit log](https://github.com/kinnuworks/whodunit/commits/main), which starts at 7:03 PM IST on 10 October |
 
 ## The plan sets a spend limit

@@ -828,3 +828,15 @@ The owner ran `neatroots cloud login`. `whodunit forward` then sent the failing 
 - The ids are printed without links. A link needs the dashboard's address for a trace, which is the owner's to give, in `NEATLOGS_TRACE_URL`.
 
 Not checked: the other nine runs were not asked for again, and nobody has opened any of the twelve in the dashboard. The three outside cases have no runs to send, because that agent's tracing was off. The owner said the film will be redesigned later with their input, so it stays as it is.
+
+### 8:57 PM, Monday: submitted
+
+The owner posted the submission at 8:56 PM IST, inside the window, with the film attached: https://x.com/heykinnu/status/2109666939660648948
+
+- The post is in the owner's own words and not the draft in `pitch/submission.md`. Its numbers are the README's: 1 change out of 57, and 11 minutes, which is the 10 minutes 46 seconds of the headline run rounded.
+- It links the repo and names the three sponsors' handles. It quotes the neatlogs launch post by the company's founder. Whether that is the post entries are meant to quote is the owner's to confirm.
+- The film is the cut with the new mark, 2 minutes 16 seconds. The owner watched it before posting. I have never heard it.
+- Before posting, the owner had me set the GitHub description and the website field, and I read both back.
+- The link is in the README's evidence table and in `evidence/README.md`.
+
+The organisers' note on the video asks for three things in one film: the problem, how cfo.ai and Entire were part of the project, and how neatlogs was used to identify and resolve the incidents the agent ran into. I held the narration against that for the owner. The problem and Entire are covered well. cfo.ai is covered thinly, as a plan beside the product, and the film does not say the plan now sets the spend limit. neatlogs is named three times and never in so many words as what found the incident or showed it fixed. Three re-voiced lines would close that, about 500 characters, and nothing in the film was changed.
