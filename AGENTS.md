@@ -158,7 +158,7 @@ Still to do, in this order:
 
 1. cfo.ai. Done on 12 October: six pages, eight tables, four scenarios and a simulator, in the owner's workspace. `evidence/README.md` describes it. The owner had a read-only share link made, which is in `evidence/README.md`.
 2. Screenshots from neatlogs cloud. Done on 12 October, three of them, in `evidence/`.
-3. The push. Done on 12 October with the owner's yes: https://github.com/kinnuworks/whodunit, public, `main` and `entire/checkpoints/v1`. Still open after it: a public address for the casebook, and mirroring the repo into Entire so the checkpoint page for commit `ced2ecd21c3e`, checkpoint `bfbe27725663`, opens.
+3. The push. Done on 12 October with the owner's yes: https://github.com/kinnuworks/whodunit, public, `main` and `entire/checkpoints/v1`. The owner mirrored the repo into Entire, so the checkpoint page for commit `ced2ecd21c3e`, checkpoint `bfbe27725663`, opens without an account. Still open: a public address for the casebook.
 4. The video, from `pitch/demo-script.md`.
 5. More #neatHack posts, from `pitch/posts.md`.
 
