@@ -1,0 +1,16 @@
+{
+ "read_on": "2026-10-12",
+ "read_from": "https://app.cfo.ai/s/aQEB_E_N_TMjakaV",
+ "how": "Read through the cfo.ai MCP server with the owner's yes, from the tables Pricing and customers, Unit costs and Costs and margin, Base scenario. Nothing was written to cfo.ai.",
+ "team_price_usd": 249,
+ "team_investigations_included": 40,
+ "usage_share": 0.5,
+ "replay_cost_per_investigation_usd": 1.1680333333333335,
+ "brief_and_patch_cost_per_investigation_usd": 0.2,
+ "cost_per_investigation_usd": 1.3680333333333334,
+ "team_agents_per_shared_worker": 15,
+ "worker_monthly_cost_usd": 61,
+ "gross_margin_month_12": 0.8371254427817537,
+ "target_margin": 0.7639,
+ "target_margin_note": "The model states no target margin. This is the margin its own numbers give one Team agent that uses all of its included investigations: (249 - 40 x 1.368 - 61 / 15) / 249. The owner can set another, and the limit follows from it."
+}

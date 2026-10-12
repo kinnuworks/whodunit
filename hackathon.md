@@ -778,3 +778,30 @@ Spend, from the token counts the agent prints, at $1 and $5 per million: 67 scre
 Checked: 156 fast tests pass, 6 of them new. The casebook lists the three cases under a heading of their own, and each page links back to it and says how its answer scored.
 
 Not checked: whether the skipped escalation starts at `b0be626` on their own pinned model, since nothing was reverted and their setup was not used. Whether a token check would find the other two. The lineups were run once each, and at temperature 0 they say little about the statistical part of the bisect. The casebook headline takes four lines at phone width, one more than the design rule allows, and I left it.
+
+### 5:35 PM, Monday: a standing check, and the plan sets a limit in code
+
+Two of the review's findings, taken together because the first is only half done.
+
+The neatlogs evidence (finding 5):
+
+- The headline bug is now something to count: `issue_refund` in a run with no `lookup_order` before it. `eval/standing_check.py` counts it from neatroots with no model. Over 2,724 finished refund-agent runs: 113 of 765 on commits from the culprit on without the kept fix, 1 of 1,699 before the culprit, 0 of 56 on the kept fix.
+- The same thing as a neatroots check is in `.neatroots/checks/refund-without-lookup.yaml`. neatroots' rules cannot say "this tool with none of that tool before it", so it is a question for the small local model, and the model is not good at it: 22 flagged of the latest 200 runs where the exact count is 12, and of the ten it listed, five were right. My first wording flagged none at all, because its evidence was too narrow.
+- It is not a detection in neatlogs cloud. Nothing here can create one, so `whodunit onset --cloud` was not pointed at it.
+- Not done: sending each case's two cited runs to neatlogs cloud. That waits on `neatroots cloud login`, which is the owner's step, and the pages still say the runs are in neatroots only, because it is still true.
+
+The plan in code (finding 4):
+
+- With the owner's go-ahead I read three tables of the cfo.ai model and wrote nothing to it. `pitch/plan.json` has the Team price ($249), the investigations it includes (40), the cost of an investigation ($1.37, of which $0.20 is brief and patch) and the worker's cost ($61 across 15 agents).
+- The owner asked for the plan's target margin. The model has none. It computes a gross margin, 83.7% in month 12, and states no target. I used the margin its own numbers give a Team agent at full use, 76.4%, and said so in the file. With that margin the limit equals the plan's own cost of an investigation, $1.37, which is circular and also the honest reading: the plan pays for that much. At a 50% margin the same formula gives $3.01.
+- `whodunit investigate` now takes the limit by default. The lineup asks a meter before each round and stops with nobody named when the money is gone. The fix asks between tries. `--spend-limit` sets another, and the record keeps the limit, where it came from, whether it was raised, what was spent and which step was stopped.
+- Five of the six cases are under the limit. `half-done-batch` is over, at $3.53 of replays. The README says what the limit would have done to it, as an estimate from two files.
+
+What went wrong:
+
+- The README first said the limit would have saved $2.29 on that case. That number was the fix spending less the allowance and meant nothing. The record does not split cost by try, so the README now says the saving is about one patch's worth of replays and no closer.
+- A test of mine quoted $0.00 spent where the repo's own plan file adds its $0.20 allowance. The test now reads what the page says.
+
+Checked: 161 fast tests pass, 5 of them new, for the limit read from a file, the meter's pricing, a lineup that stops, and a record that says why.
+
+Not checked: the limit has never stopped a real investigation. The tests use a stub history and a stand-in for neatroots. The meter runs a few replays behind, because a run is priced once neatroots has it. The model calls for a brief and a patch are an allowance and are not measured. No model was called for either job.

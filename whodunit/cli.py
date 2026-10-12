@@ -16,6 +16,7 @@ from . import fix as fixes
 from . import opening
 from . import ruling as rulings
 from .motive import checkpoint_link, find_motive, remote_of
+from .plan import REACHED, meter_for
 from .neat import NeatError, forward_to_cloud, neatroots
 from .onset import cloud_trend, environment_then, find_onset, traffic, what_differs, witness
 from .lineup import ChangePoint, linear_scan_cost, plain_bisect, statistical_bisect
@@ -191,7 +192,7 @@ def _statistical(args, case, suspects, runner, say):
     say(f"Statistical bisect, at most {args.budget} replays, {args.parallel} at a time. F is a failed replay, a dot is a pass, and v was voided by a provider error.")
     return statistical_bisect(
         len(suspects), trial, args.budget, priors=priors, confidence=args.confidence, parallel=args.parallel, on_round=on_round,
-        evidence=evidence, around=around,
+        evidence=evidence, around=around, stop=getattr(getattr(args, "meter", None), "why", None),
     )
 
 
@@ -244,6 +245,8 @@ def lineup(args) -> int:
         say(f"Alibis: {len(with_alibi)} of them start with less suspicion, for example {with_alibi[0].short} ({with_alibi[0].alibi}).")
 
     began = _now_ms()
+    if getattr(args, "meter", None) is None and getattr(args, "spend_limit", None) is not None:
+        args.meter = meter_for(case.id, load_record(record_path(args)) if getattr(args, "resume", False) else {}, args.spend_limit)
     with Runner(repo, case, keep=args.keep) as runner:
         found = _plain(args, case, repo, suspects, runner, say) if args.method == "plain" else _statistical(args, case, suspects, runner, say)
         replays = sum(r.verdict in (PASS, FAIL) for r in runner.replays)
@@ -351,6 +354,12 @@ def lineup(args) -> int:
     # A resumed lineup adds its rounds to the ones the earlier run made.
     record["rounds"] = (record.get("rounds", []) if getattr(args, "resume", False) else []) + rounds
     _replayed(record, began)
+    meter = getattr(args, "meter", None)
+    if meter:
+        if (found.note or "").startswith(REACHED):
+            meter.stopped = "lineup"
+            say(f"Stopped: {found.note}. Nobody is named below {args.confidence:.0%}, and the record has the suspects that remain with their probabilities.")
+        record["spend"] = meter.to_dict()
     save_record(record_path(args), record)
     say(f"Record: {record_path(args)}")
     if args.json:
@@ -741,15 +750,26 @@ def fix(args) -> int:
         return 2
     wanted = record["ruling"]["ruling"]
     began = _now_ms()
+    meter = getattr(args, "meter", None)
+
+    def spent_up() -> str:
+        # Asked between tries. A try in flight finishes its replays, so the limit can be passed by one try's worth.
+        halted = meter.why() if meter and not _proven(attempts[-1]) else ""
+        if halted:
+            meter.stopped = "fix"
+            attempts[-1]["note"] = ((attempts[-1].get("note") or "") + f" No further try was made: {halted}.").strip()
+            print(f"  No further try: {halted}.")
+        return halted
+
     attempts = [_attempt(wanted, case, repo, record, args, number=1)]
-    if wanted == rulings.PATCH and not _proven(attempts[-1]):
+    if wanted == rulings.PATCH and not _proven(attempts[-1]) and not spent_up():
         first = attempts[-1]
         feedback = (first.get("note") or "") + "\nThe first patch:\n" + first.get("diff", "none was made") + "\nReplays of it that still failed:\n" + "\n".join(first.get("failed_replays", []) or ["none recorded"])
         if (first.get("harm") or {}).get("broken"):
             feedback += "\nThe first patch cleared its own case and made other requests go wrong more often than before it. " + _harm_said(first["harm"]) + " A patch must not do that."
         print("  The patch " + ("made other requests worse" if (first.get("harm") or {}).get("broken") else "did not clear the bar") + ". Trying once more, with the first patch and what went wrong in view.")
         attempts.append(_attempt(rulings.PATCH, case, repo, record, args, feedback, number=2))
-    if wanted == rulings.PATCH and not _proven(attempts[-1]):
+    if wanted == rulings.PATCH and len(attempts) == 2 and not _proven(attempts[-1]) and not spent_up():
         print("  The second patch is not kept either. Falling back to a revert, which loses what the commit was for.")
         attempts.append(_attempt(rulings.REVERT, case, repo, record, args, number=3))
         attempts[-1]["note"] = ((attempts[-1].get("note") or "") + " This is a fallback: the ruling was to patch, and two patches were not kept.").strip()
@@ -757,6 +777,8 @@ def fix(args) -> int:
     record["fix"] = final
     record["attempts"] = attempts
     _replayed(record, began)
+    if meter:
+        record["spend"] = meter.to_dict()
     if _proven(final):
         kept = Path.cwd() / "cases" / f"{case.id}.toml"
         kept.parent.mkdir(exist_ok=True)
@@ -791,6 +813,10 @@ def investigate(args) -> int:
         import time
 
         path.rename(path.with_name(path.name + time.strftime(".%H%M%S.old")))
+    args.meter = meter_for(case.id, {} if getattr(args, "fresh", False) else load_record(path), getattr(args, "spend_limit", None))
+    if args.meter:
+        print(f"Spend limit: ${args.meter.limit:.2f} for this investigation, from {args.meter.source}"
+              + (", which is more than the plan allows." if args.meter.raised else "."))
     args.tracer = tracer = Trace(case.id)
     if not tracer.on:
         print(f"No trace of this investigation is being sent: {tracer.note}.")
@@ -811,6 +837,10 @@ def investigate(args) -> int:
     if tracer.trace_id:
         record = load_record(path)
         record["trace"] = {"where": tracer.where, "trace_id": tracer.trace_id}
+        save_record(path, record)
+    if args.meter and path.is_file():
+        record = load_record(path)
+        record["spend"] = args.meter.to_dict()
         save_record(path, record)
     open_case(argparse.Namespace(case=args.case, record=args.record, no_open=True))
     return out["code"]
@@ -843,6 +873,9 @@ def _investigate(args, path: Path, tracer) -> int:
                     "commits_tested": report.get("commits_tested"), "voided": report.get("voided"), "note": report.get("note", "")}
         args.resume = bool(record.get("replays"))
         code = step("lineup", {"budget": args.budget, "resumed": args.resume}, lineup, named)
+        if code == 1 and ((load_record(path).get("lineup") or {}).get("note") or "").startswith(REACHED):
+            note("lineup", "Stopped at the spend limit with nobody named. The case file lists the suspects that remain, with their probabilities.")
+            return 1
         if code == 1:
             note("lineup", f"Nobody could be named inside {args.budget} replays. Carrying on from those replays with {args.budget} more.")
             args.resume = True
@@ -1128,6 +1161,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--workflow", help="the agent's workflow name in its traces, used to find old runs of the good ref when no commit turns out to be to blame")
     p.add_argument("--no-graph", action="store_true", help="do not ask entire-graph which commits could reach the agent")
     p.add_argument("--no-priors", action="store_true", help="suspect every commit equally, even ones that never touched the agent")
+    p.add_argument("--spend-limit", type=float, metavar="USD", help="stop the lineup once the replays have cost about this much (default: no limit)")
     p.add_argument("--ablation", action="store_true", help="write the result next to the record as <case>.ablation.json and leave the record alone; use with --no-graph to see what the alibis were worth")
     p.add_argument("--record", help="where to write the case record (default: next to the case file)")
     p.add_argument("--keep", action="store_true", help="leave the worktrees in .whodunit/worktrees")
@@ -1175,6 +1209,8 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--workflow", default="refund-agent")
     p.add_argument("--redo-brief", action="store_true")
     p.add_argument("--fresh", action="store_true", help="set aside any earlier record for this case and start over")
+    p.add_argument("--spend-limit", type=float, metavar="USD",
+                   help="the most this investigation may spend on replays and model calls (default: what pitch/plan.json allows, if that file is there). The record says when this raised it.")
     p.add_argument("--from-traffic", metavar="WORKFLOW", help="start the lineup from ordinary runs of this workflow")
     p.add_argument("--no-graph", action="store_true")
     p.set_defaults(func=investigate)

@@ -142,6 +142,11 @@ def timeline(record: dict) -> list[tuple[str, str]]:
         steps.append(("lineup", f'No commit did it. After {lineup.get("replays", 0)} replays, {lineup.get("note", "the good ref fails as often as the bad one")}.'))
     elif lineup:
         steps.append(("lineup", f'Nobody named after {lineup.get("replays", 0)} replays. {(lineup.get("note") or "no suspect reached the bar").capitalize()}.'))
+    spend = record.get("spend") or {}
+    if spend.get("stopped"):
+        steps.append(("spend", f'Stopped during the {spend["stopped"]} at the spend limit: about ${spend.get("spent_usd", 0):.2f} spent of ${spend.get("limit_usd", 0):.2f} allowed, a limit set by {spend.get("from", "the plan")}.'))
+    elif spend.get("raised"):
+        steps.append(("spend", f'The spend limit was raised to ${spend.get("limit_usd", 0):.2f} by hand, above what the plan allows.'))
     if motive:
         steps.append(("motive", f'The request is on record in checkpoint {motive["checkpoint"]}.' if motive.get("request") else (motive.get("note") or "No request is on record.")))
     if brief.get("sentences"):

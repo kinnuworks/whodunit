@@ -202,13 +202,16 @@ def statistical_bisect(
     on_round: Callable[[list[int], list[str], list[float]], None] | None = None,
     evidence: Sequence[tuple[int, bool]] = (),
     around: Callable[[list[int], Callable[[], list[str]]], list[str]] | None = None,
+    stop: Callable[[], str] | None = None,
 ) -> Lineup:
     """Find the first bad suspect when a bad commit only fails some of the time.
 
     `trial(position)` runs one replay and returns pass, fail, skip or void. Position -1 is the
     good ref. `budget` is the most replays to spend, counting the warm-up runs at both ends.
     Stops when one suspect holds `confidence` of the posterior, or when the budget is gone, in
-    which case `remaining` lists the suspects still in play, most likely first.
+    which case `remaining` lists the suspects still in play, most likely first. `stop()` is asked
+    before each round and gives a reason to stop early, such as a spend limit. Stopping that way
+    ends like running out of budget: nobody is named below `confidence`.
 
     A void replay hit a provider or network error. It is not counted as a pass or a failure
     and does not use up the budget. If three rounds in a row are all void, the lineup stops
@@ -324,6 +327,9 @@ def statistical_bisect(
         posterior = state.posterior()
         if max(posterior) >= confidence:
             break
+        halted = stop() if stop else ""
+        if halted:
+            return finish(halted)
         position = state.pick(posterior, skipped, how)
         if position is None:
             break

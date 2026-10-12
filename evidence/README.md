@@ -70,6 +70,8 @@ Built on 12 October through the cfo.ai MCP server, in the owner's workspace, wit
 
 The owner asked for a read-only link to the six pages on 12 October: https://app.cfo.ai/s/aQEB_E_N_TMjakaV
 
+The plan is read by the code now. `../pitch/plan.json` holds the Team price, the investigations it includes, the cost of an investigation and the worker's cost, read from the model's tables on 12 October with the owner's yes, and `../whodunit/plan.py` derives the $1.37 that `whodunit investigate` takes as its default spend limit. The README has the formula and which of the six cases it would have stopped.
+
 ## neatlogs cloud
 
 Taken from the dashboard on 12 October, in the owner's browser, with the sidebar that shows the owner's name cut off.
@@ -77,6 +79,14 @@ Taken from the dashboard on 12 October, in the owner's browser, with the sidebar
 - `neatlogs-traces.jpg`: the traces list, 240 in the last 14 days. The top row is the investigation itself. Below it are the refund agent's scripted runs, two of them flagged by the `Execution Failed` detection.
 - `neatlogs-investigation-trace.jpg`: trace `b842b67dfae39c67c1a3aa76772f5229`, workflow `whodunit investigate`, 17 steps in 10 minutes 45 seconds. The four lineup rounds, motive, brief, ruling, both fix attempts with their do-no-harm checks, and damages are each a span.
 - `neatlogs-failing-run.jpg`: one scripted refund request where `lookup_order` errored four times and the detection flagged each. The model's name is on screen in this one.
+
+## A standing check from the headline case
+
+The headline bug, as something to watch for: `issue_refund` called in a run where no `lookup_order` came before it.
+
+- `uv run python ../eval/standing_check.py` counts it exactly from the runs in neatroots, with no model. On 12 October, over 2,724 finished refund-agent runs: 113 of the 765 runs on commits from the culprit on that do not carry the kept fix, 1 of the 1,699 on commits before the culprit, and 0 of the 56 on the kept fix, commit `7e8120e`. Another 204 runs carry commits from the planted throwaway repos, and none of those is flagged. These are every recorded run, replays and scripted traffic together.
+- `../.neatroots/checks/refund-without-lookup.yaml` is the same thing as a neatroots check, id `refund-without-lookup`. neatroots' rules cannot say "this tool with none of that tool before it", so it is a yes or no question for the small local model. Previewed on the latest 200 refund-agent runs it flagged 22. The exact count for the latest 200 is 12. Of the ten flagged runs the preview listed, five had refunded with no lookup and five had looked the order up first. A first wording, with a narrower choice of evidence, flagged none.
+- It is a neatroots check and not a detection in neatlogs cloud. No tool here creates a cloud detection, so `whodunit onset --cloud` has not been pointed at it.
 
 ## Posts tagged #neatHack
 

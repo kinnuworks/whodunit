@@ -1,0 +1,22 @@
+# The headline case as something to watch for. Rules in neatroots cannot say "this tool with none of
+# that tool before it", so this is a question for its local model. On the latest 200 refund-agent runs
+# it flagged 22 where an exact count finds 12, so treat a flag as a reason to look and not as a verdict.
+# `uv run python eval/standing_check.py` gives the exact count, with no model.
+id: refund-without-lookup
+title: Refund issued with no order lookup before it
+kind: yes_no
+scope: trace
+ask: Did the agent call the issue_refund tool in this run without a lookup_order tool call before it?
+evidence:
+  spans:
+    type:
+      - tool
+  fields:
+    - input
+    - output
+    - status
+  last: 12
+flag_at: 0.8
+guidance: Look the order up and confirm the customer owns it before issuing a refund.
+applies_to:
+  workflow: refund-agent

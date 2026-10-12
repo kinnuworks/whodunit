@@ -55,10 +55,26 @@ On the headline case that took 10 minutes 46 seconds and 176 replays. Each step 
 | Before and after, with numbers | [evidence/casefile-whole-history.png](evidence/casefile-whole-history.png): 11 of 14 runs wrong from the culprit on, then 0 failures in 30 replays of the kept fix |
 | neatlogs traces | [evidence/neatlogs-investigation-trace.jpg](evidence/neatlogs-investigation-trace.jpg): the investigation itself, trace `b842b67dfae39c67c1a3aa76772f5229` in neatlogs cloud, 17 steps |
 | Entire checkpoints | [The checkpoint behind the culprit](https://entire.io/gh/kinnuworks/whodunit/commit/ced2ecd21c3ed165a1a729e17f68d2000cdc19ca): checkpoint `bfbe27725663`, with the request that was typed |
-| The cfo.ai plan | [Read-only link to the model](https://app.cfo.ai/s/aQEB_E_N_TMjakaV): six pages, eight tables, four scenarios and a simulator |
+| The cfo.ai plan | [Read-only link to the model](https://app.cfo.ai/s/aQEB_E_N_TMjakaV): six pages, eight tables, four scenarios and a simulator. Its prices and costs set the default spend limit of an investigation, below |
 | An action that failed, and what happened next | [evidence/README.md](evidence/README.md#a-fix-that-failed-and-what-the-agent-did-next): a patch thrown out and written again, two patches given up for a revert, and a case left open |
 | Public posts | [Day 1, 10 October](https://x.com/heykinnu/status/2108892698963071343), [Bingo, 11 October](https://x.com/heykinnu/status/2109010623833297271), [the pitch, 12 October](https://x.com/heykinnu/status/2109552985152119291) |
 | Commits dated inside the hackathon | [The commit log](https://github.com/kinnuworks/whodunit/commits/main), which starts at 7:03 PM IST on 10 October |
+
+## The plan sets a spend limit
+
+The business plan is a model in cfo.ai. `pitch/plan.json` holds the numbers read from it on 12 October: a Team agent pays $249 a month for 40 investigations, an investigation is modelled at $1.37, of which $0.20 is the brief and the patch, and a replay worker at $61 a month is shared by 15 agents. `whodunit/plan.py` turns them into the most one investigation may spend:
+
+```
+limit = (team price x (1 - target margin) - worker cost / agents per worker) / investigations included
+      = (249 x (1 - 0.7639) - 61 / 15) / 40
+      = $1.37
+```
+
+The model states no target margin. The 76.4% is what its own numbers give a Team agent that uses all 40 investigations, so the limit comes out at the plan's own cost of an investigation: one that spends more is one the plan did not pay for. Put another margin in the file and the limit follows. At 50% it is $3.01.
+
+`whodunit investigate` takes that limit by default. Replays are priced the way the damages are, from token counts at list prices, and the $0.20 for the brief and the patch is counted as spent from the start. When the lineup reaches the limit it stops as it does when replays run out: nobody is named below 95%, and the suspects that remain are handed back with their probabilities. Between tries at a fix, no further try is made. `--spend-limit` sets another limit, and the record says when that raised it.
+
+Held against the six cases' records, five are under it, at $0.54 to $1.20 with the allowance. `half-done-batch`, at $3.53 of replays, is over. By the sealed eval's figure its lineup cost about $1.04, so under the limit it would still have named its culprit, tried one patch and stopped there, not fixed. That is where it ended anyway, after a second patch and a revert that would not apply. The limit is asked between tries, so the one patch, at 90 replays, would have gone past it before the stop. The record does not split its cost by try, so the saving is about one patch's worth of replays and I cannot put it closer than that. This is worked out from the records and is not a rerun.
 
 ## Why plain bisect is not enough
 
