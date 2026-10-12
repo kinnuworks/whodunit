@@ -1,0 +1,45 @@
+hows it is going so far
+
+---
+
+<task-notification>
+<task-id>b2532lwn1</task-id>
+<tool-use-id>toolu_01AeEmLHk5xVrTtSdK76Wjop</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-kinnu-neathack/2b277f39-7446-42f5-947e-a22d15214289/tasks/b2532lwn1.output</output-file>
+<status>completed</status>
+<summary>Background command "Regenerate the simulator results with the new check in the lineup" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>b8gw2laqa</task-id>
+<tool-use-id>toolu_01F9RDyGvY1pwt9yVX5XAXUK</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-kinnu-neathack/2b277f39-7446-42f5-947e-a22d15214289/tasks/b8gw2laqa.output</output-file>
+<status>completed</status>
+<summary>Background command "Run both models on simulated cases with one regression and with two" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>byyclrj63</task-id>
+<tool-use-id>toolu_01NxCkYKsfWbP7FnVx961GBf</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-kinnu-neathack/2b277f39-7446-42f5-947e-a22d15214289/tasks/byyclrj63.output</output-file>
+<status>completed</status>
+<summary>Background command "Simulate today's lineup followed by a second look with the joint model" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>bty5oxg5s</task-id>
+<tool-use-id>toolu_0168vzXQJh71EADdqecpZHCb</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-kinnu-neathack/2b277f39-7446-42f5-947e-a22d15214289/tasks/bty5oxg5s.output</output-file>
+<status>completed</status>
+<summary>Background command "Run the do-no-harm check on the other three kept fixes" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+continue

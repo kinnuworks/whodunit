@@ -1,0 +1,63 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "78ea2e5cd8b9",
+  "session_id": "2b277f39-7446-42f5-947e-a22d15214289",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-12T05:47:15.325079Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "AGENTS.md",
+    "cases/cents-off.casefile.html",
+    "cases/half-done-batch.casefile.html",
+    "cases/index.html",
+    "cases/strangers-paid.casefile.html",
+    "cases/turned-away.casefile.html",
+    "cases/whole-history.casefile.html",
+    "cases/wrong-order-refunded.casefile.html",
+    "eval/simulator/accuracy-clean-baseline.svg",
+    "eval/simulator/accuracy-flaky-baseline.svg",
+    "hackathon.md",
+    "tests/test_casefile.py",
+    "whodunit/casefile/__init__.py",
+    "whodunit/casefile/casefile.css",
+    "whodunit/casefile/casefile.js",
+    "whodunit/chart.py",
+    "whodunit/cli.py"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "806ca2a4d2f1",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 492,
+    "cache_creation_tokens": 1791254,
+    "cache_read_tokens": 116227069,
+    "output_tokens": 464924,
+    "api_call_count": 244
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-12T05:47:15.181234Z",
+    "agent_lines": 2875,
+    "agent_removed": 596,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 2875,
+    "total_lines_changed": 3471,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 5,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "CLAUDE.md": 5
+      }
+    }
+  ]
+}
