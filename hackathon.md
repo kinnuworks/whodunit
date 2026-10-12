@@ -708,3 +708,15 @@ It took two rounds of stills. The first had every panel too small in the frame, 
 
 Not checked: nobody has watched it at full speed with sound. I looked at stills and at four frames pulled from the finished file. There is no 9 by 16 cut.
 
+### 2:21 PM, Monday: the video gets a voice
+
+The owner asked for a narrated cut with a title card. The narration is a synthesized voice from ElevenLabs, on the owner's account, about 1,600 characters of the month's allowance. The first thirteen calls failed before anything was sent, because the folders they were told to write to did not exist.
+
+The film is now 2 minutes 16 seconds and thirteen scenes. Three are new: a title card, before and after the fix (11 of 14 runs wrong, then 0 of 30), and one card each for what neatlogs, Entire and cfo.ai do in the product. Every scene is as long as its narration clip, and the script that builds the film works out where each phrase falls so the picture changes on the word.
+
+The clips are played 6% faster than they were made. At their own speed the film came to 144 seconds, and a post on X can carry 140.
+
+The voice sits about 12 dB over the music while it speaks, measured on the two stems. The finished file is at about minus 15 LUFS.
+
+Not checked: I cannot listen to it. I measured levels and where each clip starts and ends, and looked at stills. Whether the voice says "neatlogs" and "cfo.ai" the way a person would is for the owner's ears.
+

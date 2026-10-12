@@ -537,5 +537,69 @@ export const WdPlan: React.FC<P> = (p) => {
   );
 };
 
+/** Before and after the kept fix, on the same request. Logical 1400×460. */
+export const WdBeforeAfter: React.FC<P> = (p) => {
+  const {f, fps} = p;
+  const at = useAt(p);
+  const sides = [
+    {t: at('before'), label: 'Before the fix', big: '11 of 14', line: 'runs went wrong, from the culprit on', small: '7 of 8 replays and 4 of 6 ordinary runs', hot: true},
+    {t: at('after'), label: 'After the fix', big: '0 of 30', line: 'replays failed', small: 'at most 6.2% at 95%, from these replays alone', hot: false},
+  ];
+  const arrow = fade(f, sides[1].t - ms(fps, 200), fps, 300);
+  return (
+    <div style={{width: 1400, height: 460, display: 'flex', alignItems: 'stretch', gap: 28, fontFamily: UI, color: W.ink, position: 'relative'}}>
+      {sides.map((s, i) => {
+        const o = fade(f, s.t, fps, 320);
+        const pop = sp(f, s.t, fps, 0.7, 2.4);
+        return (
+          <div key={i} style={{flex: 1, background: W.card, borderRadius: 30, boxShadow: `inset 0 0 0 1px ${W.line}, 0 30px 70px -30px rgba(23,16,14,0.28)`, padding: '40px 46px', boxSizing: 'border-box', opacity: o, transform: `translateY(${(1 - pop) * 22}px)`}}>
+            <div style={{fontSize: 18, fontWeight: 600, letterSpacing: '0.11em', textTransform: 'uppercase', color: W.muted}}>{s.label}</div>
+            <div style={{marginTop: 26, fontSize: 132, fontWeight: 780, letterSpacing: '-0.05em', lineHeight: 1, color: s.hot ? W.accentInk : W.ink}}>{s.big}</div>
+            <div style={{marginTop: 16, fontSize: 32, fontWeight: 650, letterSpacing: '-0.02em'}}>{s.line}</div>
+            <div style={{marginTop: 18, fontFamily: MONO, fontSize: 19, color: W.muted}}>{s.small}</div>
+          </div>
+        );
+      })}
+      <div style={{position: 'absolute', left: 700 - 34, top: 230 - 34, width: 68, height: 68, borderRadius: 34, background: W.ink, color: W.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 34, fontWeight: 600, opacity: arrow, transform: `scale(${0.7 + 0.3 * arrow})`}}>→</div>
+    </div>
+  );
+};
+
+/** What each of the three tools does in the product. Logical 1620×520. */
+export const WdTools: React.FC<P> = (p) => {
+  const {f, fps} = p;
+  const at = useAt(p);
+  const tools = [
+    {t: at('t1'), name: 'neatlogs', job: 'The evidence', lines: ['240 runs traced in the dashboard', '18 counted before any replay', 'Damages read from the traces', 'The investigation is a trace too']},
+    {t: at('t2'), name: 'Entire', job: 'The motive', lines: ['A checkpoint behind the culprit', 'The request, word for word', 'entire why checks each changed line', 'The code graph gives alibis']},
+    {t: at('t3'), name: 'cfo.ai', job: 'The plan', lines: ['Pricing, costs, revenue, runway', 'Four cases, side by side', 'Unit cost from six real investigations', 'A simulator for the big levers']},
+  ];
+  return (
+    <div style={{width: 1620, height: 520, display: 'flex', gap: 26, fontFamily: UI, color: W.ink}}>
+      {tools.map((tool, i) => {
+        const o = fade(f, tool.t, fps, 300);
+        const pop = sp(f, tool.t, fps, 0.68, 2.5);
+        return (
+          <div key={i} style={{flex: 1, background: W.card, borderRadius: 30, boxShadow: `inset 0 0 0 1px ${W.line}, 0 30px 70px -30px rgba(23,16,14,0.28)`, padding: '38px 40px', boxSizing: 'border-box', opacity: o, transform: `translateY(${(1 - pop) * 26}px) scale(${0.94 + 0.06 * pop})`}}>
+            <div style={{fontFamily: MONO, fontSize: 17, letterSpacing: '0.1em', textTransform: 'uppercase', color: W.accentInk}}>{tool.job}</div>
+            <div style={{marginTop: 10, fontSize: 62, fontWeight: 770, letterSpacing: '-0.04em', lineHeight: 1.05}}>{tool.name}</div>
+            <div style={{marginTop: 26, borderTop: `1px solid ${W.line}`}}>
+              {tool.lines.map((line, n) => {
+                const lo = fade(f, tool.t + ms(fps, 260) + n * ms(fps, 120), fps, 260);
+                return (
+                  <div key={n} style={{display: 'flex', alignItems: 'center', gap: 14, height: 62, borderBottom: `1px solid ${W.line}`, fontSize: 23, color: W.ink2, opacity: lo, transform: `translateX(${(1 - lo) * -10}px)`}}>
+                    <span style={{width: 8, height: 8, borderRadius: 4, background: W.accent, flex: 'none'}} />
+                    {line}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const SCREENS_WHODUNIT: Record<string, React.FC<any>> = {WdMark, WdLog, WdChat, WdTerminal, WdLineup, WdMotive, WdExhibits, WdFix, WdTrace, WdDamage, WdCase, WdStats, WdPlan};
+export const SCREENS_WHODUNIT: Record<string, React.FC<any>> = {WdMark, WdLog, WdChat, WdTerminal, WdLineup, WdMotive, WdExhibits, WdFix, WdTrace, WdDamage, WdCase, WdStats, WdPlan, WdBeforeAfter, WdTools};
