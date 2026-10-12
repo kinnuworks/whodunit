@@ -156,8 +156,8 @@ Left over from that review:
 
 Still to do, in this order:
 
-1. cfo.ai. Done on 12 October: six pages, eight tables, four scenarios and a simulator, in the owner's workspace. `evidence/README.md` describes it. Still open: a share link for the judges, which is the owner's to make, and a screenshot of a whole page from the owner's browser.
-2. Screenshots from neatlogs cloud. 232 traffic runs are there and the `Execution Failed` detection has fired 27 times. The owner is signed in to the dashboard and this session is not.
+1. cfo.ai. Done on 12 October: six pages, eight tables, four scenarios and a simulator, in the owner's workspace. `evidence/README.md` describes it. The owner had a read-only share link made, which is in `evidence/README.md`.
+2. Screenshots from neatlogs cloud. Done on 12 October, three of them, in `evidence/`.
 3. The push. The owner still has to read the list of personal items in the transcripts: home folder path, connector names, the titles of the private notes index, and `ownerAccountUuid` and `ownerOrganizationUuid` in `bridge-session` entries. After the push, turn on GitHub Pages for `cases/` so the casebook has a public address, and collect the Entire checkpoint link for commit `ced2ecd21c3e`, checkpoint `bfbe27725663`.
 4. The video, from `pitch/demo-script.md`.
 5. More #neatHack posts, from `pitch/posts.md`.

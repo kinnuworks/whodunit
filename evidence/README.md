@@ -67,10 +67,17 @@ Built on 12 October through the cfo.ai MCP server, in the owner's workspace, wit
 - The cost of an investigation is not typed in. The model takes the mean of the six measured replay costs in its first table and adds the brief and patch.
 - The four cases were worked out by hand in a script before anything was written, and the saved model matches each one to the cent: $23,141, minus $5,300, $12,700 and $70,178 after month 12.
 
-The workspace is private. A public link to it is the owner's to make.
+The owner asked for a read-only link to the six pages on 12 October: https://app.cfo.ai/s/aQEB_E_N_TMjakaV
+
+## neatlogs cloud
+
+Taken from the dashboard on 12 October, in the owner's browser, with the sidebar that shows the owner's name cut off.
+
+- `neatlogs-traces.jpg`: the traces list, 240 in the last 14 days. The top row is the investigation itself. Below it are the refund agent's scripted runs, two of them flagged by the `Execution Failed` detection.
+- `neatlogs-investigation-trace.jpg`: trace `b842b67dfae39c67c1a3aa76772f5229`, workflow `whodunit investigate`, 17 steps in 10 minutes 45 seconds. The four lineup rounds, motive, brief, ruling, both fix attempts with their do-no-harm checks, and damages are each a span.
+- `neatlogs-failing-run.jpg`: one scripted refund request where `lookup_order` errored four times and the detection flagged each. The model's name is on screen in this one.
 
 ## Not collected yet
 
 - Links to the #neatHack posts.
-- neatlogs cloud screenshots. 232 traffic runs across the history went to the cloud on 11 October, and the investigation's own trace on 12 October.
 - The Entire checkpoint link for the headline culprit, which needs the repo to have a remote.
