@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "7bf71ee46219",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "AGENTS.md",
+    "evidence/README.md",
+    "evidence/neatlogs-failing-run.jpg",
+    "evidence/neatlogs-investigation-trace.jpg",
+    "evidence/neatlogs-traces.jpg"
+  ],
+  "sessions": [
+    {
+      "metadata": "/7b/f71ee46219/0/metadata.json",
+      "transcript": "/7b/f71ee46219/0/full.jsonl",
+      "compact_transcript": "/7b/f71ee46219/0/transcript.jsonl",
+      "content_hash": "/7b/f71ee46219/0/content_hash.txt",
+      "prompt": "/7b/f71ee46219/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 34,
+    "cache_creation_tokens": 32450,
+    "cache_read_tokens": 7788306,
+    "output_tokens": 9739,
+    "api_call_count": 15
+  }
+}
