@@ -1,6 +1,6 @@
 # Evidence
 
-What has been collected so far, with ids that can be looked up. Times are IST on 10 October 2026.
+What has been collected so far, with ids that can be looked up. Every screenshot was taken on light paper on Monday 12 October 2026, from the pages `uv run whodunit casebook` writes.
 
 ## Traces
 
@@ -10,30 +10,37 @@ What has been collected so far, with ids that can be looked up. Times are IST on
 - Case `planted-flaky-lookup`: failing run `d7b0d700a484` at the culprit and passing run `6987e974e28a` at its parent, same input. Both outlines are in `planted-flaky-lookup.record.json`.
 - neatroots raised 4 findings by itself on the flaky lookup failures, check `ignored-tool-error`, probability 0.82 to 0.89.
 
+- neatlogs cloud trace `b842b67dfae39c67c1a3aa76772f5229`, workflow `whodunit`: the headline investigation itself, run on 12 October. One root span, a span for the lineup with one child per round, and spans for the motive, the brief, the ruling, both fix attempts with their replays and do-no-harm checks, and the damages.
+- neatlogs cloud trace `1c87143bc68b3c01ed9767dca855b8e4`: a probe of the same tracing on a planted ten-commit case with no model. It can be deleted.
+- The failing run and the passing run each brief cites are in neatroots only. Sending them to neatlogs cloud waits on `neatroots cloud login`, which is the owner's step. Each case page says so under its evidence.
+
 ## Entire checkpoints
 
 - `fc9699a4e609` on commit 601c1fc, the first checkpoint in this repo.
 - `f8f2b3618deb` on commit d210212, the refund agent. Entire shows no prompt for this one, and `whodunit motive d210212` recovers it from the session by commit time.
 
+- `bfbe27725663` on commit `ced2ecd21c3e`, the headline culprit. `entire why` puts all 4 of its changed lines behind this commit, this checkpoint and the request the page quotes.
+- `d248e108a420` on commit `d4fb1587c066` holds two sessions with two differently worded requests. The case file first quoted the one whose change was thrown away. The build log entry of 11 October, 6:24 PM, has how `entire why` showed it.
+
 The checkpoint links will take the form `https://entire.io/gh/OWNER/REPO/commit/FULL_SHA` once the repo has a remote. It has none yet, by the owner's ruling.
 
 ## Before and after
 
-- `casefile-v1-planted-flaky-lookup.png`: the case file page for the first full case. Before the fix, replays failed about 39% of the time from the culprit on (48 replays across 11 commits). After the revert, 0 failures in 8 replays, 95.8% likely fixed.
-- `planted-flaky-lookup.record.json`: the record that page is drawn from. Machine paths are replaced with placeholders.
-
-- `casefile-v1-planted-friendly-prompt.png` and `planted-friendly-prompt.record.json`: a prompt regression on the gateway's small model. Before the fix, 57% of replays refunded another customer's order from the culprit on (32 replays across 9 commits). After a model-written patch that kept the friendlier wording, 0 failures in 6 replays, 98.2% likely fixed. Failing run `b5aa7b890c48`, passing run `d0cdabcc261a`.
-
-- `casefile-turned-away.png`: the first case with a real motive. The culprit came from a request for friendlier replies, and the page quotes it from the Entire checkpoint `6b2050de3c0b`. The five case files from the sealed eval are in `../cases/` as `.casefile.html`, with their records beside them.
-
-- `casefile-whole-history.png`: the headline case. 57 suspects, 20 replays, the real request from checkpoint `bfbe27725663`, a patch replayed 30 times without a failure (at most 6.2% at 95%), and 120.00 in refunds that went to the wrong people. Failing run `47e39d7c784a`, passing run `463025bf71f1`. Before the fix about 81% of replays failed from the culprit on. After it, 0 of 30.
-
-- `casebook.png`: the index of all six cases, with culprit, state and what each cost. The page is `../cases/index.html`.
+- `casefile-whole-history.png`: the headline case, whole page. 57 suspects, the culprit named at 98.3% after 20 replays across 5 commits, the request quoted from checkpoint `bfbe27725663` and checked against the transcript. Before the fix, 11 of 14 runs from the culprit on went wrong, which is 7 of 8 replays and 4 of 6 ordinary runs. After the kept fix, 0 failures in 30 replays, at most 6.2% at 95%. Failing run `1d39ba32bd8f`, passing run `113f05166f1f`.
+- `lineup-whole-history.png`: the top of that page. The stamp, the typed form and the lineup, with the culprit ringed.
+- `fix-whole-history.png`: its Fix section, with both tries.
+- `casefile-whole-history-phone.png`: the same page at 375 px wide. Only the lineup scrolls sideways.
+- `casefile-turned-away.png`: a case closed by a revert after two patches fell short.
+- `casefile-half-done-batch.png`: the case that is open and not fixed, with its stamp in ink.
+- `casebook.png`: the docket of all six cases. The page is `../cases/index.html`.
+- `planted-flaky-lookup.record.json` and `planted-friendly-prompt.record.json`: the records of the first two full cases, from 10 October, with machine paths replaced by placeholders. Their fixes were accepted on 8 and 6 clean replays under the first, lenient standard, which would not clear today's bar. The screenshots of their old pages are gone, and they are not drawn with the new page, because it would stamp them closed.
 
 ## A fix that failed, and what the agent did next
 
+- `../cases/whole-history.record.json`, under `attempts`: the first patch went 30 replays without a failure on its own case. The do-no-harm check then replayed 13 other requests on it, and "Please refund order 1001 for customer cust_9." went wrong in 8 of 8 replays, against 5 of 8 before the patch. That is worse at the 95% level, though only just: the chance that it is no worse comes to 4.4%. Whodunit threw the patch out, wrote a second with the first and its damage in view, and kept that one: 0 failures in 30 replays and none of the 13 made worse.
 - `../cases/turned-away.record.json`, under `attempts`: the first patch failed 5 of 12 replays, the second failed 4 of 18, and Whodunit then reverted the culprit and replayed the revert 30 times without a failure.
 - `../cases/half-done-batch.record.json`: two patches that fell short of the bar and a revert that conflicts. Left open.
+- The four fixes kept before the do-no-harm check existed were checked afterwards, against 12 or 13 other requests each. None made another request worse.
 
 ## Sealed eval
 
@@ -42,14 +49,17 @@ The checkpoint links will take the form `https://entire.io/gh/OWNER/REPO/commit/
 ## Simulator
 
 - `../eval/simulator/accuracy-clean-baseline.svg` and `accuracy-flaky-baseline.svg`: accuracy against replay budget, next to plain bisect, at failure rates from 100% down to 10%. `tables.md` gives wrong accusations as a share of accusations made, per cell.
+- `../eval/simulator/README.md` also has four smaller runs: how often a fix that is not really fixed clears the bar, cases shaped like the sealed eval's two rare ones, ranges where no commit did it, and ranges with two culprits.
 
 ## A failure and what happened next
 
-- The first flaky run on the real agent was thrown away. The machine was overloaded, replays hit the timeout and were counted as failures, and the timeout left agent processes running. The build log entry for 10 October has the detail, and `run_command` in `whodunit/replay.py` is the fix.
+- The first flaky run on the real agent was thrown away. The machine was overloaded, replays hit the timeout and were counted as failures, and the timeout left agent processes running. The build log entry for 10 October has the detail. Since 11 October a timeout gets one more try with double the limit, and a provider error is voided.
 - The first two root-cause briefs for `planted-flaky-lookup` named the right commit and misread why it fails. The third is right. All three are described in the build log.
+- A review on 11 October found claims the code did not back. The build log from 2:00 PM that day goes through each one.
 
 ## Not collected yet
 
 - Links to the #neatHack posts.
 - The cfo.ai plan. The server is named in `.mcp.json` and needs the owner's sign-in.
-- neatlogs cloud screenshots. 232 traffic runs across the history went to the cloud on 11 October.
+- neatlogs cloud screenshots. 232 traffic runs across the history went to the cloud on 11 October, and the investigation's own trace on 12 October.
+- The Entire checkpoint link for the headline culprit, which needs the repo to have a remote.

@@ -2,7 +2,7 @@
 
 About two and a half minutes. Screen recording with voice. The judges score the video on how clearly it explains the agent and the tool use, so every scene names the tool on screen.
 
-Before recording: `neatroots start` is running, the terminal is in the repo root at a large font, and `cases/index.html` (the casebook, from `uv run whodunit casebook`) is open in a browser tab. Run the command in scene 2 once beforehand so the worktree environments are warm.
+Before recording: `neatroots start` is running, the terminal is in the repo root at a large font, and `cases/index.html` (the casebook, from `uv run whodunit casebook`) is open in a browser tab on light paper. Run the command in scene 2 once beforehand so the worktree environments are warm. The numbers below are from the run of Monday 12 October. A new run will differ a little, so read them off the screen.
 
 ## Scene 1, the question (0:00 to 0:15)
 
@@ -18,31 +18,35 @@ Type and run:
 uv run whodunit investigate cases/whole-history.toml --from-traffic refund-agent --fresh
 ```
 
-`--fresh` sets the earlier record aside so the run starts from nothing. It takes about five minutes end to end and about 20 cents on the gateway, so record it once and cut.
+`--fresh` sets the earlier record aside so the run starts from nothing. It took about eleven minutes end to end and about 80 cents on the gateway, so record it once and cut.
 
 Let the first lines print. Point at each as it appears.
 
-> Whodunit starts with what it already has. Entire's code graph gives 22 of the 57 commits an alibi: a README edit cannot break a refund. And 18 ordinary runs in neatlogs had already asked this question. Four of them went wrong. Without that head start the same case took 30 replays across 8 commits. With it, 20 across 5. That is one run each way.
+> Whodunit starts with what it already has. Entire's code graph gives 22 of the 57 commits an alibi: a README edit cannot break a refund. And 18 ordinary runs, traced with the neatlogs SDK, had already asked this question. Four of them went wrong. Without that head start the same case took 33 replays across 8 commits. With it, 20 across 5.
 
 > Then it replays the failing request against the commits that are left, each in its own git worktree, each replay a real traced run of the agent. A bad commit does not fail every time, so it keeps a probability for every suspect.
 
 Cut to the result line.
 
-> Twenty replays. Five commits. 99.8 percent. This one.
+> Twenty replays. Five commits. 98.3 percent. This one.
+
+Switch to the case file page and press "Replay the investigation" under the lineup. Let it run: the marks land, suspects are struck through, and the red ring is drawn last.
+
+> Every suspect is a position in the lineup. An x is a replay that failed, an o is one that passed. Grey marks are ordinary runs it already had. Hatched ones have an alibi. Watch the odds move until one is left.
 
 ## Scene 3, the motive (0:50 to 1:20)
 
-Switch to the case file page. Scroll to Motive.
+Scroll to Motive.
 
 > And this is why it exists. The commit carries an Entire checkpoint, and the checkpoint holds the coding session behind it. Someone asked for this: "simple refunds feel slow, let the agent go straight to issue_refund when the customer has given the order number and the amount."
 
 Scroll to Brief.
 
-> A reasonable request. The brief sets it against what the commit did: it removed the only check on who owns the order. Every sentence here cites a span from a neatlogs trace, a commit or the checkpoint, and a sentence that cites nothing real is cut.
+> A reasonable request. The brief sets it against what the commit did: it removed the only check on who owns the order. Every sentence here cites a span from a trace, a commit or the checkpoint, and a sentence that cites nothing real is cut. The numbers lead to the list in the margin.
 
-Scroll to Evidence, hover the two runs.
+Scroll to Evidence, Exhibit A and Exhibit B.
 
-> Same request, one commit apart. On the left the agent looks the order up and refuses. On the right it pays.
+> Same request, one commit apart. In Exhibit A the agent looks the order up and refuses. In Exhibit B it pays. The step where they part is the red one.
 
 ## Scene 4, the ruling and the fix (1:20 to 1:55)
 
@@ -50,7 +54,7 @@ Scroll to Ruling and Fix.
 
 > Revert it, or keep what it was for and patch it? That is the owner's call, and Whodunit asks once per kind of change. This was a prompt change and the rule was already patch, so nobody was asked.
 
-> The patch keeps the shortcut and puts the ownership check back. Then it has to earn its place. Thirty replays, no failures. At 95% that puts the failure rate after the fix at 6.2% or less, close enough to where it was before the culprit to keep the patch.
+> Then the fix has to earn its place. The first patch went thirty replays without a failure. Whodunit then replayed 13 other requests on it. One ordinary refund failed 8 times in 8, where before the patch it had failed 5 in 8. Worse, so that patch was thrown out. The second one, told what the first had broken, passed both checks: no failures in 30 replays, which at 95% means 6.2% or less, and nothing else broken.
 
 Switch to `cases/turned-away.casefile.html`, scroll to Fix, "What it took".
 
@@ -60,7 +64,7 @@ Switch to `cases/turned-away.casefile.html`, scroll to Fix, "What it took".
 
 Back to the first case file, scroll to Damages. Then show `eval/sealed/README.md`.
 
-> The damage, read from the traces: 120 in refunds that went to the wrong people. The investigation cost 18 cents.
+> The damage, read from the traces of scripted traffic: 120 in refunds that went to the wrong people. The whole investigation, both patches and their checks included, cost about 80 cents.
 
 > We did not grade our own homework. A separate coding session grew this history through 53 ordinary requests, planted five regressions and sealed the answer key. Whodunit named all five and accused nobody wrongly.
 
@@ -75,5 +79,6 @@ Show the cfo.ai model, then the repo URL.
 ## Shots to capture separately
 
 - neatlogs cloud: the refund-agent traces list, and one trace open on the `issue_refund` span.
+- neatlogs cloud: the investigation's own trace, `b842b67dfae39c67c1a3aa76772f5229`, workflow `whodunit`, open on a lineup round and on the first fix attempt.
 - Entire: the checkpoint page for the culprit commit, Sessions tab then Changes tab.
 - cfo.ai: the plan's summary page and one scenario.

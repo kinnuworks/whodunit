@@ -56,6 +56,8 @@ So four of five were closed, one of them only by giving up on the patch the owne
 
 `cases/whole-history.toml` takes the `strangers-paid` regression and widens the range to the whole grown history, 57 suspects. With alibis from entire-graph for 22 of them and 18 ordinary runs as evidence, 20 replays across 5 commits named the culprit at 99.8%. A scan from the oldest suspect would have tested 37 commits. This is the run that speaks to savings on a longer history, and it is one run. Run again with no alibis and no ordinary runs to go on, it took 30 replays across 8 commits to reach 95.4%. So the head start saved 10 replays and 3 commits, in one run each way, with the two kinds of help taken away together.
 
+Both runs were made again on Monday 12 October, from nothing. With the head start: 20 replays across 5 commits, 98.3%. Without it: 33 replays across 8 commits, 99.0%. That run also went on to the fix, and its first patch was rejected by the do-no-harm check. `cases/whole-history.casefile.html` has it.
+
 ## Against plain bisect with retries
 
 The same five cases were then given to plain bisect, with each commit replayed up to 5 times over and called bad on the first failure. It ran once per case, so this is one sample and not a rate.

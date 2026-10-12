@@ -5,9 +5,8 @@
   "ordinary runs as evidence"
  ],
  "runs": 1,
- "replays": 30,
+ "replays": 33,
  "commits_tested": 8,
  "culprit": "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
- "probability": 0.954,
- "source": "Entered by hand from the build log entry of 11 October, 1:16 PM. The record of that run was not kept."
+ "probability": 0.9896
 }

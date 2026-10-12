@@ -85,11 +85,21 @@ def for_page(record: dict, record_file: Path) -> dict:
     return shown
 
 
-def _replayed(record: dict) -> None:
-    """Note that this record's own steps have made replays up to now. The damages count the investigation's cost up to here."""
+def _now_ms() -> int:
     import time
 
-    record["replays_until_ms"] = round(time.time() * 1000)
+    return round(time.time() * 1000)
+
+
+def _replayed(record: dict, since_ms: int) -> None:
+    """Note that one of this record's own steps was replaying from `since_ms` until now.
+
+    The damages bill an investigation for the replays inside these stretches and no others. One
+    stretch from the first replay to the last is not enough: an experiment run in between under
+    the same case id would be billed to the case.
+    """
+    record["replays_until_ms"] = _now_ms()
+    record.setdefault("replay_windows", []).append([since_ms - 2000, record["replays_until_ms"]])
 
 
 def _plain(args, case, repo, suspects, runner, say):
@@ -233,6 +243,7 @@ def lineup(args) -> int:
     if with_alibi:
         say(f"Alibis: {len(with_alibi)} of them start with less suspicion, for example {with_alibi[0].short} ({with_alibi[0].alibi}).")
 
+    began = _now_ms()
     with Runner(repo, case, keep=args.keep) as runner:
         found = _plain(args, case, repo, suspects, runner, say) if args.method == "plain" else _statistical(args, case, suspects, runner, say)
         replays = sum(r.verdict in (PASS, FAIL) for r in runner.replays)
@@ -338,7 +349,7 @@ def lineup(args) -> int:
     record["replays"] = every_replay
     # A resumed lineup adds its rounds to the ones the earlier run made.
     record["rounds"] = (record.get("rounds", []) if getattr(args, "resume", False) else []) + rounds
-    _replayed(record)
+    _replayed(record, began)
     save_record(record_path(args), record)
     say(f"Record: {record_path(args)}")
     if args.json:
@@ -444,6 +455,7 @@ def brief(args) -> int:
     )
     if evidence.failing_run is None and not args.no_runs:
         # No failing run could be tied to a replay on record. Make a few more, tagged one by one.
+        began = _now_ms()
         with Runner(repo, case) as runner:
             parent = evidence.parent
             for batch in range(6):
@@ -455,7 +467,7 @@ def brief(args) -> int:
                 if runner.trial(parent) == PASS:
                     break
             record.setdefault("replays", []).extend(asdict(r) for r in runner.replays)
-        _replayed(record)
+        _replayed(record, began)
         order = [s["sha"] for s in record["suspects"]]
         evidence = briefs.gather(repo, case.id, culprit, case.target, record["replays"], found, neatroots(), order=order)
     evidence.measured, evidence.rate_from = _measured(record)
@@ -648,6 +660,7 @@ def harm(args) -> int:
     if not kept.get("commit") or not (kept.get("verification") or {}).get("fixed"):
         print("This case has no fix that cleared its own bar, so there is nothing to check.")
         return 2
+    began = _now_ms()
     found = _check_harm(case, repo, record, kept["commit"], args)
     if found is None:
         print("No other cases and no ordinary.toml under cases/, so there is nothing to check against.")
@@ -656,7 +669,7 @@ def harm(args) -> int:
     for attempt in record.get("attempts", []):
         if attempt.get("commit") == kept["commit"]:
             attempt["harm"] = found
-    _replayed(record)
+    _replayed(record, began)
     save_record(path, record)
     print(_harm_said(found))
     return 1 if found["broken"] else 0
@@ -691,7 +704,7 @@ def _harm_said(harm: dict) -> str:
     n = harm["checked"]
     said = f"Checked against {n} other {'request' if n == 1 else 'requests'}."
     if harm["broken"]:
-        said += f" The fix broke {len(harm['broken'])} of them: " + "; ".join(
+        said += f" The fix made {len(harm['broken'])} of them go wrong more often than before: " + "; ".join(
             f'"{b["text"]}" went wrong in {b["fix"][0]} of {b["fix"][1]} replays on the fix, and in {b["before"][0]} of {b["before"][1]} before it' for b in harm["broken"]) + "."
     else:
         said += " The fix broke none of them."
@@ -726,13 +739,14 @@ def fix(args) -> int:
         print(f"No ruling yet. Run `whodunit ruling {args.case}` first.")
         return 2
     wanted = record["ruling"]["ruling"]
+    began = _now_ms()
     attempts = [_attempt(wanted, case, repo, record, args, number=1)]
     if wanted == rulings.PATCH and not _proven(attempts[-1]):
         first = attempts[-1]
         feedback = (first.get("note") or "") + "\nThe first patch:\n" + first.get("diff", "none was made") + "\nReplays of it that still failed:\n" + "\n".join(first.get("failed_replays", []) or ["none recorded"])
         if (first.get("harm") or {}).get("broken"):
-            feedback += "\nThe first patch cleared its own case and broke other requests that used to work. " + _harm_said(first["harm"]) + " A patch must leave those working."
-        print("  The patch " + ("broke other requests" if (first.get("harm") or {}).get("broken") else "did not clear the bar") + ". Trying once more, with the first patch and what went wrong in view.")
+            feedback += "\nThe first patch cleared its own case and made other requests go wrong more often than before it. " + _harm_said(first["harm"]) + " A patch must not do that."
+        print("  The patch " + ("made other requests worse" if (first.get("harm") or {}).get("broken") else "did not clear the bar") + ". Trying once more, with the first patch and what went wrong in view.")
         attempts.append(_attempt(rulings.PATCH, case, repo, record, args, feedback, number=2))
     if wanted == rulings.PATCH and not _proven(attempts[-1]):
         print("  The second patch is not kept either. Falling back to a revert, which loses what the commit was for.")
@@ -741,7 +755,7 @@ def fix(args) -> int:
     final = next((a for a in reversed(attempts) if _proven(a)), attempts[-1])
     record["fix"] = final
     record["attempts"] = attempts
-    _replayed(record)
+    _replayed(record, began)
     if _proven(final):
         kept = Path.cwd() / "cases" / f"{case.id}.toml"
         kept.parent.mkdir(exist_ok=True)
@@ -875,6 +889,7 @@ def check(args) -> int:
     case = Case.load(args.case)
     repo = Path(args.repo).resolve()
     ref = args.ref or case.fixed or "HEAD"
+    began = _now_ms()
     with Runner(repo, case) as runner:
         with ThreadPoolExecutor(max_workers=max(1, args.parallel)) as pool:
             verdicts = list(pool.map(lambda _: runner.trial(ref), range(args.runs)))
@@ -885,7 +900,7 @@ def check(args) -> int:
     record = load_record(path)
     if record:
         record.setdefault("checks", []).append({"at": time.strftime("%Y-%m-%d %H:%M"), "ref": sha, "runs": judged, "failures": failures})
-        _replayed(record)
+        _replayed(record, began)
         save_record(path, record)
     return 0 if failures == 0 and judged > 0 and "skip" not in verdicts else 1
 
@@ -899,7 +914,8 @@ def damages(args) -> int:
         order = [s["sha"] for s in record["suspects"]]
         since_culprit = order[order.index(record["lineup"]["culprit"]["sha"]):]
         started = [r["started"] * 1000 for r in record.get("replays", []) if r.get("started")]
-        mine = (min(started) - 2000 if started else None, record.get("replays_until_ms"))
+        # A record from before the stretches were kept has one, from its first replay to its last.
+        mine = [tuple(w) for w in record.get("replay_windows", [])] or ([(min(started) - 2000, record.get("replays_until_ms") or _now_ms())] if started else None)
         counted = damage.count(neatroots(), args.workflow, commits=since_culprit, since_ms=args.since_ms, case_id=case.id, replays_between=mine)
         counted = damage.count_case(neatroots(), counted, args.workflow, since_culprit, [(i.text, i.expect.get("refunds", [])) for i in case.inputs])
     except NeatError as exc:

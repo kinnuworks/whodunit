@@ -158,7 +158,7 @@ class Harm:
 
     checked: int = 0  # other requests replayed on the fix commit
     replays: int = 0
-    broken: list[dict] = field(default_factory=list)  # they went right before the fix and go wrong on it
+    broken: list[dict] = field(default_factory=list)  # they go wrong on the fix more often than before it. Before may not have been clean.
     already_failing: list[dict] = field(default_factory=list)  # wrong before the fix too, so not the fix's doing
     unclear: list[dict] = field(default_factory=list)  # a failure or two on the fix commit, and too few replays to say more
     voided: int = 0

@@ -8,9 +8,9 @@ git bisect assumes a bad commit fails every time. AI agents don't. A prompt chan
 
 So we built Whodunit: it replays the failing request against suspect commits, keeps a probability for each, and names one only at 95%.
 
-57 commits. 20 replays. 99.8%. #neatHack
+57 commits. 20 replays. 98.3%. #neatHack
 
-Attach: `evidence/casefile-whole-history.png`, cropped to the Suspects section.
+Attach: `evidence/lineup-whole-history.png`.
 
 ## 2, the motive
 
@@ -59,7 +59,7 @@ Reading damage from @neatlogs traces instead of guessing:
 4 of 6 scripted customer requests got someone else's order refunded. 120.00 gone, in a test shop.
 6 of 6 who were owed a refund got a kind reply and no money. 360.00 held back: three of 90.00 and three of 30.00.
 
-Finding the commit cost 18 cents. #neatHack
+The whole investigation cost about 80 cents. #neatHack
 
 Attach: the Damages sections of two case files.
 
@@ -74,3 +74,21 @@ We gave the same 5 sealed cases to plain bisect with 5 retries per commit.
 Ours: 5 right, 0 wrong. On rare bugs it said "not sure yet" until it was. #neatHack
 
 Attach: the last table in `eval/sealed/README.md`.
+
+## 8, the patch that passed and was thrown out
+
+Our fixer's first patch went 30 replays without a single failure. We almost shipped it.
+
+Then Whodunit replayed 13 other requests on the patched agent. An ordinary refund went from failing 5 times in 8 to failing 8 in 8.
+
+A fix is checked against its own bug. It should also be checked against everything else. #neatHack
+
+Attach: the "What it took" part of `cases/whole-history.casefile.html`.
+
+## 9, no commit did it
+
+Sometimes git bisect has no right answer. A model changes behind an alias and every commit breaks at once, the last good one too.
+
+Our lineup used to pin that on the first suspect, at 96.6%. Now it replays both ends first, says "No commit did it", and tells you what changed. #neatHack
+
+Attach: `eval/simulator/README.md`, the table under "When no commit did it".

@@ -117,7 +117,8 @@ table.suspects tr.is-cleared td:nth-child(3) { text-decoration: line-through; te
 .field > h2 { margin-top: 5px; }
 .body > :first-child { margin-top: 0; } .body > :last-child { margin-bottom: 0; }
 .body p { margin: 0 0 12px; max-width: 68ch; }
-.margin { font-size: 15px; color: var(--muted); }
+.margin { min-width: 0; font-size: 15px; color: var(--muted); overflow-wrap: anywhere; }
+.body { min-width: 0; overflow-wrap: break-word; }
 .margin > :first-child { margin-top: 4px; }
 h3 { margin: 0 0 4px; font: 700 13px/1.45 var(--typed); letter-spacing: 0.08em; text-transform: uppercase; }
 .verdict { font: 400 27px/1.2 var(--serif); margin: 0 0 10px; max-width: none; text-wrap: balance; }
@@ -172,6 +173,9 @@ table.docket td.what { width: 34%; } table.docket td.what a { font-weight: 500; 
   .form dd { max-width: 55%; } .figures { gap: 14px 30px; } .figures dt { font-size: 44px; }
   .field { grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 22px 0; } .margin { grid-column: 1; }
   .verdict { font-size: 21px; } .money { font-size: 34px; } .money small { font-size: 17px; }
+  table.suspects thead { display: none; } table.suspects, table.suspects tbody, table.suspects tr { display: block; }
+  table.suspects tr { padding: 8px 0; border-top: 1px solid var(--rule); } table.suspects td { display: inline; border: 0; padding: 0 6px 0 0; }
+  table.suspects td:nth-child(4), table.suspects td:nth-child(6) { display: block; color: var(--muted); }
   table.docket thead { display: none; } table.docket, table.docket tbody, table.docket tr, table.docket td { display: block; width: auto; }
   table.docket tr { padding: 16px 0; border-bottom: 1px solid var(--rule); } table.docket td { border: 0; padding: 3px 0; } table.docket td.what { width: auto; }
 }

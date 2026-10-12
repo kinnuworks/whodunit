@@ -8,7 +8,7 @@ Each case has 40 suspect commits and one culprit picked at random. Every point i
 - Plain bisect with repeats. It replays each commit as many times as the budget allows and calls the commit bad on the first failure.
 - Plain bisect with one replay per commit, which is what `git bisect run` does.
 
-To regenerate everything here, run `uv run python -m whodunit.simulate --out eval/simulator`. It takes about ten minutes. `tables.md` has every number behind the charts, `results.json` has the raw counts, and `fix-bar.json`, `short-range.json` and `no-culprit.json` hold the three smaller runs described further down.
+To regenerate everything here, run `uv run python -m whodunit.simulate --out eval/simulator`. It takes about ten minutes. `tables.md` has every number behind the charts, `results.json` has the raw counts, and `fix-bar.json`, `short-range.json`, `no-culprit.json` and `two-culprits.json` hold the four smaller runs described further down.
 
 ## When good commits never fail
 
@@ -82,6 +82,39 @@ It now replays both ends as they behave today and weighs two stories against eac
 So when everything fails often, it says so. When everything fails only now and then, it mostly names nobody, which is the safe answer, and it accuses an innocent commit in about 3% of cases. In 1,500 cases that did have a culprit it never called the range clear.
 
 Adding this check moved the numbers for a flaky baseline a little, because a good ref that fails once in its warm-up now gets a few more replays. Wrong accusations there went down slightly, and the tables on this page are the new ones. The clean-baseline numbers did not change at all.
+
+## Two culprits in one range
+
+The lineup assumes one change point. A range can hold two: a first commit that makes a case fail some of the time and a later one that makes it fail more. `two-culprits.json` sets three methods against each other on 200 cases a row with 20 suspects. This table is the row for 320 replays allowed.
+
+- Today's lineup, with its single change point.
+- "One or two": a model that holds every single commit and every pair of commits as a hypothesis at once, with an exact probability for each, and names a suspect when it is 95% likely to be a change point.
+- Today's lineup first, and a second look with that model when what it gathered makes two changes the likelier story.
+
+| What is going on | Method | Named every culprit, and nobody else | Named one of the two | Named an innocent commit | Named nobody | Replays |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| One change, fails every time | Today's lineup | 100% | | 0.0% | 0% | 19 |
+| | One or two | 100% | | 0.0% | 0% | 20 |
+| | Today's, then a second look | 100% | | 0.0% | 0% | 19 |
+| One change, fails half the time | Today's lineup | 96% | | 4.5% | 0% | 34 |
+| | One or two | 98% | | 2.0% | 0% | 50 |
+| | Today's, then a second look | 98% | | 2.5% | 0% | 46 |
+| One change, fails 30% of the time | Today's lineup | 94% | | 2.0% | 4% | 74 |
+| | One or two | 94% | | 0.5% | 5% | 83 |
+| | Today's, then a second look | 92% | | 2.0% | 6% | 81 |
+| Two changes, 50% then every time | Today's lineup | 0% | 86% | 14.0% | 0% | 28 |
+| | One or two | 55% | 40% | 2.5% | 2% | 60 |
+| | Today's, then a second look | 48% | 42% | 8.0% | 2% | 56 |
+| Two changes, 30% then 90% | Today's lineup | 0% | 76% | 23.5% | 0% | 44 |
+| | One or two | 50% | 32% | 8.5% | 10% | 92 |
+| | Today's, then a second look | 44% | 42% | 7.0% | 8% | 83 |
+| Two changes, 20% then 60% | Today's lineup | 0% | 88% | 10.5% | 1% | 77 |
+| | One or two | 40% | 48% | 6.5% | 6% | 122 |
+| | Today's, then a second look | 26% | 62% | 10.5% | 2% | 97 |
+
+With two regressions, today's lineup cannot name both, and in 10 to 24% of cases it names a commit that did nothing. The model that allows two names both in 40 to 55% of cases and an innocent commit in 2.5 to 8.5%. With one regression it is as accurate and a little more careful, and it costs 10 to 15 more replays. At 80 replays it names fewer cases than today's lineup, and the file has those rows. The second look does no better than the joint model, and it is taken in a quarter to two fifths of cases that had only one regression.
+
+So the simulator supports the joint model, and it is not in the lineup yet. It has no alibi priors, no handling of skipped or voided replays, no parallel rounds, no resumed evidence and no clear-range check, and the published curves above would all need running again with it. What is in the lineup today is cheaper: each input of a case gets a posterior of its own, and a case whose inputs point at different commits is flagged as a likely pair of regressions.
 
 ## How much a kept fix shows
 

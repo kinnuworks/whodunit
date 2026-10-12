@@ -1677,5 +1677,11 @@
   "sent_by": "eval/traffic.py",
   "note": "Dollar figures are estimates from token counts."
  },
- "replays_until_ms": 1791695949000
+ "replays_until_ms": 1791695949000,
+ "replay_windows": [
+  [
+   1791658835441.412,
+   1791695949000
+  ]
+ ]
 }

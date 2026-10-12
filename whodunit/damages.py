@@ -63,14 +63,14 @@ def _spend(mcp: Mcp, where: str, prices: dict) -> tuple[float, int]:
 
 
 def count(mcp: Mcp, workflow: str, commits: list[str] | None = None, since_ms: float | None = None, case_id: str | None = None,
-          prices: dict | None = None, replays_between: tuple[float | None, float | None] = (None, None)) -> Damages:
+          prices: dict | None = None, replays_between: list[tuple[float, float]] | None = None) -> Damages:
     """Count the workflow's ordinary runs on the culprit and the commits after it, and the replays the case made.
 
     `commits` are those SHAs. This is only the setting. Which of the runs are damage is for
     `count_case` to say, by the case's own check. Replays made for a case are left out of the
-    ordinary runs and reported on their own line. `replays_between` is the time, in ms, from
-    the investigation's first replay to its last, so that a later experiment run under the same
-    case id is not billed to it.
+    ordinary runs and reported on their own line. `replays_between` are the stretches of time,
+    in ms, in which this investigation's own steps were replaying. A replay under the same case
+    id outside them, from some other experiment, is not billed to it.
     """
     prices = prices or PRICES
     safe = workflow.replace("'", "''")
@@ -84,10 +84,8 @@ def count(mcp: Mcp, workflow: str, commits: list[str] | None = None, since_ms: f
     damages = Damages(workflow=workflow, since_ms=since_ms, runs=runs, tokens=tokens, cost_usd=round(cost, 4))
     if case_id:
         mine = REPLAY.format(like=f"%case:{case_id}%".replace("'", "''"))
-        if replays_between[0] is not None:
-            mine += f" and r.started_ms >= {float(replays_between[0])}"
-        if replays_between[1] is not None:
-            mine += f" and r.started_ms <= {float(replays_between[1])}"
+        if replays_between:
+            mine += " and (" + " or ".join(f"(r.started_ms >= {float(lo)} and r.started_ms <= {float(hi)})" for lo, hi in replays_between) + ")"
         damages.replay_runs = mcp.call("query_sql", sql=f"select count(*) as runs from runs r where {mine}")["rows"][0]["runs"]
         damages.replay_usd = round(_spend(mcp, mine, prices)[0], 4)
     return damages

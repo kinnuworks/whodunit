@@ -14,17 +14,17 @@ Six full investigations on the refund agent, with replays on a small hosted mode
 
 | Case | Replays | Replay cost |
 | --- | ---: | ---: |
-| whole-history | 50 | $0.18 |
-| cents-off | 65 | $0.25 |
-| strangers-paid | 74 | $0.25 |
-| turned-away | 119 | $0.71 |
-| wrong-order-refunded | 240 | $0.85 |
+| cents-off | 89 | $0.34 |
+| strangers-paid | 112 | $0.39 |
+| whole-history | 176 | $0.80 |
+| turned-away | 171 | $0.95 |
+| wrong-order-refunded | 274 | $1.00 |
 | half-done-batch | 558 | $3.53 |
 
-- Median replay cost per investigation: about $0.48. Mean: about $0.96. The worst case is a rare bug that was never fixed.
+- Median replay cost per investigation: about $0.87. Mean: about $1.17. The worst case is a rare bug that was never fixed. These are higher than the first version of this table, because every kept fix is now also replayed against 12 or 13 other requests, and the headline case needed a second patch.
 - Brief and patch calls on a larger model: about $0.10 to $0.30 per investigation.
 - Replay worker: one t3.large at about $61 a month runs three replays at a time. Assumed: one worker per 15 paying teams.
-- So the cost of one investigation is about $1.20 on average for an agent on a small model. An agent on a large model costs roughly 5 to 15 times more to replay, which is why replays are billed at cost above the included amount.
+- So the cost of one investigation is about $1.40 on average for an agent on a small model. An agent on a large model costs roughly 5 to 15 times more to replay, which is why replays are billed at cost above the included amount.
 
 ## What a regression costs the customer, counted from scripted traffic
 
@@ -44,7 +44,7 @@ The requests were sent by `eval/traffic.py`, not by customers, so these show the
 | Extra investigations | $8 each | |
 | Replays on the customer's larger model | at cost plus 20% | |
 
-Gross margin on Team at full use: 40 investigations at $1.20 is $48, plus about $4 of worker share, against $249. About 79%.
+Gross margin on Team at full use: 40 investigations at $1.40 is $56, plus about $4 of worker share, against $249. About 76%.
 
 ## Costs, assumed
 
@@ -71,6 +71,8 @@ Gross margin on Team at full use: 40 investigations at $1.20 is $48, plus about 
 ## Runway, worked from the assumptions above
 
 Starting cash of $15,000. Paying agents ramp in a straight line between the months in the table, each paying agent costs about $26 a month to serve at half use, and the founder draw starts in month 7.
+
+The $26 comes from the earlier figure of $1.20 an investigation. At $1.40 it is about $30, and the table below was not worked out again. The difference is $4 per paying agent per month, which takes roughly $130 off the cash at month 12 in the downside, $550 in the base case and $1,200 in the upside.
 
 | | Revenue covers costs from | Lowest cash | Cash at month 12 |
 | --- | --- | ---: | ---: |

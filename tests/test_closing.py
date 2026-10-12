@@ -439,9 +439,9 @@ def test_a_fix_that_stops_every_refund_is_rejected(tmp_path, monkeypatch, capsys
     assert [b["text"] for b in first["harm"]["broken"]] == ["Please refund order 1001 for customer cust_9."]  # and broke an ordinary refund
     assert second["harm"]["broken"] == [] and second["harm"]["checked"] == 1
     assert record["fix"]["commit"] == second["commit"]
-    assert "broke" in seen[1] and "Please refund order 1001" in seen[1]  # the second try was told what the first one broke
+    assert "go wrong more often" in seen[1] and "Please refund order 1001" in seen[1]  # the second try was told what the first one did
     page = made["case"].with_name("case.casefile.html").read_text()
-    assert "Checked against 1 other request" in page and "broke 1 other request" in page
+    assert "Checked against 1 other request" in page and "made 1 other request go wrong more often than before" in page
 
 
 def test_the_harm_check_can_be_run_on_a_fix_that_was_kept_before_it_existed(tmp_path, monkeypatch, capsys):

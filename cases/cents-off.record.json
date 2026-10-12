@@ -636,8 +636,8 @@
   "runs": 49,
   "tokens": 125703,
   "cost_usd": 0.1649,
-  "replay_runs": 65,
-  "replay_usd": 0.2505,
+  "replay_runs": 89,
+  "replay_usd": 0.3382,
   "case_runs": 3,
   "case_bad": 3,
   "wrongly_paid": 0.51,
@@ -655,5 +655,15 @@
    "failures": 0
   }
  ],
- "replays_until_ms": 1791723885255
+ "replays_until_ms": 1791723885255,
+ "replay_windows": [
+  [
+   1791658735623.369,
+   1791695949000
+  ],
+  [
+   1791721800000,
+   1791723885255
+  ]
+ ]
 }

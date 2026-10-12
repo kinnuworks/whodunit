@@ -577,3 +577,32 @@ Five of the six records were made before rounds were kept. For those the rounds 
 Checked so far: desktop width, and a true 375 px layout in a frame, where nothing scrolls sideways except the lineup. Not yet done: the link-preview image, and retaking the screenshots in `evidence/`.
 
 The last of the four older fixes passed its do-no-harm check overnight: 13 requests, none broken, 4 already failing for other reasons. All four kept fixes have now been checked.
+
+### 11:37 AM, Monday: the headline case run again from nothing, and a patch that passed and was thrown out
+
+`whodunit investigate cases/whole-history.toml --from-traffic refund-agent --fresh`, with everything from stage 2 in it. It took 10 minutes 46 seconds and 176 replays, about 80 cents. I had said 50 to 60 cents beforehand, and the difference is the second patch.
+
+- The lineup named the same commit, `ced2ecd`, at 98.3% after 20 replays across 5 commits. Sunday's run had 99.8%. This time one of the 8 replays from the culprit on passed.
+- No replay was voided and none timed out.
+- The request was checked against the transcript, and `entire why` put all 4 changed lines behind the same commit, checkpoint and request.
+- The brief gives the rate as 75%, 11 of 14 runs, and says the evidence does not show why some runs pass. I read it against the record before quoting it anywhere.
+- The first patch went 30 replays without a failure on its own case. Under Sunday morning's code it would have been kept. The do-no-harm check replayed 13 other requests on it, and "Please refund order 1001 for customer cust_9." went wrong in 8 of 8 replays, against 5 of 8 before the patch. So the patch was not kept. The second patch was told what the first had done, went 30 replays without a failure, and made none of the 13 worse. It is the kept fix.
+- The investigation is trace `b842b67dfae39c67c1a3aa76772f5229` in neatlogs cloud.
+- The record has its rounds, so the page's "Replay the investigation" plays the real ones. It was watched in a browser on another case from start to the ring.
+
+Three things to be straight about.
+
+The rejection was a near thing. That ordinary refund was already failing 5 times in 8 before the patch, because the branch a fix starts from still carries the other four regressions. 8 of 8 against 5 of 8 comes to a 4.4% chance that the patch made nothing worse, just under the 5% line. The page first said the patch "broke a request that had been going right", which the numbers beside it contradicted. It now says the patch made the request go wrong more often than before, and so do the README, the script and the post draft, which I had written the wrong way a few minutes earlier.
+
+The cost line was wrong again, for a new reason. Yesterday's fix billed a case for replays between its first and its last. With the harm checks added on Sunday evening, that stretch now covered Sunday afternoon's plain-bisect experiment, and four cases were billed for it. Each step that replays now records its own stretch of time, and a case is billed for those stretches only. The six cases come to 1,380 replays and about $7.01. `pitch/business-plan.md` has the new table. Its runway table was not worked out again, and says by how much it is off.
+
+The ablation is real now. Run without alibis and without ordinary runs, the same case took 33 replays across 8 commits to reach 99.0% on the same commit, against 20 across 5. Sunday's pair was 30 against 20. `cases/whole-history.ablation.json` is written by the run and no longer entered by hand.
+
+Also in this commit:
+
+- Every page was checked by script at 1280 px and at a true 375 px, in a frame, because Chrome will not make a window that narrow. Two things spilled and are fixed: a margin note with a long unbroken string, and the suspects table on a phone, which now stacks. Nothing scrolls sideways except the lineup.
+- `evidence/` has new screenshots, all on light paper: the headline page whole, its top with the lineup, its Fix section, the same page at phone width, the case closed by a revert, the open case, and the docket. The two screenshots of the first planted cases are removed. Their records stay. They were accepted on 8 and 6 clean replays under the first standard, and drawing them with the new page would have stamped them closed, which today's bar would not.
+- `cases/og.png` is the picture a link preview shows, drawn from `cases/og.html`. A page points at it by a relative path until `WHODUNIT_SITE` gives the casebook's public address.
+- `eval/simulator/README.md` has the two-culprit table.
+
+Not done, and the noon cutoff is near: the two-change-point model is still not in the lineup, the casebook has no public address, and the forwarding of each case's two runs to neatlogs cloud still waits on `neatroots cloud login`.

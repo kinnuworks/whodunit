@@ -41,5 +41,10 @@ def test_replays_from_a_later_experiment_are_not_billed_to_the_investigation():
         traces.run(CULPRIT, ASKED, case="strangers-paid/1", at=at)
     traces.run(CULPRIT, ASKED, case="strangers-paid/2", at=90_000.0)  # plain bisect, tried on the same case hours later
     everything = damages.count(traces, "refund-agent", commits=[CULPRIT], case_id="strangers-paid", prices=PRICES)
-    mine = damages.count(traces, "refund-agent", commits=[CULPRIT], case_id="strangers-paid", prices=PRICES, replays_between=(9_000.0, 13_000.0))
+    mine = damages.count(traces, "refund-agent", commits=[CULPRIT], case_id="strangers-paid", prices=PRICES, replays_between=[(9_000.0, 13_000.0)])
     assert (everything.replay_runs, mine.replay_runs) == (4, 3) and mine.replay_usd < everything.replay_usd + 1e-9
+    # The investigation replays again later, for its harm check. The experiment in between is still not its own.
+    traces.run(CULPRIT, ASKED, case="strangers-paid/3", at=200_000.0)
+    both = damages.count(traces, "refund-agent", commits=[CULPRIT], case_id="strangers-paid", prices=PRICES, replays_between=[(9_000.0, 13_000.0), (190_000.0, 210_000.0)])
+    one_stretch = damages.count(traces, "refund-agent", commits=[CULPRIT], case_id="strangers-paid", prices=PRICES, replays_between=[(9_000.0, 210_000.0)])
+    assert (both.replay_runs, one_stretch.replay_runs) == (4, 5)

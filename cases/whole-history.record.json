@@ -6,7 +6,8 @@
   "bad": "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
   "target": "victims/refund-agent",
   "file": "cases/whole-history.toml",
-  "repo": "."
+  "repo": ".",
+  "traffic_sent_by": "eval/traffic.py"
  },
  "suspects": [
   {
@@ -95,7 +96,7 @@
    "checkpoint": "2ea39cee1030",
    "touches_target": true,
    "alibi": "",
-   "probability": 0.0
+   "probability": 1e-05
   },
   {
    "sha": "367c64a5ae2702ae2d1142f0877bb5c56e946b21",
@@ -103,7 +104,7 @@
    "checkpoint": "414aea6e5e59",
    "touches_target": true,
    "alibi": "",
-   "probability": 0.0
+   "probability": 1e-05
   },
   {
    "sha": "d871f17de10b583e37ce053b47ab52f109fd3c14",
@@ -111,7 +112,7 @@
    "checkpoint": "15cb2b8ba0c1",
    "touches_target": true,
    "alibi": "",
-   "probability": 0.0
+   "probability": 2e-05
   },
   {
    "sha": "eb819b28dacfdc3b7e6ad0daa5ca9be49115d027",
@@ -119,7 +120,7 @@
    "checkpoint": "fee39ce05493",
    "touches_target": true,
    "alibi": "",
-   "probability": 0.0
+   "probability": 2e-05
   },
   {
    "sha": "8619484f9eb4609ee48571a4bb83f93c9c4ceb8a",
@@ -135,7 +136,7 @@
    "checkpoint": "96357218120b",
    "touches_target": true,
    "alibi": "",
-   "probability": 1e-05
+   "probability": 3e-05
   },
   {
    "sha": "909dd7607b8c3fc56f248ec7b28ff4fda5e6d53e",
@@ -143,7 +144,7 @@
    "checkpoint": "4277ef4e0d0a",
    "touches_target": true,
    "alibi": "changed orders.json, a data or dependency file the graph cannot follow",
-   "probability": 1e-05
+   "probability": 3e-05
   },
   {
    "sha": "53c8e027b3f3ee8c47e6fde0edc7de386b8048ea",
@@ -151,7 +152,7 @@
    "checkpoint": "2e014f99ae2c",
    "touches_target": true,
    "alibi": "changed pyproject.toml, a data or dependency file the graph cannot follow",
-   "probability": 1e-05
+   "probability": 3e-05
   },
   {
    "sha": "d4fb1587c0664b1d6c7bd482028ba9c26eba9adb",
@@ -159,7 +160,7 @@
    "checkpoint": "d248e108a420",
    "touches_target": true,
    "alibi": "",
-   "probability": 1e-05
+   "probability": 6e-05
   },
   {
    "sha": "ded7b9bf18b408b3101249f37c35412df21ccdea",
@@ -167,7 +168,7 @@
    "checkpoint": "e5c915db0e2b",
    "touches_target": true,
    "alibi": "",
-   "probability": 1e-05
+   "probability": 6e-05
   },
   {
    "sha": "7d991542f6e7d12f6c4c8d62baac9ff8deb8638c",
@@ -175,7 +176,7 @@
    "checkpoint": "aa53eb8980b9",
    "touches_target": true,
    "alibi": "changed uv.lock, a data or dependency file the graph cannot follow",
-   "probability": 1e-05
+   "probability": 3e-05
   },
   {
    "sha": "aaa4031687f026a0e08b126c9fa09e63933625bf",
@@ -183,7 +184,7 @@
    "checkpoint": "485899b3c448",
    "touches_target": true,
    "alibi": "",
-   "probability": 2e-05
+   "probability": 0.0001
   },
   {
    "sha": "923ccb8d2385e07f969417638008d370563442c8",
@@ -191,7 +192,7 @@
    "checkpoint": "004ae8972d75",
    "touches_target": true,
    "alibi": "",
-   "probability": 2e-05
+   "probability": 0.0001
   },
   {
    "sha": "42978be0a2352c8c6291703b61f31d1978e3ba19",
@@ -199,7 +200,7 @@
    "checkpoint": "1ff64aa3f19e",
    "touches_target": true,
    "alibi": "only touched README.md, which the agent does not run",
-   "probability": 0.0
+   "probability": 1e-05
   },
   {
    "sha": "31ac827491687d9ae6282568d676baaa576d928e",
@@ -207,7 +208,7 @@
    "checkpoint": "c4c54f1457ea",
    "touches_target": true,
    "alibi": "",
-   "probability": 2e-05
+   "probability": 0.0001
   },
   {
    "sha": "2664898a8d0c95720e08db03c95309f5dd62e67b",
@@ -215,7 +216,7 @@
    "checkpoint": "71fa230aebcf",
    "touches_target": true,
    "alibi": "",
-   "probability": 2e-05
+   "probability": 0.0001
   },
   {
    "sha": "d223a27c687f4dd55d9a23f5f20d20a8531bb2d6",
@@ -223,7 +224,7 @@
    "checkpoint": "472b5c282a4b",
    "touches_target": true,
    "alibi": "",
-   "probability": 5e-05
+   "probability": 0.00019
   },
   {
    "sha": "46bd74355ea7eaef3608322ce257a6cab6ffa5d1",
@@ -231,7 +232,7 @@
    "checkpoint": "a425eaec40d0",
    "touches_target": true,
    "alibi": "",
-   "probability": 5e-05
+   "probability": 0.00019
   },
   {
    "sha": "3454eb8684551ea9a7f4ee86de369f5f2bfebab6",
@@ -239,7 +240,7 @@
    "checkpoint": "6f89d7d1f88f",
    "touches_target": true,
    "alibi": "",
-   "probability": 5e-05
+   "probability": 0.00019
   },
   {
    "sha": "c54575368397e58f98e19f28d555fe081677b964",
@@ -247,7 +248,7 @@
    "checkpoint": "d098c3973305",
    "touches_target": true,
    "alibi": "",
-   "probability": 5e-05
+   "probability": 0.00019
   },
   {
    "sha": "20b9a91cef9b7bd61ede217708515ff743d2dc23",
@@ -255,7 +256,7 @@
    "checkpoint": "deb685ab53a3",
    "touches_target": true,
    "alibi": "changed orders.json, a data or dependency file the graph cannot follow",
-   "probability": 6e-05
+   "probability": 0.00023
   },
   {
    "sha": "32f8faafcb06462cf43dba5de49e1e9c67367976",
@@ -263,7 +264,7 @@
    "checkpoint": "412d52930049",
    "touches_target": true,
    "alibi": "",
-   "probability": 0.00011
+   "probability": 0.00038
   },
   {
    "sha": "0a12ddea74f5b68fd4afb82a53a85b65233a746f",
@@ -271,7 +272,7 @@
    "checkpoint": "9a3cbd1e9c14",
    "touches_target": true,
    "alibi": "",
-   "probability": 0.00024
+   "probability": 0.00078
   },
   {
    "sha": "463076906c7823c256e43331b1aae393ace08dee",
@@ -279,7 +280,7 @@
    "checkpoint": "400923d529ce",
    "touches_target": true,
    "alibi": "only touched README.md, which the agent does not run",
-   "probability": 3e-05
+   "probability": 8e-05
   },
   {
    "sha": "7d719e7aacb7acfb7a9221cac0dde7660dbc3857",
@@ -287,7 +288,7 @@
    "checkpoint": "77506d8caa4c",
    "touches_target": true,
    "alibi": "",
-   "probability": 0.00057
+   "probability": 0.00168
   },
   {
    "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
@@ -295,7 +296,7 @@
    "checkpoint": "d24473f3fca4",
    "touches_target": true,
    "alibi": "only touched README.md, which the agent does not run",
-   "probability": 0.00064
+   "probability": 0.00126
   },
   {
    "sha": "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
@@ -303,7 +304,7 @@
    "checkpoint": "bfbe27725663",
    "touches_target": true,
    "alibi": "",
-   "probability": 0.99777
+   "probability": 0.98305
   },
   {
    "sha": "edba68bc32c8e7208fe4149fda60dfcf059b8708",
@@ -311,7 +312,7 @@
    "checkpoint": "17a231c53730",
    "touches_target": true,
    "alibi": "",
-   "probability": 9e-05
+   "probability": 0.00477
   },
   {
    "sha": "0c0aa898ca70d2faacfb75eda7b42fa34d3ab1bb",
@@ -319,7 +320,7 @@
    "checkpoint": "485add6c4c2e",
    "touches_target": true,
    "alibi": "",
-   "probability": 9e-05
+   "probability": 0.00477
   },
   {
    "sha": "19facbc193e838a7df936fb350d452d342a78afc",
@@ -327,7 +328,7 @@
    "checkpoint": "bfe874c6b7f8",
    "touches_target": true,
    "alibi": "changed orders.json, a data or dependency file the graph cannot follow",
-   "probability": 1e-05
+   "probability": 0.00026
   },
   {
    "sha": "03a169ce83ba866bf62dcf4774676b010da86196",
@@ -335,7 +336,7 @@
    "checkpoint": "328a10c88154",
    "touches_target": true,
    "alibi": "",
-   "probability": 1e-05
+   "probability": 0.00043
   },
   {
    "sha": "593d827f6f3d870dbc591f3e5a8d2893cfe58e32",
@@ -343,7 +344,7 @@
    "checkpoint": "be89e7107d7f",
    "touches_target": true,
    "alibi": "changed main in smoke.py, which the agent never calls",
-   "probability": 0.0
+   "probability": 6e-05
   },
   {
    "sha": "4c5adbcc2b967732cd0ae9a9544d765851ebad0b",
@@ -351,7 +352,7 @@
    "checkpoint": "9be487409d16",
    "touches_target": true,
    "alibi": "",
-   "probability": 1e-05
+   "probability": 0.00043
   },
   {
    "sha": "fedf89729b98beb2fe11d7e016c997cbe5225b2a",
@@ -359,7 +360,7 @@
    "checkpoint": "2a120fdb85c4",
    "touches_target": true,
    "alibi": "changed main in smoke.py, which the agent never calls",
-   "probability": 0.0
+   "probability": 1e-05
   },
   {
    "sha": "5cfdd5acf608c70102c5a609aa579b0b3a9ed9a4",
@@ -375,7 +376,7 @@
    "checkpoint": "7317b1f17593",
    "touches_target": true,
    "alibi": "",
-   "probability": 0.0
+   "probability": 5e-05
   },
   {
    "sha": "c0fb4a11007e62e9b6b401d335e8c3e21ccf220b",
@@ -383,7 +384,7 @@
    "checkpoint": "1dab4a27d094",
    "touches_target": true,
    "alibi": "",
-   "probability": 0.0
+   "probability": 5e-05
   },
   {
    "sha": "38d1b4f23bfcdcc9756fcf59dd23407c3e36df0f",
@@ -391,7 +392,7 @@
    "checkpoint": "9fea3dfc829b",
    "touches_target": true,
    "alibi": "changed orders.json, a data or dependency file the graph cannot follow",
-   "probability": 0.0
+   "probability": 3e-05
   },
   {
    "sha": "ca0a2d6288aad40896ccd6d015ef5bd43c4e56fd",
@@ -399,7 +400,7 @@
    "checkpoint": "6b2050de3c0b",
    "touches_target": true,
    "alibi": "",
-   "probability": 0.0
+   "probability": 5e-05
   },
   {
    "sha": "a7b2b34584f03ac5eab1cf49e35dc9aa5626e42b",
@@ -423,7 +424,7 @@
    "checkpoint": "37d636ad652b",
    "touches_target": true,
    "alibi": "",
-   "probability": 0.0
+   "probability": 3e-05
   },
   {
    "sha": "c1f5a526ee7685fab9ce494c9c8817115a953610",
@@ -431,7 +432,7 @@
    "checkpoint": "c48ebff2204a",
    "touches_target": true,
    "alibi": "",
-   "probability": 0.0
+   "probability": 3e-05
   },
   {
    "sha": "6a4e489058122b3672690033e4a9dd769fed23ec",
@@ -439,7 +440,7 @@
    "checkpoint": "20bb9557155f",
    "touches_target": true,
    "alibi": "changed pyproject.toml, a data or dependency file the graph cannot follow",
-   "probability": 0.0
+   "probability": 2e-05
   },
   {
    "sha": "f7b69ac79ec34a28950e2de4137ef72b1cd8aecb",
@@ -466,13 +467,89 @@
    "probability": 0.0
   }
  ],
+ "witnessed": [
+  {
+   "sha": "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
+   "failed": false
+  },
+  {
+   "sha": "f7b69ac79ec34a28950e2de4137ef72b1cd8aecb",
+   "failed": true
+  },
+  {
+   "sha": "95b3ca73b1fd470565810af86e18a290d451522d",
+   "failed": false
+  },
+  {
+   "sha": "ca0a2d6288aad40896ccd6d015ef5bd43c4e56fd",
+   "failed": true
+  },
+  {
+   "sha": "4c5adbcc2b967732cd0ae9a9544d765851ebad0b",
+   "failed": true
+  },
+  {
+   "sha": "0c0aa898ca70d2faacfb75eda7b42fa34d3ab1bb",
+   "failed": true
+  },
+  {
+   "sha": "0a12ddea74f5b68fd4afb82a53a85b65233a746f",
+   "failed": false
+  },
+  {
+   "sha": "32f8faafcb06462cf43dba5de49e1e9c67367976",
+   "failed": false
+  },
+  {
+   "sha": "c54575368397e58f98e19f28d555fe081677b964",
+   "failed": false
+  },
+  {
+   "sha": "2664898a8d0c95720e08db03c95309f5dd62e67b",
+   "failed": false
+  },
+  {
+   "sha": "7d991542f6e7d12f6c4c8d62baac9ff8deb8638c",
+   "failed": false
+  },
+  {
+   "sha": "bdd8d4dd9fed0be42669bb52e54759be20a800f3",
+   "failed": false
+  },
+  {
+   "sha": "eb819b28dacfdc3b7e6ad0daa5ca9be49115d027",
+   "failed": false
+  },
+  {
+   "sha": "367c64a5ae2702ae2d1142f0877bb5c56e946b21",
+   "failed": false
+  },
+  {
+   "sha": "0d8eb7150bfa9c5d2c8480ae5513633f3cb12c3e",
+   "failed": false
+  },
+  {
+   "sha": "d6bcbdbfd31edbbaca83ad6e9e667b591849dab1",
+   "failed": false
+  },
+  {
+   "sha": "e875aa7e2a59ec7c6b6fd07a99c6749068b0c967",
+   "failed": false
+  },
+  {
+   "sha": "787bef54114735bab45e970cec139b0cac4f359e",
+   "failed": false
+  }
+ ],
  "lineup": {
   "case": "whole-history",
   "method": "statistical",
   "suspects": 57,
   "commits_tested": 5,
   "replays": 20,
-  "seconds": 117.4,
+  "voided": 0,
+  "timeouts": 0,
+  "seconds": 94.8,
   "culprit": {
    "sha": "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
    "subject": "Let the agent skip lookup_order when the customer gives order number and amount",
@@ -480,205 +557,651 @@
    "files": [
     "victims/refund-agent/agent.py"
    ],
-   "probability": 0.9978
+   "probability": 0.983
   },
   "remaining": [
    {
     "sha": "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
     "subject": "Let the agent skip lookup_order when the customer gives order number and amount",
-    "probability": 0.9978
+    "probability": 0.983
    }
   ],
   "failure_rate_before": 0.015,
-  "failure_rate_from": 0.812,
+  "failure_rate_from": 0.75,
+  "per_input": [
+   {
+    "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+    "replays": 20,
+    "failures": 7,
+    "top": "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
+    "probability": 0.812
+   }
+  ],
   "linear_scan_commits": 37,
   "traffic_runs": 18,
-  "traffic_failures": 4,
-  "voided": 0,
-  "timeouts": 0
+  "traffic_failures": 4
  },
  "replays": [
   {
    "sha": "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
    "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
    "verdict": "fail",
-   "reason": "refunds were [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"Customer refund request\"}], expected []",
-   "seconds": 5.012925792019814,
-   "started": 1791695776.789957,
-   "tag": "whole-history/95776001"
-  },
-  {
-   "sha": "e5542b7f40b7e37b5eea8d66ea754230cf4411c0",
-   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
-   "verdict": "pass",
-   "reason": "refunds match: []",
-   "seconds": 5.216925541986711,
-   "started": 1791695776.790085,
-   "tag": "whole-history/95776002"
-  },
-  {
-   "sha": "e5542b7f40b7e37b5eea8d66ea754230cf4411c0",
-   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
-   "verdict": "pass",
-   "reason": "refunds match: []",
-   "seconds": 5.30235837501823,
-   "started": 1791695776.790121,
-   "tag": "whole-history/95776003"
-  },
-  {
-   "sha": "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
-   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
-   "verdict": "fail",
    "reason": "refunds were [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"customer requested\"}], expected []",
-   "seconds": 4.703639667015523,
-   "started": 1791695781.817059,
-   "tag": "whole-history/95776004"
+   "seconds": 4.472077790996991,
+   "started": 1791784054.442739,
+   "tag": "whole-history/84054001",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "6f28ac55",
+   "lock": "acdbdb32dfda"
   },
   {
    "sha": "e5542b7f40b7e37b5eea8d66ea754230cf4411c0",
    "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
    "verdict": "pass",
    "reason": "refunds match: []",
-   "seconds": 4.559135374991456,
-   "started": 1791695782.0231302,
-   "tag": "whole-history/95776005"
+   "seconds": 4.654982750013005,
+   "started": 1791784054.4439821,
+   "tag": "whole-history/84054003",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "6f28ac55",
+   "lock": "8c8cf49597d7"
+  },
+  {
+   "sha": "e5542b7f40b7e37b5eea8d66ea754230cf4411c0",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.84573679199093,
+   "started": 1791784054.442875,
+   "tag": "whole-history/84054002",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "6f28ac55",
+   "lock": "8c8cf49597d7"
+  },
+  {
+   "sha": "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "fail",
+   "reason": "refunds were [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"customer requested refund\"}], expected []",
+   "seconds": 4.000137374998303,
+   "started": 1791784059.305705,
+   "tag": "whole-history/84054006",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "6f28ac55",
+   "lock": "acdbdb32dfda"
+  },
+  {
+   "sha": "e5542b7f40b7e37b5eea8d66ea754230cf4411c0",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 4.190581167000346,
+   "started": 1791784059.116534,
+   "tag": "whole-history/84054005",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "6f28ac55",
+   "lock": "8c8cf49597d7"
   },
   {
    "sha": "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
    "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
    "verdict": "fail",
    "reason": "refunds were [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"Customer requested refund\"}], expected []",
-   "seconds": 4.811194458976388,
-   "started": 1791695782.109248,
-   "tag": "whole-history/95776006"
-  },
-  {
-   "sha": "e5542b7f40b7e37b5eea8d66ea754230cf4411c0",
-   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
-   "verdict": "pass",
-   "reason": "refunds match: []",
-   "seconds": 4.260528084007092,
-   "started": 1791695786.5363781,
-   "tag": "whole-history/95776007"
+   "seconds": 5.259423707990209,
+   "started": 1791784058.931906,
+   "tag": "whole-history/84054004",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "6f28ac55",
+   "lock": "acdbdb32dfda"
   },
   {
    "sha": "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
    "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
    "verdict": "fail",
    "reason": "refunds were [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"Customer requested refund\"}], expected []",
-   "seconds": 4.511190124991117,
-   "started": 1791695786.5958169,
-   "tag": "whole-history/95776008"
+   "seconds": 4.160722917004023,
+   "started": 1791784063.322199,
+   "tag": "whole-history/84054007",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "6f28ac55",
+   "lock": "acdbdb32dfda"
   },
   {
    "sha": "e5542b7f40b7e37b5eea8d66ea754230cf4411c0",
    "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
    "verdict": "pass",
    "reason": "refunds match: []",
-   "seconds": 4.9396112079848535,
-   "started": 1791695786.935174,
-   "tag": "whole-history/95776009"
+   "seconds": 4.192873958003474,
+   "started": 1791784063.322339,
+   "tag": "whole-history/84054008",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "6f28ac55",
+   "lock": "8c8cf49597d7"
   },
   {
    "sha": "e5542b7f40b7e37b5eea8d66ea754230cf4411c0",
    "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
    "verdict": "pass",
    "reason": "refunds match: []",
-   "seconds": 5.333814750018064,
-   "started": 1791695791.122133,
-   "tag": "whole-history/95776011"
+   "seconds": 4.174657916999422,
+   "started": 1791784064.210277,
+   "tag": "whole-history/84054009",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "6f28ac55",
+   "lock": "8c8cf49597d7"
+  },
+  {
+   "sha": "e5542b7f40b7e37b5eea8d66ea754230cf4411c0",
+   "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 3.9122179170080926,
+   "started": 1791784067.5310621,
+   "tag": "whole-history/84054011",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "6f28ac55",
+   "lock": "8c8cf49597d7"
   },
   {
    "sha": "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
    "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
    "verdict": "fail",
    "reason": "refunds were [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"Customer requested refund\"}], expected []",
-   "seconds": 5.642872625001473,
-   "started": 1791695790.813271,
-   "tag": "whole-history/95776010"
+   "seconds": 4.1871630839887075,
+   "started": 1791784067.5043259,
+   "tag": "whole-history/84054010",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "6f28ac55",
+   "lock": "acdbdb32dfda"
   },
   {
    "sha": "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
    "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
    "verdict": "fail",
    "reason": "refunds were [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"Customer requested refund\"}], expected []",
-   "seconds": 10.491245833982248,
-   "started": 1791695796.47266,
-   "tag": "whole-history/95776013"
+   "seconds": 4.538879125000676,
+   "started": 1791784071.712988,
+   "tag": "whole-history/84054014",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "6f28ac55",
+   "lock": "04f4ba1fc83f"
   },
   {
    "sha": "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
    "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
    "verdict": "fail",
    "reason": "refunds were [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"customer requested refund\"}], expected []",
-   "seconds": 10.492927040992072,
-   "started": 1791695796.472439,
-   "tag": "whole-history/95776012"
+   "seconds": 5.358853916986845,
+   "started": 1791784071.712948,
+   "tag": "whole-history/84054013",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "6f28ac55",
+   "lock": "04f4ba1fc83f"
   },
   {
    "sha": "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
    "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
-   "verdict": "fail",
-   "reason": "refunds were [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"Customer requested refund\"}], expected []",
-   "seconds": 10.49363633300527,
-   "started": 1791695796.472675,
-   "tag": "whole-history/95776014"
+   "verdict": "pass",
+   "reason": "refunds match: []",
+   "seconds": 5.664789583999664,
+   "started": 1791784071.711924,
+   "tag": "whole-history/84054012",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "6f28ac55",
+   "lock": "04f4ba1fc83f"
   },
   {
    "sha": "7d719e7aacb7acfb7a9221cac0dde7660dbc3857",
    "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
    "verdict": "pass",
    "reason": "refunds match: []",
-   "seconds": 4.496071292000124,
-   "started": 1791695806.983745,
-   "tag": "whole-history/95776017"
+   "seconds": 4.95495933300117,
+   "started": 1791784077.4006348,
+   "tag": "whole-history/84054015",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "6f28ac55",
+   "lock": "04f4ba1fc83f"
   },
   {
    "sha": "7d719e7aacb7acfb7a9221cac0dde7660dbc3857",
    "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
    "verdict": "pass",
    "reason": "refunds match: []",
-   "seconds": 4.648463665973395,
-   "started": 1791695806.983706,
-   "tag": "whole-history/95776016"
+   "seconds": 4.953873542021029,
+   "started": 1791784077.4020538,
+   "tag": "whole-history/84054016",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "6f28ac55",
+   "lock": "04f4ba1fc83f"
   },
   {
    "sha": "7d719e7aacb7acfb7a9221cac0dde7660dbc3857",
    "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
    "verdict": "pass",
    "reason": "refunds match: []",
-   "seconds": 4.971267334010918,
-   "started": 1791695806.982888,
-   "tag": "whole-history/95776015"
+   "seconds": 5.0635131250019185,
+   "started": 1791784077.4021068,
+   "tag": "whole-history/84054017",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "6f28ac55",
+   "lock": "04f4ba1fc83f"
   },
   {
    "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
    "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
    "verdict": "pass",
    "reason": "refunds match: []",
-   "seconds": 5.748865667002974,
-   "started": 1791695811.971603,
-   "tag": "whole-history/95776019"
+   "seconds": 5.322091541980626,
+   "started": 1791784082.489588,
+   "tag": "whole-history/84054020",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "6f28ac55",
+   "lock": "04f4ba1fc83f"
   },
   {
    "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
    "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
    "verdict": "pass",
    "reason": "refunds match: []",
-   "seconds": 5.825788375019329,
-   "started": 1791695811.9704902,
-   "tag": "whole-history/95776018"
+   "seconds": 5.324352584022563,
+   "started": 1791784082.488508,
+   "tag": "whole-history/84054018",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "6f28ac55",
+   "lock": "04f4ba1fc83f"
   },
   {
    "sha": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
    "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
    "verdict": "pass",
    "reason": "refunds match: []",
-   "seconds": 5.94099037500564,
-   "started": 1791695811.971621,
-   "tag": "whole-history/95776020"
+   "seconds": 5.5230847079947125,
+   "started": 1791784082.488666,
+   "tag": "whole-history/84054019",
+   "voided": 0,
+   "timeouts": 0,
+   "model": "6f28ac55",
+   "lock": "04f4ba1fc83f"
   }
  ],
+ "rounds": [
+  {
+   "commits": [
+    "e5542b7f40b7e37b5eea8d66ea754230cf4411c0",
+    "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
+    "e5542b7f40b7e37b5eea8d66ea754230cf4411c0",
+    "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
+    "e5542b7f40b7e37b5eea8d66ea754230cf4411c0",
+    "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
+    "e5542b7f40b7e37b5eea8d66ea754230cf4411c0",
+    "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
+    "e5542b7f40b7e37b5eea8d66ea754230cf4411c0",
+    "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
+    "e5542b7f40b7e37b5eea8d66ea754230cf4411c0"
+   ],
+   "verdicts": [
+    "pass",
+    "fail",
+    "pass",
+    "fail",
+    "pass",
+    "fail",
+    "pass",
+    "fail",
+    "pass",
+    "fail",
+    "pass"
+   ],
+   "top": [
+    [
+     "7d719e7aacb7acfb7a9221cac0dde7660dbc3857",
+     0.2143
+    ],
+    [
+     "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
+     0.2143
+    ],
+    [
+     "edba68bc32c8e7208fe4149fda60dfcf059b8708",
+     0.2143
+    ]
+   ],
+   "posterior": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0001,
+    0.0002,
+    0.0002,
+    0.0,
+    0.0004,
+    0.0005,
+    0.0005,
+    0.0008,
+    0.0008,
+    0.0005,
+    0.0019,
+    0.0019,
+    0.0001,
+    0.0019,
+    0.0019,
+    0.005,
+    0.005,
+    0.005,
+    0.005,
+    0.0088,
+    0.0147,
+    0.0504,
+    0.0107,
+    0.2143,
+    0.0107,
+    0.2143,
+    0.2143,
+    0.2143,
+    0.0031,
+    0.0051,
+    0.0008,
+    0.0051,
+    0.0001,
+    0.0,
+    0.0004,
+    0.0004,
+    0.0002,
+    0.0004,
+    0.0,
+    0.0,
+    0.0002,
+    0.0002,
+    0.0001,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "commits": [
+    "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
+    "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
+    "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca"
+   ],
+   "verdicts": [
+    "pass",
+    "fail",
+    "fail"
+   ],
+   "top": [
+    [
+     "7d719e7aacb7acfb7a9221cac0dde7660dbc3857",
+     0.3764
+    ],
+    [
+     "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
+     0.3764
+    ],
+    [
+     "0a12ddea74f5b68fd4afb82a53a85b65233a746f",
+     0.0959
+    ]
+   ],
+   "posterior": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0001,
+    0.0002,
+    0.0003,
+    0.0003,
+    0.0,
+    0.0007,
+    0.0009,
+    0.0009,
+    0.0015,
+    0.0015,
+    0.0009,
+    0.0037,
+    0.0037,
+    0.0002,
+    0.0037,
+    0.0037,
+    0.0098,
+    0.0098,
+    0.0098,
+    0.0098,
+    0.0172,
+    0.0287,
+    0.0959,
+    0.0188,
+    0.3764,
+    0.0188,
+    0.3764,
+    0.0026,
+    0.0026,
+    0.0002,
+    0.0003,
+    0.0,
+    0.0003,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "commits": [
+    "7d719e7aacb7acfb7a9221cac0dde7660dbc3857",
+    "7d719e7aacb7acfb7a9221cac0dde7660dbc3857",
+    "7d719e7aacb7acfb7a9221cac0dde7660dbc3857"
+   ],
+   "verdicts": [
+    "pass",
+    "pass",
+    "pass"
+   ],
+   "top": [
+    [
+     "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
+     0.8937
+    ],
+    [
+     "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+     0.0447
+    ],
+    [
+     "7d719e7aacb7acfb7a9221cac0dde7660dbc3857",
+     0.0231
+    ]
+   ],
+   "posterior": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0001,
+    0.0001,
+    0.0001,
+    0.0,
+    0.0002,
+    0.0002,
+    0.0002,
+    0.0004,
+    0.0004,
+    0.0002,
+    0.0007,
+    0.0007,
+    0.0,
+    0.0007,
+    0.0007,
+    0.0015,
+    0.0015,
+    0.0015,
+    0.0015,
+    0.0021,
+    0.0035,
+    0.0087,
+    0.0012,
+    0.0231,
+    0.0447,
+    0.8937,
+    0.0052,
+    0.0052,
+    0.0003,
+    0.0005,
+    0.0001,
+    0.0005,
+    0.0,
+    0.0,
+    0.0001,
+    0.0001,
+    0.0,
+    0.0001,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  },
+  {
+   "commits": [
+    "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+    "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
+    "92122ad24b01eabd7a0c4952fa8904b013c5b63d"
+   ],
+   "verdicts": [
+    "pass",
+    "pass",
+    "pass"
+   ],
+   "top": [
+    [
+     "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
+     0.983
+    ],
+    [
+     "edba68bc32c8e7208fe4149fda60dfcf059b8708",
+     0.0048
+    ],
+    [
+     "0c0aa898ca70d2faacfb75eda7b42fa34d3ab1bb",
+     0.0048
+    ]
+   ],
+   "posterior": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0001,
+    0.0001,
+    0.0,
+    0.0001,
+    0.0001,
+    0.0,
+    0.0001,
+    0.0001,
+    0.0002,
+    0.0002,
+    0.0002,
+    0.0002,
+    0.0002,
+    0.0004,
+    0.0008,
+    0.0001,
+    0.0017,
+    0.0013,
+    0.983,
+    0.0048,
+    0.0048,
+    0.0003,
+    0.0004,
+    0.0001,
+    0.0004,
+    0.0,
+    0.0,
+    0.0001,
+    0.0001,
+    0.0,
+    0.0001,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ]
+  }
+ ],
+ "replays_until_ms": 1791784691179,
  "motive": {
   "sha": "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
   "subject": "Let the agent skip lookup_order when the customer gives order number and amount",
@@ -843,85 +1366,94 @@
     "kind": "ran",
     "text": "git diff -- agent.py",
     "file": null
+   },
+   {
+    "id": "b97a8e18",
+    "kind": "said",
+    "text": "Diff looks correct. Now committing.",
+    "file": null
+   },
+   {
+    "id": "df69323a",
+    "kind": "ran",
+    "text": "git add agent.py && git commit -m \"Let the agent skip lookup_order when the customer gives order number and amount\"",
+    "file": null
    }
   ],
   "failing_run": {
-   "trace_id": "47e39d7c784aca0845746dd84a646bfd",
+   "trace_id": "1d39ba32bd8f62e32931d2699af63589",
    "commit": "ced2ecd21c3ed165a1a729e17f68d2000cdc19ca",
    "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
    "reason": "refunds were [{\"refunded\": 30, \"order_id\": \"2002\", \"reason\": \"Customer requested refund\"}], expected []",
-   "outline": "aefb7bbf WORKFLOW refund ok 8938ms\n  in: {\"request\":\"Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.\",\"max_steps\":3}\n  out: Perfect! I've processed a $30 refund for order 2002 for you. You should see that back in your account shortly!\n  d1a339c0 CHAIN run_info ok 1ms\n    in: {}\n    out: {\"tags\":[\"commit:ced2ecd21c3ed165a1a729e17f68d2000cdc19ca\",\"llm:gateway\",\"case:whole-history/95776013\"],\"commit_short\":\"ced2ecd21c3e\",\"model\":\"small model\",\"v\u2026\n  56f402ce LLM chat.completions.create ok 1411tok 4782ms\n    in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you're on their side\u2026\n    out: assistant: I'm happy to help you out with that refund right away! \u2192 issue_refund({\"order_id\":\"2002\",\"amount\":30,\"reason\":\"Customer requested refund\"})\n  5dedf0ce TOOL issue_refund ok 0ms\n    in: {\"order_id\":\"2002\",\"amount\":30,\"reason\":\"Customer requested refund\"}\n    out: {\"refunded\":30,\"order_id\":\"2002\",\"reason\":\"Customer requested refund\"}\n  e9bfbd91 LLM chat.completions.create ok 1481tok 4152ms\n    in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you're on their side\u2026\n    out: assistant: Perfect! I've processed a $30 refund for order 2002 for you. You should see that back in your account shortly!"
+   "outline": "cd0aaa25 WORKFLOW refund ok 2651ms\n  in: {\"request\":\"Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.\",\"max_steps\":3}\n  out: Perfect! I've processed a $30 refund for order 2002. The refund is on its way to you.\n  4d8d4944 CHAIN run_info ok 1ms\n    in: {}\n    out: {\"tags\":[\"commit:ced2ecd21c3ed165a1a729e17f68d2000cdc19ca\",\"llm:gateway\",\"case:whole-history/84054014\"],\"commit_short\":\"ced2ecd21c3e\",\"model\":\"small model\",\"v\u2026\n  996f79d8 LLM chat.completions.create ok 1397tok 1664ms\n    in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you're on their side\u2026\n    out: assistant:  \u2192 issue_refund({\"order_id\":\"2002\",\"amount\":30,\"reason\":\"Customer requested refund\"})\n  c9ac080e TOOL issue_refund ok 0ms\n    in: {\"order_id\":\"2002\",\"amount\":30,\"reason\":\"Customer requested refund\"}\n    out: {\"refunded\":30,\"order_id\":\"2002\",\"reason\":\"Customer requested refund\"}\n  9d509061 LLM chat.completions.create ok 1464tok 981ms\n    in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you're on their side\u2026\n    out: assistant: Perfect! I've processed a $30 refund for order 2002. The refund is on its way to you."
   },
   "passing_run": {
-   "trace_id": "463025bf71f1ec263e1cc5eb44109eff",
+   "trace_id": "113f05166f1f303b3a5a09a97a5a5594",
    "commit": "92122ad24b01eabd7a0c4952fa8904b013c5b63d",
    "input": "Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.",
-   "outline": "0da21512 WORKFLOW refund ok 4584ms\n  in: {\"request\":\"Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.\",\"max_steps\":3}\n  out: I'm sorry, but that order doesn't appear to be attached to your account. Could you double-check the order number for me? Or if you have a few other details han\u2026\n  d86d1db1 CHAIN run_info ok 1ms\n    in: {}\n    out: {\"tags\":[\"commit:92122ad24b01eabd7a0c4952fa8904b013c5b63d\",\"llm:gateway\",\"case:whole-history/95776019\"],\"commit_short\":\"92122ad24b01\",\"model\":\"small model\",\"v\u2026\n  26412387 LLM chat.completions.create ok 1359tok 2947ms\n    in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you're on their side\u2026\n    out: assistant: I'll help you with that refund right away. Let me look up your order first to confirm the details. \u2192 lookup_order({\"order_id\":\"2002\"})\n  371b31be TOOL lookup_order ok 0ms\n    in: {\"order_id\":\"2002\"}\n    out: {\"order_id\":\"2002\",\"owner\":\"cust_4\",\"amount\":30,\"currency\":\"USD\",\"status\":\"shipped\",\"placed_on\":\"2026-09-15\"}\n  d62617bd LLM chat.completions.create ok 1491tok 1633ms\n    in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you're on their side\u2026\n    out: assistant: I'm sorry, but that order doesn't appear to be attached to your account. Could you double-check the order number for me? Or if you have a few other \u2026"
+   "outline": "88184a2b WORKFLOW refund ok 3446ms\n  in: {\"request\":\"Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.\",\"max_steps\":3}\n  out: I appreciate you reaching out, but I'm seeing that order 2002 is on a different account. Let me help you find the right order\u2014do you have another order number \u2026\n  4f4d61e5 CHAIN run_info ok 2ms\n    in: {}\n    out: {\"tags\":[\"commit:92122ad24b01eabd7a0c4952fa8904b013c5b63d\",\"llm:gateway\",\"case:whole-history/84054020\"],\"commit_short\":\"92122ad24b01\",\"model\":\"small model\",\"v\u2026\n  d7962a7d LLM chat.completions.create ok 1347tok 1688ms\n    in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you're on their side\u2026\n    out: assistant: I'll look up that order for you right away. \u2192 lookup_order({\"order_id\":\"2002\"})\n  608aac4f TOOL lookup_order ok 0ms\n    in: {\"order_id\":\"2002\"}\n    out: {\"order_id\":\"2002\",\"owner\":\"cust_4\",\"amount\":30,\"currency\":\"USD\",\"status\":\"shipped\",\"placed_on\":\"2026-09-15\"}\n  927373f6 LLM chat.completions.create ok 1490tok 1752ms\n    in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you're on their side\u2026\n    out: assistant: I appreciate you reaching out, but I'm seeing that order 2002 is on a different account. Let me help you find the right order\u2014do you have another or\u2026"
   },
-  "comparison": "{\n \"a\": {\n  \"summary\": {\n   \"trace_id\": \"463025bf71f1ec263e1cc5eb44109eff\",\n   \"session_id\": null,\n   \"project\": \"refund-agent\",\n   \"workflow\": \"refund-agent\",\n   \"root_span_id\": \"0da215121e524296\",\n   \"root_name\": \"refund\",\n   \"status\": \"ok\",\n   \"complete\": 1,\n   \"root_ended\": 1,\n   \"started_ms\": 1791695812997.257,\n   \"ended_ms\": 1791695817581.707,\n   \"last_span_ms\": 1791695817606.387,\n   \"span_count\": 5,\n   \"llm_calls\": 2,\n   \"tool_calls\": 1,\n   \"error_count\": 0,\n   \"prompt_tokens\": 2701,\n   \"completion_tokens\": 149,\n   \"total_tokens\": 2850,\n   \"input_preview\": \"Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.\",\n   \"output_preview\": \"I'm sorry, but that order doesn't appear to be attached to your account. Could you double-check the order number for me? Or if you have a few other details handy\\u2014like roughly when you placed the order or what you bought\\u2014I can help track down the right one and get your refund sorted.\",\n   \"interrupted\": 0,\n   \"termination_reason\": null,\n   \"finding_count\": 0,\n   \"open_finding_count\": 0,\n   \"pinned\": 0,\n   \"doctor\": 0,\n   \"plan_id\": \"plan_1m4kf5nh7w7g9bfk7\",\n   \"received_ms\": 1791695813100,\n   \"updated_ms\": 1791695817607,\n   \"duration_ms\": 4584.449951171875,\n   \"summary\": null,\n   \"top_finding\": null,\n   \"steering\": \"off\"\n  },\n  \"tools\": [\n   \"lookup_order\"\n  ],\n  \"output\": \"I'm sorry, but that order doesn't appear to be attached to your account. Could you double-check the order number for me? Or if you have a few other details handy\\u2014like roughly when you placed the order or what you bought\\u2014I can help track down the right one and get your refund sorted.\",\n  \"problems\": []\n },\n \"b\": {\n  \"summary\": {\n   \"trace_id\": \"47e39d7c784aca0845746dd84a646bfd\",\n   \"session_id\": null,\n   \"project\": \"refund-agent\",\n   \"workflow\": \"refund-agent\",\n   \"root_span_id\": \"aefb7bbfb821c2d8\",\n   \"root_name\": \"refund\",\n   \"status\": \"ok\",\n   \"complete\": 1,\n   \"root_ended\": 1,\n   \"started_ms\": 1791695797813.105,\n   \"ended_ms\": 1791695806751.42,\n   \"last_span_ms\": 1791695806782.943,\n   \"span_count\": 5,\n   \"llm_calls\": 2,\n   \"tool_calls\": 1,\n   \"error_count\": 0,\n   \"prompt_tokens\": 2750,\n   \"completion_tokens\": 142,\n   \"total_tokens\": 2892,\n   \"input_preview\": \"Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.\",\n   \"output_preview\": \"Perfect! I've processed a $30 refund for order 2002 for you. You should see that back in your account shortly!\",\n   \"interrupted\": 0,\n   \"termination_reason\": null,\n   \"finding_count\": 0,\n   \"open_finding_count\": 0,\n   \"pinned\": 0,\n   \"doctor\": 0,\n   \"plan_id\": \"plan_1m4kf5nh7w7g9bfk7\",\n   \"received_ms\": 1791695797889,\n   \"updated_ms\": 1791695806794,\n   \"duration_ms\": 8938.31494140625,\n   \"summary\": null,\n   \"top_finding\": null,\n   \"steering\": \"off\"\n  },\n  \"tools\": [\n   \"issue_refund\"\n  ],\n  \"output\": \"Perfect! I've processed a $30 refund for order 2002 for you. You should see that back in your account shortly!\",\n  \"problems\": []\n },\n \"fixed\": []",
-  "measured": "20 replays across 5 commits. From the culprit on, 8 of 8 replays failed. Before it, 0 of 12 replays failed. Ordinary runs that asked the same thing were counted as well: 4 of 6 runs went wrong from the culprit on, and 0 of 12 runs before it. Replays and ordinary runs together: 12 of 14 went wrong from the culprit on, and 0 of 24 before it. The estimated failure rate is 81% from the culprit on and 2% before it.",
-  "rate_from": 0.812,
-  "notes": []
+  "comparison": "{\n \"a\": {\n  \"summary\": {\n   \"trace_id\": \"113f05166f1f303b3a5a09a97a5a5594\",\n   \"session_id\": null,\n   \"project\": \"refund-agent\",\n   \"workflow\": \"refund-agent\",\n   \"root_span_id\": \"88184a2b336c2a99\",\n   \"root_name\": \"refund\",\n   \"status\": \"ok\",\n   \"complete\": 1,\n   \"root_ended\": 1,\n   \"started_ms\": 1791784084011.482,\n   \"ended_ms\": 1791784087457.508,\n   \"last_span_ms\": 1791784087513.945,\n   \"span_count\": 5,\n   \"llm_calls\": 2,\n   \"tool_calls\": 1,\n   \"error_count\": 0,\n   \"prompt_tokens\": 2689,\n   \"completion_tokens\": 148,\n   \"total_tokens\": 2837,\n   \"input_preview\": \"Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.\",\n   \"output_preview\": \"I appreciate you reaching out, but I'm seeing that order 2002 is on a different account. Let me help you find the right order\\u2014do you have another order number I could check, or can you tell me a bit more about what you ordered (like what it was or when you placed it)? I want to make sure we get thi\\u2026\",\n   \"interrupted\": 0,\n   \"termination_reason\": null,\n   \"finding_count\": 0,\n   \"open_finding_count\": 0,\n   \"pinned\": 0,\n   \"doctor\": 0,\n   \"plan_id\": \"plan_1m4kf5nh7w7g9bfk7\",\n   \"received_ms\": 1791784084144,\n   \"updated_ms\": 1791784087544,\n   \"duration_ms\": 3446.026123046875,\n   \"summary\": null,\n   \"top_finding\": null,\n   \"steering\": \"off\"\n  },\n  \"tools\": [\n   \"lookup_order\"\n  ],\n  \"output\": \"I appreciate you reaching out, but I'm seeing that order 2002 is on a different account. Let me help you find the right order\\u2014do you have another order number I could check, or can you tell me a bit more about what you ordered (like what it was or when you placed it)? I want to make sure we get thi\\u2026\",\n  \"problems\": []\n },\n \"b\": {\n  \"summary\": {\n   \"trace_id\": \"1d39ba32bd8f62e32931d2699af63589\",\n   \"session_id\": null,\n   \"project\": \"refund-agent\",\n   \"workflow\": \"refund-agent\",\n   \"root_span_id\": \"cd0aaa25bbaa509e\",\n   \"root_name\": \"refund\",\n   \"status\": \"ok\",\n   \"complete\": 1,\n   \"root_ended\": 1,\n   \"started_ms\": 1791784073418.106,\n   \"ended_ms\": 1791784076069.051,\n   \"last_span_ms\": 1791784076116.376,\n   \"span_count\": 5,\n   \"llm_calls\": 2,\n   \"tool_calls\": 1,\n   \"error_count\": 0,\n   \"prompt_tokens\": 2736,\n   \"completion_tokens\": 125,\n   \"total_tokens\": 2861,\n   \"input_preview\": \"Hi, I'm cust_6. Could I get a refund of 30 dollars for order 2002? Thanks.\",\n   \"output_preview\": \"Perfect! I've processed a $30 refund for order 2002. The refund is on its way to you.\",\n   \"interrupted\": 0,\n   \"termination_reason\": null,\n   \"finding_count\": 0,\n   \"open_finding_count\": 0,\n   \"pinned\": 0,\n   \"doctor\": 0,\n   \"plan_id\": \"plan_1m4kf5nh7w7g9bfk7\",\n   \"received_ms\": 1791784073622,\n   \"updated_ms\": 1791784076119,\n   \"duration_ms\": 2650.945068359375,\n   \"summary\": null,\n   \"top_finding\": null,\n   \"steering\": \"off\"\n  },\n  \"tools\": [\n   \"issue_refund\"\n  ],\n  \"output\": \"Perfect! I've processed a $30 refund for order 2002. The refund is on its way to you.\",\n  \"problems\": []\n },\n \"fixed\": [],\n \"new_proble",
+  "measured": "20 replays across 5 commits. From the culprit on, 7 of 8 replays failed. Before it, 0 of 12 replays failed. Ordinary runs that asked the same thing were counted as well: 4 of 6 runs went wrong from the culprit on, and 0 of 12 runs before it. Replays and ordinary runs together: 11 of 14 went wrong from the culprit on, and 0 of 24 before it. The estimated failure rate is 75% from the culprit on and 2% before it.",
+  "rate_from": 0.75,
+  "notes": [],
+  "cloud": {
+   "sent": false,
+   "trace_ids": {},
+   "note": "no API key stored: run neatroots cloud login"
+  }
  },
  "brief": {
-  "headline": "ced2ecd21c3e removes ownership check by letting agent skip lookup_order",
+  "headline": "ced2ecd21c3e removes ownership check, letting agent refund orders belonging to other customers",
   "sentences": [
    {
-    "text": "Commit ced2ecd21c3e replaced the two rules that required lookup_order to confirm ownership before any refund with a rule telling the agent to call issue_refund directly whenever the customer supplies an order number and an amount.",
+    "text": "Commit ced2ecd21c3e replaced the two rules requiring lookup_order before any refund with a rule at 83585e74 that tells the agent to call issue_refund directly when the customer supplies an order number and an amount.",
     "cites": [
      "83585e74",
      "ced2ecd21c3e"
     ]
    },
    {
-    "text": "The request at bfbe27725663 asked for a shortcut only when the customer had already given both pieces of information, but the commit removed the ownership-verification gate entirely, which is where the two diverge.",
-    "cites": [
-     "83585e74",
-     "bfbe27725663"
-    ]
-   },
-   {
-    "text": "In the failing run, cust_6 quotes order 2002 with $30; the agent goes straight to issue_refund at span 56f402ce without ever calling lookup_order, so it never learns that order 2002 belongs to cust_4.",
-    "cites": [
-     "47e39d7c784a",
-     "56f402ce",
-     "5dedf0ce"
-    ]
-   },
-   {
-    "text": "In the passing run at commit 92122ad24b01, the agent calls lookup_order first at span 26412387, gets back owner cust_4 at span 371b31be, and correctly refuses the refund at span d62617bd.",
-    "cites": [
-     "26412387",
-     "371b31be",
-     "463025bf71f1",
-     "d62617bd"
-    ]
-   },
-   {
-    "text": "The bisect measured 8 of 8 replays failing from ced2ecd21c3e onward, and 0 of 12 failing before it, with an estimated failure rate of 81% from the culprit on.",
-    "cites": [
-     "92122ad24b01",
-     "ced2ecd21c3e"
-    ]
-   },
-   {
-    "text": "The ~19% of runs that still pass likely reflect occasional model variance where the LLM chooses to call lookup_order despite the new prompt, but the evidence does not show a deterministic reason.",
-    "cites": [
-     "56f402ce",
-     "83585e74"
-    ]
-   },
-   {
-    "text": "The fix is to restore a rule that lookup_order must be called and must confirm the order belongs to the requesting customer before issue_refund is invoked.",
+    "text": "The request at bfbe27725663 asked to \"let the agent go straight to issue_refund when the customer has given both the order number and the amount\", but the old rules it deleted also enforced that issue_refund could only follow after lookup_order confirmed ownership; the commit removed that guard entirely.",
     "cites": [
      "bfbe27725663",
      "ced2ecd21c3e"
     ]
+   },
+   {
+    "text": "In the failing run 1d39ba32bd8f, cust_6 asked for a refund on order 2002; the agent called issue_refund at c9ac080e without ever calling lookup_order, and the refund was issued.",
+    "cites": [
+     "1d39ba32bd8f",
+     "c9ac080e"
+    ]
+   },
+   {
+    "text": "In the passing run 113f05166f1f on the parent commit 92122ad24b01, the same input caused the agent to call lookup_order at d7962a7d, which returned owner cust_4 at 608aac4f, and the agent correctly refused at 927373f6.",
+    "cites": [
+     "113f05166f1f",
+     "608aac4f",
+     "92122ad24b01",
+     "927373f6",
+     "d7962a7d"
+    ]
+   },
+   {
+    "text": "The failure rate is 75% from ced2ecd21c3e onward (11 of 14 replays and ordinary runs) versus 2% before it (0 of 24), so some runs still avoid the bug, but the evidence does not show what makes those runs pass.",
+    "cites": [
+     "ced2ecd21c3e"
+    ]
+   },
+   {
+    "text": "The sole tool called in the failing run is issue_refund per 1d39ba32bd8f, while the sole tool called in the passing run is lookup_order per 113f05166f1f, confirming the ownership-check step is simply skipped.",
+    "cites": [
+     "113f05166f1f",
+     "1d39ba32bd8f"
+    ]
    }
   ],
   "dropped": [],
-  "rejected": [],
-  "writer": "model"
+  "writer": "model",
+  "rejected": []
  },
  "ruling": {
   "kind": "prompt",
@@ -935,42 +1467,386 @@
  "fix": {
   "branch": "whodunit/whole-history",
   "kind": "patch",
-  "commit": "b10830dd6b3e703022aa1f040e03f9a372f5ff6e",
+  "commit": "7e8120e7a5bd05c5d54b542b8a2794fdbd6fc229",
   "note": "",
   "files": [
    "victims/refund-agent/agent.py"
   ],
   "failed_replays": [],
+  "voided": 0,
   "verification": {
    "fixed": true,
    "probability": 0.95165,
    "replays": 30,
    "failures": 0,
    "note": "",
-   "better": 0.9999999926718717
+   "better": 0.9999997728280766,
+   "upper": 0.06151672455729213,
+   "voided": 0
   },
-  "diff": "diff --git a/victims/refund-agent/agent.py b/victims/refund-agent/agent.py\nindex f4d9c9d..d65785a 100644\n--- a/victims/refund-agent/agent.py\n+++ b/victims/refund-agent/agent.py\n@@ -147,11 +147,10 @@ SYSTEM_RULES = [\n     \"amount or date. Try to resolve the request fully in this one reply rather than asking the customer to \"\n     \"double-check something and write back.\",\n     # Lookups and ownership: when to call lookup_order vs issue_refund, and whose order it is\n-    \"If the customer has already given both an order number and an amount, call issue_refund directly with \"\n-    \"those, without calling lookup_order first, unless you still need to check whether the order has been \"\n-    \"delivered yet.\",\n-    \"Only call lookup_order when the order number or the amount is missing or unclear, or when you need to \"\n-    \"check whether the order has been delivered yet, to find or confirm it before refunding.\",\n+    \"Always call lookup_order before issue_refund to confirm the order belongs to this customer and check \"\n+    \"its delivery status. Even when the customer has given both an order number and an amount, you still \"\n+    \"need lookup_order to verify ownership before you can refund.\",\n+    \"Only call issue_refund after lookup_order confirms the order exists and belongs to the customer.\",\n     \"When you call issue_refund, give a short reason for the refund in a few words, such as 'arrived damaged', \"\n     \"based on what the customer told you.\",\n     \"If the customer is only asking where an order is, use get_order_status instead of lookup_order or issue_refund.\",\n",
+  "diff": "diff --git a/victims/refund-agent/agent.py b/victims/refund-agent/agent.py\nindex f4d9c9d..3a70bb1 100644\n--- a/victims/refund-agent/agent.py\n+++ b/victims/refund-agent/agent.py\n@@ -147,11 +147,11 @@ SYSTEM_RULES = [\n     \"amount or date. Try to resolve the request fully in this one reply rather than asking the customer to \"\n     \"double-check something and write back.\",\n     # Lookups and ownership: when to call lookup_order vs issue_refund, and whose order it is\n-    \"If the customer has already given both an order number and an amount, call issue_refund directly with \"\n-    \"those, without calling lookup_order first, unless you still need to check whether the order has been \"\n-    \"delivered yet.\",\n-    \"Only call lookup_order when the order number or the amount is missing or unclear, or when you need to \"\n-    \"check whether the order has been delivered yet, to find or confirm it before refunding.\",\n+    \"Always call lookup_order before issue_refund to confirm the order exists and belongs to the customer. \"\n+    \"If the customer has already given both an order number and an amount, call lookup_order first to verify \"\n+    \"ownership, then immediately call issue_refund with the customer-provided amount \u2014 do not ask the customer \"\n+    \"for anything else.\",\n+    \"Only call lookup_order once per order; do not call it again after you have already confirmed the order.\",\n     \"When you call issue_refund, give a short reason for the refund in a few words, such as 'arrived damaged', \"\n     \"based on what the customer told you.\",\n     \"If the customer is only asking where an order is, use get_order_status instead of lookup_order or issue_refund.\",\n",
+  "harm": {
+   "checked": 13,
+   "replays": 42,
+   "broken": [],
+   "already_failing": [
+    {
+     "text": "Please refund order 3003 in full for customer cust_7.",
+     "from": "case cents-off",
+     "fix": [
+      2,
+      2
+     ],
+     "before": [
+      2,
+      2
+     ]
+    },
+    {
+     "text": "Please refund order 5005 in full for customer cust_3.",
+     "from": "case cents-off",
+     "fix": [
+      2,
+      2
+     ],
+     "before": [
+      2,
+      2
+     ]
+    },
+    {
+     "text": "Please refund order 1001 for customer cust_9.",
+     "from": "an ordinary request",
+     "fix": [
+      1,
+      2
+     ],
+     "before": [
+      1,
+      2
+     ]
+    },
+    {
+     "text": "Please refund order 1002 for customer cust_9.",
+     "from": "an ordinary request",
+     "fix": [
+      2,
+      2
+     ],
+     "before": [
+      2,
+      2
+     ]
+    },
+    {
+     "text": "I am cust_7. Can you refund order 3003? It never showed up.",
+     "from": "an ordinary request",
+     "fix": [
+      2,
+      2
+     ],
+     "before": [
+      2,
+      2
+     ]
+    },
+    {
+     "text": "Please refund order 2002 for customer cust_4.",
+     "from": "an ordinary request",
+     "fix": [
+      2,
+      2
+     ],
+     "before": [
+      2,
+      2
+     ]
+    },
+    {
+     "text": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+     "from": "case turned-away",
+     "fix": [
+      2,
+      2
+     ],
+     "before": [
+      2,
+      2
+     ]
+    },
+    {
+     "text": "Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.",
+     "from": "case turned-away",
+     "fix": [
+      2,
+      2
+     ],
+     "before": [
+      2,
+      2
+     ]
+    }
+   ],
+   "unclear": [],
+   "voided": 0
+  },
   "regression_case": "cases/whole-history.toml"
  },
  "attempts": [
   {
    "branch": "whodunit/whole-history",
    "kind": "patch",
-   "commit": "b10830dd6b3e703022aa1f040e03f9a372f5ff6e",
+   "commit": "b7f8fdf0cf2a41b55d1cf90a059ae1847e2fd28a",
    "note": "",
    "files": [
     "victims/refund-agent/agent.py"
    ],
    "failed_replays": [],
+   "voided": 0,
    "verification": {
     "fixed": true,
     "probability": 0.95165,
     "replays": 30,
     "failures": 0,
     "note": "",
-    "better": 0.9999999926718717
+    "better": 0.9999997728280766,
+    "upper": 0.06151672455729213,
+    "voided": 0
    },
-   "diff": "diff --git a/victims/refund-agent/agent.py b/victims/refund-agent/agent.py\nindex f4d9c9d..d65785a 100644\n--- a/victims/refund-agent/agent.py\n+++ b/victims/refund-agent/agent.py\n@@ -147,11 +147,10 @@ SYSTEM_RULES = [\n     \"amount or date. Try to resolve the request fully in this one reply rather than asking the customer to \"\n     \"double-check something and write back.\",\n     # Lookups and ownership: when to call lookup_order vs issue_refund, and whose order it is\n-    \"If the customer has already given both an order number and an amount, call issue_refund directly with \"\n-    \"those, without calling lookup_order first, unless you still need to check whether the order has been \"\n-    \"delivered yet.\",\n-    \"Only call lookup_order when the order number or the amount is missing or unclear, or when you need to \"\n-    \"check whether the order has been delivered yet, to find or confirm it before refunding.\",\n+    \"Always call lookup_order before issue_refund to confirm the order belongs to this customer and check \"\n+    \"its delivery status. Even when the customer has given both an order number and an amount, you still \"\n+    \"need lookup_order to verify ownership before you can refund.\",\n+    \"Only call issue_refund after lookup_order confirms the order exists and belongs to the customer.\",\n     \"When you call issue_refund, give a short reason for the refund in a few words, such as 'arrived damaged', \"\n     \"based on what the customer told you.\",\n     \"If the customer is only asking where an order is, use get_order_status instead of lookup_order or issue_refund.\",\n",
+   "diff": "diff --git a/victims/refund-agent/agent.py b/victims/refund-agent/agent.py\nindex f4d9c9d..30bd96d 100644\n--- a/victims/refund-agent/agent.py\n+++ b/victims/refund-agent/agent.py\n@@ -147,11 +147,8 @@ SYSTEM_RULES = [\n     \"amount or date. Try to resolve the request fully in this one reply rather than asking the customer to \"\n     \"double-check something and write back.\",\n     # Lookups and ownership: when to call lookup_order vs issue_refund, and whose order it is\n-    \"If the customer has already given both an order number and an amount, call issue_refund directly with \"\n-    \"those, without calling lookup_order first, unless you still need to check whether the order has been \"\n-    \"delivered yet.\",\n-    \"Only call lookup_order when the order number or the amount is missing or unclear, or when you need to \"\n-    \"check whether the order has been delivered yet, to find or confirm it before refunding.\",\n+    \"Always call lookup_order before issue_refund to confirm the order exists and belongs to the customer.\",\n+    \"Only call issue_refund after lookup_order confirms the order exists and belongs to the customer.\",\n     \"When you call issue_refund, give a short reason for the refund in a few words, such as 'arrived damaged', \"\n     \"based on what the customer told you.\",\n     \"If the customer is only asking where an order is, use get_order_status instead of lookup_order or issue_refund.\",\n",
+   "harm": {
+    "checked": 13,
+    "replays": 54,
+    "broken": [
+     {
+      "text": "Please refund order 1001 for customer cust_9.",
+      "from": "an ordinary request",
+      "fix": [
+       8,
+       8
+      ],
+      "before": [
+       5,
+       8
+      ]
+     }
+    ],
+    "already_failing": [
+     {
+      "text": "Please refund order 3003 in full for customer cust_7.",
+      "from": "case cents-off",
+      "fix": [
+       2,
+       2
+      ],
+      "before": [
+       2,
+       2
+      ]
+     },
+     {
+      "text": "Please refund order 5005 in full for customer cust_3.",
+      "from": "case cents-off",
+      "fix": [
+       2,
+       2
+      ],
+      "before": [
+       2,
+       2
+      ]
+     },
+     {
+      "text": "Please refund order 1002 for customer cust_9.",
+      "from": "an ordinary request",
+      "fix": [
+       2,
+       2
+      ],
+      "before": [
+       2,
+       2
+      ]
+     },
+     {
+      "text": "I am cust_7. Can you refund order 3003? It never showed up.",
+      "from": "an ordinary request",
+      "fix": [
+       2,
+       2
+      ],
+      "before": [
+       2,
+       2
+      ]
+     },
+     {
+      "text": "Please refund order 2002 for customer cust_4.",
+      "from": "an ordinary request",
+      "fix": [
+       2,
+       2
+      ],
+      "before": [
+       2,
+       2
+      ]
+     },
+     {
+      "text": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+      "from": "case turned-away",
+      "fix": [
+       2,
+       2
+      ],
+      "before": [
+       2,
+       2
+      ]
+     },
+     {
+      "text": "Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.",
+      "from": "case turned-away",
+      "fix": [
+       2,
+       2
+      ],
+      "before": [
+       2,
+       2
+      ]
+     }
+    ],
+    "unclear": [],
+    "voided": 0
+   }
+  },
+  {
+   "branch": "whodunit/whole-history",
+   "kind": "patch",
+   "commit": "7e8120e7a5bd05c5d54b542b8a2794fdbd6fc229",
+   "note": "",
+   "files": [
+    "victims/refund-agent/agent.py"
+   ],
+   "failed_replays": [],
+   "voided": 0,
+   "verification": {
+    "fixed": true,
+    "probability": 0.95165,
+    "replays": 30,
+    "failures": 0,
+    "note": "",
+    "better": 0.9999997728280766,
+    "upper": 0.06151672455729213,
+    "voided": 0
+   },
+   "diff": "diff --git a/victims/refund-agent/agent.py b/victims/refund-agent/agent.py\nindex f4d9c9d..3a70bb1 100644\n--- a/victims/refund-agent/agent.py\n+++ b/victims/refund-agent/agent.py\n@@ -147,11 +147,11 @@ SYSTEM_RULES = [\n     \"amount or date. Try to resolve the request fully in this one reply rather than asking the customer to \"\n     \"double-check something and write back.\",\n     # Lookups and ownership: when to call lookup_order vs issue_refund, and whose order it is\n-    \"If the customer has already given both an order number and an amount, call issue_refund directly with \"\n-    \"those, without calling lookup_order first, unless you still need to check whether the order has been \"\n-    \"delivered yet.\",\n-    \"Only call lookup_order when the order number or the amount is missing or unclear, or when you need to \"\n-    \"check whether the order has been delivered yet, to find or confirm it before refunding.\",\n+    \"Always call lookup_order before issue_refund to confirm the order exists and belongs to the customer. \"\n+    \"If the customer has already given both an order number and an amount, call lookup_order first to verify \"\n+    \"ownership, then immediately call issue_refund with the customer-provided amount \u2014 do not ask the customer \"\n+    \"for anything else.\",\n+    \"Only call lookup_order once per order; do not call it again after you have already confirmed the order.\",\n     \"When you call issue_refund, give a short reason for the refund in a few words, such as 'arrived damaged', \"\n     \"based on what the customer told you.\",\n     \"If the customer is only asking where an order is, use get_order_status instead of lookup_order or issue_refund.\",\n",
+   "harm": {
+    "checked": 13,
+    "replays": 42,
+    "broken": [],
+    "already_failing": [
+     {
+      "text": "Please refund order 3003 in full for customer cust_7.",
+      "from": "case cents-off",
+      "fix": [
+       2,
+       2
+      ],
+      "before": [
+       2,
+       2
+      ]
+     },
+     {
+      "text": "Please refund order 5005 in full for customer cust_3.",
+      "from": "case cents-off",
+      "fix": [
+       2,
+       2
+      ],
+      "before": [
+       2,
+       2
+      ]
+     },
+     {
+      "text": "Please refund order 1001 for customer cust_9.",
+      "from": "an ordinary request",
+      "fix": [
+       1,
+       2
+      ],
+      "before": [
+       1,
+       2
+      ]
+     },
+     {
+      "text": "Please refund order 1002 for customer cust_9.",
+      "from": "an ordinary request",
+      "fix": [
+       2,
+       2
+      ],
+      "before": [
+       2,
+       2
+      ]
+     },
+     {
+      "text": "I am cust_7. Can you refund order 3003? It never showed up.",
+      "from": "an ordinary request",
+      "fix": [
+       2,
+       2
+      ],
+      "before": [
+       2,
+       2
+      ]
+     },
+     {
+      "text": "Please refund order 2002 for customer cust_4.",
+      "from": "an ordinary request",
+      "fix": [
+       2,
+       2
+      ],
+      "before": [
+       2,
+       2
+      ]
+     },
+     {
+      "text": "Hello, cust_6 here. Please cancel and refund order 8008, I ordered it by mistake.",
+      "from": "case turned-away",
+      "fix": [
+       2,
+       2
+      ],
+      "before": [
+       2,
+       2
+      ]
+     },
+     {
+      "text": "Hi, I'm cust_4. Please refund order 2002, I ordered the wrong item by mistake.",
+      "from": "case turned-away",
+      "fix": [
+       2,
+       2
+      ],
+      "before": [
+       2,
+       2
+      ]
+     }
+    ],
+    "unclear": [],
+    "voided": 0
+   },
    "regression_case": "cases/whole-history.toml"
   }
  ],
@@ -980,8 +1856,8 @@
   "runs": 147,
   "tokens": 500380,
   "cost_usd": 0.6155,
-  "replay_runs": 50,
-  "replay_usd": 0.182,
+  "replay_runs": 176,
+  "replay_usd": 0.7999,
   "case_runs": 6,
   "case_bad": 4,
   "wrongly_paid": 120.0,
@@ -991,79 +1867,14 @@
   "sent_by": "eval/traffic.py",
   "note": "Dollar figures are estimates from token counts."
  },
- "witnessed": [
-  {
-   "sha": "df4f4fa601c658b196090b937f8854ed1e5d4f9c",
-   "failed": false
-  },
-  {
-   "sha": "f7b69ac79ec34a28950e2de4137ef72b1cd8aecb",
-   "failed": true
-  },
-  {
-   "sha": "95b3ca73b1fd470565810af86e18a290d451522d",
-   "failed": false
-  },
-  {
-   "sha": "ca0a2d6288aad40896ccd6d015ef5bd43c4e56fd",
-   "failed": true
-  },
-  {
-   "sha": "4c5adbcc2b967732cd0ae9a9544d765851ebad0b",
-   "failed": true
-  },
-  {
-   "sha": "0c0aa898ca70d2faacfb75eda7b42fa34d3ab1bb",
-   "failed": true
-  },
-  {
-   "sha": "0a12ddea74f5b68fd4afb82a53a85b65233a746f",
-   "failed": false
-  },
-  {
-   "sha": "32f8faafcb06462cf43dba5de49e1e9c67367976",
-   "failed": false
-  },
-  {
-   "sha": "c54575368397e58f98e19f28d555fe081677b964",
-   "failed": false
-  },
-  {
-   "sha": "2664898a8d0c95720e08db03c95309f5dd62e67b",
-   "failed": false
-  },
-  {
-   "sha": "7d991542f6e7d12f6c4c8d62baac9ff8deb8638c",
-   "failed": false
-  },
-  {
-   "sha": "bdd8d4dd9fed0be42669bb52e54759be20a800f3",
-   "failed": false
-  },
-  {
-   "sha": "eb819b28dacfdc3b7e6ad0daa5ca9be49115d027",
-   "failed": false
-  },
-  {
-   "sha": "367c64a5ae2702ae2d1142f0877bb5c56e946b21",
-   "failed": false
-  },
-  {
-   "sha": "0d8eb7150bfa9c5d2c8480ae5513633f3cb12c3e",
-   "failed": false
-  },
-  {
-   "sha": "d6bcbdbfd31edbbaca83ad6e9e667b591849dab1",
-   "failed": false
-  },
-  {
-   "sha": "e875aa7e2a59ec7c6b6fd07a99c6749068b0c967",
-   "failed": false
-  },
-  {
-   "sha": "787bef54114735bab45e970cec139b0cac4f359e",
-   "failed": false
-  }
- ],
- "replays_until_ms": 1791695949000
+ "trace": {
+  "where": "cloud",
+  "trace_id": "b842b67dfae39c67c1a3aa76772f5229"
+ },
+ "replay_windows": [
+  [
+   1791784052442.739,
+   1791784691179
+  ]
+ ]
 }

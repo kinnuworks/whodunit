@@ -79,7 +79,7 @@ def harm_said(harm: dict) -> str:
     said = f'Checked against {n} other {"request" if n == 1 else "requests"}: the inputs of the other cases and a few ordinary requests that should succeed.'
     if harm["broken"]:
         k = len(harm["broken"])
-        said += f' The fix broke {k} other {"request" if k == 1 else "requests"} that had been going right, so it was not kept: ' + "; ".join(
+        said += f' The fix made {k} other {"request" if k == 1 else "requests"} go wrong more often than before, so it was not kept: ' + "; ".join(
             f'"{b["text"]}" went wrong in {b["fix"][0]} of {b["fix"][1]} replays on the fix and in {b["before"][0]} of {b["before"][1]} before it' for b in harm["broken"]) + "."
     else:
         said += " The fix broke none of them."
@@ -140,7 +140,7 @@ def timeline(record: dict) -> list[tuple[str, str]]:
             broke = (attempt.get("harm") or {}).get("broken")
             line = f'Try {n}, a {attempt["kind"]}: {observed(seen.get("failures", 0), seen.get("replays", 0))} '
             if broke:
-                line += f'Not kept, because it broke {len(broke)} other {"request" if len(broke) == 1 else "requests"}.'
+                line += f'Not kept, because it made {len(broke)} other {"request" if len(broke) == 1 else "requests"} go wrong more often.'
             else:
                 line += "Kept." if seen.get("fixed") else "Not kept."
             steps.append(("fix", line))
