@@ -1,0 +1,33 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "6e26c7232ff2",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "AGENTS.md",
+    "cases/cents-off.casefile.html",
+    "cases/strangers-paid.casefile.html",
+    "cases/turned-away.casefile.html",
+    "cases/whole-history.casefile.html",
+    "cases/wrong-order-refunded.casefile.html",
+    "evidence/README.md",
+    "evidence/entire-checkpoint.jpg"
+  ],
+  "sessions": [
+    {
+      "metadata": "/6e/26c7232ff2/0/metadata.json",
+      "transcript": "/6e/26c7232ff2/0/full.jsonl",
+      "compact_transcript": "/6e/26c7232ff2/0/transcript.jsonl",
+      "content_hash": "/6e/26c7232ff2/0/content_hash.txt",
+      "prompt": "/6e/26c7232ff2/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 18,
+    "cache_creation_tokens": 8245,
+    "cache_read_tokens": 3865220,
+    "output_tokens": 2767,
+    "api_call_count": 7
+  }
+}
