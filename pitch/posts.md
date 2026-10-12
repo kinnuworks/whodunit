@@ -4,61 +4,61 @@ Each stands alone. Attach the file named under it. Edit freely, these are drafts
 
 ## Short versions, each under 280 characters
 
-These six fit a standard post. The longer drafts further down need an account that allows long posts. Tool names are written plainly here, so add the handles if you are sure of them.
+These six fit a standard post and are written the way the owner types. The longer drafts further down need an account that allows long posts. Tool names are written plainly here, so add the handles if you are sure of them.
 
 ### 1. The question
 
-git bisect assumes a bad commit fails every time. AI agents don't. A prompt change can break 1 run in 3.
+git bisect assumes a bad commit fails every time. agents don't, a prompt change can break 1 run in 3.
 
-Whodunit replays the failing request on suspect commits and names one only at 95%.
+so i built whodunit. it replays the failing request on suspect commits and only names one once it's 95% sure.
 
-57 commits since it last worked. 20 replays later: 98.3% on one of them. #neatHack
+57 commits, 20 replays, landed on one at 98.3% #neatHack
 
 Attach: `evidence/lineup-whole-history.png`.
 
 ### 2. The motive
 
-The culprit: "Let the agent skip lookup_order when the customer gives order number and amount".
+the commit that broke my refund agent: "Let the agent skip lookup_order when the customer gives order number and amount".
 
-Who asks for that? The Entire checkpoint kept the session. Someone had typed: "simple refunds feel slow".
+Entire kept the session so i could see why. someone typed "simple refunds feel slow".
 
-A fair request. It also removed the only ownership check. #neatHack
+fair enough, but that lookup was the only ownership check #neatHack
 
 Attach: `evidence/motive-whole-history.png`.
 
 ### 3. The patch that passed and was thrown out
 
-Our fixer's first patch went 30 replays without one failure. A day earlier we would have kept it.
+the first patch my fixer wrote went 30 replays with 0 failures. a day earlier i would've kept it.
 
-Then Whodunit replayed 13 other requests on the patched agent. An ordinary refund that failed 5 times in 8 now failed 8 in 8.
+then whodunit replayed 13 other requests on the patched agent, and a normal refund that used to fail 5 times in 8 was failing 8 in 8.
 
-Patch thrown out. The second one was kept. #neatHack
+threw it out, kept the second patch #neatHack
 
 Attach: `evidence/fix-whole-history.png`.
 
 ### 4. The sealed eval
 
-We didn't want to mark our own homework. A second coding session planted 5 regressions through ordinary requests and committed the answer key's SHA-256 before we ran.
+didn't trust myself to grade this, so a second coding session planted 5 regressions through normal requests and committed the answer key's SHA-256 before i ran it.
 
-First pass: 3 of 5 named, nobody wrongly accused. With more replays: 5 of 5. One isn't fixed yet. #neatHack
+first pass named 3 of 5, nobody wrongly accused. more replays got it to 5 of 5. one still isn't fixed #neatHack
 
 Attach: `evidence/casebook.png`.
 
 ### 5. The honest chart
 
-When does a statistical bisect beat git bisect with retries? We simulated 500 cases per point.
+simulated 500 cases per point to see when my statistical bisect beats git bisect with retries.
 
-If good commits never fail, plain bisect is cheaper. Our README says so.
+if good commits never fail, plain bisect is cheaper. the README says so.
 
-If they fail 5% of the time, on a 30% bug at 320 replays: plain is right 4% of the time, ours 86%. #neatHack
+if they fail 5% of the time, on a 30% bug at 320 replays plain is right 4% of the time, mine 86% #neatHack
 
 Attach: `eval/simulator/accuracy-flaky-baseline.png`.
 
 ### 6. Today
 
-Today on Whodunit: the case file got a new coat. Cream paper, one terracotta accent, and the culprit still ringed in pencil.
+redid the whodunit case page today. cream paper, one terracotta accent, culprit still gets circled in pencil.
 
-Bug of the day: our screenshot script kept the old picture and reported success. We only caught it by opening the file. #neatHack
+dumbest bug of the day: my screenshot script kept the old image and said it worked. only caught it because i opened the file #neatHack
 
 Attach: `evidence/casefile-whole-history-phone.png`.
 
