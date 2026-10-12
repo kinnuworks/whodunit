@@ -136,15 +136,22 @@ The plan was written before the build started. This is how it went, as of Sunday
 6. Monday noon: stretch target, README, evidence folder. The README and the evidence folder exist. The stretch target has not been started.
 7. Monday 6 PM: demo video, which opens on "57 commits, which one did it?" and names the culprit inside 30 seconds. Submit at 7 PM. Not done.
 
-## Where things stand, Sunday 11 October, evening
+## Where things stand, Monday 12 October, noon
 
 Done and committed locally:
 
 - Milestones 1 to 4, and the eval part of 5. `hackathon.md` has every step, including what went wrong.
 - The victim has a real history: 55 commits made through `eval/ask.sh`, one fresh coding session per request. Five regressions were planted by a second session and sealed. `eval/sealed/README.md` has the result: 5 of 5 named, no wrong accusations, and 4 of 5 with a fix that cleared the bar.
-- `whodunit investigate` runs a whole case. `cases/whole-history.toml` is the headline run and the one the video should show.
-- `pitch/` has the video script, post drafts and the business plan numbers.
-- A review of the repo on Sunday afternoon listed claims the code or the records did not back. `hackathon.md` from 2:00 PM on Sunday works through that list.
+- `whodunit investigate` runs a whole case. `cases/whole-history.toml` is the headline run and the one the video should show. It was run again from nothing on Monday morning: 98.3% after 20 replays, a first patch thrown out by the do-no-harm check, a second one kept.
+- A review of the repo on Sunday afternoon listed claims the code or the records did not back, gaps in the method, and a rebuild of the case file. `hackathon.md` from 2:00 PM on Sunday works through it. All of the first part is done, six and a half of the seven gaps, and the case file.
+- `pitch/` has the video script, post drafts and the business plan numbers, brought in line with Monday's run.
+- `evidence/` has screenshots of the new pages, all on light paper.
+
+Left over from that review:
+
+- The model that allows two change points is built and simulated, in `whodunit/lineup.py` and `eval/simulator/README.md`, and is not wired into the lineup. It needs alibi priors, skipped and voided replays, parallel rounds, resumed evidence and the clear-range check before it can replace the one there.
+- `whodunit forward <case>` sends a case's failing and passing run to neatlogs cloud once the owner has run `neatroots cloud login`.
+- A page links to a cloud trace once `NEATLOGS_TRACE_URL` gives the dashboard's address for one, and its link preview needs `WHODUNIT_SITE` for the casebook's public address.
 
 Still to do, in this order:
 
@@ -164,7 +171,7 @@ Rules that came out of the build:
 - The ordinary traffic was sent by `eval/traffic.py`. Say so wherever a number comes from it.
 - A brief is model-written and checked by rule for citations, ids, quotations and the measured rate. Nothing checks its arithmetic or its meaning, so read a brief before quoting it.
 - A checkpoint can hold a thrown-away attempt at the same change, with a differently worded request. The motive has to come from the session that ran the commit. One sealed case quoted the wrong request for a day before `entire why` showed it.
-- Gateway spend was about $14 of $20 at midday on Sunday, and about 40 cents more by the evening. A full investigation costs 20 cents to a dollar, and a rare bug can cost several dollars.
+- Gateway spend was about $14 of $20 at midday on Sunday, and about $16 by Monday noon by estimate. A full investigation costs 35 cents to a dollar with its do-no-harm check, and a rare bug can cost several dollars.
 - Entire Brain is not installed. Its installer is a script piped from the network into a shell, which needs the owner's yes.
 
 ## Case file design

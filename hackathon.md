@@ -606,3 +606,11 @@ Also in this commit:
 - `eval/simulator/README.md` has the two-culprit table.
 
 Not done, and the noon cutoff is near: the two-change-point model is still not in the lineup, the casebook has no public address, and the forwarding of each case's two runs to neatlogs cloud still waits on `neatroots cloud login`.
+
+### 11:41 AM, Monday: last things before the cutoff
+
+- The lineup had made every suspect a tab stop, 58 of them on the headline page, ahead of everything else. A column is no longer one. The lineup's scroll box takes focus, and the table under it holds each column's details.
+- `AGENTS.md` says where things stand as of Monday noon, and what is left over from the review: the two-change-point model is not wired in, and two things wait on the owner, `neatroots cloud login` and the dashboard's address for a trace.
+- Gateway spend for this session, by estimate: about 50 cents of larger-model calls for briefs and patches, and about $1.40 of replays for the four harm checks, the headline rerun and the ablation. That puts the gateway at about $16 of $20.
+
+Nothing was pushed, posted, written to cfo.ai or launched on AWS in this job. After this entry, fixes only.

@@ -237,7 +237,8 @@ def lineup_svg(record: dict) -> str:
         x = xs[n]
         lines = "".join(f'<text class="mark {klass}" x="{x:.1f}" y="{marks_top + k * line_h}">{text}</text>'
                         for k, (text, klass) in enumerate(mark_lines(parts["ordinary"][n], parts["replays"][n])))
-        return (f'<g class="col {css}" tabindex="0"><title>{escape(title)}</title>'
+        # A column is not a tab stop. The lineup's scroll box is one, and the table under it has every column's details.
+        return (f'<g class="col {css}"><title>{escape(title)}</title>'
                 f'<rect class="hit" x="{x - step / 2:.1f}" y="{top - 14}" width="{step}" height="{height - top + 14}"/>'
                 f'<rect class="hatch" x="{x - step / 2 + 2:.1f}" y="{top + 2}" width="{step - 4}" height="{hash_h + 30}"/>'
                 f'<text class="pct" x="{x:.1f}" y="{top - (3 if n % 2 else 15)}">{odds}</text>'
