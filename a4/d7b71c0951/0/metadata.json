@@ -1,0 +1,37 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "a4d7b71c0951",
+  "session_id": "2b277f39-7446-42f5-947e-a22d15214289",
+  "strategy": "manual-commit",
+  "created_at": "2026-10-12T05:48:27.068912Z",
+  "branch": "whodunit/whole-history",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "victims/refund-agent/agent.py"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-5-5",
+  "turn_id": "806ca2a4d2f1",
+  "checkpoint_transcript_start": 1661,
+  "transcript_lines_at_start": 1661,
+  "compact_transcript_start": 256,
+  "token_usage": {
+    "input_tokens": 14,
+    "cache_creation_tokens": 9436,
+    "cache_read_tokens": 5816113,
+    "output_tokens": 5435,
+    "api_call_count": 7
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-10-12T05:48:26.789312Z",
+    "agent_lines": 3,
+    "agent_removed": 35,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 3,
+    "total_lines_changed": 38,
+    "agent_percentage": 100,
+    "metric_version": 2
+  }
+}
