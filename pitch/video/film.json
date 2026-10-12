@@ -1,0 +1,1070 @@
+{
+ "meta": {
+  "title": "Whodunit, the demo",
+  "fps": 30,
+  "bpm": 120,
+  "beatsPerBar": 4,
+  "tailBeats": 2,
+  "chords": [
+   "Fmaj7",
+   "Dm7",
+   "Bbmaj7",
+   "C"
+  ],
+  "target": 89
+ },
+ "brand": {
+  "bg": "#FAF6EF",
+  "surface": "#FFFEFC",
+  "ink": "#17150F",
+  "muted": "#6D6459",
+  "line": "#EBE3D7",
+  "accent": "#A1411F",
+  "accentInk": "#FFFFFF",
+  "dark": "#14110D",
+  "darkInk": "#F3ECE1",
+  "fontDisplay": "Geist",
+  "fontText": "Geist",
+  "fontMono": "Geist Mono",
+  "fontSerif": "Instrument Serif",
+  "emphasis": "accent",
+  "tracking": -0.04,
+  "weight": 740,
+  "look": "soft",
+  "aurora": [
+   "#F5D3BC",
+   "#F2E2CE",
+   "#FBE4D6",
+   "#EBD8C6",
+   "#FFFFFF"
+  ],
+  "auroraStrength": 0.42,
+  "panel": "#FFFEFC",
+  "panelBorder": "rgba(23,16,14,0.06)"
+ },
+ "grain": 0.035,
+ "scenes": [
+  {
+   "id": "hook",
+   "type": "Journey",
+   "bars": 3,
+   "music": "sparse",
+   "props": {
+    "panels": [
+     {
+      "id": "log",
+      "screen": "WdLog",
+      "x": 0,
+      "y": 190,
+      "z": 0,
+      "w": 1320,
+      "h": 862,
+      "lw": 980,
+      "lh": 640,
+      "radius": 22,
+      "float": 3
+     }
+    ],
+    "shots": [
+     {
+      "at": 0,
+      "zoom": 0.96,
+      "y": 120
+     },
+     {
+      "at": 0.1,
+      "zoom": 1.03,
+      "y": 140,
+      "ms": 5600,
+      "ease": "sine"
+     }
+    ],
+    "captions": [
+     {
+      "at": -2.2,
+      "until": 5.2,
+      "text": "57 commits since it *last worked*.",
+      "pos": [
+       0.5,
+       0.095
+      ]
+     },
+     {
+      "at": 6,
+      "until": 11.6,
+      "text": "Which one *did it*?",
+      "pos": [
+       0.5,
+       0.095
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "problem",
+   "type": "Journey",
+   "bars": 3,
+   "in": "blur",
+   "music": "sparse",
+   "events": {
+    "ask": 1,
+    "reply": 4,
+    "flag": 6.2
+   },
+   "props": {
+    "panels": [
+     {
+      "id": "chat",
+      "screen": "WdChat",
+      "x": 0,
+      "y": 140,
+      "z": 0,
+      "w": 1120,
+      "h": 729,
+      "lw": 860,
+      "lh": 560,
+      "radius": 26,
+      "from": -0.6,
+      "enter": "rise",
+      "float": 3
+     }
+    ],
+    "shots": [
+     {
+      "at": 0,
+      "zoom": 0.98,
+      "y": 80
+     },
+     {
+      "at": 4.4,
+      "zoom": 1.06,
+      "y": 120,
+      "ms": 1300
+     }
+    ],
+    "captions": [
+     {
+      "at": 0.3,
+      "until": 5.4,
+      "text": "Now it refunds *strangers*.",
+      "pos": [
+       0.5,
+       0.095
+      ]
+     },
+     {
+      "at": 6.4,
+      "until": 11.6,
+      "text": "Not every time. About *three in four*.",
+      "pos": [
+       0.5,
+       0.095
+      ]
+     }
+    ]
+   },
+   "addCues": [
+    {
+     "at": "ask",
+     "sfx": "pop",
+     "gain": -6
+    },
+    {
+     "at": "reply",
+     "sfx": "pop",
+     "gain": -6
+    },
+    {
+     "at": "flag",
+     "sfx": "thock",
+     "gain": -3
+    }
+   ]
+  },
+  {
+   "id": "run",
+   "type": "Journey",
+   "bars": 5,
+   "in": "blur",
+   "music": "build",
+   "events": {
+    "type": 4.2,
+    "l1": 7.6,
+    "l2": 10,
+    "l3": 14.4
+   },
+   "props": {
+    "panels": [
+     {
+      "id": "term",
+      "screen": "WdTerminal",
+      "x": 0,
+      "y": 130,
+      "z": 0,
+      "w": 1500,
+      "h": 661,
+      "lw": 1180,
+      "lh": 520,
+      "radius": 22,
+      "from": 3.6,
+      "enter": "rise",
+      "float": 3
+     }
+    ],
+    "shots": [
+     {
+      "at": 0,
+      "zoom": 1,
+      "y": 40
+     },
+     {
+      "at": 9.0,
+      "zoom": 1.08,
+      "x": -30,
+      "y": 120,
+      "ms": 1100
+     }
+    ],
+    "captions": [
+     {
+      "at": 0,
+      "until": 3.2,
+      "text": "Introducing *Whodunit*",
+      "pos": "center",
+      "icon": "WdMark"
+     },
+     {
+      "at": 4,
+      "until": 7.4,
+      "text": "One command.",
+      "pos": [
+       0.5,
+       0.095
+      ]
+     },
+     {
+      "at": 9.6,
+      "until": 14.0,
+      "text": "*Entire's* code graph clears 22.",
+      "pos": [
+       0.5,
+       0.095
+      ]
+     },
+     {
+      "at": 14.4,
+      "until": 19.7,
+      "text": "*neatlogs* had already traced 18 runs.",
+      "pos": [
+       0.5,
+       0.095
+      ]
+     }
+    ]
+   },
+   "addCues": [
+    {
+     "at": "type",
+     "sfx": "type",
+     "beats": 2.4,
+     "gain": -6
+    },
+    {
+     "at": "l1",
+     "sfx": "tick",
+     "gain": -5
+    },
+    {
+     "at": "l2",
+     "sfx": "tick",
+     "gain": -5,
+     "pitch": 2
+    },
+    {
+     "at": "l3",
+     "sfx": "tick",
+     "gain": -5,
+     "pitch": 4
+    }
+   ]
+  },
+  {
+   "id": "lineup",
+   "type": "Journey",
+   "bars": 6,
+   "in": "blur",
+   "music": "full",
+   "events": {
+    "alibi": 1,
+    "traffic": 3.5,
+    "r1": 7,
+    "r2": 10,
+    "r3": 12,
+    "r4": 14,
+    "ring": 16.5
+   },
+   "props": {
+    "panels": [
+     {
+      "id": "lu",
+      "screen": "WdLineup",
+      "x": 0,
+      "y": 110,
+      "z": 0,
+      "w": 1840,
+      "h": 578,
+      "lw": 1720,
+      "lh": 540,
+      "radius": 26,
+      "float": 2
+     }
+    ],
+    "shots": [
+     {
+      "at": 0,
+      "zoom": 1.8,
+      "x": -320,
+      "y": 70
+     },
+     {
+      "at": 0.3,
+      "zoom": 1.0,
+      "x": 0,
+      "y": 80,
+      "ms": 1500
+     },
+     {
+      "at": 9.4,
+      "zoom": 1.5,
+      "x": 255,
+      "y": 90,
+      "ms": 1300
+     },
+     {
+      "at": 20.4,
+      "zoom": 1.0,
+      "x": 0,
+      "y": 80,
+      "ms": 1200
+     }
+    ],
+    "captions": [
+     {
+      "at": 0.5,
+      "until": 5.6,
+      "text": "57 suspects stand in a *lineup*.",
+      "pos": [
+       0.5,
+       0.095
+      ]
+     },
+     {
+      "at": 6.2,
+      "until": 11.5,
+      "text": "Replay the failing request on a *suspect*.",
+      "pos": [
+       0.5,
+       0.075
+      ]
+     },
+     {
+      "at": 11.8,
+      "until": 16.7,
+      "text": "Bad commits don't fail *every time*.",
+      "pos": [
+       0.5,
+       0.075
+      ]
+     },
+     {
+      "at": 17.2,
+      "until": 23.5,
+      "text": "20 replays. *98.3%* sure.",
+      "pos": [
+       0.5,
+       0.075
+      ]
+     }
+    ]
+   },
+   "addCues": [
+    {
+     "at": "alibi",
+     "sfx": "swish",
+     "gain": -8
+    },
+    {
+     "at": "traffic",
+     "sfx": "tick",
+     "gain": -6
+    },
+    {
+     "at": "r1",
+     "sfx": "type",
+     "beats": 1.2,
+     "gain": -5
+    },
+    {
+     "at": "r2",
+     "sfx": "thock",
+     "gain": -4
+    },
+    {
+     "at": "r3",
+     "sfx": "thock",
+     "gain": -4,
+     "pitch": 2
+    },
+    {
+     "at": "r4",
+     "sfx": "thock",
+     "gain": -4,
+     "pitch": 4
+    },
+    {
+     "at": "ring",
+     "sfx": "chime",
+     "gain": -2
+    }
+   ]
+  },
+  {
+   "id": "motive",
+   "type": "Journey",
+   "bars": 6,
+   "in": "blur",
+   "music": "break",
+   "events": {
+    "type": 2,
+    "checked": 8.4,
+    "show": 10.8,
+    "part": 17.6
+   },
+   "props": {
+    "panels": [
+     {
+      "id": "mo",
+      "screen": "WdMotive",
+      "x": 0,
+      "y": 130,
+      "z": 0,
+      "w": 1400,
+      "h": 700,
+      "lw": 1120,
+      "lh": 560,
+      "radius": 26,
+      "from": -0.6,
+      "to": 10.4,
+      "enter": "rise",
+      "exit": "fade",
+      "float": 3
+     },
+     {
+      "id": "ex",
+      "screen": "WdExhibits",
+      "chrome": "none",
+      "x": 0,
+      "y": 140,
+      "z": 0,
+      "w": 1560,
+      "h": 654,
+      "lw": 1240,
+      "lh": 520,
+      "from": 10.6,
+      "enter": "fade",
+      "float": 2
+     }
+    ],
+    "shots": [
+     {
+      "at": 0,
+      "zoom": 1,
+      "y": 80
+     },
+     {
+      "at": 2.2,
+      "zoom": 1.05,
+      "y": 110,
+      "ms": 4200,
+      "ease": "sine"
+     },
+     {
+      "at": 10.4,
+      "zoom": 1.0,
+      "y": 80,
+      "ms": 900
+     },
+     {
+      "at": 17.2,
+      "zoom": 1.06,
+      "y": 100,
+      "ms": 1100
+     }
+    ],
+    "captions": [
+     {
+      "at": 0.3,
+      "until": 5.1,
+      "text": "Why would anyone *make* that commit?",
+      "pos": [
+       0.5,
+       0.095
+      ]
+     },
+     {
+      "at": 5.6,
+      "until": 10.3,
+      "text": "*Entire* kept the session behind it.",
+      "pos": [
+       0.5,
+       0.095
+      ]
+     },
+     {
+      "at": 10.8,
+      "until": 16.7,
+      "text": "A fair ask. It removed *the only check*.",
+      "pos": [
+       0.5,
+       0.095
+      ]
+     },
+     {
+      "at": 17.3,
+      "until": 23.6,
+      "text": "Same request, *one commit apart*.",
+      "pos": [
+       0.5,
+       0.095
+      ]
+     }
+    ]
+   },
+   "addCues": [
+    {
+     "at": "type",
+     "sfx": "type",
+     "beats": 5.6,
+     "gain": -7
+    },
+    {
+     "at": "checked",
+     "sfx": "pop",
+     "gain": -5
+    },
+    {
+     "at": "part",
+     "sfx": "thock",
+     "gain": -3
+    }
+   ]
+  },
+  {
+   "id": "fix",
+   "type": "Journey",
+   "bars": 5,
+   "in": "blur",
+   "music": "full",
+   "events": {
+    "v1": 1.2,
+    "h1": 5.6,
+    "out1": 8.2,
+    "v2": 10.6,
+    "h2": 14,
+    "kept": 16
+   },
+   "props": {
+    "panels": [
+     {
+      "id": "fx",
+      "screen": "WdFix",
+      "x": 0,
+      "y": 120,
+      "z": 0,
+      "w": 1500,
+      "h": 621,
+      "lw": 1160,
+      "lh": 480,
+      "radius": 26,
+      "from": -0.6,
+      "enter": "rise",
+      "float": 3
+     }
+    ],
+    "shots": [
+     {
+      "at": 0,
+      "zoom": 1,
+      "y": 60
+     },
+     {
+      "at": 0.1,
+      "zoom": 1.05,
+      "y": 70,
+      "ms": 9000,
+      "ease": "sine"
+     }
+    ],
+    "captions": [
+     {
+      "at": 0.3,
+      "until": 4.9,
+      "text": "First patch: *0 failures in 30*.",
+      "pos": [
+       0.5,
+       0.095
+      ]
+     },
+     {
+      "at": 5.5,
+      "until": 9.8,
+      "text": "But another request got *worse*.",
+      "pos": [
+       0.5,
+       0.095
+      ]
+     },
+     {
+      "at": 10.4,
+      "until": 14.6,
+      "text": "Thrown out. *Try again*.",
+      "pos": [
+       0.5,
+       0.095
+      ]
+     },
+     {
+      "at": 15.6,
+      "until": 19.7,
+      "text": "Second patch: *kept*.",
+      "pos": [
+       0.5,
+       0.095
+      ]
+     }
+    ]
+   },
+   "addCues": [
+    {
+     "at": "v1",
+     "sfx": "count",
+     "beats": 2.6,
+     "gain": -9
+    },
+    {
+     "at": "out1",
+     "sfx": "thock",
+     "gain": -2
+    },
+    {
+     "at": "v2",
+     "sfx": "count",
+     "beats": 2.6,
+     "gain": -9
+    },
+    {
+     "at": "kept",
+     "sfx": "chime",
+     "gain": -3
+    }
+   ]
+  },
+  {
+   "id": "trace",
+   "type": "Journey",
+   "bars": 4,
+   "in": "blur",
+   "music": "full",
+   "events": {
+    "rows": 0.6,
+    "dmg": 7.8
+   },
+   "props": {
+    "panels": [
+     {
+      "id": "tr",
+      "screen": "WdTrace",
+      "x": -410,
+      "y": 130,
+      "z": 0,
+      "w": 900,
+      "h": 640,
+      "lw": 900,
+      "lh": 640,
+      "radius": 24,
+      "from": -0.6,
+      "enter": "rise",
+      "float": 3
+     },
+     {
+      "id": "dm",
+      "screen": "WdDamage",
+      "x": 470,
+      "y": 130,
+      "z": 20,
+      "w": 640,
+      "h": 640,
+      "lw": 640,
+      "lh": 640,
+      "radius": 24,
+      "from": 7.2,
+      "enter": "rise",
+      "float": 4
+     }
+    ],
+    "shots": [
+     {
+      "at": 0,
+      "zoom": 1.2,
+      "x": -400,
+      "y": 120
+     },
+     {
+      "at": 6.4,
+      "zoom": 1.0,
+      "x": 30,
+      "y": 90,
+      "ms": 1300
+     }
+    ],
+    "captions": [
+     {
+      "at": 0.3,
+      "until": 6.4,
+      "text": "Every step is a *neatlogs* trace.",
+      "pos": [
+       0.5,
+       0.095
+      ]
+     },
+     {
+      "at": 7.4,
+      "until": 15.6,
+      "text": "The damage: *120.00* to the wrong people.",
+      "pos": [
+       0.5,
+       0.095
+      ]
+     }
+    ]
+   },
+   "addCues": [
+    {
+     "at": "rows",
+     "sfx": "type",
+     "beats": 1.6,
+     "gain": -9
+    },
+    {
+     "at": "dmg",
+     "sfx": "count",
+     "beats": 2,
+     "gain": -7
+    }
+   ]
+  },
+  {
+   "id": "eval",
+   "type": "Journey",
+   "bars": 4,
+   "in": "blur",
+   "music": "full",
+   "props": {
+    "panels": [
+     {
+      "id": "c0",
+      "screen": "WdCase",
+      "props": {
+       "variant": 0
+      },
+      "x": 0,
+      "y": 0,
+      "z": 0,
+      "w": 560,
+      "h": 271,
+      "lw": 620,
+      "lh": 300,
+      "radius": 22
+     },
+     {
+      "id": "c1",
+      "screen": "WdCase",
+      "props": {
+       "variant": 1
+      },
+      "x": -700,
+      "y": -240,
+      "z": -480,
+      "w": 560,
+      "h": 271,
+      "lw": 620,
+      "lh": 300,
+      "radius": 22,
+      "from": 1.3,
+      "enter": "pop"
+     },
+     {
+      "id": "c2",
+      "screen": "WdCase",
+      "props": {
+       "variant": 2
+      },
+      "x": 720,
+      "y": -220,
+      "z": -400,
+      "w": 560,
+      "h": 271,
+      "lw": 620,
+      "lh": 300,
+      "radius": 22,
+      "from": 1.5,
+      "enter": "pop"
+     },
+     {
+      "id": "c3",
+      "screen": "WdCase",
+      "props": {
+       "variant": 3
+      },
+      "x": -760,
+      "y": 290,
+      "z": -360,
+      "w": 560,
+      "h": 271,
+      "lw": 620,
+      "lh": 300,
+      "radius": 22,
+      "from": 1.7,
+      "enter": "pop"
+     },
+     {
+      "id": "c4",
+      "screen": "WdCase",
+      "props": {
+       "variant": 4
+      },
+      "x": 700,
+      "y": 320,
+      "z": -520,
+      "w": 560,
+      "h": 271,
+      "lw": 620,
+      "lh": 300,
+      "radius": 22,
+      "from": 1.9,
+      "enter": "pop"
+     },
+     {
+      "id": "c5",
+      "screen": "WdCase",
+      "props": {
+       "variant": 5
+      },
+      "x": -120,
+      "y": -520,
+      "z": -860,
+      "w": 560,
+      "h": 271,
+      "lw": 620,
+      "lh": 300,
+      "radius": 22,
+      "from": 2.1,
+      "enter": "pop"
+     }
+    ],
+    "overlays": [
+     {
+      "id": "stats",
+      "screen": "WdStats",
+      "props": {
+       "at": 9.8
+      },
+      "x": 0,
+      "y": 320,
+      "w": 1300,
+      "h": 195,
+      "lw": 1400,
+      "lh": 210,
+      "from": 9.4,
+      "enter": "rise",
+      "radius": 26
+     }
+    ],
+    "shots": [
+     {
+      "at": 0,
+      "zoom": 1.9,
+      "x": 0,
+      "y": 0,
+      "z": 0
+     },
+     {
+      "at": 1.1,
+      "zoom": 0.8,
+      "x": 0,
+      "y": 0,
+      "z": -240,
+      "ms": 1800
+     },
+     {
+      "at": 5.6,
+      "zoom": 0.86,
+      "ry": -8,
+      "x": 160,
+      "z": -340,
+      "ms": 3000,
+      "ease": "sine"
+     },
+     {
+      "at": 9.0,
+      "zoom": 0.76,
+      "ry": 0,
+      "x": 0,
+      "y": -150,
+      "z": -300,
+      "ms": 1100
+     }
+    ],
+    "captions": [
+     {
+      "at": 0.4,
+      "until": 4.7,
+      "text": "We *sealed* the answers first.",
+      "pos": [
+       0.5,
+       0.095
+      ]
+     },
+     {
+      "at": 5.1,
+      "until": 9.2,
+      "text": "5 planted bugs. *5 named*.",
+      "pos": [
+       0.5,
+       0.095
+      ]
+     },
+     {
+      "at": 9.8,
+      "until": 15.6,
+      "text": "Nobody wrongly accused. *One still open*.",
+      "pos": [
+       0.5,
+       0.095
+      ]
+     }
+    ],
+    "dofK": 0.012
+   }
+  },
+  {
+   "id": "plan",
+   "type": "Journey",
+   "bars": 4,
+   "in": "blur",
+   "music": "build",
+   "events": {
+    "draw": 1,
+    "slide": 8.4
+   },
+   "props": {
+    "panels": [
+     {
+      "id": "pl",
+      "screen": "WdPlan",
+      "x": 0,
+      "y": 140,
+      "z": 0,
+      "w": 1500,
+      "h": 798,
+      "lw": 1240,
+      "lh": 660,
+      "radius": 26,
+      "from": -0.6,
+      "enter": "rise",
+      "float": 3
+     }
+    ],
+    "shots": [
+     {
+      "at": 0,
+      "zoom": 1,
+      "y": 100
+     },
+     {
+      "at": 7.2,
+      "zoom": 1.06,
+      "x": 80,
+      "y": 120,
+      "ms": 1100
+     }
+    ],
+    "captions": [
+     {
+      "at": 0.3,
+      "until": 6.6,
+      "text": "The business plan lives in *cfo.ai*.",
+      "pos": [
+       0.5,
+       0.095
+      ]
+     },
+     {
+      "at": 7.6,
+      "until": 15.6,
+      "text": "The downside survives with *no founder draw*.",
+      "pos": [
+       0.5,
+       0.095
+      ]
+     }
+    ]
+   },
+   "addCues": [
+    {
+     "at": "draw",
+     "sfx": "swish",
+     "gain": -7
+    },
+    {
+     "at": "slide",
+     "sfx": "swish",
+     "gain": -4
+    },
+    {
+     "at": 10.6,
+     "sfx": "chime",
+     "gain": -4
+    }
+   ]
+  },
+  {
+   "id": "outro",
+   "type": "Outro",
+   "bars": 4,
+   "in": "blur",
+   "music": "out",
+   "events": {
+    "mark": 0,
+    "line": 1,
+    "roll": 2.2,
+    "url": 4.5,
+    "click": 6
+   },
+   "props": {
+    "name": "Whodunit",
+    "markSvg": "<svg width=\"32\" height=\"32\" viewBox=\"0 0 28 28\"><path d=\"M9.5 9.5l9 9M18.5 9.5l-9 9\" fill=\"none\" stroke=\"#17150F\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><ellipse cx=\"14\" cy=\"14\" rx=\"11.6\" ry=\"10\" fill=\"none\" stroke=\"#A1411F\" stroke-width=\"1.8\" transform=\"rotate(-14 14 14)\"/></svg>",
+    "line": "Find the commit that broke your",
+    "roll": [
+     "prompt.",
+     "tool.",
+     "*agent.*"
+    ],
+    "url": "github.com/kinnuworks/whodunit",
+    "cta": "",
+    "look": "soft"
+   }
+  }
+ ]
+}

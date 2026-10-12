@@ -10,3 +10,7 @@ requests.jsonl
 .whodunit/
 .pytest_cache/
 *.record.json.*.old
+
+# The demo video is built here from a motion template that is not ours to publish.
+/video/
+/.video-venv/

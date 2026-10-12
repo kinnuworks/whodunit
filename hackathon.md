@@ -698,3 +698,13 @@ The owner said yes to the first push after seeing what it would publish. Before 
 - Three screenshots from the neatlogs dashboard are in `evidence/`, taken in the owner's browser with the owner's name and photo cut off: the traces list, the investigation's own trace with its 17 steps, and a scripted refund run with four tool errors flagged. I left out the detection's trend chart because it drew empty at every range I tried.
 - The cfo.ai plan has a read-only link the owner asked for, in `evidence/README.md`.
 
+### 2:06 PM, Monday: the casebook is live, the checkpoint page opens, and there is a video
+
+- The owner mirrored the repo into Entire, and the checkpoint page for the headline culprit now opens without an account. Every case page links its culprit to its own Entire page, and all four distinct links answer.
+- The casebook is published from `cases/` to https://kinnuworks.github.io/whodunit/ by a small workflow, with the owner's yes.
+- The owner asked for the demo video to be made as a motion film. It is 89 seconds, ten scenes, captions and a score with no voice. `pitch/video/` has the film's scenes, the redrawn screens, the data and a contact sheet, and says what is real and what is drawn. The lineup scene plays the headline record's own four rounds.
+
+It took two rounds of stills. The first had every panel too small in the frame, the git log scrolling over its own title bar, an empty frame at five of the cuts, and the request in the Entire scene still being typed when its panel left. The caption check also caught four captions on screen for less time than it takes to read them.
+
+Not checked: nobody has watched it at full speed with sound. I looked at stills and at four frames pulled from the finished file. There is no 9 by 16 cut.
+
