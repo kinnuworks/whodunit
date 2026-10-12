@@ -817,4 +817,4 @@ The owner asked, mid-session, for the logo to change on the pages and in the fil
 
 The owner also asked for a read of the film's first ten seconds, to propose and not to change. That went to the owner in the session and nothing in the film's words or scenes was touched.
 
-Not checked: nobody has watched the new render at speed. I looked at two stills, the title card at 16 seconds and the close at 133. The seven screenshots in `evidence/` still show the old mark in the corner of the nav, and so does the picture at the top of the README. The team is named "Kinnu (solo)" in the submission text, which is my guess.
+Not checked: nobody has watched the new render at speed. I looked at two stills, the title card at 16 seconds and the close at 133. The picture at the top of the README, `evidence/lineup-whole-history.png`, was retaken at the same size with the new mark. The other six screenshots in `evidence/` still show the old one in the corner of the nav. The team is named "Kinnu (solo)" in the submission text, which is my guess.
