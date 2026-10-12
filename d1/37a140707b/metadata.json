@@ -1,0 +1,46 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "d137a140707b",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "AGENTS.md",
+    "cases/cents-off.casefile.html",
+    "cases/half-done-batch.casefile.html",
+    "cases/index.html",
+    "cases/og.html",
+    "cases/og.png",
+    "cases/outside/escalation-skipped.casefile.html",
+    "cases/outside/out-of-window.casefile.html",
+    "cases/outside/refund-amount.casefile.html",
+    "cases/strangers-paid.casefile.html",
+    "cases/turned-away.casefile.html",
+    "cases/whole-history.casefile.html",
+    "cases/wrong-order-refunded.casefile.html",
+    "hackathon.md",
+    "pitch/submission.md",
+    "pitch/video/README.md",
+    "pitch/video/build_film.py",
+    "pitch/video/film.json",
+    "pitch/video/screens.tsx",
+    "pitch/video/title-card.png",
+    "whodunit/casefile/__init__.py"
+  ],
+  "sessions": [
+    {
+      "metadata": "/d1/37a140707b/0/metadata.json",
+      "transcript": "/d1/37a140707b/0/full.jsonl",
+      "compact_transcript": "/d1/37a140707b/0/transcript.jsonl",
+      "content_hash": "/d1/37a140707b/0/content_hash.txt",
+      "prompt": "/d1/37a140707b/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 48,
+    "cache_creation_tokens": 40321,
+    "cache_read_tokens": 9005778,
+    "output_tokens": 21009,
+    "api_call_count": 24
+  }
+}
