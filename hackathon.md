@@ -689,3 +689,12 @@ Not done, or not checked:
 
 `evidence/` has two renders from cfo.ai, the cash chart and the simulator. Nothing was pushed.
 
+### 1:30 PM, Monday: the repo is public, and three more pieces of evidence
+
+The owner said yes to the first push after seeing what it would publish. Before asking, I counted what the recorded sessions hold, without printing any of it. No key-shaped strings and no email addresses. The owner's home folder path is in 242 files, two account ids in 114, the file names of the owner's private notes in 163, the names of other connectors in 162, and the cfo.ai workspace name in 6. `.env` was never committed.
+
+- The repo is at https://github.com/kinnuworks/whodunit, with `main` and `entire/checkpoints/v1`. Entire's own hook pushed the checkpoints while `main` went up, so my separate push of that branch was refused as already there. Both branches match the local ones. The six fix branches were not pushed.
+- The Entire page for the culprit's checkpoint does not open yet. It answers 404 signed out and signed in, because Entire has no repository for this account. Its start page offers to mirror a GitHub repository, which asks for access to the owner's GitHub account, so that step is left for the owner. Until then the public proof is the commit on GitHub with its `Entire-Checkpoint` trailer and the checkpoints branch.
+- Three screenshots from the neatlogs dashboard are in `evidence/`, taken in the owner's browser with the owner's name and photo cut off: the traces list, the investigation's own trace with its 17 steps, and a scripted refund run with four tool errors flagged. I left out the detection's trend chart because it drew empty at every range I tried.
+- The cfo.ai plan has a read-only link the owner asked for, in `evidence/README.md`.
+

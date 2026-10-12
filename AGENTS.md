@@ -128,7 +128,7 @@ Before and after neatlogs traces with numbers, trace links or screenshots, an En
 
 The plan was written before the build started. This is how it went, as of Sunday evening.
 
-1. Saturday 10 PM: repo up, Entire on with the first checkpoint verified, neatlogs and neatroots receiving runs, the victim agent running, first #neatHack post. Done by 7:17 PM on Saturday, except the post: `evidence/` has no link to one. The repo has not been pushed.
+1. Saturday 10 PM: repo up, Entire on with the first checkpoint verified, neatlogs and neatroots receiving runs, the victim agent running, first #neatHack post. Done by 7:17 PM on Saturday, except the post: `evidence/` has no link to one. The repo was pushed on 12 October.
 2. Sunday 3 AM: replay runner over worktrees, and plain bisect finding an always-failing planted bug across 20 commits. Done at 7:31 PM on Saturday.
 3. Sunday 10 AM: the statistical bisect finding a bug that fails about 30% of the time, and the simulator chart. Done at 9:06 PM on Saturday.
 4. Sunday 6 PM: motive, brief, ruling memory, fix and verify, case file page v1. Done on Saturday night, and reworked since.
@@ -158,7 +158,7 @@ Still to do, in this order:
 
 1. cfo.ai. Done on 12 October: six pages, eight tables, four scenarios and a simulator, in the owner's workspace. `evidence/README.md` describes it. The owner had a read-only share link made, which is in `evidence/README.md`.
 2. Screenshots from neatlogs cloud. Done on 12 October, three of them, in `evidence/`.
-3. The push. The owner still has to read the list of personal items in the transcripts: home folder path, connector names, the titles of the private notes index, and `ownerAccountUuid` and `ownerOrganizationUuid` in `bridge-session` entries. After the push, turn on GitHub Pages for `cases/` so the casebook has a public address, and collect the Entire checkpoint link for commit `ced2ecd21c3e`, checkpoint `bfbe27725663`.
+3. The push. Done on 12 October with the owner's yes: https://github.com/kinnuworks/whodunit, public, `main` and `entire/checkpoints/v1`. Still open after it: a public address for the casebook, and mirroring the repo into Entire so the checkpoint page for commit `ced2ecd21c3e`, checkpoint `bfbe27725663`, opens.
 4. The video, from `pitch/demo-script.md`.
 5. More #neatHack posts, from `pitch/posts.md`.
 
@@ -205,7 +205,7 @@ These cover UI copy, the README, the pitch, scripts, commit messages and code co
 
 - Commits carry no co-author trailer.
 - These need the owner's yes each time: the first push to GitHub, any post on X, a PR or comment on someone else's repo, any write to cfo.ai, and launching anything on AWS.
-- The repo stays private until just before submission (the owner's ruling on 10 October). Sessions are still written as if public, because the checkpoints go up with it.
+- The repo went public on 12 October, with the owner's yes. Every session here is published with it.
 - The owner does browser signups and enters any card or password personally.
 - Report failures as plainly as successes. The eval is only worth something if the misses are in it.
 

@@ -22,7 +22,7 @@ What has been collected so far, with ids that can be looked up. Every screenshot
 - `bfbe27725663` on commit `ced2ecd21c3e`, the headline culprit. `entire why` puts all 4 of its changed lines behind this commit, this checkpoint and the request the page quotes.
 - `d248e108a420` on commit `d4fb1587c066` holds two sessions with two differently worded requests. The case file first quoted the one whose change was thrown away. The build log entry of 11 October, 6:24 PM, has how `entire why` showed it.
 
-The checkpoint links will take the form `https://entire.io/gh/OWNER/REPO/commit/FULL_SHA` once the repo has a remote. It has none yet, by the owner's ruling.
+The repo was pushed on 12 October and is public at https://github.com/kinnuworks/whodunit. The culprit commit, with its `Entire-Checkpoint: bfbe27725663` trailer, is at https://github.com/kinnuworks/whodunit/commit/ced2ecd21c3ed165a1a729e17f68d2000cdc19ca, and the checkpoints themselves are on the `entire/checkpoints/v1` branch. The Entire page for it, https://entire.io/gh/kinnuworks/whodunit/commit/ced2ecd21c3ed165a1a729e17f68d2000cdc19ca, answers 404 until the owner mirrors the repo into Entire, which asks for access to the GitHub account.
 
 ## Before and after
 
@@ -80,4 +80,4 @@ Taken from the dashboard on 12 October, in the owner's browser, with the sidebar
 ## Not collected yet
 
 - Links to the #neatHack posts.
-- The Entire checkpoint link for the headline culprit, which needs the repo to have a remote.
+- The Entire page for the headline culprit's checkpoint, which needs the owner to mirror the GitHub repo into Entire.
