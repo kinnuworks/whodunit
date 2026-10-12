@@ -78,6 +78,8 @@ Taken from the dashboard on 12 October, in the owner's browser, with the sidebar
 - `neatlogs-investigation-trace.jpg`: trace `b842b67dfae39c67c1a3aa76772f5229`, workflow `whodunit investigate`, 17 steps in 10 minutes 45 seconds. The four lineup rounds, motive, brief, ruling, both fix attempts with their do-no-harm checks, and damages are each a span.
 - `neatlogs-failing-run.jpg`: one scripted refund request where `lookup_order` errored four times and the detection flagged each. The model's name is on screen in this one.
 
-## Not collected yet
+## Posts tagged #neatHack
 
-- Links to the #neatHack posts.
+- Day 1, 10 October: https://x.com/heykinnu/status/2108892698963071343
+- Bingo, 11 October: https://x.com/heykinnu/status/2109010623833297271
+- The pitch, 12 October: https://x.com/heykinnu/status/2109552985152119291

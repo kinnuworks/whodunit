@@ -720,3 +720,28 @@ The voice sits about 12 dB over the music while it speaks, measured on the two s
 
 Not checked: I cannot listen to it. I measured levels and where each clip starts and ends, and looked at stills. Whether the voice says "neatlogs" and "cfo.ai" the way a person would is for the owner's ears.
 
+
+### 4:38 PM, Monday: the README says what broke before it says how
+
+The owner had the repo read against the hackathon's rubric and brought back six findings. The first: a new reader cannot tell what Whodunit is for, because the README opens on a riddle and the outcome is four paragraphs down. This entry is that job.
+
+- The README now opens with what the reader has (an agent that worked last week and now fails sometimes), what Whodunit tells them, and one case as a five-row table: what went wrong, which change, who asked for it, what it cost, the fix. The lineup screenshot is under it and links to the live page.
+- A new section, "What it does on its own", walks the loop as eleven steps and points each at the record and key where it happened: `whole-history` for the lineup, motive, brief, remembered ruling, the patch thrown out and the patch kept, `turned-away` for the revert, `half-done-batch` for the case left open.
+- A new "Evidence" table has one row per kind of evidence, with a link each. The three posts that are live are in it, and in `evidence/README.md`, which had listed them as missing.
+- Everything that was in the README before is below those, word for word, except its first two paragraphs, which the new opening replaces.
+- The casebook opens with the same sentence. Its old headline, "Which commit did it, and why.", is gone from the page, and the old lead is the second sentence of the new one. The serif italic word is now "sometimes."
+- `AGENTS.md` has the new one-line pitch.
+
+Numbers, each checked against `cases/whole-history.record.json`: 57 suspects, 98.3%, 20 replays across 5 commits, 22 alibis, 18 ordinary runs, 37 for a scan from the oldest, 11 of 14 runs, 4 of 4 lines from `entire why`, six brief sentences with none cut, 30 clean replays for each patch, 13 other requests with 54 and 42 replays, 8 of 8 against 5 of 8, 6.2%, 4 of 6 ordinary runs, 120.00, 176 replays, $0.7999. The revert and the open case are from their own records: 5 of 12, 4 of 18, 0 of 30, and 5 of 90 twice.
+
+Where the owner's draft and the records differed, the records won, and the owner was told:
+
+- The draft said "one real case". The regression is one of the five a second session planted, so the word is gone and a paragraph under the table says what is real (the sessions, the request, the history) and what is staged (the regression, the customers).
+- The draft said "about 80 cents". That is the replays alone. The model calls for the brief and the two patches are not in the record's count, so the line says "of replays".
+- The draft said the first patch "broke another request". That request was already failing 5 times in 8. The line says it made another request fail more often, which is what the page says and what this log corrected once before.
+- "11 minutes" holds as a round figure and from three places that do not quite agree because they time different things: 10 minutes 46 seconds in this log's entry for the run, 10 minutes 45 seconds on the neatlogs trace, and 10 minutes 39 seconds between the first and last replay in the record.
+- No record in `cases/` was opened from a trace. The one time `open-case --from-trace` ran on real traffic, its file went to a scratch folder. Step 1 of the new section says so and points at this log.
+
+Checked: 150 fast tests pass. The casebook was regenerated with the public address and its top was looked at in a browser at 800 px, where the headline takes two lines.
+
+Not checked: the README as GitHub renders it, since nothing is pushed yet, and whether the table's last row wraps badly on a phone. The case pages themselves did not change.

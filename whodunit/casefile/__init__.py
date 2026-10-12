@@ -943,8 +943,8 @@ def render_index(records: list[tuple[str, dict]]) -> str:
                f'<a class="btn btn-sm btn-ink" href="{escape(headline[0])}">Open a case</a>' if headline else "")
     body = (f"""<header class="hero book"><div class="container">
 <p class="badge badge--dot">{count} {"case" if count == 1 else "cases"}, {closed} closed</p>
-<h1>Which commit did it, and <em class="t-serif">why.</em></h1>
-<p class="lead">Whodunit replays an agent's failing requests on the suspect commits until one of them stands out, then quotes what that commit was asked to do.</p>
+<h1>Your AI agent worked last week. Now it gets things wrong, <em class="t-serif">sometimes.</em></h1>
+<p class="lead">Whodunit tells you which change broke it, who asked for that change, and what it cost. It replays the failing requests on the suspect commits until one of them stands out, then quotes what that commit was asked to do.</p>
 <div class="cta-row">{ctas}</div>
 <p class="trust">{trust}</p>
 {visual}
@@ -954,7 +954,7 @@ def render_index(records: list[tuple[str, dict]]) -> str:
 <div class="card docket-card"><table class="docket"><thead><tr><th>No.</th><th>Status</th><th>What was reported</th><th>Culprit</th><th>Damage</th></tr></thead>
 <tbody>{rows}</tbody></table></div>
 </div></section>""" if records else """<header class="hero book"><div class="container">
-<h1>Which commit did it, and <em class="t-serif">why.</em></h1>
+<h1>Your AI agent worked last week. Now it gets things wrong, <em class="t-serif">sometimes.</em></h1>
 <p class="lead empty">No cases yet. Lucky you.</p>
 </div></header>""")
     return f"""<!doctype html>

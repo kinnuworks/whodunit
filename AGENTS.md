@@ -1,6 +1,6 @@
 # Whodunit working brief
 
-Whodunit finds the commit that broke an AI agent. It shows what that commit was asked to do, fixes it, proves the fix, and reports what the breakage cost. The pitch in one line: "57 commits since it last worked. Which one did it?"
+Whodunit finds the commit that broke an AI agent. It shows what that commit was asked to do, fixes it, proves the fix, and reports what the breakage cost. The pitch in one line, which says which commit and why before anything else: "Your AI agent worked last week. Now it gets things wrong, sometimes. Whodunit tells you which change broke it, who asked for that change, and what it cost." The README and the casebook open with it. A case page keeps the question as its headline: "57 commits since it last worked. Which one did it?"
 
 This is the brief for whoever writes code here, human or coding agent. Read it before changing anything.
 

@@ -1,10 +1,62 @@
 # Whodunit
 
-57 commits since it last worked. Which one did it?
+Your AI agent worked last week. Now it gets things wrong, sometimes.
+Whodunit tells you which change broke it, who asked for that change, and what it cost.
 
-Whodunit answers two questions about an AI agent that used to work and now fails: which commit broke it, and why that commit was made. Then it fixes the commit, proves the fix by replaying the failures, and counts what the breakage cost.
+**One case, one command, 11 minutes, about 80 cents of replays:**
+
+| | |
+|---|---|
+| What went wrong | A refund agent started refunding orders to people who did not own them. 11 of 14 runs. |
+| Which change | 1 commit out of 57, named at 98.3% after 20 replays |
+| Who asked for it | A coding-agent session where someone typed "simple refunds feel slow". Quoted from the Entire checkpoint. |
+| What it cost | 120.00 refunded to the wrong people (test shop, scripted customers) |
+| The fix | First patch passed 30 replays, made another request fail more often, and was thrown out. Second patch kept: 0 failures in 30. |
+
+Without it, someone reads traces and diffs for an afternoon, and `git bisect` cannot help
+because the bug does not fail every time.
+
+What is real in that case and what is staged: the refund agent's history was grown by coding-agent sessions, one typed request each, and the request quoted above is the one behind the commit. The regression is one of five that a second session planted through ordinary-sounding requests, with a sealed answer key. The customers are a script, `eval/traffic.py`, so nobody real was paid.
+
+[![The lineup for the headline case: 57 suspects, 22 with an alibi, and a ring round the culprit](evidence/lineup-whole-history.png)](https://kinnuworks.github.io/whodunit/whole-history.casefile.html)
+
+The live case page is at https://kinnuworks.github.io/whodunit/whole-history.casefile.html, and the casebook of all six cases is at https://kinnuworks.github.io/whodunit/.
 
 It was built for neatHack between 10 and 12 October 2026. `hackathon.md` is the dated build log, including the parts that went wrong.
+
+## What it does on its own
+
+One command runs a case from the lineup to the damages, and stops only to ask the owner one question:
+
+```bash
+uv run whodunit investigate cases/whole-history.toml --from-traffic refund-agent
+```
+
+On the headline case that took 10 minutes 46 seconds and 176 replays. Each step below is in a case record under `cases/`, under the key named, except the first.
+
+1. It opens a case from one failing run. `whodunit open-case --from-trace <id>` took one trace id from the refund agent's traffic and wrote a case with the right request, the expected result from an earlier run that passed, and a range of 41 suspects that held the culprit. That file went to a scratch folder, so this step is in the build log (`hackathon.md`, 11 October, 6:00 PM) and in no record.
+2. It narrows the lineup. [whole-history](cases/whole-history.record.json), `lineup`: 57 suspects, 22 of them with an alibi from entire-graph, and 18 ordinary runs counted as evidence before any replay. Then 20 replays across 5 commits put 98.3% on one commit. A scan from the oldest suspect would have tested 37.
+3. It finds the motive. Same record, `motive`: the request behind the commit, from Entire checkpoint `bfbe27725663`, found word for word in the session transcript. `entire why` puts all 4 changed lines behind the same commit, checkpoint and request.
+4. It writes the brief. `brief`: six sentences from a model, each citing a span, a commit or a checkpoint. The rule checks cut none of them this time.
+5. It asks one question, revert or patch, and remembers the answer. `ruling`: the owner said patch for prompt changes on 11 October, on the `turned-away` case, and this case used that ruling without asking again.
+6. It writes a patch and replays it. `attempts`, first entry: 0 failures in 30 replays on its own case.
+7. It checks that the patch does no harm. Same entry, `harm`: 13 other requests replayed 54 times. An ordinary refund went wrong in 8 of 8 replays, against 5 of 8 before the patch. The patch was thrown out.
+8. It tries again with what went wrong in view. `attempts`, second entry: 0 failures in 30 replays, at most 6.2% at 95%, and none of the 13 other requests made worse. This one was kept.
+9. When patches fall short, it reverts. [turned-away](cases/turned-away.record.json), `attempts`: the first patch failed 5 of 12 replays and the second 4 of 18, so the culprit was reverted, and the revert went 30 replays without a failure.
+10. When nothing clears the bar, it leaves the case open. [half-done-batch](cases/half-done-batch.record.json), `attempts`: two patches each still failed 5 replays in 90, and the revert conflicts with later commits. The case is open and its page says so.
+11. It counts the damage. whole-history, `damages`: 4 of the 6 ordinary runs that asked what the case asks went wrong and paid out 120.00, and the case's 176 replays cost about 80 cents.
+
+## Evidence
+
+| What | Where |
+|---|---|
+| Before and after, with numbers | [evidence/casefile-whole-history.png](evidence/casefile-whole-history.png): 11 of 14 runs wrong from the culprit on, then 0 failures in 30 replays of the kept fix |
+| neatlogs traces | [evidence/neatlogs-investigation-trace.jpg](evidence/neatlogs-investigation-trace.jpg): the investigation itself, trace `b842b67dfae39c67c1a3aa76772f5229` in neatlogs cloud, 17 steps |
+| Entire checkpoints | [The checkpoint behind the culprit](https://entire.io/gh/kinnuworks/whodunit/commit/ced2ecd21c3ed165a1a729e17f68d2000cdc19ca): checkpoint `bfbe27725663`, with the request that was typed |
+| The cfo.ai plan | [Read-only link to the model](https://app.cfo.ai/s/aQEB_E_N_TMjakaV): six pages, eight tables, four scenarios and a simulator |
+| An action that failed, and what happened next | [evidence/README.md](evidence/README.md#a-fix-that-failed-and-what-the-agent-did-next): a patch thrown out and written again, two patches given up for a revert, and a case left open |
+| Public posts | [Day 1, 10 October](https://x.com/heykinnu/status/2108892698963071343), [Bingo, 11 October](https://x.com/heykinnu/status/2109010623833297271), [the pitch, 12 October](https://x.com/heykinnu/status/2109552985152119291) |
+| Commits dated inside the hackathon | [The commit log](https://github.com/kinnuworks/whodunit/commits/main), which starts at 7:03 PM IST on 10 October |
 
 ## Why plain bisect is not enough
 
