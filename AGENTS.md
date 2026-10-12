@@ -132,7 +132,7 @@ The plan was written before the build started. This is how it went, as of Sunday
 2. Sunday 3 AM: replay runner over worktrees, and plain bisect finding an always-failing planted bug across 20 commits. Done at 7:31 PM on Saturday.
 3. Sunday 10 AM: the statistical bisect finding a bug that fails about 30% of the time, and the simulator chart. Done at 9:06 PM on Saturday.
 4. Sunday 6 PM: motive, brief, ruling memory, fix and verify, case file page v1. Done on Saturday night, and reworked since.
-5. Monday 2 AM: sealed-key eval on the grown victim, neatlogs cloud link, cfo.ai model through MCP, parallel replays on the AWS allowance. The eval is done. 232 traffic runs are in neatlogs cloud and `whodunit onset --cloud` reads the detection trend. cfo.ai has nothing in it yet. Nothing has been launched on AWS.
+5. Monday 2 AM: sealed-key eval on the grown victim, neatlogs cloud link, cfo.ai model through MCP, parallel replays on the AWS allowance. The eval is done. 232 traffic runs are in neatlogs cloud and `whodunit onset --cloud` reads the detection trend. The cfo.ai plan was built on 12 October. Nothing has been launched on AWS.
 6. Monday noon: stretch target, README, evidence folder. The README and the evidence folder exist. The stretch target has not been started.
 7. Monday 6 PM: demo video, which opens on "57 commits, which one did it?" and names the culprit inside 30 seconds. Submit at 7 PM. Not done.
 
@@ -156,7 +156,7 @@ Left over from that review:
 
 Still to do, in this order:
 
-1. cfo.ai. Required, and nothing is in it yet. `.mcp.json` names the server. A new session in this folder should offer it, and the owner signs in. Build the plan from `pitch/business-plan.md`: pricing, costs, revenue and runway, with the three scenarios. Each write needs the owner's yes.
+1. cfo.ai. Done on 12 October: six pages, eight tables, four scenarios and a simulator, in the owner's workspace. `evidence/README.md` describes it. Still open: a share link for the judges, which is the owner's to make, and a screenshot of a whole page from the owner's browser.
 2. Screenshots from neatlogs cloud. 232 traffic runs are there and the `Execution Failed` detection has fired 27 times. The owner is signed in to the dashboard and this session is not.
 3. The push. The owner still has to read the list of personal items in the transcripts: home folder path, connector names, the titles of the private notes index, and `ownerAccountUuid` and `ownerOrganizationUuid` in `bridge-session` entries. After the push, turn on GitHub Pages for `cases/` so the casebook has a public address, and collect the Entire checkpoint link for commit `ced2ecd21c3e`, checkpoint `bfbe27725663`.
 4. The video, from `pitch/demo-script.md`.

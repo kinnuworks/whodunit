@@ -58,9 +58,19 @@ The checkpoint links will take the form `https://entire.io/gh/OWNER/REPO/commit/
 - The first two root-cause briefs for `planted-flaky-lookup` named the right commit and misread why it fails. The third is right. All three are described in the build log.
 - A review on 11 October found claims the code did not back. The build log from 2:00 PM that day goes through each one.
 
+## The cfo.ai plan
+
+Built on 12 October through the cfo.ai MCP server, in the owner's workspace, with the owner's yes. It has six pages (Whodunit plan, Assumptions, Customers and revenue, Costs and margin, Cash and runway, Simulator), eight tables, four scenarios (Base, Downside, Downside with no founder draw, Upside) and three live blocks. `../pitch/business-plan.md` has the inputs and the runway table.
+
+- `cfo-cash-by-case.jpg`: cash by month in the base, downside and upside cases, as cfo.ai renders it.
+- `cfo-simulator.jpg`: the simulator, with sliders for the Team price, usage, the cost of an investigation and the founder draw. With the sliders where the plan has them it gives the plan's own $23,141 after month 12.
+- The cost of an investigation is not typed in. The model takes the mean of the six measured replay costs in its first table and adds the brief and patch.
+- The four cases were worked out by hand in a script before anything was written, and the saved model matches each one to the cent: $23,141, minus $5,300, $12,700 and $70,178 after month 12.
+
+The workspace is private. A public link to it is the owner's to make.
+
 ## Not collected yet
 
 - Links to the #neatHack posts.
-- The cfo.ai plan. The server is named in `.mcp.json` and needs the owner's sign-in.
 - neatlogs cloud screenshots. 232 traffic runs across the history went to the cloud on 11 October, and the investigation's own trace on 12 October.
 - The Entire checkpoint link for the headline culprit, which needs the repo to have a remote.

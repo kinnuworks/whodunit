@@ -652,3 +652,40 @@ Not checked: a real phone, any browser other than Chrome, and the page with the 
 
 `evidence/` has all seven screenshots retaken, and `cases/og.png` is redrawn from `cases/og.html` in the new look. `AGENTS.md` has the new design section in place of the typed paper one. Nothing was pushed.
 
+### 1:15 PM, Monday: the business plan is in cfo.ai
+
+The owner signed in to the cfo.ai server and said yes to the whole build after seeing the list of writes and the numbers they would produce. The workspace was empty before.
+
+What is in it:
+
+- Six pages: Whodunit plan, Assumptions, Customers and revenue, Costs and margin, Cash and runway, Simulator. Each opens with a short note on where its numbers come from. The first page says that no real customer has used the refund agent and that its traffic was sent by a script.
+- Eight tables. Four hold inputs: the six measured investigations, unit costs, pricing and customers, fixed costs and cash. Three are monthly, October 2026 to September 2027, and every line in them is a formula on those inputs. The eighth puts cash in the four cases side by side.
+- Four scenarios: Base, Downside, Downside with no founder draw, and Upside. They differ in five inputs: the two Team targets, the Scale target, churn and the draw.
+- Three live blocks: the year at a glance, cash by case, and a simulator with sliders for the Team price, usage, the cost of an investigation and the founder draw.
+
+The cost of an investigation is not typed in. The model takes the mean of the six measured replay costs, $1.17, and adds $0.20 for the brief and the patch.
+
+How it was checked. I worked the twelve months out by hand in a script first, for all four cases, then ran the tables as a dry run that saves nothing, then wrote them. The saved model gives the script's numbers to the cent: $23,141 after month 12 in the base case, minus $5,300 in the downside, $12,700 in the downside with no draw, and $70,178 in the upside. All three blocks render without errors in cfo.ai's own check, in both themes.
+
+What changed against `pitch/business-plan.md`, which is now rewritten to match:
+
+- The old runway table charged every paying agent $26 a month to serve. A Scale agent runs 125 investigations a month at half use and has a worker of its own, which comes to about $232. With that, base cash after month 12 is $23,141 where the old table said $26,113, and the upside is $70,178 where it said $76,750.
+- The downside with the draw runs out in month 10. The old table said month 11.
+- I tried to reproduce the old table before replacing it. The downside rows came out exactly and the base and upside rows did not, by $244 and $976, and I could not find what the old sums had done differently.
+- The conclusion is the same: the plan survives the downside only if the founder takes no draw.
+
+What went wrong on the way:
+
+- The simulator first showed $23,134 for the saved plan, $7 off, because I had rounded the cost of an investigation to the cent before using it. It now uses the model's own value and shows $23,141.
+- One of its four headline numbers was cut off at "Not this ye". The numbers now sit two to a row.
+- The overview page first got a cocktail glass for an icon, which is what cfo.ai matched to "magnifying glass". It is a search icon now.
+
+Not done, or not checked:
+
+- Clicks. cfo.ai's check renders a block and does not move a slider, so the sliders have been read as code and never dragged.
+- The model leaves out replays billed at cost plus 20% for customers on a large model, and extra investigations at $8.
+- Churn only sets how many agents have to be signed each month. The targets do not fall with it.
+- The workspace is private. A share link for the judges is an outward step and is the owner's to make.
+
+`evidence/` has two renders from cfo.ai, the cash chart and the simulator. Nothing was pushed.
+
