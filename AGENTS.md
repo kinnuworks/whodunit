@@ -189,6 +189,7 @@ On 12 October the owner asked for the case file to be redone in a small design s
 - Taken from the system: the floating pill nav, a status badge, pill buttons, cards with a hairline ring, a soft stage under the lineup, and on the casebook a terminal window holding what `whodunit investigate` printed for the headline case.
 - Left out, with the reason: the menu bar, popover and phone frames, because Whodunit is a command and a page. The blur on the nav, because glass is ruled out below. Icon tiles, the three-card grid, pricing, FAQ, social proof and scroll reveals, because the page is a case and has nothing to sell.
 - The lineup keeps its own drawing: typed x and o marks, struck-through SHAs, hatching for an alibi and a pencil ring round the culprit.
+- The mark is that drawing made small: two cleared commits on a line and a pencil ring round the third. It is `MARK` in `whodunit/casefile/__init__.py`, and the film and `cases/og.html` carry copies with the colours written out. It replaced an x in a ring on 12 October, at the owner's request.
 - A case page's headline is the question the case asks, "57 commits since it last worked. Which one did it?", with what was reported under it. Every number on either page comes from a case record.
 - Sample copy: "Suspects: 41. Cleared: 40." / "Motive: someone asked for friendlier replies." / "Alibi: never touched the agent." / empty state "No cases yet. Lucky you." / button "Open a case".
 

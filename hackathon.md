@@ -805,3 +805,16 @@ What went wrong:
 Checked: 161 fast tests pass, 5 of them new, for the limit read from a file, the meter's pricing, a lineup that stops, and a record that says why.
 
 Not checked: the limit has never stopped a real investigation. The tests use a stub history and a stand-in for neatroots. The meter runs a few replays behind, because a run is priced once neatroots has it. The model calls for a brief and a patch are an allowance and are not measured. No model was called for either job.
+
+### 5:41 PM, Monday: a new mark, and the submission text
+
+The owner asked, mid-session, for the logo to change on the pages and in the film, because the old one was just an x in a ring.
+
+- The new mark is the lineup made small: two cleared commits on a line, and the pencil ring round the third, which did it. My first drawing put the ringed commit in the middle of three, and it read as an eye. Moving it to the end of the line made it read as a history.
+- It is on all nine case pages and the casebook, in `cases/og.png`, and in the film's title card and close.
+- The film was rendered again, picture only, 4,080 frames, and the narrated sound was copied across from the earlier file without re-encoding. Every timing is as it was, because I swapped the mark in the built film and did not rebuild it from the narration clips. The earlier file is kept as `whodunit-demo-x-mark.mp4`.
+- `pitch/submission.md` has the text for the submission post, 278 characters as X counts them, with a blank for the demo link. The three handles are the ones in the Day 1 post, which I read from the public page.
+
+The owner also asked for a read of the film's first ten seconds, to propose and not to change. That went to the owner in the session and nothing in the film's words or scenes was touched.
+
+Not checked: nobody has watched the new render at speed. I looked at two stills, the title card at 16 seconds and the close at 133. The seven screenshots in `evidence/` still show the old mark in the corner of the nav, and so does the picture at the top of the README. The team is named "Kinnu (solo)" in the submission text, which is my guess.

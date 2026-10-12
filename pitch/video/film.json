@@ -195,7 +195,7 @@
    "props": {
     "name": "Whodunit",
     "tagline": "Finds the commit that broke your AI agent. And why.",
-    "markSvg": "<svg width=\"32\" height=\"32\" viewBox=\"0 0 28 28\"><path d=\"M9.5 9.5l9 9M18.5 9.5l-9 9\" fill=\"none\" stroke=\"#17150F\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><ellipse cx=\"14\" cy=\"14\" rx=\"11.6\" ry=\"10\" fill=\"none\" stroke=\"#A1411F\" stroke-width=\"1.8\" transform=\"rotate(-14 14 14)\"/></svg>"
+    "markSvg": "<svg width=\"32\" height=\"32\" viewBox=\"0 0 28 28\"><g fill=\"#17150F\" stroke=\"#17150F\" opacity=\".38\"><path d=\"M3.4 14h9\" fill=\"none\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><circle cx=\"3.4\" cy=\"14\" r=\"2.2\" stroke=\"none\"/><circle cx=\"10.2\" cy=\"14\" r=\"2.2\" stroke=\"none\"/></g><circle cx=\"19.5\" cy=\"14\" r=\"3\" fill=\"#17150F\"/><path d=\"M20.6 11C19.4 9 16.9 7.7 14 7.8C10.1 7.9 7 10.6 7 14.1C7 17.6 10.2 20.3 14.1 20.2C18 20.1 21.1 17.3 21 13.8C20.95 12.3 20.3 10.9 19.2 9.9\" fill=\"none\" stroke=\"#A1411F\" stroke-width=\"1.8\" stroke-linecap=\"round\" transform=\"translate(5.5 0) rotate(-12 14 14)\"/></svg>"
    }
   },
   {
@@ -1174,7 +1174,7 @@
    },
    "props": {
     "name": "Whodunit",
-    "markSvg": "<svg width=\"32\" height=\"32\" viewBox=\"0 0 28 28\"><path d=\"M9.5 9.5l9 9M18.5 9.5l-9 9\" fill=\"none\" stroke=\"#17150F\" stroke-width=\"2.4\" stroke-linecap=\"round\"/><ellipse cx=\"14\" cy=\"14\" rx=\"11.6\" ry=\"10\" fill=\"none\" stroke=\"#A1411F\" stroke-width=\"1.8\" transform=\"rotate(-14 14 14)\"/></svg>",
+    "markSvg": "<svg width=\"32\" height=\"32\" viewBox=\"0 0 28 28\"><g fill=\"#17150F\" stroke=\"#17150F\" opacity=\".38\"><path d=\"M3.4 14h9\" fill=\"none\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><circle cx=\"3.4\" cy=\"14\" r=\"2.2\" stroke=\"none\"/><circle cx=\"10.2\" cy=\"14\" r=\"2.2\" stroke=\"none\"/></g><circle cx=\"19.5\" cy=\"14\" r=\"3\" fill=\"#17150F\"/><path d=\"M20.6 11C19.4 9 16.9 7.7 14 7.8C10.1 7.9 7 10.6 7 14.1C7 17.6 10.2 20.3 14.1 20.2C18 20.1 21.1 17.3 21 13.8C20.95 12.3 20.3 10.9 19.2 9.9\" fill=\"none\" stroke=\"#A1411F\" stroke-width=\"1.8\" stroke-linecap=\"round\" transform=\"translate(5.5 0) rotate(-12 14 14)\"/></svg>",
     "line": "Which commit did it, and",
     "roll": [
      "when.",

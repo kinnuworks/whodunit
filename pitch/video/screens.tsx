@@ -36,11 +36,16 @@ const MONO = '"Geist Mono", ui-monospace, monospace';
 const useAt = ({ev, b, events}: P) => (at: At) => (typeof at === 'string' ? ev(events?.[at] ?? at) : b(at));
 const fade = (f: number, at: number, fps: number, dur = 300) => clamp01(tween(f, at, at + ms(fps, dur), 0, 1, EASE.premium));
 
-/** The mark: an x with a pencil ring round it. */
+/** The mark: three commits on a line, and a pencil ring round the one that did it. */
 export const WdMark: React.FC<{size?: number}> = ({size = 44}) => (
   <svg width={size} height={size} viewBox="0 0 28 28">
-    <path d="M9.5 9.5l9 9M18.5 9.5l-9 9" fill="none" stroke={W.ink} strokeWidth="2.4" strokeLinecap="round" />
-    <ellipse cx="14" cy="14" rx="11.6" ry="10" fill="none" stroke={W.accentInk} strokeWidth="1.8" transform="rotate(-14 14 14)" />
+    <g fill={W.ink} stroke={W.ink} opacity={0.38}>
+      <path d="M3.4 14h9" fill="none" strokeWidth="1.5" strokeLinecap="round" />
+      <circle cx="3.4" cy="14" r="2.2" stroke="none" />
+      <circle cx="10.2" cy="14" r="2.2" stroke="none" />
+    </g>
+    <circle cx="19.5" cy="14" r="3" fill={W.ink} />
+    <path d="M20.6 11C19.4 9 16.9 7.7 14 7.8C10.1 7.9 7 10.6 7 14.1C7 17.6 10.2 20.3 14.1 20.2C18 20.1 21.1 17.3 21 13.8C20.95 12.3 20.3 10.9 19.2 9.9" fill="none" stroke={W.accentInk} strokeWidth="1.8" strokeLinecap="round" transform="translate(5.5 0) rotate(-12 14 14)" />
   </svg>
 );
 

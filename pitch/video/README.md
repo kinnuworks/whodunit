@@ -6,6 +6,8 @@ The narration is a synthesized voice, made with ElevenLabs from the script in `b
 
 An earlier cut, 89 seconds with captions and no voice, is kept beside it as `whodunit-v1-captions-only.mp4`.
 
+On the evening of 12 October the owner asked for a new mark, in place of the x in a ring. The film was rendered again with it and nothing else changed: the same 4,080 frames of timing, and the narrated sound taken across from the earlier file untouched. `title-card.png` is a still of the new title card. The earlier file is kept beside the new one as `whodunit-demo-x-mark.mp4`.
+
 What is here is the part of the film that is ours:
 
 - `film.json`: the thirteen scenes, their timing in beats, the captions and the camera moves.

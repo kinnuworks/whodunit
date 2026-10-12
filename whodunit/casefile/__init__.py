@@ -31,8 +31,12 @@ ROOT = '<html lang="en" data-mood="cream" data-accent="terracotta">'
 FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
          '<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400..800&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">')
 # The mark: an x with a pencil ring round it, which is what the lineup does to the culprit.
-MARK = ('<svg class="mark" viewBox="0 0 28 28" width="26" height="26" aria-hidden="true"><path d="M9.5 9.5l9 9M18.5 9.5l-9 9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>'
-        '<ellipse cx="14" cy="14" rx="11.6" ry="10" fill="none" stroke="var(--accent-ink)" stroke-width="1.8" transform="rotate(-14 14 14)"/></svg>')
+# The mark is the lineup made small: three commits on a line, and the pencil ring round the one that did it.
+RING = "M20.6 11C19.4 9 16.9 7.7 14 7.8C10.1 7.9 7 10.6 7 14.1C7 17.6 10.2 20.3 14.1 20.2C18 20.1 21.1 17.3 21 13.8C20.95 12.3 20.3 10.9 19.2 9.9"
+MARK = ('<svg class="mark" viewBox="0 0 28 28" width="26" height="26" aria-hidden="true"><g fill="currentColor" stroke="currentColor" opacity=".38">'
+        '<path d="M3.4 14h9" fill="none" stroke-width="1.5" stroke-linecap="round"/><circle cx="3.4" cy="14" r="2.2" stroke="none"/><circle cx="10.2" cy="14" r="2.2" stroke="none"/></g>'
+        '<circle cx="19.5" cy="14" r="3" fill="currentColor"/>'
+        f'<path d="{RING}" fill="none" stroke="var(--accent-ink)" stroke-width="1.8" stroke-linecap="round" transform="translate(5.5 0) rotate(-12 14 14)"/></svg>')
 CHECK = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
          '<path d="M5 12.5l4.5 4.5L19 7.5"/></svg>')
 CAP = 9  # typed marks that fit under one suspect before they are written as a glyph and a count
