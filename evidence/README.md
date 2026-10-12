@@ -33,6 +33,7 @@ The repo was pushed on 12 October and is public at https://github.com/kinnuworks
 - `casefile-whole-history-phone.png`: the same page at 375 px wide. Only the lineup scrolls sideways.
 - `casefile-turned-away.png`: a case closed by a revert after two patches fell short.
 - `casefile-half-done-batch.png`: the case that is open and not fixed, with its badge left hollow.
+- The casebook is live at https://kinnuworks.github.io/whodunit/, and the headline case at https://kinnuworks.github.io/whodunit/whole-history.casefile.html.
 - `casebook.png`: the casebook. Up top is what `whodunit investigate` printed for the headline case, made from its record, and under it the docket of all six cases. The page is `../cases/index.html`.
 - `planted-flaky-lookup.record.json` and `planted-friendly-prompt.record.json`: the records of the first two full cases, from 10 October, with machine paths replaced by placeholders. Their fixes were accepted on 8 and 6 clean replays under the first, lenient standard, which would not clear today's bar. The screenshots of their old pages are gone, and they are not drawn with the new page, because it would stamp them closed.
 
