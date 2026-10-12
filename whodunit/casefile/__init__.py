@@ -1,10 +1,76 @@
-"""The case file: one static HTML page per case, drawn from the case record."""
+"""The case file: one static HTML page per case, drawn from the case record.
 
+The page is a typed detective's file. The lineup is the centrepiece: every suspect commit is a
+numbered position with its short SHA, cleared suspects are struck through, the ones with an
+alibi are hatched, each replay is a typed mark, and the culprit is ringed in red pencil. The
+page reads without any script. The script adds two things, a dark paper and a replay of the
+investigation round by round.
+"""
+
+import json
 import math
+import os
+import random
+import re
+from datetime import datetime, timezone
 from html import escape
 from pathlib import Path
 
 from ..fix import observed
+from ..lineup import ChangePoint
+
+HERE = Path(__file__).parent
+STYLE = (HERE / "casefile.css").read_text()
+SCRIPT = (HERE / "casefile.js").read_text()
+FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
+         '<link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;500;700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Young+Serif&display=swap" rel="stylesheet">')
+CAP = 9  # typed marks that fit under one suspect before they are written as a glyph and a count
+MARKS_GAP = 26  # room between a suspect's SHA and its marks, which is where the bottom of the pencil ring goes
+
+
+def _short(sha: str | None) -> str:
+    return (sha or "")[:12]
+
+
+def _pct(value: float) -> str:
+    if value >= 0.9995:
+        return "over 99.9%"
+    return f"{value:.1%}" if value < 0.995 else f"{value:.2%}"
+
+
+def _field(label: str, body: str, margin: str = "") -> str:
+    aside = f'<div class="margin">{margin}</div>' if margin else ""
+    return f'<section class="field"><h2>{escape(label)}</h2><div class="body">{body}</div>{aside}</section>'
+
+
+def _typed(text: str) -> str:
+    return f'<pre class="typed">{escape(text.rstrip())}</pre>'
+
+
+def _typed_inline(text: str) -> str:
+    return f'<span class="cite">{escape(text)}</span>'
+
+
+def _when(seconds: float | None) -> str:
+    return datetime.fromtimestamp(seconds, timezone.utc).strftime("%-d %b %Y, %H:%M UTC") if seconds else ""
+
+
+def kept(attempt: dict | None) -> bool:
+    """A fix is kept when it cleared its own bar and the do-no-harm check, if one was run, found nothing broken."""
+    attempt = attempt or {}
+    return bool((attempt.get("verification") or {}).get("fixed")) and not (attempt.get("harm") or {}).get("broken")
+
+
+def stamp(record: dict) -> tuple[str, str]:
+    """What the stamp says, and whether it is the red one. Only a case with a kept fix is closed."""
+    lineup = record.get("lineup") or {}
+    if lineup.get("clear"):
+        return "No commit did it", ""
+    if not lineup.get("culprit"):
+        return "Open", ""
+    if kept(record.get("fix")):
+        return "Case closed", "closed"
+    return ("Open, not fixed", "") if record.get("fix") or record.get("attempts") else ("Culprit named", "")
 
 
 def harm_said(harm: dict) -> str:
@@ -25,102 +91,15 @@ def harm_said(harm: dict) -> str:
         said += f' {k} went wrong once or twice on the fix commit, which is too few to say the fix did it.'
     return said
 
-STYLE = (Path(__file__).parent / "casefile.css").read_text()
 
-
-def _short(sha: str | None) -> str:
-    return (sha or "")[:12]
-
-
-def _pct(value: float) -> str:
-    if value >= 0.9995:
-        return "over 99.9%"
-    return f"{value:.1%}" if value < 0.995 else f"{value:.2%}"
-
-
-def _field(label: str, body: str) -> str:
-    return f'<section class="field"><h2>{escape(label)}</h2><div class="body">{body}</div></section>'
-
-
-def _typed(text: str) -> str:
-    return f'<pre class="typed">{escape(text.rstrip())}</pre>'
-
-
-def _typed_inline(text: str) -> str:
-    return f'<span class="cite">{escape(text)}</span>'
-
-
-def _cites(ids: list[str]) -> str:
-    return "".join(f'<span class="cite">{escape(i)}</span>' for i in ids)
-
-
-def lineup_svg(record: dict) -> str:
-    """One column per suspect, oldest on the left. Height is the probability; marks below are replays."""
-    suspects = record.get("suspects", [])
-    if not suspects:
-        return ""
-    culprit = ((record.get("lineup") or {}).get("culprit") or {}).get("sha")
-    replays: dict[str, list[str]] = {}
-    for replay in record.get("replays", []):
-        replays.setdefault(replay["sha"], []).append(replay["verdict"])
-    good = replays.get(record.get("case", {}).get("good", ""), [])
-    has_odds = any("probability" in s for s in suspects)
-    count = len(suspects)
-    step = max(12, min(26, 690 // (count + 1)))
-    bar_h, top, left = 120, 18, step + 52
-    most = max(max(len(v) for v in replays.values()) if replays else 0, 1)
-    rows = min(most, 14)
-    dot = 7
-    height = top + bar_h + 26 + rows * dot + 30
-    width = left + count * step + 16
-    out = [f'<svg class="lineup" viewBox="0 0 {width} {height}" width="{width}" height="{height}" role="img" aria-label="The lineup: {count} suspect commits, oldest first">']
-    for share in (0.0, 0.5, 1.0):
-        y = top + bar_h - share * bar_h
-        out.append(f'<line class="rule" x1="{left - 6}" y1="{y:.1f}" x2="{width - 8}" y2="{y:.1f}"/>')
-        if has_odds:
-            out.append(f'<text class="tick" x="{left - step - 12}" y="{y + 4:.1f}" text-anchor="end">{share:.0%}</text>')
-
-    def marks(x: float, verdicts: list[str]) -> str:
-        made = []
-        for n, verdict in enumerate(verdicts[: rows * 2]):
-            cx = x + (n // rows) * (dot - 1) - (dot - 1) / 2 * (len(verdicts) > rows)
-            cy = top + bar_h + 22 + (n % rows) * dot
-            made.append(f'<circle class="{"fail" if verdict == "fail" else "skip" if verdict == "skip" else "pass"}" cx="{cx:.1f}" cy="{cy:.1f}" r="2.4"/>')
-        return "".join(made)
-
-    gx = left - step / 2 - 4
-    out.append(f'<g><title>Last good commit: {good.count("fail")} failures in {len(good)} replays</title>'
-               f'<line class="good" x1="{gx:.1f}" y1="{top + bar_h - 6}" x2="{gx:.1f}" y2="{top + bar_h}"/>{marks(gx, good)}</g>')
-    for n, suspect in enumerate(suspects):
-        x = left + n * step + step / 2
-        odds = suspect.get("probability", 1.0 if suspect["sha"] == culprit else 0.0)
-        tall = max(2.0, odds * bar_h)
-        seen = replays.get(suspect["sha"], [])
-        excuse = suspect.get("alibi") or ("" if suspect.get("touches_target", True) else "never touched the agent's folder")
-        kind = "culprit" if suspect["sha"] == culprit else "elsewhere" if excuse else "suspect"
-        told = f'{n + 1}. {suspect["subject"]} ({_short(suspect["sha"])})'
-        if has_odds:
-            told += f', {_pct(odds)}'
-        if seen:
-            told += f', {seen.count("fail")} failures in {len([v for v in seen if v != "skip"])} replays'
-        if "skip" in seen:
-            told += ", would not build"
-        if kind == "elsewhere":
-            told += f". Alibi: {excuse}"
-        out.append(f'<g><title>{escape(told)}</title>'
-                   f'<rect class="hit" x="{x - step / 2:.1f}" y="{top}" width="{step}" height="{height - top}"/>'
-                   f'<rect class="bar {kind}" x="{x - (step - 6) / 2:.1f}" y="{top + bar_h - tall:.1f}" width="{step - 6}" height="{tall:.1f}"/>'
-                   f'{marks(x, seen)}</g>')
-        if kind == "culprit" or n == 0 or n == count - 1:
-            out.append(f'<text class="tick{" strong" if kind == "culprit" else ""}" x="{x:.1f}" y="{top + bar_h + 13}" text-anchor="middle">{n + 1}</text>')
-    out.append("</svg>")
-    return "".join(out)
-
-
-def kept(attempt: dict | None) -> bool:
-    """A fix is kept when it cleared its own bar and the do-no-harm check, if one was run, found nothing broken."""
-    attempt = attempt or {}
-    return bool((attempt.get("verification") or {}).get("fixed")) and not (attempt.get("harm") or {}).get("broken")
+def money_said(damages: dict) -> str:
+    """The damage in the shop's money, in a few words. Empty if no money moved."""
+    parts = []
+    if damages.get("wrongly_paid"):
+        parts.append(f'{damages["wrongly_paid"]:.2f} refunded to the wrong people')
+    if damages.get("withheld"):
+        parts.append(f'{damages["withheld"]:.2f} owed and not refunded')
+    return " and ".join(parts)
 
 
 def timeline(record: dict) -> list[tuple[str, str]]:
@@ -177,6 +156,344 @@ def timeline(record: dict) -> list[tuple[str, str]]:
     return steps
 
 
+# The lineup
+
+
+def mark_lines(ordinary: list[str], replays: list[str]) -> list[tuple[str, str]]:
+    """The lines typed under one suspect, top to bottom, as (text, css class).
+
+    x is a failed run and o a passed one. Ordinary runs come first, in grey, then replays.
+    When there are more marks than fit, each kind is written once with its count underneath,
+    so a commit that was replayed a hundred times is not drawn as if it had been replayed nine.
+    The script that replays an investigation has the same rule, and the two have to agree.
+    """
+    marks = [(m, "ord " + ("fail" if m == "x" else "pass")) for m in ordinary] + [(m, {"x": "fail", "o": "pass"}.get(m, "skip")) for m in replays]
+    if len(marks) <= CAP:
+        return marks
+    lines = []
+    for glyph, css, among in (("x", "ord fail", ordinary), ("o", "ord pass", ordinary), ("x", "fail", replays), ("o", "pass", replays), ("-", "skip", replays)):
+        count = among.count(glyph)
+        if count:
+            lines += [(glyph, css), (str(count), css + " count")]
+    return lines
+
+
+def _ring(cx: float, cy: float, rx: float, ry: float, seed: str) -> str:
+    """An ellipse drawn the way a pencil draws one: a little uneven, and overlapping where it ends."""
+    rng = random.Random(seed)
+    points = []
+    for k in range(29):
+        angle = -2.2 + k * (2 * math.pi * 1.09 / 28)
+        wobble = 1 + rng.uniform(-0.03, 0.03) + 0.045 * k / 28
+        points.append((cx + rx * wobble * math.cos(angle), cy + ry * wobble * math.sin(angle)))
+    path = f"M{points[0][0]:.1f},{points[0][1]:.1f}"
+    for (x0, y0), (x1, y1) in zip(points[1:], points[2:]):
+        path += f" Q{x0:.1f},{y0:.1f} {(x0 + x1) / 2:.1f},{(y0 + y1) / 2:.1f}"
+    return path
+
+
+def _glyph(verdict: str) -> str | None:
+    return {"fail": "x", "pass": "o", "skip": "-"}.get(verdict)
+
+
+def lineup_parts(record: dict) -> dict:
+    """Everything the lineup is drawn from: one column per commit, the last good ref first."""
+    suspects = record.get("suspects", [])
+    lineup = record.get("lineup") or {}
+    culprit = (lineup.get("culprit") or {}).get("sha")
+    good = (record.get("case") or {}).get("good", "")
+    column = {good: 0} | {s["sha"]: n + 1 for n, s in enumerate(suspects)}
+    ordinary = [[] for _ in range(len(suspects) + 1)]
+    for run in record.get("witnessed") or []:
+        if run["sha"] in column:
+            ordinary[column[run["sha"]]].append("x" if run["failed"] else "o")
+    replays = [[] for _ in range(len(suspects) + 1)]
+    for replay in record.get("replays", []):
+        glyph = _glyph(replay["verdict"])
+        if glyph and replay["sha"] in column:
+            replays[column[replay["sha"]]].append(glyph)
+    return {"suspects": suspects, "culprit": culprit, "good": good, "column": column, "ordinary": ordinary, "replays": replays,
+            "clear": bool(lineup.get("clear")), "named": bool(culprit)}
+
+
+def lineup_svg(record: dict) -> str:
+    """The lineup. Every suspect is a numbered position with its short SHA, oldest on the left."""
+    parts = lineup_parts(record)
+    suspects, culprit = parts["suspects"], parts["culprit"]
+    if not suspects:
+        return ""
+    count = len(suspects)
+    step = max(19, min(46, 1100 // (count + 1)))
+    pad, top, hash_h, line_h = 10, 62, 58, 12
+    marks_top = top + 26 + hash_h + MARKS_GAP
+    width = pad * 2 + (count + 1) * step
+    height = marks_top + (CAP + 1) * line_h + 4
+    xs = [pad + n * step + step / 2 for n in range(count + 1)]
+    out = [f'<svg class="lineup{"" if parts["named"] else " unnamed"}" viewBox="0 0 {width} {height}" width="{width}" height="{height}" role="img" '
+           f'aria-label="The lineup: {count} suspect commits, oldest on the left. The table below it holds the same information.">',
+           '<defs><pattern id="hatch" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line class="hatch-line" x1="0" y1="0" x2="0" y2="5"/></pattern></defs>']
+
+    def column(n: int, css: str, title: str, number: str, label: str, odds: str, label_css: str = "hash") -> str:
+        x = xs[n]
+        lines = "".join(f'<text class="mark {klass}" x="{x:.1f}" y="{marks_top + k * line_h}">{text}</text>'
+                        for k, (text, klass) in enumerate(mark_lines(parts["ordinary"][n], parts["replays"][n])))
+        return (f'<g class="col {css}" tabindex="0"><title>{escape(title)}</title>'
+                f'<rect class="hit" x="{x - step / 2:.1f}" y="{top - 14}" width="{step}" height="{height - top + 14}"/>'
+                f'<rect class="hatch" x="{x - step / 2 + 2:.1f}" y="{top + 2}" width="{step - 4}" height="{hash_h + 30}"/>'
+                f'<text class="pct" x="{x:.1f}" y="{top - (3 if n % 2 else 15)}">{odds}</text>'
+                f'<text class="num" x="{x:.1f}" y="{top + 16}">{number}</text>'
+                f'<text class="{label_css}" transform="translate({x + 4:.1f},{top + 26 + hash_h}) rotate(-90)">{escape(label)}</text>'
+                f'<line class="strike" x1="{x - 7:.1f}" y1="{top + 12}" x2="{x + 7:.1f}" y2="{top + 12}"/>'
+                f'<line class="strike" x1="{x + 0.5:.1f}" y1="{top + 26}" x2="{x + 0.5:.1f}" y2="{top + 28 + hash_h}"/>'
+                f'<g class="marks">{lines}</g></g>')
+
+    seen = parts["replays"][0]
+    out.append(column(0, "good", f'The last good commit ({_short(parts["good"])}): {seen.count("x")} failures in {len(seen)} replays', "", "last good", "", "good-label"))
+    for n, suspect in enumerate(suspects, 1):
+        odds = suspect.get("probability", 1.0 if suspect["sha"] == culprit else 0.0)
+        seen, usual = parts["replays"][n], parts["ordinary"][n]
+        excuse = suspect.get("alibi") or ("" if suspect.get("touches_target", True) else "never touched the agent's folder")
+        guilty = suspect["sha"] == culprit
+        cleared = not guilty and (parts["named"] or parts["clear"] or odds < 0.01)
+        told = f'{n}. {suspect["subject"]} ({_short(suspect["sha"])})'
+        if "probability" in suspect:
+            told += f', {_pct(odds)}'
+        if seen:
+            told += f', {seen.count("x")} failures in {seen.count("x") + seen.count("o")} replays'
+        if "-" in seen:
+            told += ", would not build"
+        if usual:
+            told += f', {usual.count("x")} of {len(usual)} ordinary runs went wrong'
+        if excuse:
+            told += f". Alibi: {excuse}"
+        css = " ".join(filter(None, ["culprit" if guilty else "", "cleared" if cleared else "", "alibi" if excuse and not guilty else ""]))
+        shown = _pct(odds) if guilty and "probability" in suspect else f"{odds:.0%}" if odds >= 0.05 and not parts["named"] else ""
+        out.append(column(n, css, told, str(n), suspect["sha"][:7], shown))
+    if culprit:
+        n = parts["column"][culprit]
+        x, cy = xs[n], top + 8 + (hash_h + 26) / 2
+        rx, ry = step / 2 + 7, (hash_h + 38) / 2
+        # The subject goes on whichever side of the culprit has more room, cut to what fits there.
+        left = width - x >= x
+        lx, ly = (x + 46, 22) if left else (x - 46, 22)
+        fits = max(14, int(((width - lx) if left else lx) / 7.9) - 9)
+        subject = suspects[n - 1]["subject"]
+        subject = subject if len(subject) <= fits else subject[:fits - 1].rstrip() + "…"
+        out.append('<g class="named">'
+                   f'<path class="ring" pathLength="1" d="{_ring(x, cy, rx, ry, culprit)}"/>'
+                   f'<path class="leader" pathLength="1" d="M{x + (rx * 0.55 if left else -rx * 0.55):.1f},{cy - ry * 0.92:.1f} Q{x + (16 if left else -16):.1f},{ly + 14} {lx + (-6 if left else 6):.1f},{ly + 4}"/>'
+                   f'<text class="who" x="{lx:.1f}" y="{ly + 8}" text-anchor="{"start" if left else "end"}"><tspan class="sha">{escape(culprit[:7])}</tspan> {escape(subject)}</text></g>')
+    out.append("</svg>")
+    return "".join(out)
+
+
+def rounds_of(record: dict) -> tuple[list[dict], bool]:
+    """The rounds to replay, and whether they had to be worked out again: (rounds, reconstructed).
+
+    A record made since the investigation became a trace keeps its rounds. An older one keeps
+    every replay with the time it started, which is enough to run the lineup's own model over
+    them again in order. That is trusted only if it ends where the record ended, with every
+    suspect's probability matching what the record holds. Otherwise there is nothing to replay.
+    Records whose suspects had alibis from entire-graph are left alone, because the weights
+    those alibis carried were not kept.
+    """
+    if record.get("rounds"):
+        return record["rounds"], False
+    suspects, lineup = record.get("suspects") or [], record.get("lineup") or {}
+    if not suspects or "probability" not in suspects[0] or any(s.get("alibi") and s.get("touches_target", True) for s in suspects):
+        return [], False
+    good = (record.get("case") or {}).get("good")
+    place = {good: -1} | {s["sha"]: n for n, s in enumerate(suspects)}
+    state = ChangePoint(len(suspects), [1.0 if s.get("touches_target", True) else 0.05 for s in suspects])
+    for run in record.get("witnessed") or []:
+        if run["sha"] in place:
+            state.observe(place[run["sha"]], run["failed"])
+    judged = sorted((r for r in record.get("replays", []) if r["verdict"] in ("pass", "fail") and r["sha"] in place), key=lambda r: r.get("started", 0))
+    judged = judged[:lineup.get("replays", len(judged))]  # replays made after the lineup, for the brief, are not part of it
+    rounds, batch = [], []
+
+    def close() -> None:
+        if batch:
+            posterior = state.posterior()
+            ranked = sorted(range(len(posterior)), key=lambda i: -posterior[i])[:3]
+            rounds.append({"commits": [r["sha"] for r in batch], "verdicts": [r["verdict"] for r in batch],
+                           "top": [[suspects[i]["sha"], round(posterior[i], 4)] for i in ranked], "posterior": [round(share, 4) for share in posterior]})
+            batch.clear()
+
+    for replay in judged:
+        if batch and (replay.get("started", 0) - batch[-1].get("started", 0) > 1.5 or len(batch) >= 12):
+            close()  # replays that started together were one round
+        batch.append(replay)
+        state.observe(place[replay["sha"]], replay["verdict"] == "fail")
+    close()
+    if not rounds or any(abs(share - s["probability"]) > 0.002 for share, s in zip(state.posterior(), suspects)):
+        return [], False
+    return rounds, True
+
+
+def playback(record: dict) -> dict | None:
+    """What the script needs to replay the investigation round by round, or None if there are no rounds to replay."""
+    rounds, again = rounds_of(record)
+    parts = lineup_parts(record)
+    if not rounds or not parts["suspects"]:
+        return None
+    count = len(parts["suspects"])
+    step = max(19, min(46, 1100 // (count + 1)))
+    number = {sha: n for n, sha in enumerate(s["sha"] for s in parts["suspects"])}
+    made = []
+    for one in rounds:
+        cols = [parts["column"].get(sha) for sha in one["commits"]]
+        pairs = [(c, _glyph(v)) for c, v in zip(cols, one["verdicts"]) if c is not None and _glyph(v)]
+        if not pairs:
+            continue
+        who = sorted({c for c, _ in pairs})
+        say = "Replayed " + " and ".join("the last good commit" if c == 0 else f"suspect {c}" for c in who) + ":"
+        lead_sha, share = one["top"][0]
+        made.append({"c": [c for c, _ in pairs], "v": [g for _, g in pairs], "p": one["posterior"],
+                     "say": say, "lead": f"Suspect {number[lead_sha] + 1} leads at {share:.0%}."})
+    if not made:
+        return None
+    usual = sum(len(column) for column in parts["ordinary"])
+    return {"rounds": made, "ordinary": parts["ordinary"], "cap": CAP, "pace": 260, "lineHeight": 12, "marksTop": 62 + 26 + 58 + MARKS_GAP,
+            "x": [round(10 + n * step + step / 2, 1) for n in range(count + 1)],
+            "before": (f"Before any replay: {usual} ordinary runs, in grey." if usual else "Before any replay.")
+            + (" The rounds were worked out again from the stored replays." if again else "")}
+
+
+def suspects_table(record: dict) -> str:
+    """The lineup again as a table, for anyone who cannot use the drawing."""
+    parts = lineup_parts(record)
+    rows = ""
+    for n, suspect in enumerate(parts["suspects"], 1):
+        seen, usual = parts["replays"][n], parts["ordinary"][n]
+        guilty = suspect["sha"] == parts["culprit"]
+        odds = suspect.get("probability")
+        cleared = not guilty and (parts["named"] or parts["clear"] or (odds is not None and odds < 0.01))
+        excuse = suspect.get("alibi") or ("" if suspect.get("touches_target", True) else "never touched the agent's folder")
+        status = "Culprit" if guilty else "Cleared" if cleared else "Still a suspect"
+        if excuse and not guilty:
+            status += f". Alibi: {excuse}"
+        replays = f'{seen.count("x")} failed, {seen.count("o")} passed' if seen else "not replayed"
+        if "-" in seen:
+            replays += ", would not build"
+        if usual:
+            replays += f'. Ordinary runs: {usual.count("x")} of {len(usual)} went wrong'
+        rows += (f'<tr class="{"is-culprit" if guilty else "is-cleared" if cleared else ""}"><td class="n">{n}</td><td class="sha">{escape(_short(suspect["sha"]))}</td>'
+                 f'<td>{escape(suspect["subject"])}</td><td>{escape(status)}</td><td class="n">{_pct(odds) if odds is not None else ""}</td><td>{escape(replays)}</td></tr>')
+    return ('<details class="table"><summary>The lineup as a table</summary><table class="suspects"><thead><tr><th>No.</th><th>Commit</th><th>Subject</th>'
+            f'<th>Status</th><th>Odds</th><th>Runs</th></tr></thead><tbody>{rows}</tbody></table></details>')
+
+
+# Exhibits
+
+SPAN = re.compile(r"^\s*([0-9a-f]{8}) ([A-Z_]+) (\S+)")
+
+
+def exhibit_steps(outline: str) -> list[dict]:
+    """A run's outline as steps a person can read down: what the model did and what each tool gave back.
+
+    Each step is {"id", "what", "text", "sign"}. `sign` is what the step amounts to, used to find
+    where two runs part: "calls issue_refund", "issue_refund ok", "replies".
+    """
+    spans = []
+    for line in outline.splitlines():
+        found = SPAN.match(line)
+        if found:
+            spans.append({"id": found.group(1), "kind": found.group(2), "name": found.group(3), "in": "", "out": "", "bad": " error" in line})
+        elif spans and line.strip().startswith(("in:", "out:")):
+            key, _, value = line.strip().partition(":")
+            spans[-1][key] = value.strip()
+    steps = []
+    for span in spans:
+        if span["kind"] == "WORKFLOW":
+            try:
+                asked = json.loads(span["in"]).get("request", span["in"])
+            except (json.JSONDecodeError, AttributeError):
+                asked = span["in"]
+            steps.append({"id": span["id"], "what": "Asked", "text": asked, "sign": "asked"})
+        elif span["kind"] == "LLM":
+            said = span["out"].removeprefix("assistant:").strip()
+            talk, arrow, call = said.rpartition("→")
+            if arrow:
+                tool = call.strip().split("(")[0]
+                steps.append({"id": span["id"], "what": "The model calls", "text": call.strip(), "sign": f"calls {tool}"})
+            else:
+                steps.append({"id": span["id"], "what": "The model replies", "text": said, "sign": "replies"})
+        elif span["kind"] in ("TOOL", "MCP_TOOL"):
+            failed = span["bad"] or span["out"].startswith('{"error"')
+            steps.append({"id": span["id"], "what": f'{span["name"]} {"fails" if failed else "returns"}', "text": span["out"], "sign": f'{span["name"]} {"fails" if failed else "ok"}'})
+    return steps
+
+
+def _exhibits(evidence: dict) -> tuple[str, str]:
+    """Exhibit A, the passing run, and Exhibit B, the failing run, with the first step where they part in red. Returns (body, margin note)."""
+    shown = [(letter, label, evidence.get(key)) for letter, label, key in (("A", "the passing run", "passing_run"), ("B", "the failing run", "failing_run")) if evidence.get(key)]
+    if not shown:
+        return "", ""
+    listed = {letter: exhibit_steps(run["outline"]) for letter, _, run in shown}
+    parts_at = None
+    if len(shown) == 2:
+        a, b = listed["A"], listed["B"]
+        parts_at = next((n for n in range(max(len(a), len(b))) if n >= len(a) or n >= len(b) or a[n]["sign"] != b[n]["sign"]), None)
+    body = '<div class="exhibits">'
+    for letter, label, run in shown:
+        items = "".join(
+            f'<li{" class=\"parts\"" if n == parts_at else ""}><span class="what">{escape(step["what"])}</span> {escape(step["text"])} <span class="cite">{escape(step["id"])}</span></li>'
+            for n, step in enumerate(listed[letter]))
+        body += (f'<div class="exhibit"><h3>Exhibit {letter} <span>{escape(label)}</span></h3>'
+                 f'<p class="small">Run <span class="cite">{escape(run["trace_id"][:12])}</span> at commit <span class="sha">{escape(_short(run["commit"]))}</span></p><ol>{items}</ol></div>')
+    body += "</div>"
+    note = ""
+    if parts_at is not None:
+        def did(steps: list[dict]) -> str:
+            return f'{steps[parts_at]["what"].lower()} {steps[parts_at]["text"][:60]}' if parts_at < len(steps) else "has already stopped"
+        note = (f'<p class="parted">The two runs part at step {parts_at + 1}. In Exhibit A {escape(did(listed["A"]))}. In Exhibit B {escape(did(listed["B"]))}.</p>')
+    raw = "".join(f'<h3>Exhibit {letter}, as traced</h3>{_typed(run["outline"])}' for letter, _, run in shown)
+    body += f'<details><summary>The raw outlines</summary>{raw}</details>'
+    return body, note
+
+
+def _footnotes(brief: dict, evidence: dict, motive: dict) -> tuple[str, str]:
+    """The brief with a superscript number after each sentence in place of its ids, and the numbered list of what they are."""
+    kinds: dict[str, str] = {}
+    for key, label in (("failing_run", "the failing run"), ("passing_run", "the passing run")):
+        run = evidence.get(key)
+        if run:
+            kinds[run["trace_id"][:12]] = label
+            for found in re.findall(r"^\s*([0-9a-f]{8}) [A-Z_]+ ", run.get("outline", ""), flags=re.M):
+                kinds.setdefault(found, f"a span in {label}")
+    if evidence.get("culprit"):
+        kinds[evidence["culprit"][:12]] = "the culprit commit"
+        kinds[evidence.get("parent", "")[:12]] = "its parent commit"
+    if evidence.get("checkpoint"):
+        kinds[evidence["checkpoint"]] = "the Entire checkpoint"
+    for step in list(evidence.get("steps", [])) + list(motive.get("steps", [])):
+        if step.get("id"):
+            kinds.setdefault(step["id"], "a step in the coding session")
+    order: list[str] = []
+    text = ""
+    for sentence in brief["sentences"]:
+        marks = []
+        for cited in sentence["cites"]:
+            if cited not in order:
+                order.append(cited)
+            n = order.index(cited) + 1
+            marks.append(f'<a href="#note-{n}" aria-label="Note {n}">{n}</a>')
+        text += f'<p>{escape(sentence["text"])}<sup>{" ".join(marks)}</sup></p>'
+    notes = "".join(f'<li id="note-{n}"><b>{escape(cited)}</b> {escape(kinds.get(cited, "an id in the evidence"))}</li>' for n, cited in enumerate(order, 1))
+    return text, f'<ol class="notes" aria-label="What the brief cites">{notes}</ol>'
+
+
+def meta(title: str, description: str) -> str:
+    """Title, description and the tags a link preview is built from."""
+    site = os.environ.get("WHODUNIT_SITE", "").rstrip("/")
+    image = f"{site}/og.png" if site else "og.png"
+    return (f'<title>{escape(title)}</title>\n<meta name="description" content="{escape(description)}">\n'
+            f'<meta property="og:type" content="article">\n<meta property="og:title" content="{escape(title)}">\n'
+            f'<meta property="og:description" content="{escape(description)}">\n<meta property="og:image" content="{escape(image)}">\n'
+            '<meta name="twitter:card" content="summary_large_image">')
+
+
 def render(record: dict) -> str:
     case = record.get("case", {})
     lineup = record.get("lineup") or {}
@@ -191,7 +508,7 @@ def render(record: dict) -> str:
     sent_by = damages.get("sent_by") or case.get("traffic_sent_by")  # who sent the ordinary runs, when it was a script
     parts = []
 
-    # Suspects
+    # Suspects: who was named, and what narrowed the field
     if culprit:
         sure = f' Confidence: {_pct(culprit["probability"])}.' if "probability" in culprit else ""
         named = (f'<p class="verdict"><span class="sha">{escape(_short(culprit["sha"]))}</span> {escape(culprit["subject"])}</p>'
@@ -209,23 +526,19 @@ def render(record: dict) -> str:
         rates = ""
         if "failure_rate_from" in lineup and culprit:
             rates = f' From this commit on it fails about {lineup["failure_rate_from"]:.0%} of the time. Before it, about {lineup["failure_rate_before"]:.0%}.'
-        scan = f' A scan from the oldest suspect would have tested {lineup["linear_scan_commits"]} commits.' if "linear_scan_commits" in lineup else ""
         if lineup.get("traffic_runs"):
             who = f' The ordinary runs were sent by <code>{escape(sent_by)}</code>, a script that plays customers.' if sent_by else ""
             named += (f'<p class="small">Before any replay, {lineup["traffic_runs"]} ordinary runs had already asked this, '
                       f'and {lineup["traffic_failures"]} of them went wrong. They were used as evidence at no cost.{who}</p>')
         named += (f'<p class="small">{lineup.get("replays", 0)} replays across {lineup.get("commits_tested", 0)} commits, '
-                  f'{lineup.get("seconds", 0) / 60:.1f} minutes of replay time.{rates}{scan}</p>')
+                  f'{lineup.get("seconds", 0) / 60:.1f} minutes of replay time.{rates}</p>')
         if "voided" in lineup:
             lost = lineup["voided"]
             named += (f'<p class="small">Voided replays: {lost}. ' + (
                 "No replay hit a provider or network error." if not lost else
                 f'{"That one" if lost == 1 else "Those"} hit a provider or network error and {"was" if lost == 1 else "were"} run again. A voided replay is never evidence about a commit.')
                 + (f' {lineup["timeouts"]} ran out of time and got one more try with double the limit.' if lineup.get("timeouts") else "") + "</p>")
-        named += f'<div class="scroll">{lineup_svg(record)}</div>'
-        named += ('<p class="key"><span class="swatch culprit"></span>culprit <span class="swatch suspect"></span>suspect '
-                  '<span class="swatch elsewhere"></span>has an alibi <span class="dot fail"></span>failed replay <span class="dot pass"></span>passed replay</p>')
-        excused = [s for s in suspects if s.get("alibi") and s["sha"] != culprit]
+        excused = [s for s in suspects if s.get("alibi") and s["sha"] != (culprit or {}).get("sha")]
         if excused:
             rows = "".join(f'<li><span class="sha">{escape(_short(s["sha"]))}</span> {escape(s["subject"])}: {escape(s["alibi"])}.</li>' for s in excused)
             named += f'<details><summary>Alibis: {len(excused)} of {len(suspects)} suspects started with less suspicion</summary><ul class="steps">{rows}</ul></details>'
@@ -235,8 +548,11 @@ def render(record: dict) -> str:
             subject = {s["sha"]: s["subject"] for s in suspects}
             rows = "".join(f'<li>{_typed_inline(text)} points at <span class="sha">{escape(_short(sha))}</span> {escape(subject.get(sha, ""))}</li>'
                            for text, sha in zip(split["inputs"], split["commits"]))
-            named += (f'<p><strong>The inputs point at different commits.</strong> There may be two regressions in this range. '
+            named += ('<p><strong>The inputs point at different commits.</strong> There may be two regressions in this range. '
                       f'The lineup assumes one, so a culprit named above is at most one of them.</p><ul class="steps">{rows}</ul>')
+        second = lineup.get("second_look")
+        if second:
+            named += f'<p><strong>{escape(second["said"])}</strong></p>'
         tried = record.get("ablation") or {}
         if tried.get("replays") and culprit:
             # What the head start was worth, from a run of the same case without it.
@@ -271,6 +587,8 @@ def render(record: dict) -> str:
             if traced.get("request_agrees") is False:
                 said += " The request it holds for those lines is not the one quoted above."
             body += f'<p class="small">{said}</p>'
+        if motive.get("note"):
+            body += f'<p class="small">{escape(motive["note"])}</p>'
         steps = [s for s in motive.get("steps", []) if s["kind"] in ("said", "edited")][-6:]
         if steps:
             lines = "".join(
@@ -285,10 +603,10 @@ def render(record: dict) -> str:
         body = '<p class="empty">Not looked up yet.</p>'
     parts.append(_field("Motive", body))
 
-    # Brief
+    # Brief: the sentences, with what each one cites in the margin
     if brief.get("sentences"):
-        body = f'<p class="headline">{escape(brief.get("headline", ""))}</p>'
-        body += "".join(f'<p>{escape(s["text"])} {_cites(s["cites"])}</p>' for s in brief["sentences"])
+        text, notes = _footnotes(brief, evidence, motive)
+        body = f'<p class="headline">{escape(brief.get("headline", ""))}</p>{text}'
         cut = len(brief.get("dropped", []))
         sent_back = brief.get("rejected") or []
         again = (f' A first draft was sent back because it {escape(sent_back[0]["problem"])}.' if sent_back else "")
@@ -298,35 +616,30 @@ def render(record: dict) -> str:
             how = "Written by a model"
         body += (f'<p class="small">{how}. Every sentence cites a span, a commit or a checkpoint, '
                  f'and is held against what the lineup measured. {cut} cut by those checks.{again}</p>')
+        parts.append(_field("Brief", body, notes))
     else:
-        body = '<p class="empty">No brief yet.</p>'
-    parts.append(_field("Brief", body))
+        parts.append(_field("Brief", '<p class="empty">No brief yet.</p>'))
 
-    # Evidence
-    body = ""
-    runs = [(label, evidence.get(key)) for label, key in (("Passing run", "passing_run"), ("Failing run", "failing_run")) if evidence.get(key)]
-    if runs:
-        body += '<div class="pair">' + "".join(
-            f'<div><h3>{label} <span class="cite">{escape(run["trace_id"][:12])}</span></h3><p class="small">at commit {escape(_short(run["commit"]))}</p>{_typed(run["outline"])}</div>'
-            for label, run in runs) + "</div>"
-    if evidence.get("diff"):
-        body += f'<details{" open" if not runs else ""}><summary>The culprit\'s diff</summary>{_typed(evidence["diff"])}</details>'
+    # Evidence: Exhibit A, the passing run, and Exhibit B, the failing run
+    body, note = _exhibits(evidence)
     cloud = evidence.get("cloud")
-    if cloud and runs:
+    if cloud and body:
         if cloud.get("sent"):
-            named = []
+            runs = []
             for label, key in (("the failing run", "failing_run"), ("the passing run", "passing_run")):
                 if key in cloud.get("trace_ids", {}):
                     shown = f'<span class="cite">{escape(cloud["trace_ids"][key])}</span>'
                     link = (cloud.get("links") or {}).get(key)
-                    named.append(f'{label} {f"""<a href="{escape(link)}">{shown}</a>""" if link else shown}')
-            body += f'<p class="small">Both runs were sent from neatroots to neatlogs cloud: {" and ".join(named)}.</p>'
+                    runs.append(f'{label} {f"""<a href="{escape(link)}">{shown}</a>""" if link else shown}')
+            body += f'<p class="small">Both runs were sent from neatroots to neatlogs cloud: {" and ".join(runs)}.</p>'
         else:
-            body += (f'<p class="small">These two runs are in neatroots on the machine that ran the case. They have not been sent to neatlogs cloud. '
+            body += ('<p class="small">These two runs are in neatroots on the machine that ran the case. They have not been sent to neatlogs cloud. '
                      f'neatroots said: {escape(cloud.get("note", ""))}</p>')
-    for note in evidence.get("notes", []):
-        body += f'<p class="small">{escape(note)}</p>'
-    parts.append(_field("Evidence", body or '<p class="empty">Nothing collected yet.</p>'))
+    if evidence.get("diff"):
+        body += f'<details{" open" if not note and not body else ""}><summary>The culprit\'s diff</summary>{_typed(evidence["diff"])}</details>'
+    for said in evidence.get("notes", []):
+        body += f'<p class="small">{escape(said)}</p>'
+    parts.append(_field("Evidence", body or '<p class="empty">Nothing collected yet.</p>', note))
 
     # Ruling
     if ruling:
@@ -369,7 +682,7 @@ def render(record: dict) -> str:
         if fix.get("harm"):
             body += f'<p>{escape(harm_said(fix["harm"]))}</p>'
         elif check.get("fixed"):
-            body += ('<p class="small">Only this case\'s own requests were replayed on the fix. Nothing was checked for what else it might have broken.</p>')
+            body += '<p class="small">Only this case\'s own requests were replayed on the fix. Nothing was checked for what else it might have broken.</p>'
         if len(tries) > 1:
             body += tried()
         if fix.get("note"):
@@ -390,7 +703,7 @@ def render(record: dict) -> str:
         body = '<p class="empty">Not fixed yet.</p>'
     parts.append(_field("Fix", body))
 
-    # Damages: only runs that fail this case's own check
+    # Damages: the money first, then what the runs cost. Only runs that fail this case's own check count.
     if damages:
         if not damages["runs"]:
             body = '<p>No ordinary runs are recorded on the culprit or the commits after it, so there is no damage to count.</p>'
@@ -401,9 +714,10 @@ def render(record: dict) -> str:
             body = (f'<p>None of the {damages["case_runs"]} ordinary runs that asked what this case asks, on the culprit or later, failed its check. '
                     'The replays show the bug. No ordinary run happened to hit it.</p>')
         else:
-            money = [f'{damages[key]:.2f} {words}' for key, words in (("wrongly_paid", "was refunded that should not have been"), ("withheld", "was owed and not refunded")) if damages[key]]
-            body = (f'<p>{damages["case_bad"]} of the {damages["case_runs"]} ordinary runs that asked what this case asks, on the culprit or later, failed its check. '
-                    f'{", and ".join(money).capitalize()}.</p>')
+            body = ""
+            if money_said(damages):
+                body += f'<p class="money">{escape(money_said(damages))}</p>'
+            body += (f'<p>{damages["case_bad"]} of the {damages["case_runs"]} ordinary runs that asked what this case asks, on the culprit or later, failed its check.</p>')
             if "case_bad_usd" in damages:
                 body += f'<p class="small">Those {damages["case_bad"]} runs cost about ${damages["case_bad_usd"]:.2f} in tokens.</p>'
         if damages["runs"]:
@@ -412,7 +726,7 @@ def render(record: dict) -> str:
             if sent_by:
                 body += (f'<p class="small">The ordinary runs were sent by <code>{escape(sent_by)}</code>, a script that plays customers against each commit. '
                          'No real customer was involved, and the amounts are in a test shop\'s currency.</p>')
-        body += (f'<p class="small">The investigation used {damages["replay_runs"]} replays, about ${damages["replay_usd"]:.2f}. {escape(damages["note"])}</p>')
+        body += f'<p class="small">The investigation used {damages["replay_runs"]} replays, about ${damages["replay_usd"]:.2f}. {escape(damages["note"])}</p>'
     else:
         body = '<p class="empty">Not counted yet.</p>'
     parts.append(_field("Damages", body))
@@ -431,28 +745,75 @@ def render(record: dict) -> str:
             rows += f'<li><span class="cite">trace</span> This investigation is itself a trace in {place}: {name}</li>'
         parts.append(_field("Log", f'<ol class="steps">{rows}</ol>'))
 
-    stamp = ("Closed" if kept(fix) else "Culprit named") if culprit else "No commit did it" if lineup.get("clear") else "Open"
+    # The header: stamp, form and the three numbers that matter
+    words, red = stamp(record)
+    started = [r["started"] for r in record.get("replays", []) if r.get("started")]
+    opened = _when(min(started)) if started else ""
+    closed = _when(record["replays_until_ms"] / 1000) if red and record.get("replays_until_ms") else ""
+    number = f'{case["number"]:03d}' if isinstance(case.get("number"), int) else case.get("id", "")
+    rows = [("Case no.", number), ("File", case.get("id", "")), ("Opened", opened), ("Closed", closed or ("not yet" if lineup else "")),
+            ("Suspects", f'{len(suspects)}' + (f', {len(suspects) - 1} cleared' if culprit else f', all {len(suspects)} cleared' if lineup.get("clear") else ""))]
+    if lineup:
+        whole = f', {damages["replay_runs"]} in all' if damages.get("replay_runs") else ""
+        rows.append(("Replays", f'{lineup.get("replays", 0)} to {"name the culprit" if culprit else "get this far"}{whole}'))
+    if damages.get("replay_usd") is not None and damages:
+        rows.append(("Cost of the investigation", f'about ${damages["replay_usd"]:.2f}'))
+    if damages:
+        rows.append(("Damage", money_said(damages) or ("none seen" if damages.get("case_runs") else "none that could be counted")))
+    form = "".join(f'<div><dt>{escape(label)}</dt><span class="dots"></span><dd>{escape(str(value))}</dd></div>' for label, value in rows if value != "")
+    figures = ""
+    if lineup:
+        figures += f'<div><dt>{lineup.get("replays", 0)}</dt><dd>replays to {"name the culprit" if culprit else "get this far"}</dd></div>'
+        if culprit and "probability" in culprit:
+            figures += f'<div><dt>{_pct(culprit["probability"])}</dt><dd>sure it is this commit</dd></div>'
+        elif lineup.get("remaining") and not culprit:
+            figures += f'<div><dt>{_pct(lineup["remaining"][0].get("probability", 0))}</dt><dd>on the leading suspect, short of the 95% it takes to name one</dd></div>'
+        if "linear_scan_commits" in lineup:
+            figures += (f'<div><dt>{lineup["linear_scan_commits"]}</dt><dd>commits a scan from the oldest suspect would have tested. '
+                        f'This lineup tested {lineup.get("commits_tested", 0)}.</dd></div>')
+    play = playback(record) if lineup else None
+    controls = ('<button type="button" class="playback" data-play aria-pressed="false" hidden>Replay the investigation</button>' if play else "")
+    replay_count = sum(len(column) for column in lineup_parts(record)["replays"]) if suspects else 0
+    caption = (f'{replay_count} replays are typed under the commits they ran on.' if replay_count else "No replays yet.") if lineup else ""
+    drawing = (f'<section class="lineup-wrap" aria-labelledby="lineup-title"><h2 id="lineup-title">The lineup</h2>'
+               f'<div class="scroll" tabindex="0" role="group" aria-label="The lineup, scrolls sideways">{lineup_svg(record)}</div>'
+               f'<div class="under">{controls}<p class="caption" aria-live="polite">{escape(caption)}</p></div>'
+               '<p class="key"><span><b class="fail">x</b> a replay that failed</span><span><b>o</b> a replay that passed</span>'
+               + ('<span><b style="opacity:.5">x o</b> ordinary runs, in grey</span>' if any(lineup_parts(record)["ordinary"]) else "")
+               + '<span><span class="swatch"></span>has an alibi</span><span><s>struck through</s>: cleared</span></p>'
+               + suspects_table(record) + "</section>") if suspects else ""
+    data = f'<script type="application/json" id="lineup-data">{json.dumps(play, separators=(",", ":")).replace("</", "<\\/")}</script>' if play else ""
+    symptom = case.get("symptom", "Untitled case")
+    described = (f'{len(suspects)} commits since it last worked. ' + (
+        f'The lineup named {_short(culprit["sha"])}, "{culprit["subject"]}", after {lineup.get("replays", 0)} replays.' if culprit else
+        "No commit did it: the last good ref fails too." if lineup.get("clear") else "Nobody has been named yet."))
     return f"""<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Case {escape(case.get("id", ""))}</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;500;700&family=Courier+Prime:wght@400;700&family=Young+Serif&display=swap" rel="stylesheet">
+{meta(f'Case {number}. {symptom}', described)}
+{FONTS}
 <style>{STYLE}</style>
 </head>
 <body>
 <main>
-<header>
-<p class="label">Whodunit case file <span class="caseid">{escape(case.get("id", ""))}</span><span class="stamp{" closed" if culprit else ""}">{stamp}</span></p>
-<h1>{escape(case.get("symptom", "Untitled case"))}</h1>
+<p class="bar"><a href="index.html">Whodunit casebook</a><button type="button" data-theme-toggle aria-pressed="false" hidden>Dark paper</button></p>
+<header class="top">
+<div class="head">
+<h1>{escape(symptom)}</h1>
 <p class="lede">{len(suspects)} commits since it last worked. Which one did it?</p>
+</div>
+<dl class="form">{form}</dl>
+<p class="stamp {red}">{escape(words)}</p>
 </header>
+{drawing}
+<dl class="figures">{figures}</dl>
 {"".join(parts)}
 <footer><p>Last good <span class="sha">{escape(_short(case.get("good")))}</span>, first bad <span class="sha">{escape(_short(case.get("bad")))}</span>, agent in <code>{escape(case.get("target", ""))}</code>.</p></footer>
 </main>
+{data}
+<script>{SCRIPT}</script>
 </body>
 </html>
 """
@@ -464,47 +825,51 @@ def write(record: dict, path: Path) -> Path:
 
 
 def render_index(records: list[tuple[str, dict]]) -> str:
-    """The casebook: every case in a folder on one page. `records` are (page file name, record)."""
+    """The casebook, as a docket: one row per case. `records` are (page file name, record)."""
     rows = ""
+    named = closed = replays = 0
+    cost = 0.0
     for page, record in records:
         case, lineup = record.get("case", {}), record.get("lineup") or {}
-        culprit, fix, damages = lineup.get("culprit"), record.get("fix") or {}, record.get("damages") or {}
-        proven = kept(fix)
-        state = "Closed" if proven else "Culprit named" if culprit else "No commit did it" if lineup.get("clear") else "Open"
+        culprit, damages = lineup.get("culprit"), record.get("damages") or {}
+        words, red = stamp(record)
+        named += bool(culprit)
+        closed += bool(red)
+        replays += damages.get("replay_runs") or lineup.get("replays", 0)
+        cost += damages.get("replay_usd") or 0.0
         who = (f'<span class="sha">{escape(_short(culprit["sha"]))}</span> {escape(culprit["subject"])}' if culprit else
                "None of them. The good ref fails too." if lineup.get("clear") else "Nobody yet")
-        fixed = (f'{escape(fix["kind"])}, {len(record.get("attempts") or [1])} {"try" if len(record.get("attempts") or [1]) == 1 else "tries"}' if proven
-                 else "not fixed" if fix else "")
-        money = []
-        if damages.get("wrongly_paid"):
-            money.append(f'{damages["wrongly_paid"]:.2f} paid out wrongly')
-        if damages.get("withheld"):
-            money.append(f'{damages["withheld"]:.2f} owed and not paid')
-        rows += (f'<tr><td><a href="{escape(page)}">{escape(case.get("symptom", page))}</a><div class="small">{len(record.get("suspects", []))} suspects, '
-                 f'{lineup.get("replays", 0)} replays</div></td><td>{who}</td><td>{escape(state)}<div class="small">{fixed}</div></td>'
-                 f'<td>{escape(", ".join(money))}</td></tr>')
-    body = (f'<table class="cases"><thead><tr><th>What was reported</th><th>Which commit</th><th>Where it stands</th><th>What it cost</th></tr></thead><tbody>{rows}</tbody></table>'
-            if records else '<p class="empty">No cases yet. Lucky you.</p>')
+        number = f'{case["number"]:03d}' if isinstance(case.get("number"), int) else ""
+        rows += (f'<tr><td class="no">{number}</td><td><span class="mini-stamp {red}">{escape(words)}</span></td>'
+                 f'<td class="what"><a href="{escape(page)}">{escape(case.get("symptom", page))}</a><div class="small">{len(record.get("suspects", []))} suspects, '
+                 f'{lineup.get("replays", 0)} replays to name</div></td><td>{who}</td>'
+                 f'<td>{escape(money_said(damages) or ("none seen" if damages.get("case_runs") else ""))}</td></tr>')
+    count = len(records)
+    line = (f'{count} {"case" if count == 1 else "cases"}. {named} with a culprit named, {closed} closed, {count - closed} open. '
+            f'{replays:,} replays in all, about ${cost:.2f}.')
+    body = (f'<p class="docket-line">{escape(line)}</p><table class="docket"><thead><tr><th>No.</th><th>Stamp</th><th>What was reported</th><th>Culprit</th><th>Damage</th></tr></thead>'
+            f'<tbody>{rows}</tbody></table>' if records else '<p class="empty">No cases yet. Lucky you.</p>')
     return f"""<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Whodunit casebook</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;500;700&family=Courier+Prime:wght@400;700&family=Young+Serif&display=swap" rel="stylesheet">
+{meta("Whodunit casebook", f"Which commit broke the agent, and why. {line}")}
+{FONTS}
 <style>{STYLE}</style>
 </head>
 <body>
 <main>
-<header>
-<p class="label">Whodunit casebook</p>
+<p class="bar"><span>Whodunit casebook</span><button type="button" data-theme-toggle aria-pressed="false" hidden>Dark paper</button></p>
+<header class="top">
+<div class="head">
 <h1>Which commit did it, and why</h1>
-<p class="lede">{len(records)} {"case" if len(records) == 1 else "cases"} on the refund agent. Each one links to its case file.</p>
+<p class="lede">Every case on the refund agent, each with its file.</p>
+</div>
 </header>
-<section class="field"><h2>Cases</h2><div class="body">{body}</div></section>
+{body}
 </main>
+<script>{SCRIPT}</script>
 </body>
 </html>
 """

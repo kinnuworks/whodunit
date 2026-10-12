@@ -57,6 +57,17 @@ def for_page(record: dict, record_file: Path) -> dict:
     path = ablation_path(record_file)
     if path.is_file():
         shown["ablation"] = json.loads(path.read_text())
+    # A case's number is its place among the cases in its folder, by when each was opened.
+    opened = {}
+    for other in record_file.parent.glob("*.record.json"):
+        try:
+            starts = [r["started"] for r in json.loads(other.read_text()).get("replays", []) if r.get("started")]
+        except (OSError, json.JSONDecodeError):
+            continue
+        opened[other.resolve()] = min(starts) if starts else float("inf")
+    if record_file.resolve() in opened and record.get("case"):
+        order = sorted(opened, key=lambda found: (opened[found], found.name))
+        shown["case"] = {**record["case"], "number": order.index(record_file.resolve()) + 1}
     motive = record.get("motive") or {}
     if motive.get("checkpoint") and motive.get("sha"):
         repo = Path((record.get("case") or {}).get("repo") or ".")
@@ -1058,7 +1069,7 @@ def casebook(args) -> int:
         record = for_page(load_record(path), path)
         page = casefile.write(record, path.with_name(path.name.replace(".record.json", "") + ".casefile.html"))
         records.append((page.name, record))
-    records.sort(key=lambda item: -len(item[1].get("suspects", [])))
+    records.sort(key=lambda item: item[1].get("case", {}).get("number", 0))
     index = folder / "index.html"
     index.write_text(casefile.render_index(records))
     print(f"{index}: {len(records)} cases")

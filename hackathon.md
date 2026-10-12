@@ -552,3 +552,28 @@ The simulator supports the joint model for ranges with two regressions. It was n
 Also done here: `whodunit harm` on three of the four fixes kept before the do-no-harm check existed. None of them broke another request. On `strangers-paid` and `turned-away`, 7 and 8 of the 12 other requests were already going wrong before the fix, which is the other regressions on those branches. The check on `wrong-order-refunded` was still running when this was written.
 
 Not done from the end of stage 2: the fresh rerun of the headline case, the real ablation run, and bringing the README, the evidence index, the script and the posts in line. Stage 3 is not in the repo. A draft of the new case file is in the session's scratch folder only.
+
+### 11:16 AM, Monday: the case file as a made object
+
+The session stopped on Sunday evening at its usage limit and picked up again on Monday at 11:14 AM, 46 minutes before the noon cutoff. A draft of the new case file had been built in a scratch folder while Sunday's simulations ran, and it survived. It is in the repo now. Stage 3's first eleven items went in as one piece, because that is how the draft was built, and not one commit an item as the brief asked.
+
+What the page is now, all still drawn from the record by `uv run whodunit casebook`:
+
+- Light paper by default. Dark is a toggle, remembered in the browser, and no longer follows the system. The simulator charts are light only as well.
+- The lineup is the centrepiece: full width, straight under the header. Every suspect is a numbered position with its short SHA. Cleared suspects are struck through, alibis are hatched, and each replay is a typed mark, x for a failure and o for a pass. Ordinary runs are the same marks in grey. When a commit has more marks than fit, each kind is typed once with its count under it, so the commit replayed 39 times is not drawn like one replayed 9 times. The culprit is ringed with an uneven red pencil ellipse and a leader line to its commit subject. The percentage axis is gone.
+- "Replay the investigation" steps through the rounds in the record: each replay lands, the odds move, suspects are struck as they clear, and the ring is drawn last. It is off until pressed, can be paused, and is not shown at all under reduced motion.
+- The stamp is large, double-bordered and turned 6 degrees over the header rule. "Case closed" is red. "Culprit named", "Open, not fixed" and "No commit did it" are in ink, so only a kept fix looks closed.
+- A typed form with dotted leaders: case number, file, opened, closed, suspects, replays, cost of the investigation, damage.
+- Replays, confidence and the commits a scan would have tested are in large serif figures.
+- The brief's citations are superscript numbers, and the ids sit in a numbered list in the right margin on a wide screen, each with what it is: the culprit commit, a span in the failing run, a step in the coding session.
+- Evidence is Exhibit A, the passing run, and Exhibit B, the failing run, as typed step lists. The first step where they part is red in both, with a note in the margin. The raw outlines are behind a toggle.
+- Damages open with the money in serif. The token cost comes second.
+- The casebook is a docket: number, stamp, what was reported, culprit, damage, under one typed line with the totals.
+- Each page has a title, a description and the tags a link preview is built from.
+- Under the lineup there is the same information as a table. The lineup and its columns take keyboard focus, and focus is visible.
+
+Five of the six records were made before rounds were kept. For those the rounds are worked out again from the stored replays with the lineup's own model, and used only if they end at the probabilities the record holds. All five do. The headline record cannot be done that way, because its alibi weights were not kept, so it gets its rounds from the fresh rerun that comes next.
+
+Checked so far: desktop width, and a true 375 px layout in a frame, where nothing scrolls sideways except the lineup. Not yet done: the link-preview image, and retaking the screenshots in `evidence/`.
+
+The last of the four older fixes passed its do-no-harm check overnight: 13 requests, none broken, 4 already failing for other reasons. All four kept fixes have now been checked.

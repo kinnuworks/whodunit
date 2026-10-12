@@ -169,9 +169,9 @@ Rules that came out of the build:
 
 ## Case file design
 
-This direction is a proposal and the owner has not signed it off yet.
+The owner kept these tokens and typefaces for the rebuilt case file on 11 October.
 
-The metaphor is a detective's typed case file with a two-colour typewriter ribbon.
+The metaphor is a detective's typed case file with a two-colour typewriter ribbon. Light is the default. Dark is there only when someone picks it with the toggle, and every screenshot is taken in light.
 
 - Light: paper `#F3EDDF`, surface `#E9E0CC`, ink `#201B15`, muted ink `#6B6156`, rule `#D8CDB6`, and one accent, ribbon red `#B4261F`.
 - Dark: background `#1B1714`, surface `#26201A`, ink `#EDE4D3`, accent `#E5604F`.

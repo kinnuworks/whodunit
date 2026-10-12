@@ -1,7 +1,7 @@
 """Draw the simulator's accuracy curves as SVG, and write the same numbers as tables.
 
 Hand-written SVG, so the eval has no plotting dependency and the charts share the case
-file's paper and ribbon colours. Each file carries its own dark variant.
+file's paper and ribbon colours. Like the pages, the charts are on light paper.
 """
 
 import math
@@ -27,11 +27,6 @@ STYLE = """
   .s-repeat { stroke: #201B15; stroke-width: 2; }
   .s-once { stroke: #6B6156; stroke-width: 2; stroke-dasharray: 1 5; }
   .hit { fill: transparent; }
-  @media (prefers-color-scheme: dark) {
-    .paper { fill: #1B1714; } .ink { fill: #EDE4D3; } .muted { fill: #A3978A; }
-    .rule { stroke: #3A3128; } .axis { stroke: #A3978A; }
-    .s-named, .s-top { stroke: #E5604F; } .s-repeat { stroke: #EDE4D3; } .s-once { stroke: #A3978A; }
-  }
 """
 
 
