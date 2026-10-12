@@ -1,0 +1,17 @@
+<task-notification>
+<task-id>bdf0w5jhn</task-id>
+<tool-use-id>toolu_018dFk8NJ7g9r9XmMTyT2uP8</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-kinnu-neathack/2b277f39-7446-42f5-947e-a22d15214289/tasks/bdf0w5jhn.output</output-file>
+<status>completed</status>
+<summary>Background command "Rerun the headline case from nothing" completed (exit code 0)</summary>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>bq21lkl4f</task-id>
+<tool-use-id>toolu_01U8fS3ZbgQqMG95imkZsR77</tool-use-id>
+<output-file>/private/tmp/claude-501/-Users-kinnu-neathack/2b277f39-7446-42f5-947e-a22d15214289/tasks/bq21lkl4f.output</output-file>
+<status>completed</status>
+<summary>Background command "Run the headline case without alibis or traffic, as a real ablation" completed (exit code 0)</summary>
+</task-notification>
