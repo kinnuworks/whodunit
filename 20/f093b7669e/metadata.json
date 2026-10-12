@@ -1,0 +1,31 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "20f093b7669e",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "AGENTS.md",
+    "evidence/README.md",
+    "evidence/cfo-cash-by-case.jpg",
+    "evidence/cfo-simulator.jpg",
+    "hackathon.md",
+    "pitch/business-plan.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/20/f093b7669e/0/metadata.json",
+      "transcript": "/20/f093b7669e/0/full.jsonl",
+      "compact_transcript": "/20/f093b7669e/0/transcript.jsonl",
+      "content_hash": "/20/f093b7669e/0/content_hash.txt",
+      "prompt": "/20/f093b7669e/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 70,
+    "cache_creation_tokens": 209427,
+    "cache_read_tokens": 13278825,
+    "output_tokens": 50790,
+    "api_call_count": 33
+  }
+}
