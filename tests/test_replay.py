@@ -4,7 +4,7 @@ import subprocess
 import pytest
 
 from tests.planted import refund_agent_history, shop_history, stub_history
-from whodunit.case import Case, CaseInput, judge, last_json_line
+from whodunit.case import Case, CaseInput, judge, last_json_line, printed_json
 from whodunit.cli import main
 from whodunit.lineup import plain_bisect
 from whodunit.replay import FAIL, PASS, SKIP, Runner
@@ -223,3 +223,87 @@ def test_inputs_that_agree_are_not_flagged(tmp_path, capsys):
     assert main(["lineup", str(made["case"]), "--repo", str(made["repo"]), "--budget", "80", "--json"]) == 0
     report = json.loads(capsys.readouterr().out)
     assert "inputs_disagree" not in report and len(report["per_input"]) == 1
+
+
+SUPPORT_RUN = json.dumps({
+    "reply": "Order 1042 has shipped. Tracking: TRK-884201.",
+    "tool_calls": [
+        {"name": "lookup_order", "args": {"order_id": "1042"}, "result": {"status": "shipped"}},
+        {"name": "issue_refund", "args": {"order_id": "1042", "amount": 19.999}, "result": {"ok": True}},
+    ],
+    "steps": 3,
+}, indent=2)
+
+
+def calls_case(**check) -> Case:
+    return Case(id="c", symptom="s", good="a", bad="b", inputs=(), check={"kind": "calls", **check})
+
+
+def test_printed_json_reads_one_line_or_many():
+    assert printed_json(SUPPORT_RUN)["steps"] == 3
+    assert printed_json("warming up\n" + SUPPORT_RUN + "\n")["steps"] == 3
+    assert printed_json('noise\n{"reply": "hi"}\n') == {"reply": "hi"}
+    # An empty object on a line of its own, inside a pretty-printed result, is not the result.
+    assert printed_json(json.dumps({"reply": "hi", "tool_calls": [{}]}, indent=2)) == {"reply": "hi", "tool_calls": [{}]}
+    assert printed_json("Traceback (most recent call last):") is None
+
+
+def test_calls_check_reads_tools_arguments_and_reply(tmp_path):
+    case = calls_case()
+
+    def passes(**expect) -> bool:
+        return judge(case, CaseInput("where is order 1042?", expect), SUPPORT_RUN, tmp_path)[0]
+
+    assert passes(must_call=["lookup_order"], first_call="lookup_order", reply_contains=["trk-884201", "shipped"])
+    assert not passes(must_call=["escalate_to_human"])
+    assert not passes(must_not_call=["issue_refund"])
+    assert not passes(first_call="issue_refund")
+    assert passes(call_counts={"lookup_order": 1, "cancel_order": 0}) and not passes(call_counts={"lookup_order": 2})
+    assert passes(call_sequence=["lookup_order", "issue_refund"]) and not passes(call_sequence=["issue_refund", "lookup_order"])
+    assert passes(call_args=[{"tool": "lookup_order", "args": {"order_id": "1042"}}, {"tool": "issue_refund", "args": {"amount": 20}}])
+    assert not passes(call_args=[{"tool": "lookup_order", "args": {"order_id": "1007"}}])
+    assert not passes(call_args=[{"tool": "cancel_order", "args": {}}])
+    assert passes(call_args=[{"tool": "issue_refund", "args": {"amount": {"gte": 19, "lte": 21}, "order_id": {"in": ["1007", "1042"]}}}])
+    assert passes(call_args=[{"tool": "lookup_order", "args": {"order_id": {"regex": "^#?1042$"}}}])
+    assert not passes(call_args=[{"tool": "lookup_order", "args": {"order_id": {"contains": "99"}}}])
+    assert not passes(reply_contains=["delivered"]) and not passes(reply_not_contains=["Shipped"])
+    assert passes(reply_regex=[r"TRK-\d+"]) and not passes(reply_not_regex=[r"trk-\d+"])
+    reason = judge(case, CaseInput("q", {"must_not_call": ["issue_refund"]}), SUPPORT_RUN, tmp_path)[1]
+    assert "issue_refund" in reason
+    assert not judge(case, CaseInput("q", {}), "Traceback (most recent call last):", tmp_path)[0]
+
+
+def test_calls_check_can_be_told_where_the_calls_are(tmp_path):
+    out = json.dumps({"output": {"text": "Done."}, "trace": {"steps": [{"tool": "search", "input": {"q": "returns"}}]}})
+    case = calls_case(calls="trace.steps", name="tool", args="input", reply="output.text")
+    assert judge(case, CaseInput("q", {"must_call": ["search"], "call_args": [{"tool": "search", "args": {"q": "returns"}}], "reply_contains": ["done"]}), out, tmp_path)[0]
+    assert not judge(calls_case(), CaseInput("q", {"must_call": ["search"]}), out, tmp_path)[0]
+
+
+def test_calls_check_refuses_an_expectation_it_does_not_know(tmp_path):
+    with pytest.raises(ValueError, match="must_cal"):
+        judge(calls_case(), CaseInput("q", {"must_cal": ["lookup_order"]}), SUPPORT_RUN, tmp_path)
+    with pytest.raises(ValueError, match="matcher"):
+        judge(calls_case(), CaseInput("q", {"call_args": [{"tool": "lookup_order", "args": {"order_id": {"near": "1042"}}}]}), SUPPORT_RUN, tmp_path)
+
+
+def test_a_case_loads_a_calls_check_and_hands_over_a_key_by_name(tmp_path, monkeypatch):
+    made = stub_history(tmp_path / "repo")
+    (tmp_path / "case.toml").write_text(
+        'id = "outside"\nsymptom = "s"\ngood = "HEAD~1"\nbad = "HEAD"\n'
+        'run = ["sh", "-c", "printf %s \\"$THEIR_KEY/$UNSET_ONE\\""]\n'
+        '[check]\nkind = "calls"\n[env_from]\nTHEIR_KEY = "OUR_KEY"\nUNSET_ONE = "NOT_SET_ANYWHERE"\n'
+        '[[inputs]]\ntext = "q"\nmust_call = ["lookup_order"]\ncall_args = [{ tool = "lookup_order", args = { order_id = { in = ["1042"] } } }]\n')
+    case = Case.load(tmp_path / "case.toml")
+    assert case.check == {"kind": "calls"} and case.env_from == {"THEIR_KEY": "OUR_KEY", "UNSET_ONE": "NOT_SET_ANYWHERE"}
+    assert judge(case, case.inputs[0], SUPPORT_RUN, tmp_path)[0]
+    # The value comes from a .env file by name, and reaches the agent under the agent's own name.
+    (tmp_path / ".env").write_text("OUR_KEY=from-the-file\n")
+    monkeypatch.setenv("WHODUNIT_ENV", str(tmp_path / ".env"))
+    monkeypatch.delenv("OUR_KEY", raising=False)
+    with Runner(made["repo"], case) as runner:
+        env = runner._env(made["shas"][-1])
+        assert env["THEIR_KEY"] == "from-the-file" and "UNSET_ONE" not in env and "OUR_KEY" not in env
+        monkeypatch.setenv("OUR_KEY", "from-the-shell")
+        assert runner._env(made["shas"][-1])["THEIR_KEY"] == "from-the-shell"
+    assert "from-the-file" not in (tmp_path / "case.toml").read_text()

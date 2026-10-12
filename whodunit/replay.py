@@ -11,6 +11,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .case import Case, CaseInput, judge, last_json_line
+from .env import read_env
 from .neat import unnamed
 from .suspects import git, resolve
 
@@ -104,6 +105,15 @@ class Runner:
     def _env(self, sha: str, tag: str = "") -> dict:
         env = {k: v for k, v in os.environ.items() if k != "VIRTUAL_ENV"}
         env.update(self.case.env)
+        if self.case.env_from:
+            # An agent from another repo reads its key under a name of its own. The value goes from this
+            # process's environment, or the .env of the folder the case is run from, straight into the
+            # agent's, and is not written to the case, the record or a log.
+            ours = read_env()
+            for theirs, name in self.case.env_from.items():
+                value = os.environ.get(name) or ours.get(name)
+                if value:
+                    env[theirs] = value
         env["WHODUNIT_COMMIT"] = sha
         if self.case.id:
             env["WHODUNIT_CASE"] = tag or self.case.id
