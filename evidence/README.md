@@ -28,6 +28,7 @@ The checkpoint links will take the form `https://entire.io/gh/OWNER/REPO/commit/
 
 - `casefile-whole-history.png`: the headline case, whole page. 57 suspects, the culprit named at 98.3% after 20 replays across 5 commits, the request quoted from checkpoint `bfbe27725663` and checked against the transcript. Before the fix, 11 of 14 runs from the culprit on went wrong, which is 7 of 8 replays and 4 of 6 ordinary runs. After the kept fix, 0 failures in 30 replays, at most 6.2% at 95%. Failing run `1d39ba32bd8f`, passing run `113f05166f1f`.
 - `lineup-whole-history.png`: the top of that page. The status badge, the facts card and the lineup, with the culprit ringed.
+- `motive-whole-history.png`: its Motive section, with the request quoted from the Entire checkpoint.
 - `fix-whole-history.png`: its Fix section, with both tries.
 - `casefile-whole-history-phone.png`: the same page at 375 px wide. Only the lineup scrolls sideways.
 - `casefile-turned-away.png`: a case closed by a revert after two patches fell short.
