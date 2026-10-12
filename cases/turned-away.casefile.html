@@ -529,7 +529,7 @@ main>.hero.book:only-child{padding-bottom:clamp(64px,10vw,120px)}
     out: {&quot;order_id&quot;:&quot;2002&quot;,&quot;owner&quot;:&quot;cust_4&quot;,&quot;amount&quot;:30,&quot;currency&quot;:&quot;USD&quot;,&quot;status&quot;:&quot;shipped&quot;,&quot;placed_on&quot;:&quot;2026-09-15&quot;}
   535cf3f2 LLM chat.completions.create ok 1746tok 2160ms
     in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you&#x27;re on their side…
-    out: assistant: I can see your order is on its way to you – it was placed on September 15th and is currently shipped. Here&#x27;s what I&#x27;d suggest: since it&#x27;s still in t…</pre></details><details><summary>The culprit's diff</summary><pre class="typed">diff --git a/victims/refund-agent/agent.py b/victims/refund-agent/agent.py
+    out: assistant: I can see your order is on its way to you – it was placed on September 15th and is currently shipped. Here&#x27;s what I&#x27;d suggest: since it&#x27;s still in t…</pre></details><p class="small">Both runs were sent from neatroots to neatlogs cloud: the failing run <span class="cite">10f52c0ae2b315f6a2bc037a9f318b98</span> and the passing run <span class="cite">38c49d062086a3f05468c95f9d3fab48</span>.</p><details><summary>The culprit's diff</summary><pre class="typed">diff --git a/victims/refund-agent/agent.py b/victims/refund-agent/agent.py
 index b3de501..0f0bb1a 100644
 --- a/victims/refund-agent/agent.py
 +++ b/victims/refund-agent/agent.py

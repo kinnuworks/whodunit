@@ -523,7 +523,7 @@ main>.hero.book:only-child{padding-bottom:clamp(64px,10vw,120px)}
     out: {&quot;refunded&quot;:30,&quot;order_id&quot;:&quot;2002&quot;,&quot;reason&quot;:&quot;Customer requested refund&quot;}
   9d509061 LLM chat.completions.create ok 1464tok 981ms
     in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you&#x27;re on their side…
-    out: assistant: Perfect! I&#x27;ve processed a $30 refund for order 2002. The refund is on its way to you.</pre></details><p class="small">These two runs are in neatroots on the machine that ran the case. They have not been sent to neatlogs cloud. neatroots said: no API key stored: run neatroots cloud login</p><details><summary>The culprit's diff</summary><pre class="typed">diff --git a/victims/refund-agent/agent.py b/victims/refund-agent/agent.py
+    out: assistant: Perfect! I&#x27;ve processed a $30 refund for order 2002. The refund is on its way to you.</pre></details><p class="small">Both runs were sent from neatroots to neatlogs cloud: the failing run <span class="cite">1d39ba32bd8f62e32931d2699af63589</span> and the passing run <span class="cite">113f05166f1f303b3a5a09a97a5a5594</span>.</p><details><summary>The culprit's diff</summary><pre class="typed">diff --git a/victims/refund-agent/agent.py b/victims/refund-agent/agent.py
 index 7c4a00a..6dffc69 100644
 --- a/victims/refund-agent/agent.py
 +++ b/victims/refund-agent/agent.py

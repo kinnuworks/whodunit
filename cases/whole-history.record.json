@@ -1398,9 +1398,12 @@
   "rate_from": 0.75,
   "notes": [],
   "cloud": {
-   "sent": false,
-   "trace_ids": {},
-   "note": "no API key stored: run neatroots cloud login"
+   "sent": true,
+   "trace_ids": {
+    "failing_run": "1d39ba32bd8f62e32931d2699af63589",
+    "passing_run": "113f05166f1f303b3a5a09a97a5a5594"
+   },
+   "note": "\u2713 sent 10 spans (5985 bytes)"
   }
  },
  "brief": {

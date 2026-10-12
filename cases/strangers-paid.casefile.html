@@ -523,7 +523,7 @@ main>.hero.book:only-child{padding-bottom:clamp(64px,10vw,120px)}
     out: {&quot;refunded&quot;:30,&quot;order_id&quot;:&quot;2002&quot;,&quot;reason&quot;:&quot;customer requested refund&quot;}
   25475e6f LLM chat.completions.create ok 1468tok 1197ms
     in: system: You are a refund agent for an online shop. Customers who reach you are often frustrated, so be warm and empathetic, and make clear you&#x27;re on their side…
-    out: assistant: Perfect! I&#x27;ve processed a $30 refund for order 2002 for you. You should see that credit back to your account shortly.</pre></details><details><summary>The culprit's diff</summary><pre class="typed">diff --git a/victims/refund-agent/agent.py b/victims/refund-agent/agent.py
+    out: assistant: Perfect! I&#x27;ve processed a $30 refund for order 2002 for you. You should see that credit back to your account shortly.</pre></details><p class="small">Both runs were sent from neatroots to neatlogs cloud: the failing run <span class="cite">b892b244e7f2915b71d5809d9cfa4311</span> and the passing run <span class="cite">a98feac7aee0f1f19a7025e8baba7013</span>.</p><details><summary>The culprit's diff</summary><pre class="typed">diff --git a/victims/refund-agent/agent.py b/victims/refund-agent/agent.py
 index 7c4a00a..6dffc69 100644
 --- a/victims/refund-agent/agent.py
 +++ b/victims/refund-agent/agent.py

@@ -12,7 +12,7 @@ What has been collected so far, with ids that can be looked up. Every screenshot
 
 - neatlogs cloud trace `b842b67dfae39c67c1a3aa76772f5229`, workflow `whodunit`: the headline investigation itself, run on 12 October. One root span, a span for the lineup with one child per round, and spans for the motive, the brief, the ruling, both fix attempts with their replays and do-no-harm checks, and the damages.
 - neatlogs cloud trace `1c87143bc68b3c01ed9767dca855b8e4`: a probe of the same tracing on a planted ten-commit case with no model. It can be deleted.
-- The failing run and the passing run each brief cites are in neatroots only. Sending them to neatlogs cloud waits on `neatroots cloud login`, which is the owner's step. Each case page says so under its evidence.
+- The failing run and the passing run each brief cites are in neatlogs cloud as of the evening of 12 October, twelve runs for the six cases, sent by `whodunit forward` after the owner ran `neatroots cloud login`. Each record lists its two ids under `evidence.cloud`, and each case page prints them. For the headline case they are `1d39ba32bd8f62e32931d2699af63589` (failing, on the culprit) and `113f05166f1f303b3a5a09a97a5a5594` (passing, on its parent). Three of the twelve were asked for again through the cloud's own MCP server and came back with their spans. The pages print the ids without links until `NEATLOGS_TRACE_URL` gives the dashboard's address for a trace.
 
 ## Entire checkpoints
 

@@ -539,7 +539,7 @@ main>.hero.book:only-child{padding-bottom:clamp(64px,10vw,120px)}
     out: {&quot;refunded&quot;:60,&quot;order_id&quot;:&quot;7007&quot;}
   539cba1f LLM chat.completions.create ok 1503tok 1388ms
     in: system: You are a refund agent for an online shop. Use lookup_order to find an order before refunding it. Only call issue_refund after lookup_order confirms th…
-    out: assistant: I&#x27;ve successfully refunded order 7007 for $60.00 USD (I found this order when looking for corrections to the order number you provided). Your refund…</pre></details><details><summary>The culprit's diff</summary><pre class="typed">diff --git a/victims/refund-agent/agent.py b/victims/refund-agent/agent.py
+    out: assistant: I&#x27;ve successfully refunded order 7007 for $60.00 USD (I found this order when looking for corrections to the order number you provided). Your refund…</pre></details><p class="small">Both runs were sent from neatroots to neatlogs cloud: the failing run <span class="cite">d1f083cd6e20998a8d8b3c53593318ae</span> and the passing run <span class="cite">78cddc2276017660c1f6ebd641d8c3b4</span>.</p><details><summary>The culprit's diff</summary><pre class="typed">diff --git a/victims/refund-agent/agent.py b/victims/refund-agent/agent.py
 index dcf81cf..b11587d 100644
 --- a/victims/refund-agent/agent.py
 +++ b/victims/refund-agent/agent.py

@@ -818,3 +818,13 @@ The owner asked, mid-session, for the logo to change on the pages and in the fil
 The owner also asked for a read of the film's first ten seconds, to propose and not to change. That went to the owner in the session and nothing in the film's words or scenes was touched.
 
 Not checked: nobody has watched the new render at speed. I looked at two stills, the title card at 16 seconds and the close at 133. The picture at the top of the README, `evidence/lineup-whole-history.png`, was retaken at the same size with the new mark. The other six screenshots in `evidence/` still show the old one in the corner of the nav. The team is named "Kinnu (solo)" in the submission text, which is my guess.
+
+### 6:01 PM, Monday: the cited runs are in neatlogs cloud
+
+The owner ran `neatroots cloud login`. `whodunit forward` then sent the failing run and the passing run each of the six briefs cites, twelve runs and 82 spans in all, and each record now lists its two ids under `evidence.cloud`.
+
+- I asked the cloud's own MCP server for three of the twelve by id, the headline pair and one more, and each came back with its spans.
+- The six case pages were written again. The sentence that said the two runs were in neatroots only is gone from all of them, and each now says both runs were sent and prints their ids.
+- The ids are printed without links. A link needs the dashboard's address for a trace, which is the owner's to give, in `NEATLOGS_TRACE_URL`.
+
+Not checked: the other nine runs were not asked for again, and nobody has opened any of the twelve in the dashboard. The three outside cases have no runs to send, because that agent's tracing was off. The owner said the film will be redesigned later with their input, so it stays as it is.

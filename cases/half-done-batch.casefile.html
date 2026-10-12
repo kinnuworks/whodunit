@@ -550,7 +550,7 @@ record and documented in the tool schema and README. Cap each run at
     in: {&quot;order_id&quot;:&quot;1001&quot;,&quot;amount&quot;:42,&quot;reason&quot;:&quot;arrived broken&quot;}
     out: {&quot;refunded&quot;:42,&quot;order_id&quot;:&quot;1001&quot;,&quot;reason&quot;:&quot;arrived broken&quot;}
   6e23affa TOOL issue_refund ERROR(issue_refund() missing 2 required positional arguments: &#x27;amount&#x27; and &#x27;reason&#x27;) result=error 1ms
-    in: {&quot;order_id&quot;:&quot;6006&quot;}</pre></details><details><summary>The culprit's diff</summary><pre class="typed">diff --git a/victims/refund-agent/README.md b/victims/refund-agent/README.md
+    in: {&quot;order_id&quot;:&quot;6006&quot;}</pre></details><p class="small">Both runs were sent from neatroots to neatlogs cloud: the failing run <span class="cite">d062009bda56daf376d67dc562afa81d</span> and the passing run <span class="cite">b467d5b0fed2f7e78ff0c0dde33068dd</span>.</p><details><summary>The culprit's diff</summary><pre class="typed">diff --git a/victims/refund-agent/README.md b/victims/refund-agent/README.md
 index a30582f..88fe95f 100644
 --- a/victims/refund-agent/README.md
 +++ b/victims/refund-agent/README.md

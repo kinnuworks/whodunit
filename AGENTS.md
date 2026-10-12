@@ -70,7 +70,7 @@ Version 0.2.6 is installed at `~/.local/bin/neatroots` and serves on port 4100. 
 - Whole-agent replay: `neatroots rerun add <project> "<command>" --cwd <dir>`, then `neatroots replay <trace-id> [--input ...]`. The agent receives `NEATROOTS_REPLAY_INPUT`, `NEATROOTS_REPLAY_ID` and `NEATLOGS_ENDPOINT`.
 - Checks are YAML files in `.neatroots/checks/`. The `rule` kinds (repeat, errors, count, threshold, match, run_end) need no model. `yes_no` questions return a probability and need neatroots' local model. On the evening of 10 October a small local model was found switched on, served on port 11434, and the built-in `ignored-tool-error` check ran it on incoming runs. A burst of replays then queues model work on this machine, so keep replays to two or three at a time while it is on. On the afternoon of 11 October `neatroots status` reported that model as unavailable.
 - `neatroots mock-llm` is a key-free stand-in LLM on port 4110.
-- `neatroots status` reports "cloud no key". `neatroots cloud forward <trace ids>` sends runs to neatlogs cloud and needs `neatroots cloud login` first, which stores the project key in the macOS Keychain. That is the owner's step. Until it is done, `whodunit forward` records that the runs stayed local.
+- The owner ran `neatroots cloud login` on 12 October, which stores the project key in the macOS Keychain, and `neatroots cloud status` now says the key for sending is stored. `neatroots cloud forward <trace ids>` sends runs to neatlogs cloud, and `whodunit forward <case>` does it for a case's two cited runs.
 - MCP tools the code calls: `query_sql`, `get_run_outline` and `compare_runs`. Whodunit replays the agent itself, in worktrees, and does not use neatroots' own `rerun` or `replay`. `list_findings` is not read either, because a verdict comes from the case's check.
 
 ### neatlogs cloud
@@ -153,7 +153,7 @@ Done and committed locally:
 Left over from that review:
 
 - The model that allows two change points is built and simulated, in `whodunit/lineup.py` and `eval/simulator/README.md`, and is not wired into the lineup. It needs alibi priors, skipped and voided replays, parallel rounds, resumed evidence and the clear-range check before it can replace the one there.
-- `whodunit forward <case>` sends a case's failing and passing run to neatlogs cloud once the owner has run `neatroots cloud login`.
+- Done on the evening of 12 October: the owner ran `neatroots cloud login`, and `whodunit forward` sent all six cases' failing and passing runs to neatlogs cloud.
 - A page links to a cloud trace once `NEATLOGS_TRACE_URL` gives the dashboard's address for one, and its link preview needs `WHODUNIT_SITE` for the casebook's public address.
 
 Still to do, in this order:
