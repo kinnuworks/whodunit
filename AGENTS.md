@@ -146,6 +146,7 @@ Done and committed locally:
 - A review of the repo on Sunday afternoon listed claims the code or the records did not back, gaps in the method, and a rebuild of the case file. `hackathon.md` from 2:00 PM on Sunday works through it. All of the first part is done, six and a half of the seven gaps, and the case file.
 - `pitch/` has the video script, post drafts and the business plan numbers, brought in line with Monday's run.
 - `evidence/` has screenshots of the new pages, all on light paper.
+- After noon on Monday the owner asked for the case file to be redone in an indie app design system. That is done, and "Case file design" below describes it. The records and every number on the pages are unchanged.
 
 Left over from that review:
 
@@ -176,14 +177,17 @@ Rules that came out of the build:
 
 ## Case file design
 
-The owner kept these tokens and typefaces for the rebuilt case file on 11 October.
+On 12 October the owner asked for the case file to be redone in a small design system made for indie apps, keeping the parts that fit Whodunit and dropping the rest. This replaces the typed paper file of 11 October.
 
-The metaphor is a detective's typed case file with a two-colour typewriter ribbon. Light is the default. Dark is there only when someone picks it with the toggle, and every screenshot is taken in light.
+`whodunit/casefile/foundation.css` is that system's stylesheet as it was given. Do not edit it. `whodunit/casefile/casefile.css` holds everything the page adds, and uses the foundation's tokens for every colour, radius and shadow.
 
-- Light: paper `#F3EDDF`, surface `#E9E0CC`, ink `#201B15`, muted ink `#6B6156`, rule `#D8CDB6`, and one accent, ribbon red `#B4261F`.
-- Dark: background `#1B1714`, surface `#26201A`, ink `#EDE4D3`, accent `#E5604F`.
-- Type from Google Fonts: Young Serif for titles, Alegreya Sans for interface text, Courier Prime for typed evidence.
-- Scale 13, 15, 17, 21, 27, 34, 44, 58 px. Line heights 1.1 for display, 1.2 for headings, 1.55 for body, 1.45 for Courier.
+- Mood cream, accent terracotta, set as `data-mood` and `data-accent` on the page. Paper `#FAF6EF`, card `#FFFEFC`, ink `#17150F`, muted ink `#6D6459`, hairline `#EBE3D7`. Terracotta `#D66B38` only fills small markers. Anything written in the accent uses its darker ink, `#A1411F`.
+- Type from Google Fonts: Plus Jakarta Sans for everything read, Geist Mono for SHAs, counts and quoted evidence, and Instrument Serif italic for one word on the casebook.
+- Light is the default. Dark is there only when someone picks it with the toggle, and every screenshot is taken in light.
+- Taken from the system: the floating pill nav, a status badge, pill buttons, cards with a hairline ring, a soft stage under the lineup, and on the casebook a terminal window holding what `whodunit investigate` printed for the headline case.
+- Left out, with the reason: the menu bar, popover and phone frames, because Whodunit is a command and a page. The blur on the nav, because glass is ruled out below. Icon tiles, the three-card grid, pricing, FAQ, social proof and scroll reveals, because the page is a case and has nothing to sell.
+- The lineup keeps its own drawing: typed x and o marks, struck-through SHAs, hatching for an alibi and a pencil ring round the culprit.
+- A case page's headline is the question the case asks, "57 commits since it last worked. Which one did it?", with what was reported under it. Every number on either page comes from a case record.
 - Sample copy: "Suspects: 41. Cleared: 40." / "Motive: someone asked for friendlier replies." / "Alibi: never touched the agent." / empty state "No cases yet. Lucky you." / button "Open a case".
 
 It should feel like a well-made object. That rules out pure white backgrounds, purple or blue gradients, glass effects, Inter as the only typeface, the three-card feature grid, sparkle icons, icons in rounded squares, fake KPI dashboards, stock hero sections and decorative emoji.

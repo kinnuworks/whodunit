@@ -1,4 +1,4 @@
-"""The case file as a made object: stamp, lineup, playback, exhibits, footnotes and the docket."""
+"""The case file as a made object: status badge, lineup, playback, exhibits, footnotes and the docket."""
 
 import json
 import re
@@ -26,7 +26,7 @@ def record(**extra):
     return base
 
 
-def test_only_a_kept_fix_gets_the_red_stamp():
+def test_only_a_kept_fix_gets_the_closed_badge():
     assert casefile.stamp(record()) == ("Culprit named", "")
     not_fixed = record(fix={"kind": "revert", "commit": None, "branch": "b"}, attempts=[{"kind": "patch", "commit": "1" * 40, "verification": {"fixed": False, "failures": 5, "replays": 90}}])
     assert casefile.stamp(not_fixed) == ("Open, not fixed", "")
@@ -36,7 +36,8 @@ def test_only_a_kept_fix_gets_the_red_stamp():
     assert casefile.stamp(broke)[1] == ""  # a fix that broke something else does not close a case
     assert casefile.stamp(record(lineup={"culprit": None, "clear": True})) == ("No commit did it", "")
     page = casefile.render(not_fixed)
-    assert '<p class="stamp ">Open, not fixed</p>' in page and 'class="stamp closed"' not in page
+    assert '<p class="badge status"><span class="badge__tag">Open, not fixed</span>' in page and 'class="badge status is-closed"' not in page
+    assert 'class="badge status is-closed"' in casefile.render(closed)
 
 
 def test_the_lineup_draws_every_suspect_and_rings_the_culprit():
@@ -63,9 +64,9 @@ def test_the_investigation_can_be_replayed_from_its_rounds():
     data = json.loads(re.search(r'<script type="application/json" id="lineup-data">(.*?)</script>', page, re.S).group(1))
     assert [r["c"] for r in data["rounds"]] == [[0, 3], [1], [2, 2]] and data["rounds"][-1]["v"] == ["x", "x"]
     assert data["rounds"][-1]["lead"] == "Suspect 2 leads at 100%." and data["cap"] == casefile.CAP
-    assert '<button type="button" class="playback" data-play' in page and "prefers-reduced-motion" in page
-    assert 'hidden>Replay the investigation' in page  # off until the script turns it on
-    assert '<button type="button" class="playback"' not in casefile.render(record(rounds=[], suspects=[]))
+    assert '<button type="button" class="btn btn-ink btn-sm playback" data-play' in page and "prefers-reduced-motion" in page
+    assert 'hidden>Replay the investigation' in page and "[hidden]{display:none!important}" in page  # off until the script turns it on
+    assert "data-play" not in casefile.render(record(rounds=[], suspects=[])).split("<script>")[0]
 
 
 def test_rounds_are_worked_out_again_only_when_they_end_where_the_record_did():
@@ -103,8 +104,9 @@ def test_citations_are_footnotes_and_exhibits_mark_where_the_runs_part():
 def test_the_page_has_a_title_a_description_and_light_paper_by_default():
     page = casefile.render(record(damages={"runs": 9, "case_runs": 6, "case_bad": 4, "wrongly_paid": 120.0, "withheld": 0.0, "replay_runs": 50, "replay_usd": 0.18, "note": "n"}))
     assert "<title>Case 003. Refunds go to strangers</title>" in page and 'property="og:image"' in page and 'name="description"' in page
-    assert "prefers-color-scheme" not in page and ':root[data-theme="dark"]' in page and "data-theme-toggle" in page  # dark only when chosen
-    assert '<p class="money">120.00 refunded to the wrong people</p>' in page  # the money first, in serif
+    assert "prefers-color-scheme" not in page and '[data-theme="dark"][data-mood="cream"]' in page and "data-theme-toggle" in page  # dark only when chosen
+    assert '<html lang="en" data-mood="cream" data-accent="terracotta">' in page and "backdrop-filter:none" in page  # warm paper, one accent, and no glass on the nav
+    assert '<p class="money">120.00 refunded to the wrong people</p>' in page  # the money first, in the display face
     assert page.index('class="money"') < page.index("in tokens") if "in tokens" in page else True
     for label in ("Case no.", "Opened", "Suspects", "Replays", "Cost of the investigation", "Damage"):
         assert f"<dt>{label}</dt>" in page
@@ -116,5 +118,6 @@ def test_the_casebook_is_a_docket():
                     damages={"runs": 9, "case_runs": 6, "case_bad": 4, "wrongly_paid": 120.0, "withheld": 0.0, "replay_runs": 50, "replay_usd": 0.18, "note": "n"})
     page = casefile.render_index([("a.casefile.html", closed), ("b.casefile.html", record())])
     assert "2 cases. 2 with a culprit named, 1 closed, 1 open. 55 replays in all, about $0.18." in page
-    assert page.count('class="mini-stamp closed"') == 1 and "<th>No.</th><th>Stamp</th><th>What was reported</th><th>Culprit</th><th>Damage</th>" in page
+    assert page.count('class="pill-status is-closed"') == 1 and "<th>No.</th><th>Status</th><th>What was reported</th><th>Culprit</th><th>Damage</th>" in page
+    assert 'class="window window--dark"' in page and "Culprit: " + B[:12] in page  # the terminal up top is made from a record
     assert "No cases yet. Lucky you." in casefile.render_index([])

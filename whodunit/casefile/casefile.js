@@ -5,7 +5,7 @@
   var toggle = document.querySelector('[data-theme-toggle]');
   function paint(dark) {
     if (dark) { root.setAttribute('data-theme', 'dark'); } else { root.removeAttribute('data-theme'); }
-    if (toggle) { toggle.textContent = dark ? 'Light paper' : 'Dark paper'; toggle.setAttribute('aria-pressed', dark ? 'true' : 'false'); }
+    if (toggle) { toggle.textContent = dark ? 'Light' : 'Dark'; toggle.setAttribute('aria-pressed', dark ? 'true' : 'false'); }
   }
   var chosen = null;
   try { chosen = window.localStorage.getItem('whodunit-paper'); } catch (e) { /* no storage, no memory */ }

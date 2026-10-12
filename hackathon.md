@@ -614,3 +614,41 @@ Not done, and the noon cutoff is near: the two-change-point model is still not i
 - Gateway spend for this session, by estimate: about 50 cents of larger-model calls for briefs and patches, and about $1.40 of replays for the four harm checks, the headline rerun and the ablation. That puts the gateway at about $16 of $20.
 
 Nothing was pushed, posted, written to cfo.ai or launched on AWS in this job. After this entry, fixes only.
+
+### 12:22 PM, Monday: the case file redone in an indie app design system
+
+The owner asked for this after the noon cutoff, so it is new work at the owner's request. The ask was to redesign the pages with a design system made for small indie apps, to pick what applies, and to say what was left out. Only the look changed. The records, the wording of each section and every number are what they were this morning.
+
+What was chosen:
+
+- Mood cream with one accent, terracotta. The system's default is a cooler grey with amber. Cream was picked because the old paper was warm and the red ring on the culprit carries over as terracotta ink.
+- The system's stylesheet is in `whodunit/casefile/foundation.css`, as given and unedited. `casefile.css` is now only what the page adds, and takes every colour, radius and shadow from the foundation's tokens. The one exception is the terminal window's four text colours, which stay fixed in both papers the way a window's traffic lights do.
+- Kept from the system: the floating pill nav with section anchors, a status badge, pill buttons, cards with a hairline ring, a soft stage under the lineup, mono for SHAs and counts, and on the casebook a dark terminal window on the warm wallpaper.
+- Left out: the faux menu bar, the popover and the phone frame, because Whodunit is a command and a page. The blur on the nav, because `AGENTS.md` rules glass out, so the pill is solid. Icon tiles, the three-card grid, pricing, FAQ, social proof and scroll reveals, because a case page has nothing to sell.
+- Changed in kind: the rotated rubber stamp is a status badge, filled only for a closed case. The typed form is a facts card. Disclosures are pills with a plus that turns to a cross.
+- The lineup keeps its own drawing, with the typed marks, the strike-through, the hatching and the pencil ring.
+- A case page's headline is now the question, "57 commits since it last worked. Which one did it?", and the report sits under it. The casebook's headline is "Which commit did it, and why."
+- The terminal on the casebook is made from the headline case's record with the same sentences `whodunit investigate` prints. I checked each line against `whodunit/cli.py` and the numbers against the record.
+
+What went wrong on the way:
+
+- The first casebook lead said Whodunit replays requests "against every suspect commit". The headline case tested 5 of 57. It now says the replays go on until one commit stands out.
+- The 57-suspect lineup is 1,122 px wide and the card it sat in was 1,024, so the first four suspects were cut off. The lineup's stage is now let out to 1,240 px, past the text column.
+- With the symptom as the headline, the headline case ran to five lines at display size. That is what led to the question as headline.
+- I gave the Log two-column rows and the rule also caught the list of tries in the Fix section. Every run of text there became its own 86 px column and the section went from 630 px tall to 2,246. It showed up as a page height that made no sense when I measured for the screenshots. The rule now applies to the Log alone.
+- The two buttons the script adds carry `hidden`, and a pill sets its own display, so with scripting off they would have shown and done nothing. A rule now makes the attribute win, and a test checks it is on the page.
+- The screenshot script stops as soon as its target file has something in it. The first retake of `cases/og.png` therefore left the old picture in place and reported success. I saw it only because I opened the file. Shots now go to an empty folder and are copied over.
+- The foundation has a comment that mentions following the system's dark setting, and a test checks that the page never does by searching for that phrase. Pages now carry both stylesheets without comments. The files keep theirs.
+
+What was checked:
+
+- 150 fast tests pass. The page tests were rewritten for the new markup and gained four checks: the closed badge, the mood and accent on the page, no blur on the nav, and the terminal made from a record.
+- All seven pages at 1440 px and at a true 375 px: nothing is wider than the frame except the lineup's own scroll box.
+- "Replay the investigation" was pressed in a headless browser on `cents-off`: seven rounds, ending on all 21 marks and "Replay again". The paper toggle set the dark tokens and relabelled itself "Light".
+- Dark paper was looked at on the casebook and the headline case. Both empty states were looked at, and lost links that pointed at a lineup that was not there.
+- The system's own checklist: one mood and one accent, every control a pill, headlines in sentence case of three lines or fewer, body text under 680 px, small text no fainter than the third ink, focus rings, reduced motion.
+
+Not checked: a real phone, any browser other than Chrome, and the page with the web fonts blocked.
+
+`evidence/` has all seven screenshots retaken, and `cases/og.png` is redrawn from `cases/og.html` in the new look. `AGENTS.md` has the new design section in place of the typed paper one. Nothing was pushed.
+

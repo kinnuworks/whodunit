@@ -1,10 +1,14 @@
 """The case file: one static HTML page per case, drawn from the case record.
 
-The page is a typed detective's file. The lineup is the centrepiece: every suspect commit is a
-numbered position with its short SHA, cleared suspects are struck through, the ones with an
-alibi are hatched, each replay is a typed mark, and the culprit is ringed in red pencil. The
-page reads without any script. The script adds two things, a dark paper and a replay of the
-investigation round by round.
+The page is an app screen in a small design system: warm paper, one terracotta accent, cards
+with hairline edges, pills for every control, and mono for anything counted. `foundation.css`
+is that system as it was given, untouched, and `casefile.css` is what this page adds to it.
+
+The lineup is the centrepiece and keeps its own drawing: every suspect commit is a numbered
+position with its short SHA, cleared suspects are struck through, the ones with an alibi are
+hatched, each replay is a typed mark, and the culprit is ringed in pencil. The page reads
+without any script. The script adds two things, a dark paper and a replay of the investigation
+round by round.
 """
 
 import json
@@ -20,10 +24,17 @@ from ..fix import observed
 from ..lineup import ChangePoint
 
 HERE = Path(__file__).parent
-STYLE = (HERE / "casefile.css").read_text()
+# The two stylesheets go into the page without their comments. The files themselves keep them.
+STYLE = re.sub(r"/\*.*?\*/\n?", "", (HERE / "foundation.css").read_text() + (HERE / "casefile.css").read_text(), flags=re.S)
 SCRIPT = (HERE / "casefile.js").read_text()
+ROOT = '<html lang="en" data-mood="cream" data-accent="terracotta">'
 FONTS = ('<link rel="preconnect" href="https://fonts.googleapis.com">\n<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
-         '<link href="https://fonts.googleapis.com/css2?family=Alegreya+Sans:wght@400;500;700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Young+Serif&display=swap" rel="stylesheet">')
+         '<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400..800&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">')
+# The mark: an x with a pencil ring round it, which is what the lineup does to the culprit.
+MARK = ('<svg class="mark" viewBox="0 0 28 28" width="26" height="26" aria-hidden="true"><path d="M9.5 9.5l9 9M18.5 9.5l-9 9" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>'
+        '<ellipse cx="14" cy="14" rx="11.6" ry="10" fill="none" stroke="var(--accent-ink)" stroke-width="1.8" transform="rotate(-14 14 14)"/></svg>')
+CHECK = ('<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+         '<path d="M5 12.5l4.5 4.5L19 7.5"/></svg>')
 CAP = 9  # typed marks that fit under one suspect before they are written as a glyph and a count
 MARKS_GAP = 26  # room between a suspect's SHA and its marks, which is where the bottom of the pencil ring goes
 
@@ -40,7 +51,16 @@ def _pct(value: float) -> str:
 
 def _field(label: str, body: str, margin: str = "") -> str:
     aside = f'<div class="margin">{margin}</div>' if margin else ""
-    return f'<section class="field"><h2>{escape(label)}</h2><div class="body">{body}</div>{aside}</section>'
+    return f'<section class="field card" id="{escape(label.lower())}"><h2>{escape(label)}</h2><div class="body">{body}</div>{aside}</section>'
+
+
+def _nav(links: list[tuple[str, str]], action: str) -> str:
+    """The floating pill at the top: the brand, a few anchors, the paper toggle and one small action."""
+    anchors = "".join(f'<a href="{escape(href)}">{escape(label)}</a>' for label, href in links)
+    return ('<nav class="nav" aria-label="Whodunit"><div class="nav__bar">'
+            f'<a class="nav__brand" href="index.html">{MARK}<span>Whodunit</span></a><div class="nav__links">{anchors}</div>'
+            '<div class="nav__end"><button type="button" class="btn btn-sm btn-ghost" data-theme-toggle aria-pressed="false" hidden>Dark</button>'
+            f'{action}</div></div></nav>')
 
 
 def _typed(text: str) -> str:
@@ -62,7 +82,7 @@ def kept(attempt: dict | None) -> bool:
 
 
 def stamp(record: dict) -> tuple[str, str]:
-    """What the stamp says, and whether it is the red one. Only a case with a kept fix is closed."""
+    """What the status badge says, and whether it is the filled one. Only a case with a kept fix is closed."""
     lineup = record.get("lineup") or {}
     if lineup.get("clear"):
         return "No commit did it", ""
@@ -381,8 +401,8 @@ def suspects_table(record: dict) -> str:
             replays += f'. Ordinary runs: {usual.count("x")} of {len(usual)} went wrong'
         rows += (f'<tr class="{"is-culprit" if guilty else "is-cleared" if cleared else ""}"><td class="n">{n}</td><td class="sha">{escape(_short(suspect["sha"]))}</td>'
                  f'<td>{escape(suspect["subject"])}</td><td>{escape(status)}</td><td class="n">{_pct(odds) if odds is not None else ""}</td><td>{escape(replays)}</td></tr>')
-    return ('<details class="table"><summary>The lineup as a table</summary><table class="suspects"><thead><tr><th>No.</th><th>Commit</th><th>Subject</th>'
-            f'<th>Status</th><th>Odds</th><th>Runs</th></tr></thead><tbody>{rows}</tbody></table></details>')
+    return ('<details class="table"><summary>The lineup as a table</summary><div class="card table-card"><table class="suspects"><thead><tr><th>No.</th><th>Commit</th><th>Subject</th>'
+            f'<th>Status</th><th>Odds</th><th>Runs</th></tr></thead><tbody>{rows}</tbody></table></div></details>')
 
 
 # Exhibits
@@ -427,7 +447,7 @@ def exhibit_steps(outline: str) -> list[dict]:
 
 
 def _exhibits(evidence: dict) -> tuple[str, str]:
-    """Exhibit A, the passing run, and Exhibit B, the failing run, with the first step where they part in red. Returns (body, margin note)."""
+    """Exhibit A, the passing run, and Exhibit B, the failing run, with the first step where they part ringed in the accent. Returns (body, margin note)."""
     shown = [(letter, label, evidence.get(key)) for letter, label, key in (("A", "the passing run", "passing_run"), ("B", "the failing run", "failing_run")) if evidence.get(key)]
     if not shown:
         return "", ""
@@ -647,7 +667,10 @@ def render(record: dict) -> str:
         again = "" if ruling.get("asked_now") else f' Nobody was asked this time. The rule was set on {escape(ruling["decided_on"])} in case {escape(ruling["first_case"])}.'
         what = "Revert it." if ruling["ruling"] == "revert" else "Keep what it was for, and patch the bug."
         article = "an" if ruling["kind"][:1] in "aeiou" else "a"
-        body = f'<p class="verdict small-verdict">{what}</p><p>This is the owner\'s standing rule for {article} {escape(ruling["kind"])} change.{again}</p>'
+        reverted = ruling["ruling"] == "revert"
+        body = (f'<p class="verdict small-verdict">{what}</p>'
+                f'<p class="choice"><span class="chip{" is-chosen" if reverted else ""}">Revert</span><span class="chip{"" if reverted else " is-chosen"}">Patch</span></p>'
+                f'<p>This is the owner\'s standing rule for {article} {escape(ruling["kind"])} change.{again}</p>')
     else:
         body = '<p class="empty">The owner has not been asked yet.</p>'
     parts.append(_field("Ruling", body))
@@ -735,7 +758,7 @@ def render(record: dict) -> str:
     # Log: what happened, in order, worked out from the record as it stands
     happened = timeline(record)
     if happened:
-        rows = "".join(f'<li><span class="cite">{escape(step)}</span> {escape(text)}</li>' for step, text in happened)
+        rows = "".join(f'<li><span class="step">{escape(step)}</span><span>{escape(text)}</span></li>' for step, text in happened)
         traced = record.get("trace") or {}
         if traced.get("trace_id"):
             # The investigation is a trace of its own, with a span for each of these steps and each round of the lineup.
@@ -743,16 +766,16 @@ def render(record: dict) -> str:
             name = f'<span class="cite">{escape(traced["trace_id"])}</span>'
             if traced.get("link"):
                 name = f'<a href="{escape(traced["link"])}">{name}</a>'
-            rows += f'<li><span class="cite">trace</span> This investigation is itself a trace in {place}: {name}</li>'
-        parts.append(_field("Log", f'<ol class="steps">{rows}</ol>'))
+            rows += f'<li><span class="step">trace</span><span>This investigation is itself a trace in {place}: {name}</span></li>'
+        parts.append(_field("Log", f'<ol class="steps log">{rows}</ol>'))
 
-    # The header: stamp, form and the three numbers that matter
+    # The header: status, the facts and the three numbers that matter
     words, red = stamp(record)
     started = [r["started"] for r in record.get("replays", []) if r.get("started")]
     opened = _when(min(started)) if started else ""
     closed = _when(record["replays_until_ms"] / 1000) if red and record.get("replays_until_ms") else ""
     number = f'{case["number"]:03d}' if isinstance(case.get("number"), int) else case.get("id", "")
-    rows = [("Case no.", number), ("File", case.get("id", "")), ("Opened", opened), ("Closed", closed or ("not yet" if lineup else "")),
+    rows = [("Case no.", number if isinstance(case.get("number"), int) else ""), ("File", case.get("id", "")), ("Opened", opened), ("Closed", closed or ("not yet" if lineup else "")),
             ("Suspects", f'{len(suspects)}' + (f', {len(suspects) - 1} cleared' if culprit else f', all {len(suspects)} cleared' if lineup.get("clear") else ""))]
     if lineup:
         whole = f', {damages["replay_runs"]} in all' if damages.get("replay_runs") else ""
@@ -761,7 +784,7 @@ def render(record: dict) -> str:
         rows.append(("Cost of the investigation", f'about ${damages["replay_usd"]:.2f}'))
     if damages:
         rows.append(("Damage", money_said(damages) or ("none seen" if damages.get("case_runs") else "none that could be counted")))
-    form = "".join(f'<div><dt>{escape(label)}</dt><span class="dots"></span><dd>{escape(str(value))}</dd></div>' for label, value in rows if value != "")
+    facts = "".join(f'<div><dt>{escape(label)}</dt><dd>{escape(str(value))}</dd></div>' for label, value in rows if value != "")
     figures = ""
     if lineup:
         figures += f'<div><dt>{lineup.get("replays", 0)}</dt><dd>replays to {"name the culprit" if culprit else "get this far"}</dd></div>'
@@ -773,23 +796,37 @@ def render(record: dict) -> str:
             figures += (f'<div><dt>{lineup["linear_scan_commits"]}</dt><dd>commits a scan from the oldest suspect would have tested. '
                         f'This lineup tested {lineup.get("commits_tested", 0)}.</dd></div>')
     play = playback(record) if lineup else None
-    controls = ('<button type="button" class="playback" data-play aria-pressed="false" hidden>Replay the investigation</button>' if play else "")
-    replay_count = sum(len(column) for column in lineup_parts(record)["replays"]) if suspects else 0
+    controls = ('<button type="button" class="btn btn-ink btn-sm playback" data-play aria-pressed="false" hidden>Replay the investigation</button>' if play else "")
+    shown = lineup_parts(record) if suspects else {"replays": [], "ordinary": []}
+    replay_count = sum(len(column) for column in shown["replays"])
     caption = (f'{replay_count} replays are typed under the commits they ran on.' if replay_count else "No replays yet.") if lineup else ""
-    drawing = (f'<section class="lineup-wrap" aria-labelledby="lineup-title"><h2 id="lineup-title">The lineup</h2>'
+    key = ('<p class="key"><span class="chip chip--soft"><b class="fail">x</b>a replay that failed</span><span class="chip chip--soft"><b>o</b>a replay that passed</span>'
+           + ('<span class="chip chip--soft"><b style="opacity:.5">x o</b>ordinary runs, in grey</span>' if any(shown["ordinary"]) else "")
+           + '<span class="chip chip--soft"><span class="swatch"></span>has an alibi</span><span class="chip chip--soft"><s>struck through</s>cleared</span></p>')
+    drawing = ('<section class="lineup-wrap" id="lineup" aria-labelledby="lineup-title"><div class="container">'
+               '<div class="stage stage--soft"><div class="card card--raised board">'
+               f'<div class="board__head"><h2 id="lineup-title">The lineup</h2>{key}</div>'
                f'<div class="scroll" tabindex="0" role="group" aria-label="The lineup, scrolls sideways">{lineup_svg(record)}</div>'
-               f'<div class="under">{controls}<p class="caption" aria-live="polite">{escape(caption)}</p></div>'
-               '<p class="key"><span><b class="fail">x</b> a replay that failed</span><span><b>o</b> a replay that passed</span>'
-               + ('<span><b style="opacity:.5">x o</b> ordinary runs, in grey</span>' if any(lineup_parts(record)["ordinary"]) else "")
-               + '<span><span class="swatch"></span>has an alibi</span><span><s>struck through</s>: cleared</span></p>'
-               + suspects_table(record) + "</section>") if suspects else ""
+               f'<div class="under">{controls}<p class="caption" aria-live="polite">{escape(caption)}</p></div></div></div>'
+               + suspects_table(record) + (f'<dl class="card figures">{figures}</dl>' if figures else "") + "</div></section>") if suspects else ""
     data = f'<script type="application/json" id="lineup-data">{json.dumps(play, separators=(",", ":")).replace("</", "<\\/")}</script>' if play else ""
     symptom = case.get("symptom", "Untitled case")
     described = (f'{len(suspects)} commits since it last worked. ' + (
         f'The lineup named {_short(culprit["sha"])}, "{culprit["subject"]}", after {lineup.get("replays", 0)} replays.' if culprit else
         "No commit did it: the last good ref fails too." if lineup.get("clear") else "Nobody has been named yet."))
+    nav = _nav(([("Lineup", "#lineup")] if suspects else []) + [("Motive", "#motive"), ("Brief", "#brief"), ("Evidence", "#evidence"), ("Fix", "#fix"), ("Damages", "#damages")],
+               '<a class="btn btn-sm btn-ink" href="index.html">All cases</a>')
+    badge = (f'<p class="badge status{" is-closed" if red else ""}"><span class="badge__tag">{CHECK if red else ""}{escape(words)}</span>'
+             f'Case {escape(str(number))}</p>')
+    small = ["Drawn from the case record", "Scripted traffic, no real customers" if sent_by else ""]
+    ctas = '<div class="cta-row"><a class="btn btn-ink" href="#lineup">See the lineup</a><a class="btn btn-outline" href="#brief">Read the brief</a></div>' if suspects else ""
+    # The headline is the question the case asks, and under it what was reported. A case with no suspects yet only has the report.
+    count = len(suspects)
+    heading = (f'<h1>{count} {"commit" if count == 1 else "commits"} since it last worked. <span class="t-muted">Which one did it?</span></h1>\n'
+               f'<p class="lead">{escape(symptom if symptom[-1:] in ".?!" else symptom + ".")}</p>' if count else f'<h1 class="reported">{escape(symptom)}</h1>')
+    trust = "".join(f"<span>{escape(text)}</span>" for text in small if text)
     return f"""<!doctype html>
-<html lang="en">
+{ROOT}
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -798,26 +835,71 @@ def render(record: dict) -> str:
 <style>{STYLE}</style>
 </head>
 <body>
+{nav}
 <main>
-<p class="bar"><a href="index.html">Whodunit casebook</a><button type="button" data-theme-toggle aria-pressed="false" hidden>Dark paper</button></p>
-<header class="top">
-<div class="head">
-<h1>{escape(symptom)}</h1>
-<p class="lede">{len(suspects)} commits since it last worked. Which one did it?</p>
+<header class="hero hero--split case"><div class="container">
+<div>
+{badge}
+{heading}
+{ctas}
+<p class="trust">{trust}</p>
 </div>
-<dl class="form">{form}</dl>
-<p class="stamp {red}">{escape(words)}</p>
-</header>
+<dl class="card facts">{facts}</dl>
+</div></header>
 {drawing}
-<dl class="figures">{figures}</dl>
+<div class="container sections">
 {"".join(parts)}
-<footer><p>Last good <span class="sha">{escape(_short(case.get("good")))}</span>, first bad <span class="sha">{escape(_short(case.get("bad")))}</span>, agent in <code>{escape(case.get("target", ""))}</code>.</p></footer>
+</div>
 </main>
+<footer class="footer"><div class="container"><span class="brand">{MARK}Whodunit</span>
+<span>Last good <span class="sha">{escape(_short(case.get("good")))}</span>, first bad <span class="sha">{escape(_short(case.get("bad")))}</span>, agent in <code>{escape(case.get("target", ""))}</code>.</span>
+<span>Drawn from the case record by <code>whodunit casebook</code>.</span></div></footer>
 {data}
 <script>{SCRIPT}</script>
 </body>
 </html>
 """
+
+
+def _terminal(record: dict) -> str:
+    """What `whodunit investigate` printed for a case, in a window. Every line is made from the record, in the command's own words."""
+    case, lineup = record.get("case", {}), record.get("lineup") or {}
+    suspects, culprit, fix = record.get("suspects", []), lineup.get("culprit"), record.get("fix") or {}
+    traffic = (record.get("damages") or {}).get("workflow") if lineup.get("traffic_runs") else None
+    lines = [("dim", "$ ") + ("ok", f'uv run whodunit investigate {case.get("file", "case.toml")}' + (f" --from-traffic {traffic}" if traffic else ""))]
+
+    def say(text: str, css: str = "") -> None:
+        lines.append((css, text))
+
+    say(f'Case {case.get("id", "")}: {case.get("symptom", "")}')
+    say(f'Suspects: {len(suspects)}, of which {sum(bool(s.get("touches_target", True)) for s in suspects)} touched {case.get("target", "")}.')
+    excused = [s for s in suspects if s.get("alibi")]
+    if excused:
+        say(f'Alibis: {len(excused)} of them start with less suspicion, for example {_short(excused[0]["sha"])} ({excused[0]["alibi"]}).', "dim")
+    if lineup.get("traffic_runs"):
+        seen = {run["sha"] for run in record.get("witnessed") or []}
+        say(f'Traffic: {lineup["traffic_runs"]} ordinary runs across {len(seen)} of these commits had already asked this, and {lineup["traffic_failures"]} of them went wrong.', "dim")
+    if culprit:
+        say(f'Suspects: {len(suspects)}. Cleared: {len(suspects) - 1}.')
+        say(f'Culprit: {_short(culprit["sha"])}  {culprit["subject"]}', "hot")
+        if "probability" in culprit and "failure_rate_from" in lineup:
+            say(f'Confidence: {culprit["probability"]:.1%}. It fails about {lineup["failure_rate_from"]:.0%} of the time from this commit on, and {lineup["failure_rate_before"]:.0%} before it.')
+        if "linear_scan_commits" in lineup:
+            say(f'Tested {lineup.get("commits_tested", 0)} commits with {lineup.get("replays", 0)} replays in {lineup.get("seconds", 0):.0f}s of replay time. '
+                f'A scan from the oldest suspect would have tested {lineup["linear_scan_commits"]} commits.', "dim")
+    if kept(fix):
+        tries, seen = len(record.get("attempts") or [1]), fix["verification"]
+        say(f'Kept the {fix["kind"]} {_short(fix["commit"])} after {tries} {"try" if tries == 1 else "tries"}: {observed(seen["failures"], seen["replays"])}', "ok")
+    text = ""
+    for n, line in enumerate(lines):
+        if n == 0:
+            (a, prompt), (b, command) = line[:2], line[2:]
+            text += f'<span class="{a}">{escape(prompt)}</span><span class="{b}">{escape(command)}</span>\n'
+        else:
+            css, said = line
+            text += (f'<span class="{css}">{escape(said)}</span>' if css else escape(said)) + "\n"
+    return ('<div class="window window--dark" aria-hidden="true"><div class="window__bar"><span class="lights"><i></i><i></i><i></i></span>'
+            f'<span class="window__title">whodunit investigate</span></div><pre class="term">{text}</pre></div>')
 
 
 def write(record: dict, path: Path) -> Path:
@@ -826,10 +908,11 @@ def write(record: dict, path: Path) -> Path:
 
 
 def render_index(records: list[tuple[str, dict]]) -> str:
-    """The casebook, as a docket: one row per case. `records` are (page file name, record)."""
+    """The casebook: the headline case's own output up top, then the docket, one row per case. `records` are (page file name, record)."""
     rows = ""
     named = closed = replays = 0
     cost = 0.0
+    scripted = False
     for page, record in records:
         case, lineup = record.get("case", {}), record.get("lineup") or {}
         culprit, damages = lineup.get("culprit"), record.get("damages") or {}
@@ -838,20 +921,44 @@ def render_index(records: list[tuple[str, dict]]) -> str:
         closed += bool(red)
         replays += damages.get("replay_runs") or lineup.get("replays", 0)
         cost += damages.get("replay_usd") or 0.0
+        scripted = scripted or bool(damages.get("sent_by") or case.get("traffic_sent_by"))
         who = (f'<span class="sha">{escape(_short(culprit["sha"]))}</span> {escape(culprit["subject"])}' if culprit else
                "None of them. The good ref fails too." if lineup.get("clear") else "Nobody yet")
         number = f'{case["number"]:03d}' if isinstance(case.get("number"), int) else ""
-        rows += (f'<tr><td class="no">{number}</td><td><span class="mini-stamp {red}">{escape(words)}</span></td>'
+        rows += (f'<tr><td class="no">{number}</td><td><span class="pill-status{" is-closed" if red else ""}">{CHECK if red else ""}{escape(words)}</span></td>'
                  f'<td class="what"><a href="{escape(page)}">{escape(case.get("symptom", page))}</a><div class="small">{len(record.get("suspects", []))} suspects, '
                  f'{lineup.get("replays", 0)} replays to name</div></td><td>{who}</td>'
                  f'<td>{escape(money_said(damages) or ("none seen" if damages.get("case_runs") else ""))}</td></tr>')
     count = len(records)
     line = (f'{count} {"case" if count == 1 else "cases"}. {named} with a culprit named, {closed} closed, {count - closed} open. '
             f'{replays:,} replays in all, about ${cost:.2f}.')
-    body = (f'<p class="docket-line">{escape(line)}</p><table class="docket"><thead><tr><th>No.</th><th>Stamp</th><th>What was reported</th><th>Culprit</th><th>Damage</th></tr></thead>'
-            f'<tbody>{rows}</tbody></table>' if records else '<p class="empty">No cases yet. Lucky you.</p>')
+    # The case with the longest lineup is the one shown off, with what the command printed for it.
+    headline = max(records, key=lambda item: len(item[1].get("suspects", [])), default=None)
+    visual = f'<div class="hero__visual"><div class="stage">{_terminal(headline[1])}</div></div>' if headline and headline[1].get("lineup") else ""
+    ctas = ((f'<a class="btn btn-ink" href="{escape(headline[0])}">Open the headline case</a>' if headline else "")
+            + '<a class="btn btn-outline" href="#docket">See the docket</a>')
+    small = [f"{replays:,} replays in all", f"about ${cost:.2f}", "Scripted traffic, no real customers" if scripted else ""]
+    trust = "".join(f"<span>{escape(text)}</span>" for text in small if text)
+    nav = _nav(([("Docket", "#docket")] if records else []) + ([("Headline case", headline[0])] if headline else []),
+               f'<a class="btn btn-sm btn-ink" href="{escape(headline[0])}">Open a case</a>' if headline else "")
+    body = (f"""<header class="hero book"><div class="container">
+<p class="badge badge--dot">{count} {"case" if count == 1 else "cases"}, {closed} closed</p>
+<h1>Which commit did it, and <em class="t-serif">why.</em></h1>
+<p class="lead">Whodunit replays an agent's failing requests on the suspect commits until one of them stands out, then quotes what that commit was asked to do.</p>
+<div class="cta-row">{ctas}</div>
+<p class="trust">{trust}</p>
+{visual}
+</div></header>
+<section class="section" id="docket"><div class="container">
+<div class="section-head section-head--left"><p class="eyebrow">The docket</p><h2>Every case, with its file.</h2><p class="docket-line">{escape(line)}</p></div>
+<div class="card docket-card"><table class="docket"><thead><tr><th>No.</th><th>Status</th><th>What was reported</th><th>Culprit</th><th>Damage</th></tr></thead>
+<tbody>{rows}</tbody></table></div>
+</div></section>""" if records else """<header class="hero book"><div class="container">
+<h1>Which commit did it, and <em class="t-serif">why.</em></h1>
+<p class="lead empty">No cases yet. Lucky you.</p>
+</div></header>""")
     return f"""<!doctype html>
-<html lang="en">
+{ROOT}
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -860,16 +967,11 @@ def render_index(records: list[tuple[str, dict]]) -> str:
 <style>{STYLE}</style>
 </head>
 <body>
+{nav}
 <main>
-<p class="bar"><span>Whodunit casebook</span><button type="button" data-theme-toggle aria-pressed="false" hidden>Dark paper</button></p>
-<header class="top">
-<div class="head">
-<h1>Which commit did it, and why</h1>
-<p class="lede">Every case on the refund agent, each with its file.</p>
-</div>
-</header>
 {body}
 </main>
+<footer class="footer"><div class="container"><span class="brand">{MARK}Whodunit</span><span>Drawn from the case records by <code>whodunit casebook</code>.</span></div></footer>
 <script>{SCRIPT}</script>
 </body>
 </html>
