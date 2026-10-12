@@ -1,6 +1,6 @@
 # Demo video script
 
-About two and a half minutes. Screen recording with voice. The judges score the video on how clearly it explains the agent and the tool use, so every scene names the tool on screen.
+A little under three minutes. Screen recording with voice. The judges score the video on how clearly it explains the agent and the tool use, so every scene names the tool on screen.
 
 Before recording: `neatroots start` is running, the terminal is in the repo root at a large font, and `cases/index.html` (the casebook, from `uv run whodunit casebook`) is open in a browser tab on light paper. Run the command in scene 2 once beforehand so the worktree environments are warm. The numbers below are from the run of Monday 12 October. A new run will differ a little, so read them off the screen.
 
@@ -30,7 +30,7 @@ Cut to the result line.
 
 > Twenty replays. Five commits. 98.3 percent. This one.
 
-Switch to the case file page and press "Replay the investigation" under the lineup. Let it run: the marks land, suspects are struck through, and the red ring is drawn last.
+Switch to the case file page and press "Replay the investigation" under the lineup. Let it run: the marks land, suspects are struck through, and the pencil ring is drawn last.
 
 > Every suspect is a position in the lineup. An x is a replay that failed, an o is one that passed. Grey marks are ordinary runs it already had. Hatched ones have an alibi. Watch the odds move until one is left.
 
@@ -46,7 +46,7 @@ Scroll to Brief.
 
 Scroll to Evidence, Exhibit A and Exhibit B.
 
-> Same request, one commit apart. In Exhibit A the agent looks the order up and refuses. In Exhibit B it pays. The step where they part is the red one.
+> Same request, one commit apart. In Exhibit A the agent looks the order up and refuses. In Exhibit B it pays. The step where they part is the ringed one.
 
 ## Scene 4, the ruling and the fix (1:20 to 1:55)
 
@@ -70,15 +70,19 @@ Back to the first case file, scroll to Damages. Then show `eval/sealed/README.md
 
 > Plain bisect with five retries got three of them, and cheaper. On the fourth it named an innocent commit. On the fifth the broken version passed ten times in a row, so it never started.
 
-## Scene 6, close (2:25 to 2:35)
+## Scene 6, the plan and the close (2:25 to 2:50)
 
-Show the cfo.ai model, then the repo URL.
+Show the cfo.ai workspace: the Cash and runway page with its chart, then the Simulator page. Drag the founder draw slider to $0 and let the cash line move.
 
-> The business plan is in cfo.ai. The code, the build log and every coding session behind it are public. Whodunit: which commit, and why.
+> The business plan is a live model in cfo.ai: pricing, costs, revenue and runway, in four cases. What an investigation costs is taken from the six we ran. In the downside the plan lasts the year only if the founder takes no draw, and the simulator shows it.
+
+Show the repo URL.
+
+> The code, the build log and every coding session behind it are public. Whodunit: which commit, and why.
 
 ## Shots to capture separately
 
 - neatlogs cloud: the refund-agent traces list, and one trace open on the `issue_refund` span.
 - neatlogs cloud: the investigation's own trace, `b842b67dfae39c67c1a3aa76772f5229`, workflow `whodunit`, open on a lineup round and on the first fix attempt.
 - Entire: the checkpoint page for the culprit commit, Sessions tab then Changes tab.
-- cfo.ai: the plan's summary page and one scenario.
+- cfo.ai: the Whodunit plan page, the Cash and runway page, and the simulator with the draw slider moved.
