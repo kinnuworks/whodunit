@@ -7,7 +7,8 @@
   "target": ".",
   "file": "cases/outside/escalation-skipped.toml",
   "repo": "../../../private/tmp/outside/support-agent-demo",
-  "traffic_sent_by": ""
+  "traffic_sent_by": "",
+  "remote": "https://github.com/jaxsonsprinkles/support-agent-demo"
  },
  "suspects": [
   {
@@ -1053,5 +1054,11 @@
    "session_agrees": true,
    "note": ""
   }
+ },
+ "scored": {
+  "key": "https://github.com/jaxsonsprinkles/agentbisect/blob/main/evidence/ground_truth.json",
+  "scored_on": "2026-10-12",
+  "verdict": "not backed",
+  "said": "the key puts this request under the regression its authors call R2, a change that makes every run use more tokens, and their notes point at 59c8b10 for it. Whodunit named b0be626, the commit behind R3. The key does not back that. The replays show a different symptom from the one the key means: before b0be626 the agent sent this request to a person in 12 of 12 replays, and from b0be626 on it refunded the 800.00 order itself in 10 of 10. Nobody has reverted the commit to check."
  }
 }

@@ -7,7 +7,8 @@
   "target": ".",
   "file": "cases/outside/refund-amount.toml",
   "repo": "../../../private/tmp/outside/support-agent-demo",
-  "traffic_sent_by": ""
+  "traffic_sent_by": "",
+  "remote": "https://github.com/jaxsonsprinkles/support-agent-demo"
  },
  "suspects": [
   {
@@ -1053,5 +1054,11 @@
    "session_agrees": true,
    "note": ""
   }
+ },
+ "scored": {
+  "key": "https://github.com/jaxsonsprinkles/agentbisect/blob/main/evidence/ground_truth.json",
+  "scored_on": "2026-10-12",
+  "verdict": "match",
+  "said": "the key puts this request under the regression its authors call R3, and their notes put R3 at b0be626. Whodunit named b0be626. That matches."
  }
 }

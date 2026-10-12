@@ -745,3 +745,36 @@ Where the owner's draft and the records differed, the records won, and the owner
 Checked: 150 fast tests pass. The casebook was regenerated with the public address and its top was looked at in a browser at 800 px, where the headline takes two lines.
 
 Not checked: the README as GitHub renders it, since nothing is pushed yet, and whether the table's last row wraps badly on a phone. The case pages themselves did not change.
+
+### 5:25 PM, Monday: one history somebody else wrote
+
+The second finding from the owner's review: everything was measured on a refund agent whose history was grown here. This is one run on a repo that was not, https://github.com/jaxsonsprinkles/support-agent-demo by Jaxson Sprinkles, the target another neatHack team built for their own tool. The owner approved a clone of it outside this repo. `eval/outside/README.md` has the whole account, and this is the short one.
+
+What was done:
+
+- A new check, `kind = "calls"`, judges a run by the tools it called and what it replied, read from the JSON it prints. With it came four smaller things a foreign agent needed: reading pretty-printed JSON, `env_from` to hand over a key by name, `void_waits` for a gateway that limits by the minute, and token counts on each replay.
+- Their agent ran on the hackathon gateway through environment variables alone. No file of theirs was edited.
+- I ran their 24 eval inputs at the bad ref and the failing ones at the good ref, and wrote three cases from the ones that told the ends apart or plainly did not.
+- Two lineups each named `b0be626` at 97.9% after 22 replays across 7 of 25 commits. The third found the request failing 6 of 6 at both ends and named nobody.
+- The motive step found the request behind `b0be626` in their Entire checkpoint and checked the quote against the transcript. The owner and I had both expected it to fall back to the commit message, because their checkpoint branch did not look published. It is.
+- `eval/outside/predictions.json` was committed and pushed in `d1bf1b0` at 5:19 PM. Only then did I clone their other repo and read the key.
+
+How it scored:
+
+- Their key seeds three regressions. One is the refund amount in cents, at `b0be626`. Whodunit named it. That is the hit.
+- The other two make every run use more tokens and leave its answers right. A check on tools and replies cannot see that, so Whodunit did not find them and had no case that could have.
+- The second accusation is not backed by the key. The key files that request under one of the token regressions. Whodunit named `b0be626` for it, on a different symptom: the agent refunding an 800.00 order itself where it had been sending it to a person, 10 of 10 replays from that commit on against 12 of 12 before. It may be a side effect their key does not list, or something only this gateway's model does. It is written up as not backed, and not as a hit.
+- The clear range agrees with the key, which lists that request as a control.
+
+What went wrong:
+
+- The first screening run, three at a time, hit the gateway's per-minute limit and lost 15 attempts. All were voided and run again, and two requests ended void. From then on replays ran two at a time with waits of 20 and 45 seconds.
+- A voided replay's reason quotes the gateway's error, and that error carries the first characters of a hash of the key. One such line was printed in this session. It is not the key and cannot be used as one. No record under `cases/outside/` holds it.
+- My first test for the argument matcher put two conditions in one table and the matcher allowed one. It now takes several and all must hold.
+- The write-up first gave a token comparison I had not measured for the same request at both ends. It now quotes the one pair I did measure.
+
+Spend, from the token counts the agent prints, at $1 and $5 per million: 67 screening runs for about $0.43 and 56 lineup replays for about $0.41. About $0.83 of the $2.50 the owner allowed, all on the gateway. The owner's own key was not used.
+
+Checked: 156 fast tests pass, 6 of them new. The casebook lists the three cases under a heading of their own, and each page links back to it and says how its answer scored.
+
+Not checked: whether the skipped escalation starts at `b0be626` on their own pinned model, since nothing was reverted and their setup was not used. Whether a token check would find the other two. The lineups were run once each, and at temperature 0 they say little about the statistical part of the bisect. The casebook headline takes four lines at phone width, one more than the design rule allows, and I left it.

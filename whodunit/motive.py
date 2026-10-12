@@ -60,17 +60,23 @@ def entire(repo: str | Path, *args: str) -> str | None:
     return done.stdout if done.returncode == 0 else None
 
 
-def checkpoint_link(repo: str | Path, sha: str) -> str | None:
+def remote_of(repo: str | Path) -> str:
+    """The address of the repo's origin, or nothing if it has none."""
+    try:
+        return git(repo, "remote", "get-url", "origin").strip()
+    except RuntimeError:
+        return ""
+
+
+def checkpoint_link(repo: str | Path, sha: str, remote: str = "") -> str | None:
     """https://entire.io/gh/OWNER/REPO/commit/FULL_SHA, if the repo has a GitHub remote.
 
     This is asked for when a page is drawn and is not kept in the record. A record written
-    before the repo had a remote would otherwise carry an empty link for good.
+    before the repo had a remote would otherwise carry an empty link for good. A record of a
+    case in somebody else's repo keeps that repo's address as `remote`, because the clone it
+    was run in may be gone by the time the page is drawn.
     """
-    try:
-        url = git(repo, "remote", "get-url", "origin").strip()
-    except RuntimeError:
-        return None
-    match = re.search(r"github\.com[:/]([^/]+)/([^/]+?)(?:\.git)?$", url)
+    match = re.search(r"github\.com[:/]([^/]+)/([^/]+?)(?:\.git)?$", remote or remote_of(repo))
     return f"https://entire.io/gh/{match.group(1)}/{match.group(2)}/commit/{sha}" if match else None
 
 

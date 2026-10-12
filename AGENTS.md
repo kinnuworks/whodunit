@@ -30,7 +30,7 @@ Any description of the project opens with "which commit, and why". The fix comes
 
 Python 3.12 through uv, in one repo.
 
-- `whodunit/case.py`: a case is a symptom, the failing inputs, a good ref, a bad ref and a check.
+- `whodunit/case.py`: a case is a symptom, the failing inputs, a good ref, a bad ref and a check. The check is one of three kinds: `refunds`, `calls` (the tools an agent called and what it replied, read from the JSON it prints, for agents that are not the refund agent) or `command`. `env_from` hands an agent a key under the agent's own name, by the name it has in `.env`.
 - `whodunit/suspects.py`: the commits in `good..bad` with their Entire checkpoint ids. Commits that cannot reach the agent's code get a lower prior (path filter first, then entire-graph impact).
 - `whodunit/replay.py`: one git worktree per commit under test. It runs the target's replay command with the case input, tags the run with the commit SHA and a tag of its own, and takes the verdict from the case's check on what the agent printed (the refunds it made, or a command of the case's choosing). neatroots findings are not read for the verdict. A commit that will not build is skipped, like `git bisect skip`. A run that ends in a provider or network error is voided and tried again, up to three attempts, and never counts. The case file lists how the agent signals it: `void_exit_codes` and, for older commits, `void_stderr`. A timeout gets one more try with double the limit and is a failure only if that times out too.
 - `whodunit/graph.py`: the alibis. It asks entire-graph what a commit changed and whether the agent's entry file calls it.
@@ -49,6 +49,7 @@ Python 3.12 through uv, in one repo.
 - `whodunit/cli.py`: the commands. Each step reads and writes one case record, `<case>.record.json`, next to the case file.
 - `eval/`: `score.py` scores cases against a sealed answer key, `traffic.py` sends everyday requests through a history, `probe.py` runs one request a few times at one commit, `ask.sh` starts a fresh coding session with one request, and `SECOND-SESSION.md` briefs the session that grows the victim. `eval/sealed/` and `eval/simulator/` hold the results.
 - `tests/planted.py`: throwaway histories with a known culprit (an overpayment, a lookup that fails one run in three, a prompt change that needs a real model).
+- `cases/outside/` and `eval/outside/`: three cases on another team's agent, https://github.com/jaxsonsprinkles/support-agent-demo, with the predictions committed before their answer key was read. The clone lives outside this repo and none of its code is copied in. `whodunit casebook` lists a folder inside `cases/` under a heading of its own.
 - `victims/refund-agent/`: the demo target. It starts from the refund agent in neatroots' `examples/` (Apache-2.0, and the README must say so) and grew to 57 commits through real coding-agent requests in a separate session, so the history and its checkpoints are genuine.
 
 ### The statistical bisect

@@ -16,6 +16,8 @@ Whodunit tells you which change broke it, who asked for that change, and what it
 Without it, someone reads traces and diffs for an afternoon, and `git bisect` cannot help
 because the bug does not fail every time.
 
+On a repo somebody else wrote, with three regressions its authors seeded, Whodunit named the right commit for one, named that same commit for a second symptom their answer key does not back, and could not see the other two, which make runs cost more without making them wrong. [eval/outside](eval/outside/README.md) has the run, with the predictions committed before the key was opened.
+
 What is real in that case and what is staged: the refund agent's history was grown by coding-agent sessions, one typed request each, and the request quoted above is the one behind the commit. The regression is one of five that a second session planted through ordinary-sounding requests, with a sealed answer key. The customers are a script, `eval/traffic.py`, so nobody real was paid.
 
 [![The lineup for the headline case: 57 suspects, 22 with an alibi, and a ring round the culprit](evidence/lineup-whole-history.png)](https://kinnuworks.github.io/whodunit/whole-history.casefile.html)
@@ -68,7 +70,7 @@ How well that works is measured two ways. [eval/sealed](eval/sealed/README.md) i
 
 ## How a case runs
 
-A case is a small TOML file: a symptom, the failing inputs with what each should have produced, the last good ref and the first bad ref. It can be written by hand, or from one failing run:
+A case is a small TOML file: a symptom, the failing inputs with what each should have produced, the last good ref and the first bad ref. What a right run looks like is checked one of three ways: the refunds the agent made, the tools it called and what it replied (`kind = "calls"`, for any agent that prints those as JSON), or a command of the case's own. It can be written by hand, or from one failing run:
 
 ```bash
 uv run whodunit open-case --from-trace <trace id>
@@ -148,5 +150,6 @@ A case page links to a trace in neatlogs cloud only when `NEATLOGS_TRACE_URL` gi
 - Damages are estimates from token counts and list prices.
 - The do-no-harm check is only as wide as the requests it is given: the other cases' inputs and five ordinary ones. A fix could still break something nobody listed.
 - One of the five sealed cases is still open. Two patches improved it and neither brought it back to baseline, and the revert conflicts with later commits.
-- The damages in the shop's currency depend on a tool span named `issue_refund`, so that part is specific to this agent.
+- The damages in the shop's currency depend on a tool span named `issue_refund`, so that part is specific to this agent. Checks are no longer tied to it: the three cases under `cases/outside/` run on another team's agent.
+- No check looks at what a run costs. Two of the three regressions in the outside repo only made runs use more tokens, and Whodunit's cases could not see them.
 - About one coding session in nine lost its Entire checkpoint while the history was grown. For those commits the motive falls back to the commit message.

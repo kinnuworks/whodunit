@@ -15,7 +15,7 @@ from . import damages as damage
 from . import fix as fixes
 from . import opening
 from . import ruling as rulings
-from .motive import checkpoint_link, find_motive
+from .motive import checkpoint_link, find_motive, remote_of
 from .neat import NeatError, forward_to_cloud, neatroots
 from .onset import cloud_trend, environment_then, find_onset, traffic, what_differs, witness
 from .lineup import ChangePoint, linear_scan_cost, plain_bisect, statistical_bisect
@@ -71,7 +71,7 @@ def for_page(record: dict, record_file: Path) -> dict:
     motive = record.get("motive") or {}
     if motive.get("checkpoint") and motive.get("sha"):
         repo = Path((record.get("case") or {}).get("repo") or ".")
-        shown["motive"] = {**motive, "link": checkpoint_link(repo if repo.is_dir() else Path.cwd(), motive["sha"])}
+        shown["motive"] = {**motive, "link": checkpoint_link(repo if repo.is_dir() else Path.cwd(), motive["sha"], (record.get("case") or {}).get("remote", ""))}
     # A link to a trace in neatlogs cloud needs the address of the dashboard, which is the owner's to give:
     # NEATLOGS_TRACE_URL, with {trace_id} where the id goes. Without it the page prints the ids and no link.
     template = os.environ.get("NEATLOGS_TRACE_URL", "")
@@ -334,6 +334,7 @@ def lineup(args) -> int:
         say("There may be two regressions in this range. A single culprit, if one was named, is at most one of them.")
     record = load_record(record_path(args))
     record["case"] = {"id": case.id, "symptom": case.symptom, "good": resolve(repo, case.good), "bad": resolve(repo, case.bad), "target": case.target, "file": os.path.relpath(Path(args.case).resolve()), "repo": os.path.relpath(repo),
+                      **({"remote": remote_of(repo)} if Path(repo).resolve() != Path.cwd().resolve() and remote_of(repo) else {}),
                       "traffic_sent_by": case.traffic_sent_by}
     record["suspects"] = [
         {"sha": s.sha, "subject": s.subject, "checkpoint": s.checkpoint, "touches_target": s.touches_target, "alibi": s.alibi,
@@ -1077,6 +1078,10 @@ def open_case(args) -> int:
     return 0
 
 
+# A folder inside the casebook holds cases of another kind, and gets a heading of its own on the index.
+SHELVES = {"outside": ("Somebody else's repo", "An agent and a history nobody here wrote. Whodunit named the commit and stopped there.")}
+
+
 def casebook(args) -> int:
     """Write every case file in a folder, and an index page that lists them."""
     folder = Path(args.folder)
@@ -1086,9 +1091,20 @@ def casebook(args) -> int:
         page = casefile.write(record, path.with_name(path.name.replace(".record.json", "") + ".casefile.html"))
         records.append((page.name, record))
     records.sort(key=lambda item: item[1].get("case", {}).get("number", 0))
+    shelves = []
+    for shelf in sorted(p for p in folder.iterdir() if p.is_dir() and any(p.glob("*.record.json"))):
+        kept = []
+        for path in sorted(shelf.glob("*.record.json")):
+            record = for_page(load_record(path), path)
+            page = path.with_name(path.name.replace(".record.json", "") + ".casefile.html")
+            page.write_text(casefile.render(record, home="../"))
+            kept.append((f"{shelf.name}/{page.name}", record))
+        kept.sort(key=lambda item: item[1].get("case", {}).get("number", 0))
+        heading, lead = SHELVES.get(shelf.name, (shelf.name.replace("-", " ").capitalize(), ""))
+        shelves.append((heading, lead, kept))
     index = folder / "index.html"
-    index.write_text(casefile.render_index(records))
-    print(f"{index}: {len(records)} cases")
+    index.write_text(casefile.render_index(records, shelves))
+    print(f"{index}: {len(records)} cases" + "".join(f", and {len(kept)} under {heading!r}" for heading, _, kept in shelves))
     if args.open:
         import webbrowser
 

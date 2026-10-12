@@ -121,3 +121,18 @@ def test_the_casebook_is_a_docket():
     assert page.count('class="pill-status is-closed"') == 1 and "<th>No.</th><th>Status</th><th>What was reported</th><th>Culprit</th><th>Damage</th>" in page
     assert 'class="window window--dark"' in page and "Culprit: " + B[:12] in page  # the terminal up top is made from a record
     assert "No cases yet. Lucky you." in casefile.render_index([])
+
+
+def test_a_case_in_somebody_elses_repo_gets_its_own_shelf_and_says_how_it_scored():
+    theirs = record(scored={"said": "the key does not back that."})
+    theirs["case"] = {**theirs["case"], "remote": "https://github.com/someone/their-agent"}
+    page = casefile.render(theirs, home="../")
+    assert 'href="../index.html"' in page and 'href="index.html"' not in page
+    assert "Scored against the answer key its authors keep: the key does not back that." in page
+    assert '<a href="https://github.com/someone/their-agent">someone/their-agent</a>' in page
+    assert "Scored against" not in casefile.render(record()) and 'href="index.html"' in casefile.render(record())
+    clear = record(lineup={"clear": True, "replays": 12})
+    index = casefile.render_index([("a.casefile.html", record())], [("Somebody else's repo", "Not ours.", [("outside/t.casefile.html", theirs), ("outside/u.casefile.html", clear)])])
+    assert 'id="somebody-elses-repo"' in index and 'href="outside/t.casefile.html"' in index
+    assert "2 cases in " in index and "1 with a culprit named, 1 where no commit did it" in index and "No fix was tried." in index
+    assert "1 case. 1 with a culprit named" in index  # the first docket counts its own cases only

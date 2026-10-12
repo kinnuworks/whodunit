@@ -7,7 +7,8 @@
   "target": ".",
   "file": "cases/outside/out-of-window.toml",
   "repo": "../../../private/tmp/outside/support-agent-demo",
-  "traffic_sent_by": ""
+  "traffic_sent_by": "",
+  "remote": "https://github.com/jaxsonsprinkles/support-agent-demo"
  },
  "suspects": [
   {
@@ -498,5 +499,11 @@
    1791805568438,
    1791805596428
   ]
- ]
+ ],
+ "scored": {
+  "key": "https://github.com/jaxsonsprinkles/agentbisect/blob/main/evidence/ground_truth.json",
+  "scored_on": "2026-10-12",
+  "verdict": "agrees",
+  "said": "the key lists this request as a control that none of the seeded regressions breaks. Whodunit named nobody, which agrees. Why the check fails at both ends here, on the model these replays used, is not something the key or this lineup explains."
+ }
 }

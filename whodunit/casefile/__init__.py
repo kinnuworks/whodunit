@@ -515,7 +515,13 @@ def meta(title: str, description: str) -> str:
             '<meta name="twitter:card" content="summary_large_image">')
 
 
-def render(record: dict) -> str:
+def render(record: dict, home: str = "") -> str:
+    """One case page. `home` is the way back to the casebook's folder, for a page that sits in a folder inside it."""
+    page = _render(record)
+    return page.replace('href="index.html"', f'href="{home}index.html"').replace('content="og.png"', f'content="{home}og.png"') if home else page
+
+
+def _render(record: dict) -> str:
     case = record.get("case", {})
     lineup = record.get("lineup") or {}
     culprit = lineup.get("culprit")
@@ -588,6 +594,10 @@ def render(record: dict) -> str:
         if not culprit and lineup.get("remaining"):
             rows = "".join(f'<tr><td class="num">{_pct(r.get("probability", 0))}</td><td class="sha">{escape(_short(r["sha"]))}</td><td>{escape(r["subject"])}</td></tr>' for r in lineup["remaining"][:8])
             named += f'<table class="remaining"><caption>Still in the lineup</caption>{rows}</table>'
+    scored = record.get("scored") or {}
+    if scored.get("said"):
+        # A case whose answer somebody else holds says how it scored, right or wrong, under the name it gave.
+        named += f'<p>Scored against the answer key its authors keep: {escape(scored["said"])}</p>'
     parts.append(_field("Suspects", named))
 
     # Motive
@@ -852,7 +862,7 @@ def render(record: dict) -> str:
 </div>
 </main>
 <footer class="footer"><div class="container"><span class="brand">{MARK}Whodunit</span>
-<span>Last good <span class="sha">{escape(_short(case.get("good")))}</span>, first bad <span class="sha">{escape(_short(case.get("bad")))}</span>, agent in <code>{escape(case.get("target", ""))}</code>.</span>
+<span>Last good <span class="sha">{escape(_short(case.get("good")))}</span>, first bad <span class="sha">{escape(_short(case.get("bad")))}</span>, agent in <code>{escape(case.get("target", ""))}</code>{f' of <a href="{escape(case["remote"])}">{escape(case["remote"].removeprefix("https://github.com/"))}</a>' if case.get("remote") else ""}.</span>
 <span>Drawn from the case record by <code>whodunit casebook</code>.</span></div></footer>
 {data}
 <script>{SCRIPT}</script>
@@ -907,7 +917,38 @@ def write(record: dict, path: Path) -> Path:
     return path
 
 
-def render_index(records: list[tuple[str, dict]]) -> str:
+def _docket_row(page: str, record: dict) -> str:
+    case, lineup = record.get("case", {}), record.get("lineup") or {}
+    culprit, damages = lineup.get("culprit"), record.get("damages") or {}
+    words, red = stamp(record)
+    who = (f'<span class="sha">{escape(_short(culprit["sha"]))}</span> {escape(culprit["subject"])}' if culprit else
+           "None of them. The good ref fails too." if lineup.get("clear") else "Nobody yet")
+    number = f'{case["number"]:03d}' if isinstance(case.get("number"), int) else ""
+    return (f'<tr><td class="no">{number}</td><td><span class="pill-status{" is-closed" if red else ""}">{CHECK if red else ""}{escape(words)}</span></td>'
+            f'<td class="what"><a href="{escape(page)}">{escape(case.get("symptom", page))}</a><div class="small">{len(record.get("suspects", []))} suspects, '
+            f'{lineup.get("replays", 0)} replays{"" if lineup.get("clear") else " to name"}</div></td><td>{who}</td>'
+            f'<td>{escape(money_said(damages) or ("none seen" if damages.get("case_runs") else ""))}</td></tr>')
+
+
+def _shelf(heading: str, lead: str, records: list[tuple[str, dict]]) -> str:
+    """A further docket under the first, for cases of another kind, such as ones in a repo somebody else wrote."""
+    named = sum(bool((record.get("lineup") or {}).get("culprit")) for _, record in records)
+    clear = sum(bool((record.get("lineup") or {}).get("clear")) for _, record in records)
+    replays = sum((record.get("lineup") or {}).get("replays", 0) for _, record in records)
+    remotes = sorted({record.get("case", {}).get("remote", "") for _, record in records} - {""})
+    where = " in " + " and ".join(f'<a href="{escape(r)}">{escape(r.removeprefix("https://github.com/"))}</a>' for r in remotes) if remotes else ""
+    count = len(records)
+    line = (f'{count} {"case" if count == 1 else "cases"}{where}. {named} with a culprit named'
+            + (f', {clear} where no commit did it' if clear else "") + f'. {replays:,} replays in all. No fix was tried.')
+    rows = "".join(_docket_row(page, record) for page, record in records)
+    return f"""<section class="section" id="{escape(heading.lower().replace(" ", "-").replace("'", ""))}"><div class="container">
+<div class="section-head section-head--left"><p class="eyebrow">{escape(heading)}</p><h2>{escape(lead)}</h2><p class="docket-line">{line}</p></div>
+<div class="card docket-card"><table class="docket"><thead><tr><th>No.</th><th>Status</th><th>What was reported</th><th>Culprit</th><th>Damage</th></tr></thead>
+<tbody>{rows}</tbody></table></div>
+</div></section>"""
+
+
+def render_index(records: list[tuple[str, dict]], shelves: list[tuple[str, str, list[tuple[str, dict]]]] | tuple = ()) -> str:
     """The casebook: the headline case's own output up top, then the docket, one row per case. `records` are (page file name, record)."""
     rows = ""
     named = closed = replays = 0
@@ -916,19 +957,12 @@ def render_index(records: list[tuple[str, dict]]) -> str:
     for page, record in records:
         case, lineup = record.get("case", {}), record.get("lineup") or {}
         culprit, damages = lineup.get("culprit"), record.get("damages") or {}
-        words, red = stamp(record)
         named += bool(culprit)
-        closed += bool(red)
+        closed += bool(stamp(record)[1])
         replays += damages.get("replay_runs") or lineup.get("replays", 0)
         cost += damages.get("replay_usd") or 0.0
         scripted = scripted or bool(damages.get("sent_by") or case.get("traffic_sent_by"))
-        who = (f'<span class="sha">{escape(_short(culprit["sha"]))}</span> {escape(culprit["subject"])}' if culprit else
-               "None of them. The good ref fails too." if lineup.get("clear") else "Nobody yet")
-        number = f'{case["number"]:03d}' if isinstance(case.get("number"), int) else ""
-        rows += (f'<tr><td class="no">{number}</td><td><span class="pill-status{" is-closed" if red else ""}">{CHECK if red else ""}{escape(words)}</span></td>'
-                 f'<td class="what"><a href="{escape(page)}">{escape(case.get("symptom", page))}</a><div class="small">{len(record.get("suspects", []))} suspects, '
-                 f'{lineup.get("replays", 0)} replays to name</div></td><td>{who}</td>'
-                 f'<td>{escape(money_said(damages) or ("none seen" if damages.get("case_runs") else ""))}</td></tr>')
+        rows += _docket_row(page, record)
     count = len(records)
     line = (f'{count} {"case" if count == 1 else "cases"}. {named} with a culprit named, {closed} closed, {count - closed} open. '
             f'{replays:,} replays in all, about ${cost:.2f}.')
@@ -953,7 +987,7 @@ def render_index(records: list[tuple[str, dict]]) -> str:
 <div class="section-head section-head--left"><p class="eyebrow">The docket</p><h2>Every case, with its file.</h2><p class="docket-line">{escape(line)}</p></div>
 <div class="card docket-card"><table class="docket"><thead><tr><th>No.</th><th>Status</th><th>What was reported</th><th>Culprit</th><th>Damage</th></tr></thead>
 <tbody>{rows}</tbody></table></div>
-</div></section>""" if records else """<header class="hero book"><div class="container">
+</div></section>{"".join(_shelf(*shelf) for shelf in shelves)}""" if records else """<header class="hero book"><div class="container">
 <h1>Your AI agent worked last week. Now it gets things wrong, <em class="t-serif">sometimes.</em></h1>
 <p class="lead empty">No cases yet. Lucky you.</p>
 </div></header>""")
