@@ -2,7 +2,7 @@
 
 Posted by the owner on Monday 12 October at 8:56 PM IST: https://x.com/heykinnu/status/2109666939660648948
 
-The owner wrote the post in their own words and attached the film, 2 minutes 16 seconds, so what went out is not the draft below. It says: a test refund agent worked last week and then started paying the wrong people, sometimes, and Whodunit found the 1 change out of 57 that caused it, and who asked for it, in 11 minutes. It links the repo and names @neatlogs, @EntireHQ and @arithecfo. It quotes the neatlogs launch post by its founder.
+The owner wrote the post in their own words and attached the film, 2 minutes 16 seconds, so what went out is not the draft below. It says: a test refund agent worked last week and then started paying the wrong people, sometimes, and Whodunit found the 1 change out of 57 that caused it, and who asked for it, in 11 minutes. It links the repo and names @neatlogs, @EntireHQ and @arithecfo. It quotes a post by @bettersayAJ that announces the launch of neatlogs.
 
 ## The draft that was offered
 

@@ -834,8 +834,8 @@ Not checked: the other nine runs were not asked for again, and nobody has opened
 The owner posted the submission at 8:56 PM IST, inside the window, with the film attached: https://x.com/heykinnu/status/2109666939660648948
 
 - The post is in the owner's own words and not the draft in `pitch/submission.md`. Its numbers are the README's: 1 change out of 57, and 11 minutes, which is the 10 minutes 46 seconds of the headline run rounded.
-- It links the repo and names the three sponsors' handles. It quotes the neatlogs launch post by the company's founder. Whether that is the post entries are meant to quote is the owner's to confirm.
-- The film is the cut with the new mark, 2 minutes 16 seconds. The owner watched it before posting. I have never heard it.
+- It links the repo and names the three sponsors' handles. It quotes a post by @bettersayAJ that announces the launch of neatlogs. Whether that is the post entries are meant to quote is the owner's to confirm.
+- The film on the post runs 2 minutes 16 seconds, the length of the cut with the new mark. I have not checked which file was uploaded or whether anyone watched it through first, and I have never heard it.
 - Before posting, the owner had me set the GitHub description and the website field, and I read both back.
 - The link is in the README's evidence table and in `evidence/README.md`.
 
