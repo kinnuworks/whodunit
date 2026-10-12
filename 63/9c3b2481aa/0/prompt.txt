@@ -1,0 +1,140 @@
+pbcopy < /Users/kinnu/neathackresearch/claude-code-prompt.md
+
+---
+
+<pasted_content id="34e2">
+This is the last working session on Whodunit before the neatHack cutoff. Submissions open today, Monday 12 October 2026, at 7:00 PM IST and are planned to close at 11:55 PM IST. Check the clock with `TZ=Asia/Kolkata date` before you start and after each job, and stop starting new work at 11:00 PM so there is time to test, commit and push.
+
+Read `AGENTS.md`, `README.md`, the last five entries of `hackathon.md`, and `evidence/README.md` before changing anything. `AGENTS.md` still governs: this session is recorded by Entire and will be public, keys stay in `.env` and are never printed, and pushing, posting, opening pull requests and writing to cfo.ai are my steps, which you ask me for. Where this message and `AGENTS.md` disagree, ask me.
+
+## Why this session exists
+
+I had the repo reviewed against the hackathon's rubric (the agent 30%, use of neatlogs, Entire and cfo.ai 25%, demo video 20%, building in public 15%, usefulness and originality 10%). The review's findings, which I agree with:
+
+1. A first-time reader cannot tell what Whodunit is for. The README opens with a riddle and then explains statistics. The outcome, a refund agent paying strangers and the one commit behind it, is four paragraphs down.
+2. Everything is measured on a refund agent whose history I grew myself. Nothing shows it working on a history somebody else wrote.
+3. It reads as a search algorithm with a model on the side. The loop that opens a case from a trace, writes a patch, throws out a patch that harms other requests, retries, reverts, and leaves a case open is real, but the README does not show it as one loop.
+4. Nothing in the product reads the cfo.ai plan. The plan is a document beside the code.
+5. The failing and passing runs each case cites are in local neatroots only, so nobody else can open them.
+6. The README links none of my public posts.
+
+The jobs below are in priority order. Do them in this order, finish each before starting the next, and tell me when one is done. If a job is blocked for more than twenty minutes, write down what blocked it and move on.
+
+## Rules for every job
+
+- Every number that goes into the README, a case page or a post comes from a record file or a run you made in this session. Check it against the file before you write it. If two files disagree, tell me; do not pick one.
+- Report misses as plainly as hits. If the outside run names the wrong commit or names nobody, that goes in the write-up as it happened. This repo's habit of saying what went wrong is one of its strengths and I want it kept.
+- Do not write anything addressed to the hackathon's judges, by name or as a group, and do not write text meant for automated graders.
+- Do not rewrite git history. Do not wire the two-change-point model into the lineup tonight.
+- Append a dated entry to `hackathon.md` after each job, in the style of the existing ones: what was done, what went wrong, what was not checked.
+- Model spend: the last build-log estimate put the hackathon gateway at about $16 of $20. Before any job that makes model calls, estimate its cost, tell me, and stop at the cap I give you. Ask me if a job needs my own key instead.
+
+## Job 1: the first screen of the README (about 45 minutes)
+
+Rewrite the top of `README.md` so that a reader knows within ten seconds what broke, what Whodunit found, and what that is worth. Lead with the outcome and put the method after it. Here is the shape I want. Check each number against `cases/whole-history.record.json` and `evidence/README.md` and correct any that are off. The "11 minutes" comes from `pitch/demo-script.md`; confirm it from the record or a log, and drop it if you cannot.
+
+```markdown
+# Whodunit
+
+Your AI agent worked last week. Now it gets things wrong, sometimes.
+Whodunit tells you which change broke it, who asked for that change, and what it cost.
+
+**One real case, one command, 11 minutes, about 80 cents:**
+
+| | |
+|---|---|
+| What went wrong | A refund agent started refunding orders to people who did not own them. 11 of 14 runs. |
+| Which change | 1 commit out of 57, named at 98.3% after 20 replays |
+| Who asked for it | A coding-agent session where someone typed "simple refunds feel slow". Quoted from the Entire checkpoint. |
+| What it cost | 120.00 refunded to the wrong people (test shop, scripted customers) |
+| The fix | First patch passed 30 replays, broke another request, and was thrown out. Second patch kept: 0 failures in 30. |
+
+Without it, someone reads traces and diffs for an afternoon, and `git bisect` cannot help
+because the bug does not fail every time.
+```
+
+Under that, in this order:
+
+- `evidence/lineup-whole-history.png`, with a link to the live case page at https://kinnuworks.github.io/whodunit/whole-history.casefile.html.
+- A section called "What it does on its own" that shows the loop as one run: a case opened from a single failing trace, the lineup, the motive, the brief, my one ruling, a patch, the do-no-harm check, the retry, the revert when patches fall short, and a case left open when nothing clears the bar. Point each step at the case record where it actually happened (`whole-history`, `turned-away`, `half-done-batch`).
+- A table called "Evidence" with one row for each of these and one link each: a before and after with numbers; neatlogs traces or screenshots; Entire checkpoints; the cfo.ai plan with its read-only share link (it is in `evidence/README.md` today); a run where an action failed and what happened next; public posts; commits dated inside the hackathon.
+- In the posts row, these three, which are live:
+  - https://x.com/heykinnu/status/2108892698963071343 (Day 1, 10 October)
+  - https://x.com/heykinnu/status/2109010623833297271 (Bingo, 11 October)
+  - https://x.com/heykinnu/status/2109552985152119291 (the pitch, 12 October)
+  I will post more through the evening and paste the links to you. Add each one to the README and to `evidence/README.md`, which still lists post links as missing.
+- "Why plain bisect is not enough" and everything else that is in the README now, unchanged in substance, below all of this.
+
+Then make the same opening sentence ("Your AI agent worked last week...") the first line of the casebook index, by changing the casebook template under `whodunit/casefile/` and running `uv run whodunit casebook`. Update the one-line pitch in `AGENTS.md` to match, keeping "which commit, and why" first as that file requires. Give me the text for the GitHub repo description; I will set it.
+
+## Job 2: one history I did not write (time box: two and a half hours)
+
+This is the most valuable job and the riskiest. The aim is one honest result on a repository whose history, regressions and coding sessions are somebody else's.
+
+The target is https://github.com/jaxsonsprinkles/support-agent-demo, a public customer-support agent built by another neatHack team as the demo target for their own tool. Its README says its history carries three seeded regressions. It has 30 commits, a CLI (`python -m agent "<question>"` prints the reply and tool calls as JSON), and `evals/cases.jsonl` with 24 cases, each with an input and checks such as `must_call`, `must_not_call`, `call_args` and `reply_contains`.
+
+I approve cloning and reading that one public repository at a path outside this repo, for example `/tmp/outside/support-agent-demo`. That is the only exception to the rule in `AGENTS.md` about files outside the repo. It has no licence file, so do not copy any of its code or data into this repo. Link it and credit its author by name.
+
+Keep the run blind, the way `eval/sealed` was:
+
+- Use the range from `1b40b27` (good) to `0ecffc0` (bad), the tip of `main`.
+- The team that built it publishes an answer key in their other repository, `jaxsonsprinkles/agentbisect`. Do not open that repository, and do not read `support-agent-demo` history from before `1b40b27`, until step 5 below.
+
+Steps:
+
+1. Work out the smallest change that lets Whodunit run a case against a foreign agent with `--repo`. Today a case's check is the list of refunds the agent printed. A general check is needed: tools that must be called, tools that must not be called, call arguments, and text the reply must contain, read from the JSON the agent prints. Build that as a proper check type with tests, since it also removes a limit the README admits (damages and checks tied to the refund agent).
+2. Find out how to give that agent a model. It uses the Anthropic API with `ANTHROPIC_API_KEY` and a pinned small model. Try the hackathon gateway through environment variables only, without editing the target. If that cannot work, stop and ask me for a key. Estimate the cost of the whole job first.
+3. Write two or three case files under `cases/outside/`, each from one of that repo's own eval cases, chosen so the checks pass at the good ref and fail at the bad one. Let the lineup's own check of both ends confirm that. Pick cases from different categories so they can point at different commits.
+4. Run `whodunit lineup` on each, with the statistical bisect and the usual 95% bar. Then run the motive step. That repo's commits carry Entire checkpoint trailers, but its checkpoint branch does not appear to be published, so expect the motive to fall back to the commit message. Say so on the page if it does.
+5. Write the named culprits, their probabilities and the replay counts to `eval/outside/predictions.json` and commit it. Only then open `agentbisect/evidence/ground_truth.json` and any notes beside it, and score the predictions.
+6. Write `eval/outside/README.md`: whose repo it is and that the regressions are theirs, what Whodunit named, what the key says, replays and spend per case, anything it got wrong or could not decide, and what had to change in Whodunit to run a foreign agent. Generate the case pages and add them to the casebook under their own heading.
+7. Add one row to the README's top table or just under it: the outside result in one line, with a link.
+
+Do not run the fix step on the outside repo. Naming the commit is the point.
+
+If there is no successful replay of that agent after sixty minutes, stop, write up what blocked it in `hackathon.md`, and go to Job 3. A written-up attempt is worth more than a rushed result I cannot stand behind.
+
+## Job 3: neatlogs evidence other people can open (about 40 minutes)
+
+- `neatroots cloud login` is my step. Ask me to run it. Then push the failing run and the passing run that each case's brief cites to neatlogs cloud.
+- Ask me for the dashboard address of one trace so `NEATLOGS_TRACE_URL` can be set, then rerun `uv run whodunit casebook` so each case page links its cited runs. Remove the sentence on each page that says the runs are in neatroots only, once it is no longer true.
+- Turn the headline case into a standing check: a neatlogs detection that fires when `issue_refund` runs with no earlier `lookup_order` in the same run. Preview it against the recorded runs and record how many it flags before and after the fix commit. Put the detection id and the counts in `evidence/README.md`. Tell me what to screenshot.
+- If `whodunit onset --cloud` can open a case from that detection, show that once and record the command and its output.
+
+## Job 4: the cfo.ai plan sets a limit in code (about an hour)
+
+Today no code reads the plan. Change that in the smallest honest way.
+
+- With my yes, read these from the cfo.ai model: the price of the Team tier, the investigations it includes if the plan states that, the modelled cost of one investigation, and the target margin. Write them to `pitch/plan.json` with the date and the share link. Reading is fine; write nothing to cfo.ai.
+- Derive one number from the file: the most a single investigation may spend on replays and model calls if the plan's margin is to hold. Put the formula in a comment and in the README.
+- `whodunit investigate` takes that as its default spend limit, counted with the same token-cost estimate `damages.py` already uses. When a case reaches the limit it stops the way it stops today when replays run out: nobody is named below 95% and the lineup is handed back with its probabilities. A flag can raise the limit, and the case record says when it was raised.
+- Add tests: the limit is read from the file, a run that would cross it stops, and the record says why.
+- Check the six existing cases against the limit and say in the README which of them would have been stopped. If `half-done-batch`, at $3.53 of replays, is over it, say so. That is an honest and useful result.
+
+## Job 5: the video's first ten seconds (propose only)
+
+I have not asked you to rebuild the film. Read `pitch/demo-script.md` and what is in `pitch/video/`, and tell me:
+
+- whether the first ten seconds say what broke and what Whodunit is for, in the words of the new README opening;
+- whether the film shows any real terminal output or real case page, or only drawn screens;
+- the smallest change that would fix either, and what it would cost in narration characters.
+
+Change nothing in the film until I say so.
+
+## Job 6: the submission
+
+Write `pitch/submission.md` with the text for my submission post: team, name, project, public repo, demo link, the casebook link, and the three sponsor handles as I used them in my Day 1 post. Under 280 characters. Leave the demo link as a blank for me to fill.
+
+## Before every push
+
+1. `uv run pytest -m "not slow"` passes. Say how many tests ran.
+2. `uv run whodunit casebook` has been rerun and the pages open.
+3. The `hackathon.md` entry for the job is written.
+4. Commit in small commits with messages in the style already in the log.
+5. Read the new checkpoint with `entire checkpoint explain --transcript` and check it for keys, email addresses and anything from outside the repo other than the one approved clone. Tell me what you found.
+6. Ask me before pushing. Tell me exactly what the push will publish.
+
+## What to tell me at the end
+
+One short message: which jobs are done, which are not and why, every number that changed in the README and where it comes from, what was spent on model calls, and anything I still have to do by hand before 11:55 PM.
+</pasted_content id="34e2">
