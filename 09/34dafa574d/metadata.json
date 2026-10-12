@@ -1,0 +1,29 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "0934dafa574d",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "eval/simulator/accuracy-flaky-baseline.png",
+    "evidence/README.md",
+    "evidence/motive-whole-history.png",
+    "pitch/posts.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/09/34dafa574d/0/metadata.json",
+      "transcript": "/09/34dafa574d/0/full.jsonl",
+      "compact_transcript": "/09/34dafa574d/0/transcript.jsonl",
+      "content_hash": "/09/34dafa574d/0/content_hash.txt",
+      "prompt": "/09/34dafa574d/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 24,
+    "cache_creation_tokens": 31917,
+    "cache_read_tokens": 2515598,
+    "output_tokens": 17953,
+    "api_call_count": 10
+  }
+}
