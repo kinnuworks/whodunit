@@ -1,0 +1,1 @@
+/anthropic-skills:indie-app-design-system use indie app design skill to redesign this system, choose what is applicable and how it fits the application, including like if menu bar is needed, include, or eliminate, such like that.
