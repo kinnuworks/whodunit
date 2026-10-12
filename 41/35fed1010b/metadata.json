@@ -1,0 +1,40 @@
+{
+  "cli_version": "0.11.4",
+  "checkpoint_id": "4135fed1010b",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "AGENTS.md",
+    "cases/cents-off.casefile.html",
+    "cases/cents-off.record.json",
+    "cases/half-done-batch.casefile.html",
+    "cases/half-done-batch.record.json",
+    "cases/strangers-paid.casefile.html",
+    "cases/strangers-paid.record.json",
+    "cases/turned-away.casefile.html",
+    "cases/turned-away.record.json",
+    "cases/whole-history.casefile.html",
+    "cases/whole-history.record.json",
+    "cases/wrong-order-refunded.casefile.html",
+    "cases/wrong-order-refunded.record.json",
+    "evidence/README.md",
+    "hackathon.md"
+  ],
+  "sessions": [
+    {
+      "metadata": "/41/35fed1010b/0/metadata.json",
+      "transcript": "/41/35fed1010b/0/full.jsonl",
+      "compact_transcript": "/41/35fed1010b/0/transcript.jsonl",
+      "content_hash": "/41/35fed1010b/0/content_hash.txt",
+      "prompt": "/41/35fed1010b/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 22,
+    "cache_creation_tokens": 8726,
+    "cache_read_tokens": 3671446,
+    "output_tokens": 5199,
+    "api_call_count": 9
+  }
+}
